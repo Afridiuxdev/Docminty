@@ -1,7 +1,7 @@
-"use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Menu, X, ChevronDown, FileText } from "lucide-react";
+import { getAccessToken, clearTokens } from "@/api/auth";
 
 const T = "#0D9488";
 
@@ -25,6 +25,7 @@ const toolLinks = [
     { label: "Rent Receipt", href: "/rent-receipt" },
     { label: "Payment Voucher", href: "/payment-voucher" },
     { label: "Batch Processor", href: "/batch" },
+    { label: "QR Code Generator", href: "/tools/qr-generator" },
 ];
 
 const pdfToolLinks = [
@@ -53,6 +54,17 @@ export default function Navbar() {
     const [toolsOpen, setToolsOpen] = useState(false);
     const [pdfOpen, setPdfOpen] = useState(false);
     const [calcOpen, setCalcOpen] = useState(false);
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        if (getAccessToken()) setUser(true);
+    }, []);
+
+    const handleLogout = () => {
+        clearTokens();
+        setUser(null);
+        window.location.href = "/";
+    };
 
     return (
         <>
@@ -188,8 +200,17 @@ export default function Navbar() {
                         display: "flex", alignItems: "center",
                         gap: "8px", flexShrink: 0,
                     }} className="desktop-nav">
-                        <Link href="/login" className="nav-link">Sign In</Link>
-                        <Link href="/invoice" className="nav-cta">Start Free →</Link>
+                        {user ? (
+                            <>
+                                <Link href="/dashboard" className="nav-link">My Dashboard</Link>
+                                <button onClick={handleLogout} className="nav-cta" style={{ cursor: "pointer", border: "none" }}>Logout</button>
+                            </>
+                        ) : (
+                            <>
+                                <Link href="/login" className="nav-link">Sign In</Link>
+                                <Link href="/invoice" className="nav-cta">Start Free →</Link>
+                            </>
+                        )}
                     </div>
 
                     {/* Mobile hamburger */}
@@ -209,44 +230,169 @@ export default function Navbar() {
                 {mobileOpen && (
                     <div style={{
                         borderTop: "1px solid #E5E7EB", background: "#fff",
-                        padding: "16px 24px", display: "flex",
-                        flexDirection: "column", gap: "4px",
+                        padding: "16px 0", display: "flex",
+                        flexDirection: "column", maxHeight: "calc(100vh - 120px)",
+                        overflowY: "auto",
                     }}>
-                        <p style={{
-                            fontSize: "11px", fontWeight: 600, color: "#9CA3AF",
-                            letterSpacing: "0.08em", textTransform: "uppercase",
-                            margin: "8px 0 4px",
-                        }}>Documents</p>
-                        {docLinks.map((l) => (
-                            <Link key={l.href} href={l.href}
-                                onClick={() => setMobileOpen(false)}
-                                className="mobile-link">
-                                {l.label}
-                            </Link>
-                        ))}
-                        <p style={{
-                            fontSize: "11px", fontWeight: 600, color: "#9CA3AF",
-                            letterSpacing: "0.08em", textTransform: "uppercase",
-                            margin: "12px 0 4px",
-                        }}>Tools</p>
-                        {toolLinks.map((l) => (
-                            <Link key={l.href} href={l.href}
-                                onClick={() => setMobileOpen(false)}
-                                className="mobile-link">
-                                {l.label}
-                            </Link>
-                        ))}
-                        <div style={{ display: "flex", gap: "8px", marginTop: "16px" }}>
-                            <Link href="/login" className="btn-ghost"
-                                style={{ flex: 1, justifyContent: "center" }}
-                                onClick={() => setMobileOpen(false)}>
-                                Sign In
-                            </Link>
-                            <Link href="/invoice" className="btn-primary"
-                                style={{ flex: 1, justifyContent: "center" }}
-                                onClick={() => setMobileOpen(false)}>
-                                Start Free
-                            </Link>
+                        {/* Documents Section */}
+                        <div style={{ borderBottom: "1px solid #F3F4F6" }}>
+                            <button 
+                                onClick={() => setDocsOpen(!docsOpen)}
+                                style={{
+                                    width: "100%", display: "flex", alignItems: "center",
+                                    justifyContent: "space-between", padding: "12px 24px",
+                                    background: "none", border: "none", cursor: "pointer",
+                                    fontSize: "14px", fontWeight: 600, color: docsOpen ? T : "#111827",
+                                    fontFamily: "Inter, sans-serif"
+                                }}
+                            >
+                                Documents <ChevronDown size={16} style={{ transform: docsOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 200ms" }} />
+                            </button>
+                            {docsOpen && (
+                                <div style={{ background: "#F9FAFB", padding: "4px 0" }}>
+                                    {docLinks.map((l) => (
+                                        <Link key={l.href} href={l.href}
+                                            onClick={() => setMobileOpen(false)}
+                                            style={{ paddingLeft: "40px" }}
+                                            className="mobile-link">
+                                            {l.label}
+                                        </Link>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Tools Section */}
+                        <div style={{ borderBottom: "1px solid #F3F4F6" }}>
+                            <button 
+                                onClick={() => setToolsOpen(!toolsOpen)}
+                                style={{
+                                    width: "100%", display: "flex", alignItems: "center",
+                                    justifyContent: "space-between", padding: "12px 24px",
+                                    background: "none", border: "none", cursor: "pointer",
+                                    fontSize: "14px", fontWeight: 600, color: toolsOpen ? T : "#111827",
+                                    fontFamily: "Inter, sans-serif"
+                                }}
+                            >
+                                Tools <ChevronDown size={16} style={{ transform: toolsOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 200ms" }} />
+                            </button>
+                            {toolsOpen && (
+                                <div style={{ background: "#F9FAFB", padding: "4px 0" }}>
+                                    {toolLinks.map((l) => (
+                                        <Link key={l.href} href={l.href}
+                                            onClick={() => setMobileOpen(false)}
+                                            style={{ paddingLeft: "40px" }}
+                                            className="mobile-link">
+                                            {l.label}
+                                        </Link>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* PDF Tools Section */}
+                        <div style={{ borderBottom: "1px solid #F3F4F6" }}>
+                            <button 
+                                onClick={() => setPdfOpen(!pdfOpen)}
+                                style={{
+                                    width: "100%", display: "flex", alignItems: "center",
+                                    justifyContent: "space-between", padding: "12px 24px",
+                                    background: "none", border: "none", cursor: "pointer",
+                                    fontSize: "14px", fontWeight: 600, color: pdfOpen ? T : "#111827",
+                                    fontFamily: "Inter, sans-serif"
+                                }}
+                            >
+                                PDF Tools <ChevronDown size={16} style={{ transform: pdfOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 200ms" }} />
+                            </button>
+                            {pdfOpen && (
+                                <div style={{ background: "#F9FAFB", padding: "4px 0" }}>
+                                    {pdfToolLinks.map((l) => (
+                                        <Link key={l.href} href={l.href}
+                                            onClick={() => setMobileOpen(false)}
+                                            style={{ paddingLeft: "40px" }}
+                                            className="mobile-link">
+                                            {l.label}
+                                        </Link>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Calculators Section */}
+                        <div style={{ borderBottom: "1px solid #F3F4F6" }}>
+                            <button 
+                                onClick={() => setCalcOpen(!calcOpen)}
+                                style={{
+                                    width: "100%", display: "flex", alignItems: "center",
+                                    justifyContent: "space-between", padding: "12px 24px",
+                                    background: "none", border: "none", cursor: "pointer",
+                                    fontSize: "14px", fontWeight: 600, color: calcOpen ? T : "#111827",
+                                    fontFamily: "Inter, sans-serif"
+                                }}
+                            >
+                                Calculators <ChevronDown size={16} style={{ transform: calcOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 200ms" }} />
+                            </button>
+                            {calcOpen && (
+                                <div style={{ background: "#F9FAFB", padding: "4px 0" }}>
+                                    {calcLinks.map((l) => (
+                                        <Link key={l.href} href={l.href}
+                                            onClick={() => setMobileOpen(false)}
+                                            style={{ paddingLeft: "40px" }}
+                                            className="mobile-link">
+                                            {l.label}
+                                        </Link>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Top-level links */}
+                        <Link href="/pricing" 
+                            style={{ 
+                                padding: "12px 24px", fontSize: "14px", fontWeight: 600, 
+                                color: "#111827", textDecoration: "none", borderBottom: "1px solid #F3F4F6",
+                                fontFamily: "Inter, sans-serif"
+                            }}
+                            onClick={() => setMobileOpen(false)}>
+                            Pricing
+                        </Link>
+                        <Link href="/batch" 
+                            style={{ 
+                                padding: "12px 24px", fontSize: "14px", fontWeight: 600, 
+                                color: "#111827", textDecoration: "none", borderBottom: "1px solid #F3F4F6",
+                                fontFamily: "Inter, sans-serif"
+                            }}
+                            onClick={() => setMobileOpen(false)}>
+                            Bulk Export
+                        </Link>
+
+                        <div style={{ padding: "20px 24px", display: "flex", gap: "10px", marginTop: "auto" }}>
+                            {user ? (
+                                <>
+                                    <Link href="/dashboard" className="btn-ghost"
+                                        style={{ flex: 1, justifyContent: "center", height: "44px" }}
+                                        onClick={() => setMobileOpen(false)}>
+                                        Dashboard
+                                    </Link>
+                                    <button onClick={handleLogout} className="btn-primary"
+                                        style={{ flex: 1, justifyContent: "center", height: "44px", border: "none", cursor: "pointer" }}>
+                                        Logout
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    <Link href="/login" className="btn-ghost"
+                                        style={{ flex: 1, justifyContent: "center", height: "44px" }}
+                                        onClick={() => setMobileOpen(false)}>
+                                        Sign In
+                                    </Link>
+                                    <Link href="/invoice" className="btn-primary"
+                                        style={{ flex: 1, justifyContent: "center", height: "44px" }}
+                                        onClick={() => setMobileOpen(false)}>
+                                        Start Free
+                                    </Link>
+                                </>
+                            )}
                         </div>
                     </div>
                 )}

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import TemplatePicker from "@/components/TemplatePicker";
 import { useDownloadPDF } from "@/hooks/useDownloadPDF";
@@ -9,7 +9,14 @@ import AdSense from "@/components/AdSense";
 import LogoUpload from "@/components/LogoUpload";
 import { INDIAN_STATES } from "@/constants/indianStates";
 import { calculateLineItems, numberToWords } from "@/engine/gstCalc";
-import { Plus, Trash2, Download, Eye, RefreshCw } from "lucide-react";
+import { Plus, Trash2, Download, Eye, RefreshCw, Cloud } from "lucide-react";
+import { useRouter } from "next/navigation";
+import toast, { Toaster } from "react-hot-toast";
+import { documentsApi } from "@/api/documents";
+import { getAccessToken } from "@/api/auth";
+import { useAuth } from "@/contexts/AuthContext";
+import WatermarkOverlay from "@/components/WatermarkOverlay";
+import { TEMPLATE_REGISTRY } from "@/templates/registry";
 
 const T = "#0D9488";
 
@@ -422,10 +429,17 @@ function InvoicePreview({ form }) {
 
 // ── Main Invoice Page ─────────────────────────────────────────
 export default function InvoicePage() {
+  const { user } = useAuth();
   const { download, downloading } = useDownloadPDF();
+  const router = useRouter();
   const [template, setTemplate] = useState("Classic");
     const [form, setForm] = useState(DEFAULT_FORM);
     const [activeTab, setActiveTab] = useState("from");
+
+    const isUserPro = user?.plan === "Business Pro" || user?.plan === "Enterprise";
+    const templateMeta = TEMPLATE_REGISTRY.invoice[template] || TEMPLATE_REGISTRY.invoice.Classic;
+    const isProTemplate = templateMeta.pro;
+    const showWatermark = isProTemplate && !isUserPro;
 
     const updateField = useCallback((field, value) => {
         setForm(prev => ({ ...prev, [field]: value }));
@@ -456,7 +470,27 @@ export default function InvoicePage() {
     }, []);
 
     const handleDownload = () => {
+        if (showWatermark) {
+            toast.error("This is a PRO template. Please upgrade to download without watermark!");
+            router.push("/#pricing");
+            return;
+        }
         download("Invoice" + template, form, `Invoice-${form.invoiceNumber}.pdf`);
+    };
+
+    const handleSave = async () => {
+        if (!getAccessToken()) { toast.error("Please sign in to save"); router.push("/login"); return; }
+        try {
+            await documentsApi.save({
+                docType: "invoice",
+                title: "Invoice #" + form.invoiceNumber,
+                referenceNumber: form.invoiceNumber,
+                partyName: form.toName,
+                amount: form.items.reduce((s, i) => s + parseFloat(i.amount || 0), 0).toFixed(2),
+                formData: JSON.stringify(form),
+            });
+            toast.success("Saved to your dashboard!");
+        } catch { toast.error("Save failed"); }
     };
 
     const FORM_TABS = [
@@ -464,10 +498,12 @@ export default function InvoicePage() {
         { id: "to", label: "Client Details" },
         { id: "items", label: "Items" },
         { id: "extra", label: "Settings" },
+        { id: "templates", label: "Templates" },
     ];
 
     return (
         <>
+            <Toaster position="top-right" />
             <Navbar />
 
             {/* Page header */}
@@ -511,6 +547,16 @@ export default function InvoicePage() {
                         </button>
                         <button onClick={handleDownload} className="download-pdf-btn">
                             <Download size={15} /> Download PDF
+                        </button>
+                        <button onClick={handleSave} style={{
+                            display: "flex", alignItems: "center", gap: "6px",
+                            height: "36px", padding: "0 14px",
+                            border: "1px solid #0D9488", borderRadius: "8px",
+                            background: "#fff", fontSize: "13px", fontWeight: 600,
+                            color: "#0D9488", cursor: "pointer",
+                            fontFamily: "Inter, sans-serif", transition: "all 150ms",
+                        }}>
+                            <Cloud size={14} /> Save
                         </button>
                     </div>
                 </div>
@@ -565,11 +611,6 @@ export default function InvoicePage() {
                                         value={form.logo}
                                         onChange={(v) => updateField("logo", v)}
                                     />
-                                    <div style={{ marginTop: "16px" }}><TemplatePicker 
-                                        docType="invoice"
-                                        selected={template}
-                                        onChange={setTemplate}
-                                        isPro={false} /></div>
                                 </div>
 
                                 <div className="form-field">
@@ -941,6 +982,24 @@ export default function InvoicePage() {
                                 </p>
                             </div>
                         )}
+
+                        {activeTab === "templates" && (
+                            <div>
+                                <p className="form-label">Template Design</p>
+                                <div style={{ marginTop: "8px" }}>
+                                    <TemplatePicker 
+                                        docType="invoice"
+                                        selected={template}
+                                        onChange={setTemplate}
+                                        isPro={isUserPro} />
+                                </div>
+                                <div style={{ borderTop: "1px solid #F3F4F6", margin: "24px 0" }} />
+                                <button onClick={handleDownload} className="download-pdf-btn"
+                                    style={{ width: "100%", justifyContent: "center" }}>
+                                    <Download size={15} /> Download PDF
+                                </button>
+                            </div>
+                        )}
                     </div>
 
                     {/* ── RIGHT: PREVIEW ── */}
@@ -962,7 +1021,10 @@ export default function InvoicePage() {
                                 <Download size={14} /> Download PDF
                             </button>
                         </div>
-                        <InvoicePreview form={form} />
+                        <div style={{ position: "relative" }}>
+                            {showWatermark && <WatermarkOverlay />}
+                            <InvoicePreview form={form} />
+                        </div>
                     </div>
                 </div>
 

@@ -5,8 +5,12 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AdSense from "@/components/AdSense";
 import LogoUpload from "@/components/LogoUpload";
-import { Download, Eye, RefreshCw } from "lucide-react";
+import { Download, Eye, RefreshCw, Cloud } from "lucide-react";
 import { useDownloadPDF } from "@/hooks/useDownloadPDF";
+import { useRouter } from "next/navigation";
+import toast, { Toaster } from "react-hot-toast";
+import { documentsApi } from "@/api/documents";
+import { getAccessToken } from "@/api/auth";
 
 const T = "#0D9488";
 
@@ -218,7 +222,16 @@ function VoucherPreview({ form }) {
 export default function PaymentVoucherPage() {
   const [form, setForm] = useState(DEFAULT_FORM);
   const { download, downloading } = useDownloadPDF();
+  const router = useRouter();
   const handleDownload = () => download("PaymentVoucher", form, `Voucher-${form.voucherNumber}.pdf`);
+
+  const handleSave = async () => {
+    if (!getAccessToken()) { toast.error("Please sign in to save"); router.push("/login"); return; }
+    try {
+      await documentsApi.save({ docType: "payment-voucher", title: "Voucher #" + form.voucherNumber, referenceNumber: form.voucherNumber, partyName: form.paidTo, amount: form.amount, formData: JSON.stringify(form) });
+      toast.success("Saved to your dashboard!");
+    } catch { toast.error("Save failed"); }
+  };
   const [activeTab, setActiveTab] = useState("company");
   const updateField = useCallback((field, value) =>
     setForm(prev => ({ ...prev, [field]: value })), []);
@@ -231,6 +244,7 @@ export default function PaymentVoucherPage() {
 
   return (
     <>
+      <Toaster position="top-right" />
       <Navbar />
       <div style={{
         background: "#fff", borderBottom: "1px solid #E5E7EB",
@@ -269,6 +283,9 @@ export default function PaymentVoucherPage() {
 
               {downloading ? "Generating..." : "Download PDF"}
 
+            </button>
+            <button onClick={handleSave} style={{ display: "flex", alignItems: "center", gap: "6px", height: "36px", padding: "0 14px", border: "1px solid #0D9488", borderRadius: "8px", background: "#fff", fontSize: "13px", fontWeight: 600, color: "#0D9488", cursor: "pointer", fontFamily: "Inter, sans-serif", transition: "all 150ms" }}>
+              <Cloud size={14} /> Save
             </button>
           </div>
         </div>

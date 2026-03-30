@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useCallback } from "react";
 import Navbar from "@/components/Navbar";
@@ -6,8 +6,12 @@ import Footer from "@/components/Footer";
 import AdSense from "@/components/AdSense";
 import LogoUpload from "@/components/LogoUpload";
 import { INDIAN_STATES } from "@/constants/indianStates";
-import { Download, Eye, RefreshCw } from "lucide-react";
+import { Download, Eye, RefreshCw, Cloud } from "lucide-react";
 import { useDownloadPDF } from "@/hooks/useDownloadPDF";
+import { useRouter } from "next/navigation";
+import toast, { Toaster } from "react-hot-toast";
+import { documentsApi } from "@/api/documents";
+import { getAccessToken } from "@/api/auth";
 
 const T = "#0D9488";
 
@@ -135,7 +139,16 @@ function ReceiptPreview({ form }) {
 export default function ReceiptPage() {
   const [form, setForm] = useState(DEFAULT_FORM);
   const { download, downloading } = useDownloadPDF();
+  const router = useRouter();
   const handleDownload = () => download("Receipt", form, `Receipt-${form.receiptNumber}.pdf`);
+
+  const handleSave = async () => {
+    if (!getAccessToken()) { toast.error("Please sign in to save"); router.push("/login"); return; }
+    try {
+      await documentsApi.save({ docType: "receipt", title: "Receipt #" + form.receiptNumber, referenceNumber: form.receiptNumber, partyName: form.receivedFrom, amount: form.amount, formData: JSON.stringify(form) });
+      toast.success("Saved to your dashboard!");
+    } catch { toast.error("Save failed"); }
+  };
   const [activeTab, setActiveTab] = useState("from");
   const updateField = useCallback((field, value) => setForm(prev => ({ ...prev, [field]: value })), []);
 
@@ -143,10 +156,12 @@ export default function ReceiptPage() {
     { id: "from", label: "Your Details" },
     { id: "payment", label: "Payment" },
     { id: "extra", label: "Settings" },
+    { id: "templates", label: "Templates" },
   ];
 
   return (
     <>
+      <Toaster position="top-right" />
       <Navbar />
       <div style={{ background: "#fff", borderBottom: "1px solid #E5E7EB", padding: "14px 24px" }}>
         <div style={{ maxWidth: "1300px", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
@@ -161,6 +176,9 @@ export default function ReceiptPage() {
             <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn">
               <Download size={15} />
               {downloading ? "Generating..." : "Download PDF"}
+            </button>
+            <button onClick={handleSave} style={{ display: "flex", alignItems: "center", gap: "6px", height: "36px", padding: "0 14px", border: "1px solid #0D9488", borderRadius: "8px", background: "#fff", fontSize: "13px", fontWeight: 600, color: "#0D9488", cursor: "pointer", fontFamily: "Inter, sans-serif", transition: "all 150ms" }}>
+              <Cloud size={14} /> Save
             </button>
           </div>
         </div>
@@ -234,11 +252,31 @@ export default function ReceiptPage() {
                 <p className="form-label">Additional Notes</p>
                 <div className="form-field"><label className="field-label">Notes</label><textarea className="doc-textarea" placeholder="Any additional notes..." value={form.notes} onChange={e => updateField("notes", e.target.value)} style={{ minHeight: "100px" }} /></div>
                 <div style={{ borderTop: "1px solid #F3F4F6", margin: "16px 0" }} />
-                <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn">
+                <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn" style={{ width: "100%", justifyContent: "center" }}>
                   <Download size={15} />
                   {downloading ? "Generating..." : "Download PDF"}
                 </button>
-                <p style={{ fontSize: "11px", color: "#9CA3AF", textAlign: "center", margin: "8px 0 0", fontFamily: "Inter, sans-serif" }}>No watermark · No sign-up · Instant download</p>
+              </div>
+            )}
+
+            {activeTab === "templates" && (
+              <div>
+                <p className="form-label">Template Design</p>
+                <div style={{ marginTop: "8px" }}>
+                  <TemplatePicker 
+                    docType="receipt" 
+                    selected="Classic" 
+                    onChange={() => {}} 
+                    isPro={false} 
+                  />
+                  <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "12px 0 0", fontStyle: "italic" }}>
+                    Receipt currently supports one professional design. More coming soon!
+                  </p>
+                </div>
+                <div style={{ borderTop: "1px solid #F3F4F6", margin: "24px 0" }} />
+                <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn" style={{ width: "100%", justifyContent: "center" }}>
+                  <Download size={15} /> Download PDF
+                </button>
               </div>
             )}
           </div>

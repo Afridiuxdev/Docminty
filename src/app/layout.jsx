@@ -85,6 +85,8 @@ export const metadata = {
   },
 };
 
+import { AuthProvider } from "@/contexts/AuthContext";
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en-IN">
@@ -122,8 +124,10 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body className={`${spaceGrotesk.variable} ${inter.variable}`}>
-        <Toaster position="top-right" />
-        {children}
+        <AuthProvider>
+          <Toaster position="top-right" />
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

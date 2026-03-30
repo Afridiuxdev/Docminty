@@ -29,7 +29,7 @@ export default function SplitPDFPage() {
           </div>
           <label style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px 24px", border: `2px dashed ${file ? T : "#E5E7EB"}`, borderRadius: "12px", background: file ? "#F0FDFA" : "#FAFAFA", cursor: "pointer", marginBottom: "20px" }}>
             <input type="file" accept=".pdf" style={{ display: "none" }} onChange={e => { setFile(e.target.files[0]); setDone(false); }} />
-            {file ? (<><FileText size={32} color={T} style={{ marginBottom: "10px" }} /><p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "14px", color: T, margin: "0 0 4px" }}>{file.name}</p><p style={{ fontSize: "12px", color: "#6B7280", fontFamily: "Inter, sans-serif", margin: 0 }}>{(file.size/1024).toFixed(1)} KB</p></>) : (<><Upload size={32} color="#D1D5DB" style={{ marginBottom: "10px" }} /><p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "15px", color: "#374151", margin: "0 0 4px" }}>Click to upload PDF</p></>)}
+            {file ? (<><FileText size={32} color={T} style={{ marginBottom: "10px" }} /><p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "14px", color: T, margin: "0 0 4px" }}>{file.name}</p><p style={{ fontSize: "12px", color: "#6B7280", fontFamily: "Inter, sans-serif", margin: 0 }}>{(file.size / 1024).toFixed(1)} KB</p></>) : (<><Upload size={32} color="#D1D5DB" style={{ marginBottom: "10px" }} /><p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "15px", color: "#374151", margin: "0 0 4px" }}>Click to upload PDF</p></>)}
           </label>
           {file && (
             <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: "12px", padding: "24px", marginBottom: "16px" }}>
@@ -59,7 +59,7 @@ export default function SplitPDFPage() {
           )}
           {file && !done && (
             <button onClick={process} disabled={processing} style={{ width: "100%", height: "48px", background: processing ? "#9CA3AF" : T, color: "#fff", border: "none", borderRadius: "10px", fontSize: "15px", fontWeight: 700, cursor: processing ? "not-allowed" : "pointer", fontFamily: "Space Grotesk, sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
-              {processing ? "Splitting PDF..." : "?? Split PDF"}
+              {processing ? "Splitting PDF..." : "Split PDF"}
             </button>
           )}
           {done && (

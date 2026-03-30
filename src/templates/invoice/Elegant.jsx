@@ -8,14 +8,14 @@ const BG = "#FFFDF5";
 
 const styles = StyleSheet.create({
     page: { fontFamily: "Helvetica", fontSize: 10, color: "#111827", padding: 36, backgroundColor: BG },
-    header: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", borderBottomWidth: 2, borderBottomColor: A, paddingBottom: 14, marginBottom: 14 },
-    logo: { width: 50, height: 35, objectFit: "contain", marginBottom: 5 },
-    fromName: { fontSize: 13, fontFamily: "Helvetica-Bold", color: "#111827" },
-    small: { fontSize: 8, color: "#6B7280", marginTop: 1 },
-    invoiceL: { fontSize: 22, fontFamily: "Helvetica-Bold", color: A, textAlign: "right" },
-    num: { fontSize: 9, color: "#6B7280", textAlign: "right", marginTop: 3 },
+    header: { alignItems: "center", borderBottomWidth: 1, borderBottomColor: A, paddingBottom: 20, marginBottom: 20 },
+    logo: { width: 60, height: 40, objectFit: "contain", marginBottom: 8 },
+    fromName: { fontSize: 16, fontFamily: "Helvetica-Bold", color: "#111827", letterSpacing: 1, textTransform: "uppercase" },
+    small: { fontSize: 8, color: "#6B7280", marginTop: 2, textAlign: "center" },
+    invoiceL: { fontSize: 10, color: A, letterSpacing: 3, marginTop: 10, textTransform: "uppercase" },
+    num: { fontSize: 9, color: "#6B7280", marginTop: 4 },
     accentLine: { borderBottomWidth: 1, borderBottomColor: A, marginBottom: 14 },
-    billSec: { flexDirection: "row", justifyContent: "space-between", marginBottom: 14 },
+    billSec: { flexDirection: "row", justifyContent: "space-between", marginBottom: 20 },
     billL: { fontSize: 7, fontFamily: "Helvetica-Bold", color: A, textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 4 },
     billN: { fontSize: 11, fontFamily: "Helvetica-Bold", color: "#111827" },
     tHeader: { flexDirection: "row", borderBottomWidth: 2, borderBottomColor: A, padding: "5 4" },
@@ -45,17 +45,13 @@ export default function InvoiceElegantTemplate({ form }) {
         <Document>
             <Page size="A4" style={styles.page}>
                 <View style={styles.header}>
-                    <View>
-                        {form.logo && <Image src={form.logo} style={styles.logo} />}
-                        <Text style={styles.fromName}>{form.fromName || "Your Business"}</Text>
-                        {form.fromGSTIN && <Text style={styles.small}>{"GSTIN: " + form.fromGSTIN}</Text>}
-                        {fromState && <Text style={styles.small}>{fromState.name}</Text>}
-                    </View>
-                    <View>
-                        <Text style={styles.invoiceL}>INVOICE</Text>
-                        <Text style={styles.num}>{"#" + form.invoiceNumber}</Text>
-                        <Text style={styles.num}>{"Date: " + form.invoiceDate}</Text>
-                    </View>
+                    {form.logo && <Image src={form.logo} style={styles.logo} />}
+                    <Text style={styles.fromName}>{form.fromName || "Your Business"}</Text>
+                    {form.fromGSTIN && <Text style={styles.small}>{"GSTIN: " + form.fromGSTIN}</Text>}
+                    {fromState && <Text style={styles.small}>{fromState.name}</Text>}
+                    
+                    <Text style={styles.invoiceL}>TAX INVOICE</Text>
+                    <Text style={styles.num}>{"#" + form.invoiceNumber + " • Date: " + form.invoiceDate}</Text>
                 </View>
                 <View style={styles.billSec}>
                     <View>

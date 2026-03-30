@@ -1,4 +1,4 @@
-﻿"use client";
+﻿﻿"use client";
 
 import { useState, useCallback } from "react";
 import Navbar from "@/components/Navbar";
@@ -112,13 +112,13 @@ export default function GSTCalculatorPage() {
                                         top: "50%", transform: "translateY(-50%)",
                                         fontSize: "16px", fontWeight: 700, color: T,
                                         fontFamily: "Space Grotesk, sans-serif",
-                                    }}>₹</span>
+                                    }}>Rs. </span>
                                     <input className="doc-input"
                                         type="number" placeholder="0.00"
                                         value={amount}
                                         onChange={e => setAmount(e.target.value)}
                                         style={{
-                                            paddingLeft: "28px", height: "48px",
+                                            paddingLeft: "48px", height: "48px",
                                             fontSize: "18px", fontWeight: 700,
                                             color: "#111827",
                                             fontFamily: "Space Grotesk, sans-serif"
@@ -188,7 +188,7 @@ export default function GSTCalculatorPage() {
                                     fontWeight: 800, fontSize: "36px",
                                     color: "#fff", margin: 0, lineHeight: 1
                                 }}>
-                                    ₹{fmt(mode === "add" ? result.total : result.base)}
+                                    Rs. {fmt(mode === "add" ? result.total : result.base)}
                                 </p>
                                 <p style={{
                                     fontSize: "13px",
@@ -196,7 +196,7 @@ export default function GSTCalculatorPage() {
                                     fontFamily: "Inter, sans-serif",
                                     margin: "8px 0 0"
                                 }}>
-                                    GST Amount: ₹{fmt(result.gst)}
+                                    GST Amount: Rs. {fmt(result.gst)}
                                 </p>
                             </div>
 
@@ -208,12 +208,12 @@ export default function GSTCalculatorPage() {
                             }}>
                                 <p className="form-label">GST Breakdown</p>
                                 {[
-                                    ["Original Amount", `₹${fmt(result.base)}`],
-                                    [`GST @${rate}%`, `₹${fmt(result.gst)}`],
-                                    ["CGST (Intrastate)", `₹${fmt(result.cgst)}`],
-                                    ["SGST (Intrastate)", `₹${fmt(result.sgst)}`],
-                                    ["IGST (Interstate)", `₹${fmt(result.igst)}`],
-                                    ["Total Amount", `₹${fmt(result.total)}`],
+                                    ["Original Amount", `Rs. ${fmt(result.base)}`],
+                                    [`GST @${rate}%`, `Rs. ${fmt(result.gst)}`],
+                                    ["CGST (Intrastate)", `Rs. ${fmt(result.cgst)}`],
+                                    ["SGST (Intrastate)", `Rs. ${fmt(result.sgst)}`],
+                                    ["IGST (Interstate)", `Rs. ${fmt(result.igst)}`],
+                                    ["Total Amount", `Rs. ${fmt(result.total)}`],
                                 ].map(([label, value], i) => (
                                     <div key={label} style={{
                                         display: "flex", justifyContent: "space-between",

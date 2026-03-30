@@ -1,4 +1,4 @@
-﻿"use client";
+﻿﻿"use client";
 
 import { useState, useCallback } from "react";
 import Navbar from "@/components/Navbar";
@@ -51,11 +51,11 @@ export default function SalaryCalculatorPage() {
             <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: "12px", padding: "24px" }}>
               <p className="form-label">Salary Details</p>
               <div className="form-field">
-                <label className="field-label">Annual CTC (?)</label>
+                <label className="field-label">Annual CTC (Rs.)</label>
                 <input className="doc-input" type="number" value={ctc} onChange={e => setCtc(e.target.value)} style={{ height: "44px", fontSize: "16px", fontWeight: 700, color: T, fontFamily: "Space Grotesk, sans-serif" }} />
                 <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginTop: "6px" }}>
                   {["300000","600000","1000000","1500000","2000000"].map(v => (
-                    <button key={v} onClick={() => setCtc(v)} style={{ padding: "3px 10px", border: `1px solid ${ctc===v?T:"#E5E7EB"}`, borderRadius: "12px", background: ctc===v?"#F0FDFA":"#fff", color: ctc===v?T:"#6B7280", fontSize: "11px", fontWeight: 600, cursor: "pointer", fontFamily: "Inter, sans-serif" }}>?{(parseInt(v)/100000).toFixed(v.length>6?1:0)}L</button>
+                    <button key={v} onClick={() => setCtc(v)} style={{ padding: "3px 10px", border: `1px solid ${ctc===v?T:"#E5E7EB"}`, borderRadius: "12px", background: ctc===v?"#F0FDFA":"#fff", color: ctc===v?T:"#6B7280", fontSize: "11px", fontWeight: 600, cursor: "pointer", fontFamily: "Inter, sans-serif" }}>Rs. {(parseInt(v)/100000).toFixed(v.length>6?1:0)}L</button>
                   ))}
                 </div>
               </div>
@@ -68,25 +68,25 @@ export default function SalaryCalculatorPage() {
                 </div>
               </div>
               <div style={{ padding: "12px", background: "#F0FDFA", borderRadius: "8px", marginTop: "8px" }}>
-                <p style={{ fontSize: "11px", color: "#6B7280", fontFamily: "Inter, sans-serif", margin: 0 }}>Assumptions: Basic = 40%, HRA = 20%, PF = 12% of basic (max ?1800/mo), Professional Tax = ?200/mo, Standard Deduction = ?50,000</p>
+                <p style={{ fontSize: "11px", color: "#6B7280", fontFamily: "Inter, sans-serif", margin: 0 }}>Assumptions: Basic = 40%, HRA = 20%, PF = 12% of basic (max Rs. 1800/mo), Professional Tax = Rs. 200/mo, Standard Deduction = Rs. 50,000</p>
               </div>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
               <div style={{ background: T, borderRadius: "12px", padding: "24px", textAlign: "center" }}>
                 <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.7)", fontFamily: "Inter, sans-serif", textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 6px" }}>Monthly In-Hand</p>
-                <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "40px", color: "#fff", margin: 0 }}>?{fmt(r.inHand)}</p>
-                <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.7)", fontFamily: "Inter, sans-serif", margin: "6px 0 0" }}>Annual: ?{fmtA(r.inHand)}</p>
+                <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "40px", color: "#fff", margin: 0 }}>Rs. {fmt(r.inHand)}</p>
+                <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.7)", fontFamily: "Inter, sans-serif", margin: "6px 0 0" }}>Annual: Rs. {fmtA(r.inHand)}</p>
               </div>
               <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: "12px", padding: "20px" }}>
                 <p className="form-label">Monthly Salary Breakup</p>
-                {[["Gross (CTC/12)", `?${fmt(r.monthly)}`, "#111827"], ["Basic", `?${fmt(r.basic)}`, "#374151"], ["HRA", `?${fmt(r.hra)}`, "#374151"], ["Special Allowance", `?${fmt(r.special)}`, "#374151"]].map(([l,v,c]) => (
+                {[["Gross (CTC/12)", `Rs. ${fmt(r.monthly)}`, "#111827"], ["Basic", `Rs. ${fmt(r.basic)}`, "#374151"], ["HRA", `Rs. ${fmt(r.hra)}`, "#374151"], ["Special Allowance", `Rs. ${fmt(r.special)}`, "#374151"]].map(([l,v,c]) => (
                   <div key={l} style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", borderBottom: "1px solid #F3F4F6" }}>
                     <span style={{ fontSize: "13px", color: "#6B7280", fontFamily: "Inter, sans-serif" }}>{l}</span>
                     <span style={{ fontSize: "13px", fontWeight: 600, color: c, fontFamily: "Inter, sans-serif" }}>{v}</span>
                   </div>
                 ))}
                 <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "8px 0 4px", fontFamily: "Inter, sans-serif", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em" }}>Deductions</p>
-                {[["Employee PF", `- ?${fmt(r.pf)}`, "#EF4444"], ["Professional Tax", `- ?${fmt(r.pt)}`, "#EF4444"], ["Income Tax (TDS)", `- ?${fmt(r.monthlyTax)}`, "#EF4444"]].map(([l,v,c]) => (
+                {[["Employee PF", `- Rs. ${fmt(r.pf)}`, "#EF4444"], ["Professional Tax", `- Rs. ${fmt(r.pt)}`, "#EF4444"], ["Income Tax (TDS)", `- Rs. ${fmt(r.monthlyTax)}`, "#EF4444"]].map(([l,v,c]) => (
                   <div key={l} style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", borderBottom: "1px solid #F3F4F6" }}>
                     <span style={{ fontSize: "13px", color: "#6B7280", fontFamily: "Inter, sans-serif" }}>{l}</span>
                     <span style={{ fontSize: "13px", fontWeight: 600, color: c, fontFamily: "Inter, sans-serif" }}>{v}</span>
@@ -94,7 +94,7 @@ export default function SalaryCalculatorPage() {
                 ))}
                 <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderTop: "2px solid #E5E7EB", marginTop: "4px" }}>
                   <span style={{ fontSize: "14px", fontWeight: 700, color: "#111827", fontFamily: "Space Grotesk, sans-serif" }}>In-Hand</span>
-                  <span style={{ fontSize: "14px", fontWeight: 700, color: T, fontFamily: "Space Grotesk, sans-serif" }}>?{fmt(r.inHand)}</span>
+                  <span style={{ fontSize: "14px", fontWeight: 700, color: T, fontFamily: "Space Grotesk, sans-serif" }}>Rs. {fmt(r.inHand)}</span>
                 </div>
               </div>
             </div>

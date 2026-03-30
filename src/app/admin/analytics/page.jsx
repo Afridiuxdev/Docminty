@@ -1,173 +1,93 @@
 "use client";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import AdminHeader from "@/components/admin/AdminHeader";
 import StatCard from "@/components/admin/StatCard";
-import ChartCard from "@/components/admin/ChartCard";
+import { adminApi } from "@/api/admin";
+import { getAccessToken } from "@/api/auth";
+import toast from "react-hot-toast";
 
 const T = "#0D9488";
 
-const DAILY = [
-    { day: "Mon", users: 420, docs: 1240 },
-    { day: "Tue", users: 380, docs: 1080 },
-    { day: "Wed", users: 510, docs: 1520 },
-    { day: "Thu", users: 490, docs: 1380 },
-    { day: "Fri", users: 620, docs: 1840 },
-    { day: "Sat", users: 340, docs: 980 },
-    { day: "Sun", users: 280, docs: 820 },
-];
-
-const TOP_STATES = [
-    { state: "Maharashtra", users: 3240, pct: 23 },
-    { state: "Delhi", users: 2180, pct: 15 },
-    { state: "Karnataka", users: 1980, pct: 14 },
-    { state: "Tamil Nadu", users: 1740, pct: 12 },
-    { state: "Gujarat", users: 1420, pct: 10 },
-    { state: "Telangana", users: 1180, pct: 8 },
-    { state: "Rajasthan", users: 980, pct: 7 },
-    { state: "Others", users: 1560, pct: 11 },
-];
-
-const TRAFFIC = [
-    { source: "Organic Search", visits: 8240, pct: 58, color: T },
-    { source: "Direct", visits: 2840, pct: 20, color: "#6366F1" },
-    { source: "Social Media", visits: 1420, pct: 10, color: "#F59E0B" },
-    { source: "Referral", visits: 980, pct: 7, color: "#EC4899" },
-    { source: "Paid Ads", visits: 720, pct: 5, color: "#9CA3AF" },
-];
-
-const MAX_D = Math.max(...DAILY.map(d => d.docs));
+function Spinner() {
+  return <div style={{ display:"flex",alignItems:"center",justifyContent:"center",height:"60vh" }}><div style={{ textAlign:"center" }}><div style={{ width:"40px",height:"40px",border:"3px solid #E5E7EB",borderTopColor:T,borderRadius:"50%",animation:"spin 0.8s linear infinite",margin:"0 auto 12px" }} /><p style={{ fontSize:"13px",color:"#9CA3AF",fontFamily:"Inter, sans-serif" }}>Loading...</p></div><style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style></div>;
+}
 
 export default function AdminAnalyticsPage() {
-    return (
-        <>
-            <AdminHeader title="Analytics" subtitle="User behaviour and traffic insights" />
-            <div style={{ padding: "24px 28px" }}>
+  const router = useRouter();
+  const [stats,   setStats]   = useState(null);
+  const [loading, setLoading] = useState(true);
 
-                <div style={{
-                    display: "grid", gridTemplateColumns: "repeat(4,1fr)",
-                    gap: "16px", marginBottom: "24px",
-                }}>
-                    <StatCard title="Page Views" value="1,42,800" change={22.4} icon="👁" bgColor="#F0FDFA" />
-                    <StatCard title="Unique Users" value={14280} change={12.1} icon="👤" bgColor="#F5F3FF" />
-                    <StatCard title="Avg Session" value="4m 12s" change={8.3} icon="⏱" bgColor="#ECFDF5" />
-                    <StatCard title="Bounce Rate" value="32.4%" changeType="down" change={3.2} icon="↩" bgColor="#FEF9C3" />
+  useEffect(() => {
+    const token = getAccessToken();
+    if (!token) { router.push("/login"); return; }
+    adminApi.getStats()
+      .then(res => setStats(res.data.data))
+      .catch(() => toast.error("Failed to load analytics"))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) return <Spinner />;
+
+  return (
+    <>
+      <AdminHeader title="Analytics" subtitle="Platform usage and growth metrics" />
+      <div style={{ padding: "24px" }}>
+
+        {/* Real Stats */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: "16px", marginBottom: "24px" }}>
+          {[
+            { title: "Total Users",       value: stats?.totalUsers?.toLocaleString("en-IN") || "0",           change: "registered", up: true },
+            { title: "New This Month",    value: stats?.newUsersThisMonth?.toLocaleString("en-IN") || "0",    change: "new signups", up: true },
+            { title: "Docs This Month",   value: stats?.documentsThisMonth?.toLocaleString("en-IN") || "0",   change: "generated", up: true },
+            { title: "Docs Today",        value: stats?.documentsToday?.toLocaleString("en-IN") || "0",       change: "today", up: true },
+          ].map((s, i) => <StatCard key={i} {...s} />)}
+        </div>
+
+        {/* User Breakdown */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "20px" }}>
+          <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: "12px", padding: "20px" }}>
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "15px", color: "#111827", margin: "0 0 20px" }}>User Plan Distribution</p>
+            {[
+              { label: "Free Users", value: stats?.freeUsers || 0, color: "#9CA3AF", pct: ((stats?.freeUsers||0)/Math.max(stats?.totalUsers||1,1)*100).toFixed(0) },
+              { label: "Pro Users",  value: stats?.proUsers  || 0, color: T,         pct: ((stats?.proUsers||0)/Math.max(stats?.totalUsers||1,1)*100).toFixed(0)  },
+            ].map((row, i) => (
+              <div key={i} style={{ marginBottom: "16px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
+                  <span style={{ fontSize: "13px", color: "#374151", fontFamily: "Inter, sans-serif" }}>{row.label}</span>
+                  <span style={{ fontSize: "13px", fontWeight: 700, color: "#111827", fontFamily: "Space Grotesk, sans-serif" }}>{row.value.toLocaleString("en-IN")} ({row.pct}%)</span>
                 </div>
-
-                <div style={{
-                    display: "grid", gridTemplateColumns: "2fr 1fr",
-                    gap: "20px", marginBottom: "24px",
-                }}>
-                    {/* Daily chart */}
-                    <ChartCard title="Daily Activity" subtitle="Users and documents this week">
-                        <div style={{
-                            display: "flex", alignItems: "flex-end",
-                            gap: "8px", height: "180px",
-                        }}>
-                            {DAILY.map((d, i) => (
-                                <div key={i} style={{
-                                    flex: 1, display: "flex",
-                                    flexDirection: "column", alignItems: "center", gap: "6px",
-                                }}>
-                                    <div style={{
-                                        display: "flex", alignItems: "flex-end",
-                                        gap: "3px", height: "140px",
-                                    }}>
-                                        <div style={{
-                                            width: "14px", background: "#E0F2FE",
-                                            borderRadius: "3px 3px 0 0",
-                                            height: `${(d.users / 620) * 100}%`,
-                                        }} />
-                                        <div style={{
-                                            width: "14px", background: T,
-                                            borderRadius: "3px 3px 0 0",
-                                            height: `${(d.docs / MAX_D) * 100}%`,
-                                        }} />
-                                    </div>
-                                    <span style={{ fontSize: "11px", color: "#9CA3AF", fontFamily: "Inter, sans-serif" }}>{d.day}</span>
-                                </div>
-                            ))}
-                        </div>
-                        <div style={{ display: "flex", gap: "16px", marginTop: "12px" }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                                <div style={{ width: "10px", height: "10px", borderRadius: "2px", background: "#E0F2FE" }} />
-                                <span style={{ fontSize: "11px", color: "#6B7280", fontFamily: "Inter, sans-serif" }}>Users</span>
-                            </div>
-                            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                                <div style={{ width: "10px", height: "10px", borderRadius: "2px", background: T }} />
-                                <span style={{ fontSize: "11px", color: "#6B7280", fontFamily: "Inter, sans-serif" }}>Documents</span>
-                            </div>
-                        </div>
-                    </ChartCard>
-
-                    {/* Traffic sources */}
-                    <ChartCard title="Traffic Sources">
-                        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                            {TRAFFIC.map((t, i) => (
-                                <div key={i}>
-                                    <div style={{
-                                        display: "flex", justifyContent: "space-between",
-                                        marginBottom: "4px",
-                                    }}>
-                                        <span style={{ fontSize: "12px", color: "#374151", fontFamily: "Inter, sans-serif" }}>{t.source}</span>
-                                        <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                                            <span style={{ fontSize: "11px", color: "#9CA3AF", fontFamily: "Inter, sans-serif" }}>
-                                                {t.visits.toLocaleString("en-IN")}
-                                            </span>
-                                            <span style={{
-                                                fontSize: "11px", fontWeight: 700,
-                                                color: t.color, fontFamily: "Inter, sans-serif",
-                                            }}>{t.pct}%</span>
-                                        </div>
-                                    </div>
-                                    <div style={{ height: "5px", background: "#F3F4F6", borderRadius: "3px" }}>
-                                        <div style={{
-                                            height: "100%", background: t.color,
-                                            borderRadius: "3px", width: `${t.pct}%`,
-                                        }} />
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </ChartCard>
+                <div style={{ height: "8px", background: "#F3F4F6", borderRadius: "4px" }}>
+                  <div style={{ height: "100%", width: row.pct + "%", background: row.color, borderRadius: "4px", transition: "width 500ms" }} />
                 </div>
+              </div>
+            ))}
+          </div>
 
-                {/* Top states */}
-                <ChartCard title="Top States by Users" subtitle="Geographic distribution across India">
-                    <div style={{
-                        display: "grid", gridTemplateColumns: "repeat(4,1fr)",
-                        gap: "12px",
-                    }}>
-                        {TOP_STATES.map((s, i) => (
-                            <div key={i} style={{
-                                padding: "14px", border: "1px solid #E5E7EB",
-                                borderRadius: "10px",
-                            }}>
-                                <div style={{
-                                    display: "flex", justifyContent: "space-between",
-                                    alignItems: "flex-start", marginBottom: "8px",
-                                }}>
-                                    <span style={{
-                                        fontSize: "13px", fontWeight: 600,
-                                        color: "#111827", fontFamily: "Inter, sans-serif",
-                                    }}>{s.state}</span>
-                                    <span style={{
-                                        fontSize: "11px", fontWeight: 700, color: T,
-                                        background: "#F0FDFA", padding: "1px 6px",
-                                        borderRadius: "8px", fontFamily: "Inter, sans-serif",
-                                    }}>{s.pct}%</span>
-                                </div>
-                                <p style={{
-                                    fontFamily: "Space Grotesk, sans-serif",
-                                    fontWeight: 800, fontSize: "20px",
-                                    color: "#111827", margin: "0 0 6px",
-                                }}>{s.users.toLocaleString("en-IN")}</p>
-                                <div style={{ height: "3px", background: "#F3F4F6", borderRadius: "2px" }}>
-                                    <div style={{ height: "100%", background: T, borderRadius: "2px", width: `${s.pct}%` }} />
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </ChartCard>
-            </div>
-        </>
-    );
+          <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: "12px", padding: "20px" }}>
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "15px", color: "#111827", margin: "0 0 20px" }}>Document Activity</p>
+            {[
+              { label: "Total Generated", value: stats?.totalDocuments || 0 },
+              { label: "This Month",       value: stats?.documentsThisMonth || 0 },
+              { label: "Today",            value: stats?.documentsToday || 0 },
+            ].map((row, i) => (
+              <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: i < 2 ? "1px solid #F3F4F6" : "none" }}>
+                <span style={{ fontSize: "13px", color: "#374151", fontFamily: "Inter, sans-serif" }}>{row.label}</span>
+                <span style={{ fontSize: "20px", fontWeight: 800, color: T, fontFamily: "Space Grotesk, sans-serif" }}>{row.value.toLocaleString("en-IN")}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Note about advanced analytics */}
+        <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: "12px", padding: "16px 20px", display: "flex", alignItems: "center", gap: "12px" }}>
+          <span style={{ fontSize: "20px" }}>📊</span>
+          <div>
+            <p style={{ fontSize: "13px", fontWeight: 600, color: "#92400E", margin: "0 0 2px", fontFamily: "Space Grotesk, sans-serif" }}>Advanced Analytics Coming Soon</p>
+            <p style={{ fontSize: "12px", color: "#B45309", margin: 0, fontFamily: "Inter, sans-serif" }}>Daily active users, traffic sources, geographic breakdown and session analytics will be available after integrating with Google Analytics or Mixpanel.</p>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 }

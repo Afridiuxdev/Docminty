@@ -5,8 +5,12 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AdSense from "@/components/AdSense";
 import LogoUpload from "@/components/LogoUpload";
-import { Download, Eye, RefreshCw } from "lucide-react";
+import { Download, Eye, RefreshCw, Cloud } from "lucide-react";
 import { useDownloadPDF } from "@/hooks/useDownloadPDF";
+import { useRouter } from "next/navigation";
+import toast, { Toaster } from "react-hot-toast";
+import { documentsApi } from "@/api/documents";
+import { getAccessToken } from "@/api/auth";
 
 
 const T = "#0D9488";
@@ -129,7 +133,16 @@ function JobOfferPreview({ form }) {
 export default function JobOfferLetterPage() {
   const [form, setForm] = useState(DEFAULT_FORM);
   const { download, downloading } = useDownloadPDF();
+  const router = useRouter();
   const handleDownload = () => download("JobOffer", form, `OfferLetter-${form.candidateName || "Candidate"}.pdf`);
+
+  const handleSave = async () => {
+    if (!getAccessToken()) { toast.error("Please sign in to save"); router.push("/login"); return; }
+    try {
+      await documentsApi.save({ docType: "job-offer-letter", title: `Offer Letter - ${form.candidateName || "Candidate"}`, referenceNumber: form.letterNumber, partyName: form.candidateName, amount: form.ctcAmount, formData: JSON.stringify(form) });
+      toast.success("Saved to your dashboard!");
+    } catch { toast.error("Save failed"); }
+  };
   const [activeTab, setActiveTab] = useState("company");
   const updateField = useCallback((field, value) => setForm(prev => ({ ...prev, [field]: value })), []);
 
@@ -142,6 +155,7 @@ export default function JobOfferLetterPage() {
 
   return (
     <>
+      <Toaster position="top-right" />
       <Navbar />
       <div style={{ background: "#fff", borderBottom: "1px solid #E5E7EB", padding: "14px 24px" }}>
         <div style={{ maxWidth: "1300px", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
@@ -157,6 +171,9 @@ export default function JobOfferLetterPage() {
 
               {downloading ? "Generating..." : "Download PDF"}
 
+            </button>
+            <button onClick={handleSave} style={{ display: "flex", alignItems: "center", gap: "6px", height: "36px", padding: "0 14px", border: "1px solid #0D9488", borderRadius: "8px", background: "#fff", fontSize: "13px", fontWeight: 600, color: "#0D9488", cursor: "pointer", fontFamily: "Inter, sans-serif", transition: "all 150ms" }}>
+              <Cloud size={14} /> Save
             </button>
           </div>
         </div>

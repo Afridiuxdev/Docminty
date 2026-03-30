@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import TemplatePicker from "@/components/TemplatePicker";
 
 import { useState, useCallback } from "react";
@@ -8,8 +8,15 @@ import AdSense from "@/components/AdSense";
 import LogoUpload from "@/components/LogoUpload";
 import { INDIAN_STATES } from "@/constants/indianStates";
 import { calculateSalary } from "@/engine/salaryCalc";
-import { Download, Eye, RefreshCw } from "lucide-react";
+import { Download, Eye, RefreshCw, Cloud } from "lucide-react";
 import { useDownloadPDF } from "@/hooks/useDownloadPDF";
+import { useRouter } from "next/navigation";
+import toast, { Toaster } from "react-hot-toast";
+import { documentsApi } from "@/api/documents";
+import { getAccessToken } from "@/api/auth";
+import { useAuth } from "@/contexts/AuthContext";
+import WatermarkOverlay from "@/components/WatermarkOverlay";
+import { TEMPLATE_REGISTRY } from "@/templates/registry";
 
 const T = "#0D9488";
 
@@ -180,12 +187,34 @@ function SalaryPreview({ form }) {
 }
 
 export default function SalarySlipPage() {
+  const { user } = useAuth();
   const [form, setForm] = useState(DEFAULT_FORM);
   const { download, downloading } = useDownloadPDF();
   const [template, setTemplate] = useState("Classic");
   const [activeTab, setActiveTab] = useState("company");
+  const router = useRouter();
+
+  const isUserPro = user?.plan === "Business Pro" || user?.plan === "Enterprise";
+  const templateMeta = TEMPLATE_REGISTRY.salary[template] || TEMPLATE_REGISTRY.salary.Classic;
+  const isProTemplate = templateMeta.pro;
+  const showWatermark = isProTemplate && !isUserPro;
+
   const handleDownload = () => {
+    if (showWatermark) {
+      toast.error("This is a PRO template. Please upgrade to download without watermark!");
+      router.push("/#pricing");
+      return;
+    }
     download("SalarySlip" + template, form, `SalarySlip-${form.employeeName||"Employee"}-${form.month}-${form.year}.pdf`);
+  };
+
+  const handleSave = async () => {
+    if (!getAccessToken()) { toast.error("Please sign in to save"); router.push("/login"); return; }
+    try {
+      const calc = calculateSalary({ basic: form.basic, hra: form.hra, da: form.da, conveyance: form.conveyance, medical: form.medical, otherAllowances: form.otherAllowances, incomeTax: form.incomeTax, otherDeductions: form.otherDeductions });
+      await documentsApi.save({ docType: "salary-slip", title: `Salary Slip - ${form.employeeName || "Employee"} ${form.month} ${form.year}`, referenceNumber: `${form.month} ${form.year}`, partyName: form.employeeName, amount: calc.netSalary, formData: JSON.stringify(form) });
+      toast.success("Saved to your dashboard!");
+    } catch { toast.error("Save failed"); }
   };
   const updateField = useCallback((field, value) => setForm(prev => ({ ...prev, [field]: value })), []);
 
@@ -194,10 +223,12 @@ export default function SalarySlipPage() {
     { id: "employee", label: "Employee" },
     { id: "earnings", label: "Salary" },
     { id: "bank", label: "Bank" },
+    { id: "templates", label: "Templates" },
   ];
 
   return (
     <>
+      <Toaster position="top-right" />
       <Navbar />
       <div style={{ background: "#fff", borderBottom: "1px solid #E5E7EB", padding: "14px 24px" }}>
         <div style={{ maxWidth: "1300px", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
@@ -212,6 +243,9 @@ export default function SalarySlipPage() {
             <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn">
               <Download size={15} />
               {downloading ? "Generating..." : "Download PDF"}
+            </button>
+            <button onClick={handleSave} style={{ display: "flex", alignItems: "center", gap: "6px", height: "36px", padding: "0 14px", border: "1px solid #0D9488", borderRadius: "8px", background: "#fff", fontSize: "13px", fontWeight: 600, color: "#0D9488", cursor: "pointer", fontFamily: "Inter, sans-serif", transition: "all 150ms" }}>
+              <Cloud size={14} /> Save
             </button>
           </div>
         </div>
@@ -234,8 +268,7 @@ export default function SalarySlipPage() {
                 <div style={{ marginBottom: "16px" }}>
                   <p style={{ fontSize: "11px", fontWeight: 600, color: "#6B7280", margin: "0 0 6px", fontFamily: "Inter, sans-serif" }}>Company Logo</p>
                   <LogoUpload value={form.logo} onChange={v => updateField("logo", v)} />
-                <div style={{ marginTop: "16px" }}><TemplatePicker docType="salary" selected={template} onChange={setTemplate} isPro={false} /></div>
-</div>
+                </div>
                 <div className="form-field"><label className="field-label">Company Name *</label><input className="doc-input" placeholder="Your Company Pvt. Ltd." value={form.companyName} onChange={e => updateField("companyName", e.target.value)} /></div>
                 <div className="form-field"><label className="field-label">Address</label><textarea className="doc-textarea" placeholder="Company address" value={form.companyAddress} onChange={e => updateField("companyAddress", e.target.value)} /></div>
                 <div className="form-row">
@@ -330,11 +363,28 @@ export default function SalarySlipPage() {
                 <div className="form-field"><label className="field-label">Account Number</label><input className="doc-input" placeholder="XXXXXXXXXXXX" value={form.accountNumber} onChange={e => updateField("accountNumber", e.target.value)} style={{ fontFamily: "monospace" }} /></div>
                 <div className="form-field"><label className="field-label">IFSC Code</label><input className="doc-input" placeholder="SBIN0001234" value={form.ifscCode} onChange={e => updateField("ifscCode", e.target.value.toUpperCase())} style={{ fontFamily: "monospace" }} /></div>
                 <div style={{ borderTop: "1px solid #F3F4F6", margin: "16px 0" }} />
-                <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn">
+                <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn" style={{ width: "100%", justifyContent: "center" }}>
                   <Download size={15} />
                   {downloading ? "Generating..." : "Download PDF"}
                 </button>
-                <p style={{ fontSize: "11px", color: "#9CA3AF", textAlign: "center", margin: "8px 0 0", fontFamily: "Inter, sans-serif" }}>No watermark · No sign-up · Instant download</p>
+              </div>
+            )}
+
+            {activeTab === "templates" && (
+              <div>
+                <p className="form-label">Template Design</p>
+                <div style={{ marginTop: "8px" }}>
+                  <TemplatePicker 
+                    docType="salary" 
+                    selected={template} 
+                    onChange={setTemplate} 
+                    isPro={isUserPro} 
+                  />
+                </div>
+                <div style={{ borderTop: "1px solid #F3F4F6", margin: "24px 0" }} />
+                <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn" style={{ width: "100%", justifyContent: "center" }}>
+                  <Download size={15} /> Download PDF
+                </button>
               </div>
             )}
           </div>
@@ -350,7 +400,10 @@ export default function SalarySlipPage() {
                 {downloading ? "Generating..." : "Download PDF"}
               </button>
             </div>
-            <SalaryPreview form={form} />
+            <div style={{ position: "relative" }}>
+              {showWatermark && <WatermarkOverlay />}
+              <SalaryPreview form={form} />
+            </div>
           </div>
         </div>
 

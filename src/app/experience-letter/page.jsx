@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import TemplatePicker from "@/components/TemplatePicker";
 
 import { useState, useCallback } from "react";
@@ -6,8 +6,15 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AdSense from "@/components/AdSense";
 import LogoUpload from "@/components/LogoUpload";
-import { Download, Eye, RefreshCw } from "lucide-react";
+import { Download, Eye, RefreshCw, Cloud } from "lucide-react";
 import { useDownloadPDF } from "@/hooks/useDownloadPDF";
+import { useRouter } from "next/navigation";
+import toast, { Toaster } from "react-hot-toast";
+import { documentsApi } from "@/api/documents";
+import { getAccessToken } from "@/api/auth";
+import { useAuth } from "@/contexts/AuthContext";
+import WatermarkOverlay from "@/components/WatermarkOverlay";
+import { TEMPLATE_REGISTRY } from "@/templates/registry";
 
 const T = "#0D9488";
 
@@ -102,12 +109,33 @@ function ExperiencePreview({ form }) {
 }
 
 export default function ExperienceLetterPage() {
+  const { user } = useAuth();
   const [form, setForm] = useState(DEFAULT_FORM);
   const { download, downloading } = useDownloadPDF();
   const [template, setTemplate] = useState("Classic");
   const [activeTab, setActiveTab] = useState("company");
+  const router = useRouter();
+
+  const isUserPro = user?.plan === "Business Pro" || user?.plan === "Enterprise";
+  const templateMeta = TEMPLATE_REGISTRY.experience[template] || TEMPLATE_REGISTRY.experience.Classic;
+  const isProTemplate = templateMeta.pro;
+  const showWatermark = isProTemplate && !isUserPro;
+
   const handleDownload = () => {
+    if (showWatermark) {
+      toast.error("This is a PRO template. Please upgrade to download without watermark!");
+      router.push("/#pricing");
+      return;
+    }
     download("ExperienceLetter" + template, form, `ExperienceLetter-${form.employeeName||"Employee"}.pdf`);
+  };
+
+  const handleSave = async () => {
+    if (!getAccessToken()) { toast.error("Please sign in to save"); router.push("/login"); return; }
+    try {
+      await documentsApi.save({ docType: "experience-letter", title: `Experience Letter - ${form.employeeName || "Employee"}`, referenceNumber: form.letterNumber, partyName: form.employeeName, amount: "", formData: JSON.stringify(form) });
+      toast.success("Saved to your dashboard!");
+    } catch { toast.error("Save failed"); }
   };
   const updateField = useCallback((field, value) => setForm(prev => ({ ...prev, [field]: value })), []);
 
@@ -115,10 +143,12 @@ export default function ExperienceLetterPage() {
     { id: "company", label: "Company" },
     { id: "employee", label: "Employee" },
     { id: "content", label: "Content" },
+    { id: "templates", label: "Templates" },
   ];
 
   return (
     <>
+      <Toaster position="top-right" />
       <Navbar />
       <div style={{ background: "#fff", borderBottom: "1px solid #E5E7EB", padding: "14px 24px" }}>
         <div style={{ maxWidth: "1300px", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
@@ -134,6 +164,9 @@ export default function ExperienceLetterPage() {
 
               {downloading ? "Generating..." : "Download PDF"}
 
+            </button>
+            <button onClick={handleSave} style={{ display: "flex", alignItems: "center", gap: "6px", height: "36px", padding: "0 14px", border: "1px solid #0D9488", borderRadius: "8px", background: "#fff", fontSize: "13px", fontWeight: 600, color: "#0D9488", cursor: "pointer", fontFamily: "Inter, sans-serif", transition: "all 150ms" }}>
+              <Cloud size={14} /> Save
             </button>
           </div>
         </div>
@@ -156,8 +189,7 @@ export default function ExperienceLetterPage() {
                 <div style={{ marginBottom: "16px" }}>
                   <p style={{ fontSize: "11px", fontWeight: 600, color: "#6B7280", margin: "0 0 6px", fontFamily: "Inter, sans-serif" }}>Company Logo</p>
                   <LogoUpload value={form.logo} onChange={v => updateField("logo", v)} />
-                <div style={{ marginTop: "16px" }}><TemplatePicker docType="experience" selected={template} onChange={setTemplate} isPro={false} /></div>
-</div>
+                </div>
                 <div className="form-field"><label className="field-label">Company Name *</label><input className="doc-input" placeholder="Your Company Pvt. Ltd." value={form.companyName} onChange={e => updateField("companyName", e.target.value)} /></div>
                 <div className="form-field"><label className="field-label">Address</label><input className="doc-input" placeholder="Full address" value={form.companyAddress} onChange={e => updateField("companyAddress", e.target.value)} /></div>
                 <div className="form-row">
@@ -192,41 +224,28 @@ export default function ExperienceLetterPage() {
             {activeTab === "content" && (
               <div>
                 <p className="form-label">Letter Content</p>
-                <div className="form-field">
-                  <label className="field-label">Performance</label>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                    {[
-                      { v: "excellent", l: "Excellent — Outstanding performance" },
-                      { v: "good", l: "Good — Reliable team member" },
-                      { v: "satisfactory", l: "Satisfactory — Met expectations" },
-                    ].map(opt => (
-                      <button key={opt.v} onClick={() => updateField("performance", opt.v)}
-                        className={`toggle-btn ${form.performance === opt.v ? "active" : ""}`}
-                        style={{ justifyContent: "flex-start" }}>
-                        {opt.l}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div className="form-field">
-                  <label className="field-label">Additional Note (optional)</label>
-                  <textarea className="doc-textarea" style={{ minHeight: "80px" }}
-                    placeholder="Any additional information..."
-                    value={form.additionalNote}
-                    onChange={e => updateField("additionalNote", e.target.value)}
+                <div className="form-field"><label className="field-label">Performance</label><div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>{[{ v: "excellent", l: "Excellent — Outstanding performance" }, { v: "good", l: "Good — Reliable team member" }, { v: "satisfactory", l: "Satisfactory — Met expectations" }].map(opt => (<button key={opt.v} onClick={() => updateField("performance", opt.v)} className={`toggle-btn ${form.performance === opt.v ? "active" : ""}`} style={{ justifyContent: "flex-start" }}>{opt.l}</button>))}</div></div>
+                <div className="form-field"><label className="field-label">Additional Note (optional)</label><textarea className="doc-textarea" style={{ minHeight: "80px" }} placeholder="Any additional information..." value={form.additionalNote} onChange={e => updateField("additionalNote", e.target.value)} /></div>
+                <div style={{ borderTop: "1px solid #F3F4F6", margin: "16px 0" }} /><p className="form-label">Signatory</p><div className="form-field"><label className="field-label">Name</label><input className="doc-input" placeholder="HR Manager Name" value={form.signatoryName} onChange={e => updateField("signatoryName", e.target.value)} /></div><div className="form-field"><label className="field-label">Designation</label><input className="doc-input" placeholder="HR Manager" value={form.signatoryDesignation} onChange={e => updateField("signatoryDesignation", e.target.value)} /></div>
+                <div style={{ borderTop: "1px solid #F3F4F6", margin: "16px 0" }} />
+                <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn" style={{ width: "100%", justifyContent: "center" }}><Download size={15} /> Download PDF</button>
+              </div>
+            )}
+
+            {activeTab === "templates" && (
+              <div>
+                <p className="form-label">Template Design</p>
+                <div style={{ marginTop: "8px" }}>
+                  <TemplatePicker 
+                    docType="experience" 
+                    selected={template} 
+                    onChange={setTemplate} 
+                    isPro={isUserPro} 
                   />
                 </div>
-                <div style={{ borderTop: "1px solid #F3F4F6", margin: "16px 0" }} />
-                <p className="form-label">Signatory</p>
-                <div className="form-field"><label className="field-label">Name</label><input className="doc-input" placeholder="HR Manager Name" value={form.signatoryName} onChange={e => updateField("signatoryName", e.target.value)} /></div>
-                <div className="form-field"><label className="field-label">Designation</label><input className="doc-input" placeholder="HR Manager" value={form.signatoryDesignation} onChange={e => updateField("signatoryDesignation", e.target.value)} /></div>
-                <div style={{ borderTop: "1px solid #F3F4F6", margin: "16px 0" }} />
-                <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn">
-
-                  <Download size={15} />
-
-                  {downloading ? "Generating..." : "Download PDF"}
-
+                <div style={{ borderTop: "1px solid #F3F4F6", margin: "24px 0" }} />
+                <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn" style={{ width: "100%", justifyContent: "center" }}>
+                  <Download size={15} /> Download PDF
                 </button>
               </div>
             )}
@@ -246,7 +265,10 @@ export default function ExperienceLetterPage() {
 
               </button>
             </div>
-            <ExperiencePreview form={form} />
+            <div style={{ position: "relative" }}>
+              {showWatermark && <WatermarkOverlay />}
+              <ExperiencePreview form={form} />
+            </div>
           </div>
         </div>
         <div style={{ maxWidth: "1300px", margin: "0 auto", padding: "0 24px 40px" }}>

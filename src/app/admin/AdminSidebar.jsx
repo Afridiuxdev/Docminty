@@ -3,7 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
     LayoutDashboard, Users, FileText, DollarSign,
-    BarChart2, Megaphone, Settings, Bell, LogOut,
+    BarChart2, Settings, Bell, LogOut,
     ChevronRight, FileStack,
 } from "lucide-react";
 
@@ -15,7 +15,6 @@ const NAV = [
     { href: "/admin/documents", icon: FileStack, label: "Documents" },
     { href: "/admin/analytics", icon: BarChart2, label: "Analytics" },
     { href: "/admin/revenue", icon: DollarSign, label: "Revenue" },
-    { href: "/admin/adsense", icon: Megaphone, label: "AdSense" },
     { href: "/admin/notifications", icon: Bell, label: "Notifications" },
     { href: "/admin/settings", icon: Settings, label: "Settings" },
 ];

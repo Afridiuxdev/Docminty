@@ -30,8 +30,8 @@ export default function PDFToJPGPage() {
               {[{ v: "low", l: "72 DPI" }, { v: "medium", l: "150 DPI" }, { v: "high", l: "300 DPI" }].map(opt => (<button key={opt.v} onClick={() => setQuality(opt.v)} className={`toggle-btn ${quality === opt.v ? "active" : ""}`}>{opt.l}</button>))}
             </div>
           </div>)}
-          {file && !done && <button onClick={process} disabled={processing} style={{ width: "100%", height: "48px", background: processing ? "#9CA3AF" : T, color: "#fff", border: "none", borderRadius: "10px", fontSize: "15px", fontWeight: 700, cursor: processing ? "not-allowed" : "pointer", fontFamily: "Space Grotesk, sans-serif" }}>{processing ? "Converting pages..." : "??? Convert to JPG"}</button>}
-          {done && (<div style={{ background: "#F0FDFA", border: `2px solid ${T}`, borderRadius: "12px", padding: "24px", textAlign: "center" }}><p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "18px", color: "#065F46", margin: "0 0 12px" }}>? PDF Converted to Images!</p><button className="download-pdf-btn" style={{ margin: "0 auto" }}><Download size={15} /> Download All JPGs (ZIP)</button></div>)}
+          {file && !done && <button onClick={process} disabled={processing} style={{ width: "100%", height: "48px", background: processing ? "#9CA3AF" : T, color: "#fff", border: "none", borderRadius: "10px", fontSize: "15px", fontWeight: 700, cursor: processing ? "not-allowed" : "pointer", fontFamily: "Space Grotesk, sans-serif" }}>{processing ? "Converting pages..." : "Convert to JPG"}</button>}
+          {done && (<div style={{ background: "#F0FDFA", border: `2px solid ${T}`, borderRadius: "12px", padding: "24px", textAlign: "center" }}><p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "18px", color: "#065F46", margin: "0 0 12px" }}>PDF Converted to Images!</p><button className="download-pdf-btn" style={{ margin: "0 auto" }}><Download size={15} /> Download All JPGs (ZIP)</button></div>)}
         </div>
       </main>
       <Footer />

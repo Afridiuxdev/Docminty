@@ -5,7 +5,7 @@ export const TEMPLATE_REGISTRY = {
   invoice: {
     Classic:   { name: "Classic",   pro: false, description: "Clean professional GST invoice",    accent: "#0D9488", preview: "clean"     },
     Modern:    { name: "Modern",     pro: true,  description: "Two-tone modern design with sidebar", accent: "#6366F1", preview: "sidebar"  },
-    Minimal:   { name: "Minimal",    pro: true,  description: "Ultra-clean minimal typography",   accent: "#111827", preview: "minimal"   },
+    Minimal:   { name: "Minimal",    pro: false,  description: "Ultra-clean minimal lines & typography", accent: "#111827", preview: "minimal"   },
     Bold:      { name: "Bold",       pro: true,  description: "High-contrast bold header style",  accent: "#EF4444", preview: "bold"      },
     Corporate: { name: "Corporate",  pro: true,  description: "Formal corporate letterhead style",accent: "#1E3A5F", preview: "corporate" },
     Elegant:   { name: "Elegant",    pro: true,  description: "Gold accent luxury design",        accent: "#D97706", preview: "elegant"   },
@@ -13,7 +13,7 @@ export const TEMPLATE_REGISTRY = {
   quotation: {
     Classic:   { name: "Classic",   pro: false, description: "Standard quotation format",         accent: "#0D9488", preview: "clean"     },
     Modern:    { name: "Modern",     pro: true,  description: "Modern with validity badge",        accent: "#6366F1", preview: "sidebar"  },
-    Minimal:   { name: "Minimal",    pro: true,  description: "Clean minimal quote layout",        accent: "#111827", preview: "minimal"   },
+    Minimal:   { name: "Minimal",    pro: false,  description: "Clean minimal quote layout",        accent: "#111827", preview: "minimal"   },
     Bold:      { name: "Bold",       pro: true,  description: "Bold branded quote design",         accent: "#EF4444", preview: "bold"      },
     Corporate: { name: "Corporate",  pro: true,  description: "Formal corporate quote style",     accent: "#1E3A5F", preview: "corporate" },
     Elegant:   { name: "Elegant",    pro: true,  description: "Premium elegant quotation",         accent: "#D97706", preview: "elegant"   },
@@ -21,7 +21,7 @@ export const TEMPLATE_REGISTRY = {
   salary: {
     Classic:   { name: "Classic",   pro: false, description: "Standard payslip format",           accent: "#0D9488", preview: "clean"     },
     Modern:    { name: "Modern",     pro: true,  description: "Modern dark header payslip",        accent: "#6366F1", preview: "sidebar"  },
-    Minimal:   { name: "Minimal",    pro: true,  description: "Clean minimal salary slip",         accent: "#111827", preview: "minimal"   },
+    Minimal:   { name: "Minimal",    pro: false,  description: "Clean minimal salary slip",         accent: "#111827", preview: "minimal"   },
     Bold:      { name: "Bold",       pro: true,  description: "Bold accent salary design",         accent: "#EF4444", preview: "bold"      },
     Corporate: { name: "Corporate",  pro: true,  description: "Corporate HR payslip style",       accent: "#1E3A5F", preview: "corporate" },
     Elegant:   { name: "Elegant",    pro: true,  description: "Premium elegant payslip",           accent: "#D97706", preview: "elegant"   },
@@ -29,7 +29,7 @@ export const TEMPLATE_REGISTRY = {
   certificate: {
     Classic:   { name: "Classic",   pro: false, description: "Traditional border certificate",    accent: "#0D9488", preview: "clean"     },
     Modern:    { name: "Modern",     pro: true,  description: "Modern minimal certificate",        accent: "#6366F1", preview: "modern"    },
-    Minimal:   { name: "Minimal",    pro: true,  description: "Ultra clean certificate",           accent: "#111827", preview: "minimal"   },
+    Minimal:   { name: "Minimal",    pro: false,  description: "Ultra clean line certificate",      accent: "#111827", preview: "minimal"   },
     Royal:     { name: "Royal",      pro: true,  description: "Royal gold ornamental design",     accent: "#D97706", preview: "royal"     },
     Corporate: { name: "Corporate",  pro: true,  description: "Corporate achievement certificate",accent: "#1E3A5F", preview: "corporate" },
     Elegant:   { name: "Elegant",    pro: true,  description: "Elegant ribbon-style certificate", accent: "#7C3AED", preview: "elegant"   },
@@ -37,7 +37,7 @@ export const TEMPLATE_REGISTRY = {
   experience: {
     Classic:   { name: "Classic",   pro: false, description: "Standard experience letter",        accent: "#0D9488", preview: "clean"     },
     Modern:    { name: "Modern",     pro: true,  description: "Modern sidebar accent letter",      accent: "#6366F1", preview: "sidebar"  },
-    Minimal:   { name: "Minimal",    pro: true,  description: "Clean minimal letter format",       accent: "#111827", preview: "minimal"   },
+    Minimal:   { name: "Minimal",    pro: false,  description: "Clean minimal letter format",       accent: "#111827", preview: "minimal"   },
     Bold:      { name: "Bold",       pro: true,  description: "Bold header experience letter",     accent: "#EF4444", preview: "bold"      },
     Corporate: { name: "Corporate",  pro: true,  description: "Formal corporate letterhead",      accent: "#1E3A5F", preview: "corporate" },
     Elegant:   { name: "Elegant",    pro: true,  description: "Premium elegant letter design",     accent: "#D97706", preview: "elegant"   },

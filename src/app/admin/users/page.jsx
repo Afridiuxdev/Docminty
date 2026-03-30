@@ -1,204 +1,148 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import AdminHeader from "@/components/admin/AdminHeader";
 import DataTable from "@/components/admin/DataTable";
 import StatCard from "@/components/admin/StatCard";
-import { UserPlus, Download, Filter } from "lucide-react";
+import { UserPlus, Download } from "lucide-react";
+import { adminApi } from "@/api/admin";
+import { getAccessToken } from "@/api/auth";
+import toast from "react-hot-toast";
 
 const T = "#0D9488";
+const STATUS_COLORS = { ACTIVE: { bg: "#ECFDF5", color: "#10B981" }, INACTIVE: { bg: "#FEF9C3", color: "#D97706" }, BANNED: { bg: "#FEF2F2", color: "#EF4444" } };
+const PLAN_COLORS   = { PRO: { bg: "#F0FDFA", color: T }, FREE: { bg: "#F8F9FA", color: "#9CA3AF" } };
 
-const USERS = Array.from({ length: 48 }, (_, i) => ({
-    id: `USR-${String(i + 1).padStart(4, "0")}`,
-    name: ["Arjun Sharma", "Priya Nair", "Ravi Kumar", "Ananya Singh", "Mohamed Ali", "Sneha Patel", "Kiran Reddy", "Deepa Menon", "Vijay Das", "Lakshmi Iyer"][i % 10],
-    email: `user${i + 1}@example.com`,
-    plan: i % 7 === 0 ? "Pro" : "Free",
-    docs: Math.floor(Math.random() * 200) + 1,
-    joined: `${["Jan", "Feb", "Mar", "Apr", "May", "Jun"][i % 6]} ${2025 + Math.floor(i / 24)}`,
-    lastActive: `${Math.floor(Math.random() * 29) + 1} days ago`,
-    status: i % 15 === 0 ? "Banned" : i % 20 === 0 ? "Inactive" : "Active",
-    state: ["Maharashtra", "Delhi", "Tamil Nadu", "Karnataka", "Gujarat", "Telangana"][i % 6],
-}));
-
-const STATUS_COLORS = {
-    Active: { bg: "#ECFDF5", color: "#10B981" },
-    Inactive: { bg: "#FEF9C3", color: "#D97706" },
-    Banned: { bg: "#FEF2F2", color: "#EF4444" },
-};
-
-const PLAN_COLORS = {
-    Pro: { bg: "#F0FDFA", color: T },
-    Free: { bg: "#F8F9FA", color: "#9CA3AF" },
-};
+function Spinner() {
+  return <div style={{ display:"flex",alignItems:"center",justifyContent:"center",height:"60vh" }}><div style={{ textAlign:"center" }}><div style={{ width:"40px",height:"40px",border:"3px solid #E5E7EB",borderTopColor:T,borderRadius:"50%",animation:"spin 0.8s linear infinite",margin:"0 auto 12px" }} /><p style={{ fontSize:"13px",color:"#9CA3AF",fontFamily:"Inter, sans-serif" }}>Loading users...</p></div><style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style></div>;
+}
 
 export default function AdminUsersPage() {
-    const [selected, setSelected] = useState([]);
-    const [filter, setFilter] = useState("All");
+  const router = useRouter();
+  const [users,   setUsers]   = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search,  setSearch]  = useState("");
+  const [planFilter, setPlanFilter] = useState("All");
+  const [actioning, setActioning]   = useState(null);
 
-    const filtered = filter === "All"
-        ? USERS
-        : USERS.filter(u => u.status === filter || u.plan === filter);
+  useEffect(() => {
+    const token = getAccessToken();
+    if (!token) { router.push("/login"); return; }
+    adminApi.getUsers()
+      .then(res => setUsers(res.data.data || []))
+      .catch(() => toast.error("Failed to load users"))
+      .finally(() => setLoading(false));
+  }, []);
 
-    const COLUMNS = [
-        {
-            key: "id", label: "User ID", sortable: false,
-            render: v => (
-                <span style={{ fontFamily: "monospace", fontSize: "11px", color: "#9CA3AF" }}>{v}</span>
-            ),
-        },
-        {
-            key: "name", label: "Name",
-            render: (v, row) => (
-                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                    <div style={{
-                        width: "28px", height: "28px", borderRadius: "50%",
-                        background: T + "20", color: T,
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                        fontSize: "11px", fontWeight: 700,
-                        fontFamily: "Space Grotesk, sans-serif", flexShrink: 0,
-                    }}>
-                        {v.charAt(0)}
-                    </div>
-                    <div>
-                        <p style={{ fontSize: "13px", fontWeight: 600, color: "#111827", margin: 0 }}>{v}</p>
-                        <p style={{ fontSize: "11px", color: "#9CA3AF", margin: 0 }}>{row.email}</p>
-                    </div>
-                </div>
-            ),
-        },
-        {
-            key: "plan", label: "Plan",
-            render: v => {
-                const c = PLAN_COLORS[v] || PLAN_COLORS.Free;
-                return (
-                    <span style={{
-                        background: c.bg, color: c.color,
-                        padding: "2px 10px", borderRadius: "20px",
-                        fontSize: "11px", fontWeight: 700,
-                        fontFamily: "Inter, sans-serif",
-                    }}>{v}</span>
-                );
-            },
-        },
-        { key: "docs", label: "Docs", align: "right" },
-        { key: "state", label: "State" },
-        { key: "joined", label: "Joined" },
-        { key: "lastActive", label: "Last Active" },
-        {
-            key: "status", label: "Status",
-            render: v => {
-                const c = STATUS_COLORS[v] || STATUS_COLORS.Active;
-                return (
-                    <span style={{
-                        background: c.bg, color: c.color,
-                        padding: "2px 10px", borderRadius: "20px",
-                        fontSize: "11px", fontWeight: 700,
-                        fontFamily: "Inter, sans-serif",
-                    }}>{v}</span>
-                );
-            },
-        },
-        {
-            key: "id", label: "Actions", sortable: false, align: "right",
-            render: (_, row) => (
-                <div style={{ display: "flex", gap: "6px", justifyContent: "flex-end" }}>
-                    <button style={{
-                        padding: "4px 10px", border: `1px solid ${T}`,
-                        borderRadius: "6px", background: "#F0FDFA",
-                        color: T, fontSize: "11px", fontWeight: 600,
-                        cursor: "pointer", fontFamily: "Inter, sans-serif",
-                    }}>View</button>
-                    <button style={{
-                        padding: "4px 10px", border: "1px solid #FCA5A5",
-                        borderRadius: "6px", background: "#FEF2F2",
-                        color: "#EF4444", fontSize: "11px", fontWeight: 600,
-                        cursor: "pointer", fontFamily: "Inter, sans-serif",
-                    }}>
-                        {row.status === "Banned" ? "Unban" : "Ban"}
-                    </button>
-                </div>
-            ),
-        },
-    ];
+  const handleBan = async (user) => {
+    if (!confirm((user.status === "BANNED" ? "Unban " : "Ban ") + user.name + "?")) return;
+    setActioning(user.id);
+    try {
+      if (user.status === "BANNED") {
+        await adminApi.unbanUser(user.id);
+        setUsers(prev => prev.map(u => u.id === user.id ? { ...u, status: "ACTIVE" } : u));
+        toast.success("User unbanned");
+      } else {
+        await adminApi.banUser(user.id);
+        setUsers(prev => prev.map(u => u.id === user.id ? { ...u, status: "BANNED" } : u));
+        toast.success("User banned");
+      }
+    } catch { toast.error("Action failed"); }
+    finally { setActioning(null); }
+  };
 
-    return (
-        <>
-            <AdminHeader title="Users" subtitle="Manage all registered users" />
-            <div style={{ padding: "24px 28px" }}>
+  const exportCSV = () => {
+    const rows = [["ID","Name","Email","Plan","Status","Joined"],...users.map(u => [u.id,u.name,u.email,u.plan,u.status,u.createdAt?.slice(0,10)])];
+    const csv  = rows.map(r => r.join(",")).join("\n");
+    const a    = document.createElement("a");
+    a.href = "data:text/csv;charset=utf-8," + encodeURIComponent(csv);
+    a.download = "docminty-users.csv";
+    a.click();
+  };
 
-                {/* Stats */}
-                <div style={{
-                    display: "grid", gridTemplateColumns: "repeat(4,1fr)",
-                    gap: "16px", marginBottom: "24px",
-                }}>
-                    <StatCard title="Total Users" value={14280} change={12.4} icon="👥" bgColor="#F0FDFA" />
-                    <StatCard title="Pro Users" value={892} change={21.3} icon="⭐" bgColor="#F5F3FF" />
-                    <StatCard title="New This Month" value={640} change={8.7} icon="🆕" bgColor="#ECFDF5" />
-                    <StatCard title="Banned" value={24} changeType="down" change={2.1} icon="🚫" bgColor="#FEF2F2" />
-                </div>
+  const filtered = users.filter(u => {
+    const matchSearch = u.name?.toLowerCase().includes(search.toLowerCase()) || u.email?.toLowerCase().includes(search.toLowerCase());
+    const matchPlan   = planFilter === "All" || u.plan === planFilter;
+    return matchSearch && matchPlan;
+  });
 
-                {/* Table */}
-                <div style={{
-                    background: "#fff", border: "1px solid #E5E7EB",
-                    borderRadius: "12px", overflow: "hidden",
-                }}>
-                    <div style={{
-                        padding: "16px 20px", borderBottom: "1px solid #F3F4F6",
-                        display: "flex", justifyContent: "space-between",
-                        alignItems: "center", flexWrap: "wrap", gap: "12px",
-                    }}>
-                        <div>
-                            <p style={{
-                                fontFamily: "Space Grotesk, sans-serif", fontWeight: 700,
-                                fontSize: "14px", color: "#111827", margin: 0,
-                            }}>All Users</p>
-                            <p style={{
-                                fontSize: "12px", color: "#9CA3AF",
-                                margin: "2px 0 0", fontFamily: "Inter, sans-serif",
-                            }}>{USERS.length} total users</p>
+  const proCount  = users.filter(u => u.plan === "PRO").length;
+  const freeCount = users.filter(u => u.plan === "FREE").length;
+  const bannedCount = users.filter(u => u.status === "BANNED").length;
+
+  if (loading) return <Spinner />;
+
+  return (
+    <>
+      <AdminHeader title="Users" subtitle={users.length + " registered users"} />
+      <div style={{ padding: "24px" }}>
+
+        {/* Stats */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: "16px", marginBottom: "24px" }}>
+          {[
+            { title: "Total Users", value: users.length, change: "registered", up: true },
+            { title: "Pro Users",   value: proCount,     change: ((proCount/Math.max(users.length,1))*100).toFixed(1) + "% of total", up: true },
+            { title: "Free Users",  value: freeCount,    change: ((freeCount/Math.max(users.length,1))*100).toFixed(1) + "% of total", up: false },
+            { title: "Banned",      value: bannedCount,  change: "accounts suspended", up: false },
+          ].map((s, i) => <StatCard key={i} {...s} />)}
+        </div>
+
+        {/* Toolbar */}
+        <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: "12px", padding: "16px 20px", marginBottom: "16px", display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by name or email..." style={{ flex: 1, minWidth: "200px", height: "36px", padding: "0 12px", border: "1px solid #E5E7EB", borderRadius: "8px", fontSize: "13px", outline: "none", fontFamily: "Inter, sans-serif" }} />
+          {["All","PRO","FREE"].map(p => (
+            <button key={p} onClick={() => setPlanFilter(p)} style={{ padding: "6px 14px", borderRadius: "20px", border: "1px solid " + (planFilter === p ? T : "#E5E7EB"), background: planFilter === p ? "#F0FDFA" : "#fff", color: planFilter === p ? T : "#6B7280", fontSize: "12px", fontWeight: 600, cursor: "pointer", fontFamily: "Inter, sans-serif" }}>{p}</button>
+          ))}
+          <button onClick={exportCSV} style={{ display: "flex", alignItems: "center", gap: "6px", padding: "6px 14px", border: "1px solid #E5E7EB", borderRadius: "8px", background: "#fff", fontSize: "13px", fontWeight: 600, color: "#374151", cursor: "pointer", fontFamily: "Inter, sans-serif" }}>
+            <Download size={13} /> Export CSV
+          </button>
+        </div>
+
+        {/* Users Table */}
+        <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: "12px", overflow: "hidden" }}>
+          <div style={{ overflowX: "auto" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+              <thead>
+                <tr style={{ background: "#F8F9FA", borderBottom: "1px solid #E5E7EB" }}>
+                  {["Name","Email","Plan","Status","Joined","Action"].map(h => (
+                    <th key={h} style={{ padding: "12px 16px", textAlign: "left", fontSize: "11px", fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.06em", fontFamily: "Space Grotesk, sans-serif", whiteSpace: "nowrap" }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map((u, i) => {
+                  const sc = STATUS_COLORS[u.status] || STATUS_COLORS.ACTIVE;
+                  const pc = PLAN_COLORS[u.plan]   || PLAN_COLORS.FREE;
+                  return (
+                    <tr key={u.id} style={{ borderBottom: "1px solid #F3F4F6", background: i % 2 === 0 ? "#fff" : "#FAFAFA" }}>
+                      <td style={{ padding: "12px 16px" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                          <div style={{ width: "32px", height: "32px", background: T, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                            <span style={{ fontSize: "13px", fontWeight: 700, color: "#fff", fontFamily: "Space Grotesk, sans-serif" }}>{u.name?.charAt(0)}</span>
+                          </div>
+                          <span style={{ fontSize: "13px", fontWeight: 600, color: "#111827", fontFamily: "Inter, sans-serif" }}>{u.name}</span>
                         </div>
-                        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                            {/* Filter buttons */}
-                            <div style={{
-                                display: "flex", gap: "4px",
-                                background: "#F8F9FA", borderRadius: "8px", padding: "4px",
-                            }}>
-                                {["All", "Active", "Inactive", "Banned", "Pro", "Free"].map(f => (
-                                    <button key={f} onClick={() => setFilter(f)} style={{
-                                        padding: "4px 12px", borderRadius: "6px",
-                                        border: "none", fontSize: "12px", fontWeight: 600,
-                                        cursor: "pointer", fontFamily: "Inter, sans-serif",
-                                        background: filter === f ? "#fff" : "transparent",
-                                        color: filter === f ? T : "#6B7280",
-                                        boxShadow: filter === f ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
-                                        transition: "all 150ms",
-                                    }}>{f}</button>
-                                ))}
-                            </div>
-                            <button style={{
-                                display: "flex", alignItems: "center", gap: "6px",
-                                padding: "6px 14px", border: "1px solid #E5E7EB",
-                                borderRadius: "8px", background: "#fff",
-                                fontSize: "12px", fontWeight: 600, color: "#6B7280",
-                                cursor: "pointer", fontFamily: "Inter, sans-serif",
-                            }}>
-                                <Download size={13} /> Export CSV
-                            </button>
-                            <button style={{
-                                display: "flex", alignItems: "center", gap: "6px",
-                                padding: "6px 14px", border: "none",
-                                borderRadius: "8px", background: T,
-                                fontSize: "12px", fontWeight: 600, color: "#fff",
-                                cursor: "pointer", fontFamily: "Inter, sans-serif",
-                            }}>
-                                <UserPlus size={13} /> Add User
-                            </button>
-                        </div>
-                    </div>
-                    <div style={{ padding: "16px 20px" }}>
-                        <DataTable columns={COLUMNS} data={filtered} />
-                    </div>
-                </div>
-            </div>
-        </>
-    );
+                      </td>
+                      <td style={{ padding: "12px 16px", fontSize: "13px", color: "#6B7280", fontFamily: "Inter, sans-serif" }}>{u.email}</td>
+                      <td style={{ padding: "12px 16px" }}><span style={{ padding: "3px 10px", borderRadius: "12px", fontSize: "11px", fontWeight: 700, background: pc.bg, color: pc.color, fontFamily: "Space Grotesk, sans-serif" }}>{u.plan}</span></td>
+                      <td style={{ padding: "12px 16px" }}><span style={{ padding: "3px 10px", borderRadius: "12px", fontSize: "11px", fontWeight: 700, background: sc.bg, color: sc.color, fontFamily: "Space Grotesk, sans-serif" }}>{u.status}</span></td>
+                      <td style={{ padding: "12px 16px", fontSize: "12px", color: "#9CA3AF", fontFamily: "Inter, sans-serif" }}>{u.createdAt?.slice(0,10)}</td>
+                      <td style={{ padding: "12px 16px" }}>
+                        <button onClick={() => handleBan(u)} disabled={actioning === u.id} style={{ padding: "4px 12px", borderRadius: "6px", border: "1px solid " + (u.status === "BANNED" ? T : "#EF4444"), background: "#fff", color: u.status === "BANNED" ? T : "#EF4444", fontSize: "11px", fontWeight: 600, cursor: "pointer", fontFamily: "Inter, sans-serif", opacity: actioning === u.id ? 0.5 : 1 }}>
+                          {actioning === u.id ? "..." : u.status === "BANNED" ? "Unban" : "Ban"}
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+                {filtered.length === 0 && (
+                  <tr><td colSpan={6} style={{ padding: "40px", textAlign: "center", fontSize: "13px", color: "#9CA3AF", fontFamily: "Inter, sans-serif" }}>No users found</td></tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 }

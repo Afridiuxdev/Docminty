@@ -1,4 +1,4 @@
-﻿"use client";
+﻿﻿"use client";
 
 import { useState, useCallback } from "react";
 import Navbar from "@/components/Navbar";
@@ -94,7 +94,7 @@ export default function EMICalculatorPage() {
                             <p className="form-label">Loan Details</p>
 
                             <div className="form-field">
-                                <label className="field-label">Loan Amount (₹)</label>
+                                <label className="field-label">Loan Amount (Rs. )</label>
                                 <input className="doc-input"
                                     type="number" value={principal}
                                     onChange={e => setPrincipal(e.target.value)}
@@ -122,7 +122,7 @@ export default function EMICalculatorPage() {
                                                 cursor: "pointer",
                                                 fontFamily: "Inter, sans-serif",
                                             }}>
-                                            ₹{parseInt(v).toLocaleString("en-IN")}
+                                            Rs. {parseInt(v).toLocaleString("en-IN")}
                                         </button>
                                     ))}
                                 </div>
@@ -256,7 +256,7 @@ export default function EMICalculatorPage() {
                                         fontWeight: 800, fontSize: "40px",
                                         color: "#fff", margin: 0, lineHeight: 1
                                     }}>
-                                        ₹{fmt(result.emi)}
+                                        Rs. {fmt(result.emi)}
                                     </p>
                                 </div>
 
@@ -268,9 +268,9 @@ export default function EMICalculatorPage() {
                                 }}>
                                     <p className="form-label">Loan Summary</p>
                                     {[
-                                        ["Principal Amount", `₹${fmt(result.principal)}`, "#111827"],
-                                        ["Total Interest", `₹${fmt(result.interest)}`, "#EF4444"],
-                                        ["Total Payment", `₹${fmt(result.total)}`, T],
+                                        ["Principal Amount", `Rs. ${fmt(result.principal)}`, "#111827"],
+                                        ["Total Interest", `Rs. ${fmt(result.interest)}`, "#EF4444"],
+                                        ["Total Payment", `Rs. ${fmt(result.total)}`, T],
                                     ].map(([l, v, c]) => (
                                         <div key={l} style={{
                                             display: "flex", justifyContent: "space-between",
@@ -407,10 +407,10 @@ export default function EMICalculatorPage() {
                                         {amortization().map(row => (
                                             <tr key={row.month}>
                                                 <td>{row.month}</td>
-                                                <td style={{ fontWeight: 600 }}>₹{fmt(row.emi)}</td>
-                                                <td style={{ color: T }}>₹{fmt(row.principal)}</td>
-                                                <td style={{ color: "#EF4444" }}>₹{fmt(row.interest)}</td>
-                                                <td>₹{fmt(row.balance)}</td>
+                                                <td style={{ fontWeight: 600 }}>Rs. {fmt(row.emi)}</td>
+                                                <td style={{ color: T }}>Rs. {fmt(row.principal)}</td>
+                                                <td style={{ color: "#EF4444" }}>Rs. {fmt(row.interest)}</td>
+                                                <td>Rs. {fmt(row.balance)}</td>
                                             </tr>
                                         ))}
                                     </tbody>

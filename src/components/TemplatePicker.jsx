@@ -17,13 +17,11 @@ const PREVIEW_COLORS = {
 
 function MiniPreview({ template, docType }) {
   const colors = PREVIEW_COLORS[template.accent] || PREVIEW_COLORS["#0D9488"];
+  const previewType = template.preview || "header";
   const isCert = docType === "certificate";
-  const isModern = template.name === "Modern";
-  const isMinimal = template.name === "Minimal";
-  const isBold = template.name === "Bold";
-  const isElegant = template.name === "Elegant";
-  const isRoyal = template.name === "Royal";
+
   if (isCert) {
+    const isRoyal = template.name === "Royal";
     return (
       <div style={{ width: "100%", height: "120px", background: "#fff", border: "1px solid #E5E7EB", borderRadius: "6px", overflow: "hidden", position: "relative", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: "4px" }}>
         {isRoyal && <div style={{ position: "absolute", inset: 0, border: "4px solid " + colors.header, margin: "4px", borderRadius: "4px" }} />}
@@ -35,7 +33,8 @@ function MiniPreview({ template, docType }) {
       </div>
     );
   }
-  if (isModern) {
+
+  if (previewType === "sidebar") {
     return (
       <div style={{ width: "100%", height: "120px", background: "#fff", border: "1px solid #E5E7EB", borderRadius: "6px", overflow: "hidden", display: "flex" }}>
         <div style={{ width: "28px", background: colors.header, flexShrink: 0 }} />
@@ -52,73 +51,55 @@ function MiniPreview({ template, docType }) {
       </div>
     );
   }
-  if (isMinimal) {
+
+  if (previewType === "minimal") {
     return (
       <div style={{ width: "100%", height: "120px", background: "#fff", border: "1px solid #E5E7EB", borderRadius: "6px", overflow: "hidden", padding: "10px 8px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
           <div style={{ width: "40px", height: "4px", background: "#111827", borderRadius: "1px" }} />
           <div style={{ width: "30px", height: "4px", background: "#D1D5DB", borderRadius: "1px" }} />
         </div>
-        <div style={{ width: "100%", height: "1px", background: "#111827", marginBottom: "6px" }} />
+        <div style={{ width: "100%", height: "1px", background: template.accent, marginBottom: "6px" }} />
         <div style={{ width: "70%", height: "2px", background: "#F3F4F6", marginBottom: "3px" }} />
         <div style={{ width: "85%", height: "2px", background: "#F3F4F6", marginBottom: "3px" }} />
         <div style={{ width: "60%", height: "2px", background: "#F3F4F6", marginBottom: "8px" }} />
         <div style={{ display: "flex", justifyContent: "flex-end" }}>
-          <div style={{ width: "35px", height: "8px", background: "#111827", borderRadius: "2px" }} />
+          <div style={{ width: "35px", height: "8px", background: template.accent, borderRadius: "2px" }} />
         </div>
       </div>
     );
   }
-  if (isBold) {
+
+  if (previewType === "corporate") {
     return (
-      <div style={{ width: "100%", height: "120px", background: "#fff", border: "1px solid #E5E7EB", borderRadius: "6px", overflow: "hidden" }}>
-        <div style={{ background: colors.header, padding: "10px 8px" }}>
-          <div style={{ width: "50px", height: "6px", background: "rgba(255,255,255,0.9)", borderRadius: "2px", marginBottom: "3px" }} />
-          <div style={{ width: "35px", height: "3px", background: "rgba(255,255,255,0.5)", borderRadius: "1px" }} />
+      <div style={{ width: "100%", height: "120px", background: "#fff", border: "1px solid #E5E7EB", borderRadius: "6px", overflow: "hidden", padding: "8px" }}>
+        <div style={{ textAlign: "center", borderBottom: "1px solid #E5E7EB", paddingBottom: "8px", marginBottom: "8px" }}>
+          <div style={{ width: "50px", height: "5px", background: colors.header, borderRadius: "1px", margin: "0 auto 3px" }} />
+          <div style={{ width: "30px", height: "2px", background: "#D1D5DB", borderRadius: "1px", margin: "0 auto" }} />
         </div>
-        <div style={{ padding: "6px 8px" }}>
-          <div style={{ width: "100%", height: "2px", background: "#F3F4F6", marginBottom: "3px" }} />
-          <div style={{ width: "80%", height: "2px", background: "#F3F4F6", marginBottom: "3px" }} />
-          <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "6px" }}>
-            <div style={{ width: "40px", height: "10px", background: colors.header, borderRadius: "2px" }} />
-          </div>
-        </div>
-      </div>
-    );
-  }
-  if (isElegant) {
-    return (
-      <div style={{ width: "100%", height: "120px", background: "#FFFDF5", border: "1px solid " + colors.header, borderRadius: "6px", overflow: "hidden", padding: "8px" }}>
-        <div style={{ borderBottom: "2px solid " + colors.header, paddingBottom: "6px", marginBottom: "6px", display: "flex", justifyContent: "space-between" }}>
-          <div style={{ width: "40px", height: "4px", background: "#111827", borderRadius: "1px", marginTop: "6px" }} />
-          <div style={{ width: "30px", height: "10px", background: colors.header, borderRadius: "2px" }} />
-        </div>
-        <div style={{ width: "90%", height: "2px", background: "#F3F4F6", marginBottom: "3px" }} />
-        <div style={{ width: "70%", height: "2px", background: "#F3F4F6", marginBottom: "3px" }} />
-        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "8px" }}>
-          <div style={{ width: "45px", height: "10px", background: colors.light, border: "1px solid " + colors.header, borderRadius: "2px" }} />
+        <div style={{ width: "100%", height: "2px", background: "#F3F4F6", marginBottom: "2px" }} />
+        <div style={{ width: "75%", height: "2px", background: "#F3F4F6", marginBottom: "2px" }} />
+        <div style={{ width: "85%", height: "2px", background: "#F3F4F6", marginBottom: "6px" }} />
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <div style={{ width: "40px", height: "10px", background: colors.light, border: "1px solid " + colors.header, borderRadius: "2px" }} />
         </div>
       </div>
     );
   }
-  // Classic / Corporate / default
+
+  // Default / Header
   return (
-    <div style={{ width: "100%", height: "120px", background: "#fff", border: "1px solid #E5E7EB", borderRadius: "6px", overflow: "hidden", padding: "8px" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", borderBottom: "2px solid " + colors.header, paddingBottom: "6px", marginBottom: "6px" }}>
-        <div>
-          <div style={{ width: "40px", height: "4px", background: "#111827", borderRadius: "1px", marginBottom: "3px" }} />
-          <div style={{ width: "28px", height: "2px", background: "#D1D5DB", borderRadius: "1px" }} />
-        </div>
-        <div style={{ textAlign: "right" }}>
-          <div style={{ width: "35px", height: "5px", background: colors.header, borderRadius: "1px", marginBottom: "3px" }} />
-          <div style={{ width: "24px", height: "2px", background: "#D1D5DB", borderRadius: "1px" }} />
-        </div>
+    <div style={{ width: "100%", height: "120px", background: template.name === "Elegant" ? "#FFFDF5" : "#fff", border: "1px solid #E5E7EB", borderRadius: "6px", overflow: "hidden" }}>
+      <div style={{ background: colors.header, padding: "10px 8px" }}>
+        <div style={{ width: "50px", height: "6px", background: "rgba(255,255,255,0.9)", borderRadius: "2px", marginBottom: "3px" }} />
+        <div style={{ width: "35px", height: "3px", background: "rgba(255,255,255,0.5)", borderRadius: "1px" }} />
       </div>
-      <div style={{ width: "100%", height: "2px", background: "#F3F4F6", marginBottom: "2px" }} />
-      <div style={{ width: "75%", height: "2px", background: "#F3F4F6", marginBottom: "2px" }} />
-      <div style={{ width: "85%", height: "2px", background: "#F3F4F6", marginBottom: "6px" }} />
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <div style={{ width: "40px", height: "10px", background: colors.light, border: "1px solid " + colors.header, borderRadius: "2px" }} />
+      <div style={{ padding: "6px 8px" }}>
+        <div style={{ width: "100%", height: "2px", background: "#F3F4F6", marginBottom: "3px" }} />
+        <div style={{ width: "80%", height: "2px", background: "#F3F4F6", marginBottom: "3px" }} />
+        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "6px" }}>
+          <div style={{ width: "40px", height: "10px", background: colors.header, borderRadius: "2px" }} />
+        </div>
       </div>
     </div>
   );
@@ -156,16 +137,16 @@ export default function TemplatePicker({ docType, selected, onChange, isPro = fa
               const isSelected = selected === key;
               const isLocked = tpl.pro && !isPro;
               return (
-                <div key={key} onClick={() => { if (!isLocked) { onChange(key); setOpen(false); } }} style={{ cursor: isLocked ? "not-allowed" : "pointer", opacity: isLocked ? 0.7 : 1, position: "relative" }}>
+                <div key={key} onClick={() => { onChange(key); setOpen(false); }} style={{ cursor: "pointer", position: "relative" }}>
                   <div style={{ border: "2px solid " + (isSelected ? tpl.accent : "#E5E7EB"), borderRadius: "8px", overflow: "hidden", marginBottom: "6px", transition: "border-color 150ms" }}>
                     <MiniPreview template={tpl} docType={docType} />
                     {isSelected && (
-                      <div style={{ position: "absolute", top: "6px", right: "6px", width: "18px", height: "18px", background: tpl.accent, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <div style={{ position: "absolute", top: "6px", right: "6px", width: "18px", height: "18px", background: tpl.accent, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 5 }}>
                         <Check size={10} color="#fff" />
                       </div>
                     )}
-                    {isLocked && (
-                      <div style={{ position: "absolute", inset: 0, background: "rgba(255,255,255,0.6)", display: "flex", alignItems: "center", justifyContent: "center", borderRadius: "6px" }}>
+                    {isLocked && !isSelected && (
+                      <div style={{ position: "absolute", inset: 0, background: "rgba(255,255,255,0.4)", display: "flex", alignItems: "center", justifyContent: "center", borderRadius: "6px" }}>
                         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "3px" }}>
                           <Lock size={14} color="#D97706" />
                           <span style={{ fontSize: "9px", fontWeight: 700, color: "#D97706", fontFamily: "Inter, sans-serif" }}>PRO</span>

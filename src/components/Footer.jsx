@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { FileText } from "lucide-react";
 
-const cols = [
+const col1 = [
     {
         title: "Documents",
         links: [
@@ -13,28 +13,52 @@ const cols = [
             { label: "Certificate", href: "/certificate" },
             { label: "Proforma Invoice", href: "/proforma-invoice" },
         ],
-    },
+    }
+];
+
+const col2 = [
     {
-        title: "Tools",
+        title: "HR & Tools",
         links: [
             { label: "Experience Letter", href: "/experience-letter" },
             { label: "Resignation Letter", href: "/resignation-letter" },
             { label: "Job Offer Letter", href: "/job-offer-letter" },
             { label: "Purchase Order", href: "/purchase-order" },
             { label: "Rent Receipt", href: "/rent-receipt" },
-            { label: "Batch Processor", href: "/batch" },
+            { label: "Payment Voucher", href: "/payment-voucher" },
         ],
-    },
-    {
-        title: "Company",
-        links: [
-            { label: "Pricing", href: "/pricing" },
-            { label: "Sign In", href: "/login" },
-            { label: "Sign Up", href: "/signup" },
-            { label: "Verify Document", href: "/verify/demo" },
-        ],
-    },
+    }
 ];
+
+const col3 = [
+    {
+        title: "PDF Tools",
+        links: [
+            { label: "Merge PDF", href: "/tools/merge-pdf" },
+            { label: "Split PDF", href: "/tools/split-pdf" },
+            { label: "Compress PDF", href: "/tools/compress-pdf" },
+            { label: "PDF to Word", href: "/tools/pdf-to-word" },
+            { label: "Word to PDF", href: "/tools/word-to-pdf" },
+            { label: "PDF to JPG", href: "/tools/pdf-to-jpg" },
+            { label: "JPG to PDF", href: "/tools/jpg-to-pdf" },
+        ],
+    }
+];
+
+const col4 = [
+    {
+        title: "Calculators",
+        links: [
+            { label: "EMI Calculator", href: "/calculators/emi-calculator" },
+            { label: "GST Calculator", href: "/calculators/gst-calculator" },
+            { label: "Salary Calculator", href: "/calculators/salary-calculator" },
+            { label: "Loan Calculator", href: "/calculators/loan-calculator" },
+            { label: "Profit Margin", href: "/calculators/profit-margin-calculator" },
+        ],
+    }
+];
+
+const linkColumns = [col1, col2, col3, col4];
 
 export default function Footer() {
     return (
@@ -45,14 +69,14 @@ export default function Footer() {
                 fontFamily: "Inter, sans-serif",
             }}>
                 <div style={{
-                    maxWidth: "1100px",
+                    maxWidth: "1240px",
                     margin: "0 auto",
-                    padding: "48px 24px 32px",
+                    padding: "64px 24px 32px",
                 }}>
                     <div className="footer-grid" style={{
                         display: "grid",
-                        gridTemplateColumns: "2fr 1fr 1fr 1fr",
-                        gap: "40px",
+                        gridTemplateColumns: "1.5fr repeat(4, 1fr)",
+                        gap: "56px",
                     }}>
                         {/* Brand */}
                         <div>
@@ -89,30 +113,35 @@ export default function Footer() {
                         </div>
 
                         {/* Link columns */}
-                        {cols.map((col) => (
-                            <div key={col.title}>
-                                <p style={{
-                                    fontSize: "11px", fontWeight: 700,
-                                    letterSpacing: "0.08em",
-                                    textTransform: "uppercase",
-                                    color: "#9CA3AF", marginBottom: "12px",
-                                    fontFamily: "Space Grotesk, sans-serif",
-                                }}>
-                                    {col.title}
-                                </p>
-                                <div style={{
-                                    display: "flex", flexDirection: "column", gap: "8px",
-                                }}>
-                                    {col.links.map((l) => (
-                                        <Link
-                                            key={l.href}
-                                            href={l.href}
-                                            className="footer-link"
-                                        >
-                                            {l.label}
-                                        </Link>
-                                    ))}
-                                </div>
+                        {linkColumns.map((colGroup, idx) => (
+                            <div key={idx} style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
+                                {colGroup.map((col) => (
+                                    <div key={col.title}>
+                                        <p style={{
+                                            fontSize: "12px", fontWeight: 700,
+                                            letterSpacing: "0.05em",
+                                            textTransform: "uppercase",
+                                            color: "#111827", marginBottom: "16px",
+                                            fontFamily: "Space Grotesk, sans-serif",
+                                        }}>
+                                            {col.title}
+                                        </p>
+                                        <div style={{
+                                            display: "flex", flexDirection: "column", gap: "12px",
+                                        }}>
+                                            {col.links.map((l) => (
+                                                <Link
+                                                    key={l.href}
+                                                    href={l.href}
+                                                    className="footer-link"
+                                                    style={{ fontSize: "14px", color: "#4B5563" }}
+                                                >
+                                                    {l.label}
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         ))}
                     </div>

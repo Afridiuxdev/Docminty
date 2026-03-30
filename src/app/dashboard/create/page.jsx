@@ -6,37 +6,53 @@ const T = "#0D9488";
 
 const DOC_CATEGORIES = [
     {
-        category: "Finance & GST",
+        category: "Finance & Business",
         docs: [
-            { label: "GST Invoice", href: "/invoice", icon: "📄", desc: "Tax invoice with CGST/SGST/IGST", badge: "Most Used" },
-            { label: "Quotation", href: "/quotation", icon: "💬", desc: "Professional price quotation", badge: "" },
-            { label: "Receipt", href: "/receipt", icon: "🧾", desc: "Payment receipt for any transaction", badge: "" },
+            { label: "Invoice", href: "/invoice", icon: "📄", desc: "Professional GST & non-GST invoices", badge: "Most Used" },
+            { label: "Quotation", href: "/quotation", icon: "💬", desc: "Professional price quotations", badge: "" },
+            { label: "Receipt", href: "/receipt", icon: "🧾", desc: "Payment receipts for any transaction", badge: "" },
             { label: "Proforma Invoice", href: "/proforma-invoice", icon: "📋", desc: "Pre-billing document with advance", badge: "" },
             { label: "Purchase Order", href: "/purchase-order", icon: "🛒", desc: "PO for vendors and suppliers", badge: "" },
-            { label: "Payment Voucher", href: "/payment-voucher", icon: "💳", desc: "Internal payment records", badge: "" },
+            { label: "Packing Slip", href: "/packing-slip", icon: "📦", desc: "Shipment packing lists with tracking", badge: "" },
+            { label: "Rent Receipt", href: "/rent-receipt", icon: "🏠", desc: "HRA valid monthly rent receipts", badge: "HRA Valid" },
+            { label: "Payment Voucher", href: "/payment-voucher", icon: "💳", desc: "Internal payment and cash records", badge: "" },
         ],
     },
     {
-        category: "HR & Employee",
+        category: "HR & Legal",
         docs: [
             { label: "Salary Slip", href: "/salary-slip", icon: "💰", desc: "Payslip with PF, ESI, TDS auto-calc", badge: "Popular" },
-            { label: "Experience Letter", href: "/experience-letter", icon: "📜", desc: "Employment experience certificate", badge: "" },
+            { label: "Experience Letter", href: "/experience-letter", icon: "📜", desc: "Employment experience certificates", badge: "" },
             { label: "Job Offer Letter", href: "/job-offer-letter", icon: "🤝", desc: "Offer letter with CTC breakdown", badge: "" },
-            { label: "Resignation Letter", href: "/resignation-letter", icon: "👋", desc: "Professional resignation format", badge: "" },
-        ],
-    },
-    {
-        category: "Certificates",
-        docs: [
-            { label: "Certificate", href: "/certificate", icon: "🏆", desc: "Achievement, completion certificates", badge: "QR Verified" },
+            { label: "Resignation Letter", href: "/resignation-letter", icon: "👋", desc: "Professional resignation formats", badge: "" },
             { label: "Internship Certificate", href: "/internship-certificate", icon: "🎓", desc: "Internship completion certificate", badge: "QR Verified" },
+            { label: "Certificate", href: "/certificate", icon: "🏆", desc: "General achievement certificates", badge: "QR Verified" },
         ],
     },
     {
-        category: "Shipping & Property",
+        category: "PDF & Productivity",
         docs: [
-            { label: "Packing Slip", href: "/packing-slip", icon: "📦", desc: "Shipment packing list with tracking", badge: "" },
-            { label: "Rent Receipt", href: "/rent-receipt", icon: "🏠", desc: "HRA valid monthly rent receipt", badge: "HRA Valid" },
+            { label: "Batch Processor", href: "/batch", icon: "⚡", desc: "Process thousands of docs at once", badge: "Pro" },
+            { label: "QR Generator", href: "/tools/qr-generator", icon: "🔍", desc: "Custom QR codes for any use", badge: "" },
+            { label: "Merge PDF", href: "/tools/merge-pdf", icon: "🖇️", desc: "Combine multiple PDFs into one", badge: "" },
+            { label: "Split PDF", href: "/tools/split-pdf", icon: "✂️", desc: "Extract pages from your PDF", badge: "" },
+            { label: "Compress PDF", href: "/tools/compress-pdf", icon: "🗜️", desc: "Reduce PDF file size instantly", badge: "" },
+            { label: "PDF to Word", href: "/tools/pdf-to-word", icon: "📝", desc: "Convert PDF to editable Word", badge: "" },
+            { label: "Word to PDF", href: "/tools/word-to-pdf", icon: "📘", desc: "Turn Word docs into clean PDFs", badge: "" },
+            { label: "PDF to JPG", href: "/tools/pdf-to-jpg", icon: "🖼️", desc: "Extract images from your PDF", badge: "" },
+            { label: "JPG to PDF", href: "/tools/jpg-to-pdf", icon: "📄", desc: "Convert images to PDF format", badge: "" },
+        ],
+    },
+    {
+        category: "Smart Calculators",
+        docs: [
+            { label: "EMI Calculator", href: "/calculators/emi-calculator", icon: "🏦", desc: "Calculate monthly loan payments", badge: "" },
+            { label: "GST Calculator", href: "/calculators/gst-calculator", icon: "📊", desc: "Inclusive/Exclusive GST auto-calc", badge: "" },
+            { label: "Salary Calculator", href: "/calculators/salary-calculator", icon: "💸", desc: "Gross to Net salary breakdown", badge: "" },
+            { label: "Interest Calculator", href: "/calculators/interest-calculator", icon: "📈", desc: "Simple & Compound interest", badge: "" },
+            { label: "Loan Calculator", href: "/calculators/loan-calculator", icon: "🏢", desc: "Advanced tool for home/car loans", badge: "" },
+            { label: "Profit Margin", href: "/calculators/profit-margin-calculator", icon: "📈", desc: "Calculate markup & profit margins", badge: "" },
+            { label: "Discount Calc", href: "/calculators/discount-calculator", icon: "🏷️", desc: "Quickly find final sale price", badge: "" },
         ],
     },
 ];
@@ -46,6 +62,7 @@ const BADGE_COLORS = {
     "Popular": { bg: "#F5F3FF", color: "#7C3AED" },
     "QR Verified": { bg: "#ECFDF5", color: "#10B981" },
     "HRA Valid": { bg: "#EFF6FF", color: "#3B82F6" },
+    "Pro": { bg: "#FFFBEB", color: "#D97706" },
 };
 
 export default function DashCreatePage() {

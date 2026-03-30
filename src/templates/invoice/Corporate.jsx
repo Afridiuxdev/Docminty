@@ -47,17 +47,15 @@ export default function InvoiceCorporateTemplate({ form }) {
             <Page size="A4" style={styles.page}>
                 <View style={styles.topStrip} />
                 <View style={styles.header}>
-                    <View>
+                    <View style={{ alignItems: "center", width: "100%" }}>
                         {form.logo && <Image src={form.logo} style={styles.logo} />}
                         <Text style={styles.fromName}>{form.fromName || "Your Business"}</Text>
-                        {form.fromGSTIN && <Text style={styles.small}>{"GSTIN: " + form.fromGSTIN}</Text>}
-                        {fromState && <Text style={styles.small}>{fromState.name}</Text>}
-                    </View>
-                    <View>
-                        <Text style={styles.invoiceL}>TAX INVOICE</Text>
-                        <Text style={styles.num}>{"Invoice No: " + form.invoiceNumber}</Text>
-                        <Text style={styles.num}>{"Date: " + form.invoiceDate}</Text>
-                        {form.dueDate && <Text style={styles.num}>{"Due Date: " + form.dueDate}</Text>}
+                        <Text style={{ fontSize: 9, color: A, letterSpacing: 1, marginTop: 4, textTransform: "uppercase" }}>Official Tax Invoice</Text>
+                        <View style={{ flexDirection: "row", gap: 15, marginTop: 8 }}>
+                            {form.fromGSTIN && <Text style={styles.small}>{"GSTIN: " + form.fromGSTIN}</Text>}
+                            <Text style={styles.small}>{"No: " + form.invoiceNumber}</Text>
+                            <Text style={styles.small}>{"Date: " + form.invoiceDate}</Text>
+                        </View>
                     </View>
                 </View>
                 <View style={styles.body}>

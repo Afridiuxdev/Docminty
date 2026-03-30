@@ -1,9 +1,22 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Users, FileText, DollarSign, BarChart2, Megaphone, Settings, Bell, LogOut, ChevronRight, FileStack } from "lucide-react";
+import { LayoutDashboard, Users, FileText, DollarSign, BarChart2, Settings, Bell, LogOut, ChevronRight, FileStack } from "lucide-react";
+
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { clearTokens, getAccessToken } from "@/api/auth";
 
 const T = "#0D9488";
+
+function decodeJwtPayload(token) {
+  try {
+    const base64 = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+    return JSON.parse(atob(base64));
+  } catch {
+    return {};
+  }
+}
 
 const NAV = [
   { href: "/admin",               icon: LayoutDashboard, label: "Overview"      },
@@ -11,13 +24,30 @@ const NAV = [
   { href: "/admin/documents",     icon: FileStack,       label: "Documents"     },
   { href: "/admin/analytics",     icon: BarChart2,       label: "Analytics"     },
   { href: "/admin/revenue",       icon: DollarSign,      label: "Revenue"       },
-  { href: "/admin/adsense",       icon: Megaphone,       label: "AdSense"       },
   { href: "/admin/notifications", icon: Bell,            label: "Notifications" },
   { href: "/admin/settings",      icon: Settings,        label: "Settings"      },
 ];
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const [adminName, setAdminName] = useState("Admin");
+  const [adminEmail, setAdminEmail] = useState("admin@docminty.com");
+
+  useEffect(() => {
+    const token = getAccessToken();
+    if (token) {
+      const payload = decodeJwtPayload(token);
+      if (payload.sub)  setAdminEmail(payload.sub);
+      if (payload.name) setAdminName(payload.name);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    clearTokens();
+    router.push("/login");
+  };
+
   return (
     <aside style={{ width: "240px", minHeight: "100vh", background: "#0F172A", display: "flex", flexDirection: "column", flexShrink: 0, position: "sticky", top: 0 }}>
       <div style={{ padding: "24px 20px", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
@@ -52,12 +82,14 @@ export default function AdminSidebar() {
       </nav>
       <div style={{ padding: "16px 12px", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "10px", padding: "8px 12px", borderRadius: "8px", background: "rgba(255,255,255,0.04)" }}>
-          <div style={{ width: "30px", height: "30px", borderRadius: "50%", background: T, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px", fontWeight: 700, color: "#fff", fontFamily: "Space Grotesk, sans-serif", flexShrink: 0 }}>A</div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <p style={{ fontSize: "12px", fontWeight: 600, color: "#fff", margin: 0, fontFamily: "Inter, sans-serif" }}>Admin</p>
-            <p style={{ fontSize: "10px", color: "rgba(255,255,255,0.4)", margin: 0, fontFamily: "Inter, sans-serif" }}>admin@docminty.com</p>
+          <div style={{ width: "30px", height: "30px", borderRadius: "50%", background: T, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px", fontWeight: 700, color: "#fff", fontFamily: "Space Grotesk, sans-serif", flexShrink: 0 }}>
+            {adminName.charAt(0).toUpperCase()}
           </div>
-          <LogOut size={14} color="rgba(255,255,255,0.4)" style={{ cursor: "pointer" }} />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p style={{ fontSize: "12px", fontWeight: 600, color: "#fff", margin: 0, fontFamily: "Inter, sans-serif", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{adminName}</p>
+            <p style={{ fontSize: "10px", color: "rgba(255,255,255,0.4)", margin: 0, fontFamily: "Inter, sans-serif", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{adminEmail}</p>
+          </div>
+          <LogOut size={14} color="rgba(255,255,255,0.4)" style={{ cursor: "pointer" }} onClick={handleLogout} />
         </div>
       </div>
     </aside>

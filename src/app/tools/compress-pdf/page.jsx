@@ -47,7 +47,7 @@ export default function CompressPDFPage() {
                         <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "13px", color: quality === opt.v ? T : "#111827", margin: 0 }}>{opt.l}</p>
                         <p style={{ fontSize: "12px", color: "#9CA3AF", fontFamily: "Inter, sans-serif", margin: "2px 0 0" }}>{opt.desc}</p>
                       </div>
-                      <span style={{ fontSize: "12px", fontWeight: 700, color: T, fontFamily: "Space Grotesk, sans-serif" }}>~{Math.round((1-{low:0.4,medium:0.6,high:0.8}[opt.v])*100)}% smaller</span>
+                      <span style={{ fontSize: "12px", fontWeight: 700, color: T, fontFamily: "Space Grotesk, sans-serif" }}>~{Math.round((1 - { low: 0.4, medium: 0.6, high: 0.8 }[opt.v]) * 100)}% smaller</span>
                     </button>
                   ))}
                 </div>
@@ -57,8 +57,8 @@ export default function CompressPDFPage() {
                   <div style={{ textAlign: "right" }}><p style={{ fontSize: "11px", color: "#9CA3AF", margin: "0 0 2px", fontFamily: "Inter, sans-serif" }}>Estimated Size</p><p style={{ fontSize: "14px", fontWeight: 700, color: T, margin: 0, fontFamily: "Space Grotesk, sans-serif" }}>{newSize} KB</p></div>
                 </div>
               </div>
-              {!done && <button onClick={process} disabled={processing} style={{ width: "100%", height: "48px", background: processing ? "#9CA3AF" : T, color: "#fff", border: "none", borderRadius: "10px", fontSize: "15px", fontWeight: 700, cursor: processing ? "not-allowed" : "pointer", fontFamily: "Space Grotesk, sans-serif" }}>{processing ? "Compressing..." : "??? Compress PDF"}</button>}
-              {done && (<div style={{ background: "#F0FDFA", border: `2px solid ${T}`, borderRadius: "12px", padding: "24px", textAlign: "center" }}><p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "18px", color: "#065F46", margin: "0 0 4px" }}>? PDF Compressed!</p><p style={{ fontSize: "13px", color: "#6B7280", fontFamily: "Inter, sans-serif", margin: "0 0 16px" }}>{origSize} KB ? {newSize} KB (saved {Math.round((1-savings)*100)}%)</p><button className="download-pdf-btn" style={{ margin: "0 auto" }}><Download size={15} /> Download Compressed PDF</button></div>)}
+              {!done && <button onClick={process} disabled={processing} style={{ width: "100%", height: "48px", background: processing ? "#9CA3AF" : T, color: "#fff", border: "none", borderRadius: "10px", fontSize: "15px", fontWeight: 700, cursor: processing ? "not-allowed" : "pointer", fontFamily: "Space Grotesk, sans-serif" }}>{processing ? "Compressing..." : "Compress PDF"}</button>}
+              {done && (<div style={{ background: "#F0FDFA", border: `2px solid ${T}`, borderRadius: "12px", padding: "24px", textAlign: "center" }}><p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "18px", color: "#065F46", margin: "0 0 4px" }}>? PDF Compressed!</p><p style={{ fontSize: "13px", color: "#6B7280", fontFamily: "Inter, sans-serif", margin: "0 0 16px" }}>{origSize} KB ? {newSize} KB (saved {Math.round((1 - savings) * 100)}%)</p><button className="download-pdf-btn" style={{ margin: "0 auto" }}><Download size={15} /> Download Compressed PDF</button></div>)}
             </>
           )}
         </div>

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useCallback } from "react";
 import Navbar from "@/components/Navbar";
@@ -7,8 +7,12 @@ import AdSense from "@/components/AdSense";
 import LogoUpload from "@/components/LogoUpload";
 import { INDIAN_STATES } from "@/constants/indianStates";
 import { calculateLineItems, numberToWords } from "@/engine/gstCalc";
-import { Plus, Trash2, Download, Eye, RefreshCw } from "lucide-react";
+import { Plus, Trash2, Download, Eye, RefreshCw, Cloud } from "lucide-react";
 import { useDownloadPDF } from "@/hooks/useDownloadPDF";
+import { useRouter } from "next/navigation";
+import toast, { Toaster } from "react-hot-toast";
+import { documentsApi } from "@/api/documents";
+import { getAccessToken } from "@/api/auth";
 
 const T = "#0D9488";
 
@@ -450,7 +454,16 @@ function ProformaPreview({ form }) {
 export default function ProformaInvoicePage() {
   const [form, setForm] = useState(DEFAULT_FORM);
   const { download, downloading } = useDownloadPDF();
+  const router = useRouter();
   const handleDownload = () => download("ProformaInvoice", form, `Proforma-${form.proformaNumber}.pdf`);
+
+  const handleSave = async () => {
+    if (!getAccessToken()) { toast.error("Please sign in to save"); router.push("/login"); return; }
+    try {
+      await documentsApi.save({ docType: "proforma-invoice", title: "Proforma #" + form.proformaNumber, referenceNumber: form.proformaNumber, partyName: form.toName, amount: form.items.reduce((s, i) => s + parseFloat(i.amount || 0), 0).toFixed(2), formData: JSON.stringify(form) });
+      toast.success("Saved to your dashboard!");
+    } catch { toast.error("Save failed"); }
+  };
   const [activeTab, setActiveTab] = useState("from");
 
   const updateField = useCallback((field, value) =>
@@ -484,6 +497,7 @@ export default function ProformaInvoicePage() {
 
   return (
     <>
+      <Toaster position="top-right" />
       <Navbar />
 
       {/* Page header */}
@@ -526,6 +540,9 @@ export default function ProformaInvoicePage() {
 
               {downloading ? "Generating..." : "Download PDF"}
 
+            </button>
+            <button onClick={handleSave} style={{ display: "flex", alignItems: "center", gap: "6px", height: "36px", padding: "0 14px", border: "1px solid #0D9488", borderRadius: "8px", background: "#fff", fontSize: "13px", fontWeight: 600, color: "#0D9488", cursor: "pointer", fontFamily: "Inter, sans-serif", transition: "all 150ms" }}>
+              <Cloud size={14} /> Save
             </button>
           </div>
         </div>

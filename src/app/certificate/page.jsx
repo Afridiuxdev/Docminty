@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import TemplatePicker from "@/components/TemplatePicker";
 
 import { useState, useCallback } from "react";
@@ -7,8 +7,15 @@ import Footer from "@/components/Footer";
 import AdSense from "@/components/AdSense";
 import LogoUpload from "@/components/LogoUpload";
 import { generateVerificationId, generateQRData } from "@/engine/hashGen";
-import { Download, Eye, RefreshCw, Shield } from "lucide-react";
+import { Download, Eye, RefreshCw, Shield, Cloud } from "lucide-react";
 import { useDownloadPDF } from "@/hooks/useDownloadPDF";
+import { useRouter } from "next/navigation";
+import toast, { Toaster } from "react-hot-toast";
+import { documentsApi } from "@/api/documents";
+import { getAccessToken } from "@/api/auth";
+import { useAuth } from "@/contexts/AuthContext";
+import WatermarkOverlay from "@/components/WatermarkOverlay";
+import { TEMPLATE_REGISTRY } from "@/templates/registry";
 
 const T = "#0D9488";
 
@@ -233,12 +240,33 @@ function CertPreview({ form }) {
 }
 
 export default function CertificatePage() {
+  const { user } = useAuth();
   const [form, setForm] = useState(DEFAULT_FORM);
   const { download, downloading } = useDownloadPDF();
   const [template, setTemplate] = useState("Classic");
   const [activeTab, setActiveTab] = useState("org");
+  const router = useRouter();
+
+  const isUserPro = user?.plan === "Business Pro" || user?.plan === "Enterprise";
+  const templateMeta = TEMPLATE_REGISTRY.certificate[template] || TEMPLATE_REGISTRY.certificate.Classic;
+  const isProTemplate = templateMeta.pro;
+  const showWatermark = isProTemplate && !isUserPro;
+
   const handleDownload = () => {
+    if (showWatermark) {
+      toast.error("This is a PRO template. Please upgrade to download without watermark!");
+      router.push("/#pricing");
+      return;
+    }
     download("Certificate" + template, form, `Certificate-${form.recipientName||"Certificate"}.pdf`);
+  };
+
+  const handleSave = async () => {
+    if (!getAccessToken()) { toast.error("Please sign in to save"); router.push("/login"); return; }
+    try {
+      await documentsApi.save({ docType: "certificate", title: `Certificate - ${form.recipientName || "Recipient"}`, referenceNumber: form.verificationId, partyName: form.recipientName, amount: "", formData: JSON.stringify(form) });
+      toast.success("Saved to your dashboard!");
+    } catch { toast.error("Save failed"); }
   };
   const updateField = useCallback((field, value) =>
     setForm(prev => ({ ...prev, [field]: value })), []);
@@ -248,10 +276,12 @@ export default function CertificatePage() {
     { id: "recipient", label: "Recipient" },
     { id: "content", label: "Content" },
     { id: "verify", label: "Verification" },
+    { id: "templates", label: "Templates" },
   ];
 
   return (
     <>
+      <Toaster position="top-right" />
       <Navbar />
       <div style={{ background: "#fff", borderBottom: "1px solid #E5E7EB", padding: "14px 24px" }}>
         <div style={{ maxWidth: "1300px", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
@@ -262,6 +292,7 @@ export default function CertificatePage() {
           <div style={{ display: "flex", gap: "8px" }}>
             <button
               onClick={() => setForm({ ...DEFAULT_FORM, verificationId: generateVerificationId() })}
+
               style={{ display: "flex", alignItems: "center", gap: "6px", height: "36px", padding: "0 14px", border: "1px solid #E5E7EB", borderRadius: "8px", background: "#fff", fontSize: "13px", fontWeight: 600, color: "#6B7280", cursor: "pointer", fontFamily: "Inter, sans-serif" }}>
               <RefreshCw size={13} /> Reset
             </button>
@@ -290,8 +321,7 @@ export default function CertificatePage() {
                 <div style={{ marginBottom: "16px" }}>
                   <p style={{ fontSize: "11px", fontWeight: 600, color: "#6B7280", margin: "0 0 6px", fontFamily: "Inter, sans-serif" }}>Organisation Logo</p>
                   <LogoUpload value={form.logo} onChange={v => updateField("logo", v)} />
-                <div style={{ marginTop: "16px" }}><TemplatePicker docType="certificate" selected={template} onChange={setTemplate} isPro={false} /></div>
-</div>
+                </div>
                 <div className="form-field"><label className="field-label">Organisation Name *</label><input className="doc-input" placeholder="Reddy Academy" value={form.orgName} onChange={e => updateField("orgName", e.target.value)} /></div>
                 <div className="form-field"><label className="field-label">Address</label><input className="doc-input" placeholder="City, State" value={form.orgAddress} onChange={e => updateField("orgAddress", e.target.value)} /></div>
                 <div className="form-field"><label className="field-label">Website</label><input className="doc-input" placeholder="www.yourorg.com" value={form.orgWebsite} onChange={e => updateField("orgWebsite", e.target.value)} /></div>
@@ -381,6 +411,25 @@ export default function CertificatePage() {
                 </button>
               </div>
             )}
+
+            {activeTab === "templates" && (
+              <div>
+                <p className="form-label">Template Design</p>
+                <div style={{ marginTop: "8px" }}>
+                  <TemplatePicker 
+                    docType="certificate" 
+                    selected={template} 
+                    onChange={setTemplate} 
+                    isPro={isUserPro} 
+                  />
+                </div>
+                <div style={{ borderTop: "1px solid #F3F4F6", margin: "24px 0" }} />
+                <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn" style={{ width: "100%", justifyContent: "center" }}>
+                  <Download size={15} />
+                  {downloading ? "Generating..." : "Download PDF"}
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="preview-panel">
@@ -394,7 +443,10 @@ export default function CertificatePage() {
                 {downloading ? "Generating..." : "Download PDF"}
               </button>
             </div>
-            <CertPreview form={form} />
+            <div style={{ position: "relative" }}>
+              {showWatermark && <WatermarkOverlay />}
+              <CertPreview form={form} />
+            </div>
           </div>
         </div>
         <div style={{ maxWidth: "1300px", margin: "0 auto", padding: "0 24px 40px" }}>

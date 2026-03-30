@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import TemplatePicker from "@/components/TemplatePicker";
 
 import { useDownloadPDF } from "@/hooks/useDownloadPDF";
@@ -9,7 +9,14 @@ import AdSense from "@/components/AdSense";
 import LogoUpload from "@/components/LogoUpload";
 import { INDIAN_STATES } from "@/constants/indianStates";
 import { calculateLineItems, numberToWords } from "@/engine/gstCalc";
-import { Plus, Trash2, Download, Eye, RefreshCw } from "lucide-react";
+import { Plus, Trash2, Download, Eye, RefreshCw, Cloud } from "lucide-react";
+import { useRouter } from "next/navigation";
+import toast, { Toaster } from "react-hot-toast";
+import { documentsApi } from "@/api/documents";
+import { getAccessToken } from "@/api/auth";
+import { useAuth } from "@/contexts/AuthContext";
+import WatermarkOverlay from "@/components/WatermarkOverlay";
+import { TEMPLATE_REGISTRY } from "@/templates/registry";
 
 const T = "#0D9488";
 
@@ -154,12 +161,33 @@ function QuotationPreview({ form }) {
 }
 
 export default function QuotationPage() {
+  const { user } = useAuth();
   const [form, setForm] = useState(DEFAULT_FORM);
   const { download, downloading } = useDownloadPDF();
   const [template, setTemplate] = useState("Classic");
   const [activeTab, setActiveTab] = useState("from");
+  const router = useRouter();
+
+  const isUserPro = user?.plan === "Business Pro" || user?.plan === "Enterprise";
+  const templateMeta = TEMPLATE_REGISTRY.quotation[template] || TEMPLATE_REGISTRY.quotation.Classic;
+  const isProTemplate = templateMeta.pro;
+  const showWatermark = isProTemplate && !isUserPro;
+
   const handleDownload = () => {
+    if (showWatermark) {
+      toast.error("This is a PRO template. Please upgrade to download without watermark!");
+      router.push("/#pricing");
+      return;
+    }
     download("Quotation" + template, form, `Quotation-${form.quoteNumber}.pdf`);
+  };
+
+  const handleSave = async () => {
+    if (!getAccessToken()) { toast.error("Please sign in to save"); router.push("/login"); return; }
+    try {
+      await documentsApi.save({ docType: "quotation", title: "Quotation #" + form.quoteNumber, referenceNumber: form.quoteNumber, partyName: form.toName, amount: form.items.reduce((s, i) => s + parseFloat(i.amount || 0), 0).toFixed(2), formData: JSON.stringify(form) });
+      toast.success("Saved to your dashboard!");
+    } catch { toast.error("Save failed"); }
   };
 
   const updateField = useCallback((field, value) => setForm(prev => ({ ...prev, [field]: value })), []);
@@ -172,10 +200,12 @@ export default function QuotationPage() {
     { id: "to", label: "Client" },
     { id: "items", label: "Items" },
     { id: "extra", label: "Settings" },
+    { id: "templates", label: "Templates" },
   ];
 
   return (
     <>
+      <Toaster position="top-right" />
       <Navbar />
       <div style={{ background: "#fff", borderBottom: "1px solid #E5E7EB", padding: "14px 24px" }}>
         <div style={{ maxWidth: "1300px", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
@@ -193,6 +223,9 @@ export default function QuotationPage() {
               className="download-pdf-btn">
               <Download size={15} />
               {downloading ? "Generating..." : "Download PDF"}
+            </button>
+            <button onClick={handleSave} style={{ display: "flex", alignItems: "center", gap: "6px", height: "36px", padding: "0 14px", border: "1px solid #0D9488", borderRadius: "8px", background: "#fff", fontSize: "13px", fontWeight: 600, color: "#0D9488", cursor: "pointer", fontFamily: "Inter, sans-serif", transition: "all 150ms" }}>
+              <Cloud size={14} /> Save
             </button>
           </div>
         </div>
@@ -217,8 +250,7 @@ export default function QuotationPage() {
                 <div style={{ marginBottom: "16px" }}>
                   <p style={{ fontSize: "11px", fontWeight: 600, color: "#6B7280", margin: "0 0 6px", fontFamily: "Inter, sans-serif" }}>Company Logo</p>
                   <LogoUpload value={form.logo} onChange={v => updateField("logo", v)} />
-                <div style={{ marginTop: "16px" }}><TemplatePicker docType="quotation" selected={template} onChange={setTemplate} isPro={false} /></div>
-</div>
+                </div>
                 <div className="form-field"><label className="field-label">Business Name</label><input className="doc-input" placeholder="Your Company Name" value={form.fromName} onChange={e => updateField("fromName", e.target.value)} /></div>
                 <div className="form-field"><label className="field-label">GSTIN</label><input className="doc-input" placeholder="22AAAAA0000A1Z5" value={form.fromGSTIN} onChange={e => updateField("fromGSTIN", e.target.value.toUpperCase())} style={{ fontFamily: "monospace" }} /></div>
                 <div className="form-field"><label className="field-label">Address</label><textarea className="doc-textarea" placeholder="Street address" value={form.fromAddress} onChange={e => updateField("fromAddress", e.target.value)} /></div>
@@ -298,7 +330,25 @@ export default function QuotationPage() {
                 <div className="form-field"><label className="field-label">Notes</label><textarea className="doc-textarea" placeholder="Additional notes..." value={form.notes} onChange={e => updateField("notes", e.target.value)} style={{ minHeight: "80px" }} /></div>
                 <div className="form-field"><label className="field-label">Terms</label><textarea className="doc-textarea" value={form.terms} onChange={e => updateField("terms", e.target.value)} style={{ minHeight: "80px" }} /></div>
                 <div style={{ borderTop: "1px solid #F3F4F6", margin: "16px 0" }} />
-                <button className="download-pdf-btn" style={{ width: "100%", justifyContent: "center" }}><Download size={15} /> Download PDF — Free</button>
+                <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn" style={{ width: "100%", justifyContent: "center" }}><Download size={15} /> Download PDF</button>
+              </div>
+            )}
+
+            {activeTab === "templates" && (
+              <div>
+                <p className="form-label">Template Design</p>
+                <div style={{ marginTop: "8px" }}>
+                  <TemplatePicker 
+                    docType="quotation" 
+                    selected={template} 
+                    onChange={setTemplate} 
+                    isPro={isUserPro} 
+                  />
+                </div>
+                <div style={{ borderTop: "1px solid #F3F4F6", margin: "24px 0" }} />
+                <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn" style={{ width: "100%", justifyContent: "center" }}>
+                  <Download size={15} /> Download PDF
+                </button>
               </div>
             )}
           </div>
@@ -312,7 +362,10 @@ export default function QuotationPage() {
               </div>
               <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn"><Download size={14} />{downloading ? "Generating..." : "Download PDF"}</button>
             </div>
-            <QuotationPreview form={form} />
+            <div style={{ position: "relative" }}>
+              {showWatermark && <WatermarkOverlay />}
+              <QuotationPreview form={form} />
+            </div>
           </div>
         </div>
 
