@@ -292,13 +292,15 @@ export default function CertificatePage() {
           <div style={{ display: "flex", gap: "8px" }}>
             <button
               onClick={() => setForm({ ...DEFAULT_FORM, verificationId: generateVerificationId() })}
-
               style={{ display: "flex", alignItems: "center", gap: "6px", height: "36px", padding: "0 14px", border: "1px solid #E5E7EB", borderRadius: "8px", background: "#fff", fontSize: "13px", fontWeight: 600, color: "#6B7280", cursor: "pointer", fontFamily: "Inter, sans-serif" }}>
               <RefreshCw size={13} /> Reset
             </button>
             <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn">
               <Download size={15} />
               {downloading ? "Generating..." : "Download PDF"}
+            </button>
+            <button onClick={handleSave} style={{ display: "flex", alignItems: "center", gap: "6px", height: "36px", padding: "0 14px", border: "1px solid #0D9488", borderRadius: "8px", background: "#fff", fontSize: "13px", fontWeight: 600, color: "#0D9488", cursor: "pointer", fontFamily: "Inter, sans-serif", transition: "all 150ms" }}>
+              <Cloud size={14} /> Save
             </button>
           </div>
         </div>

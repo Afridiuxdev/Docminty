@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -8,8 +8,11 @@ import AdSense from "@/components/AdSense";
 import PricingCard from "@/components/PricingCard";
 import { DOC_TYPES as PREVIEW_DOC_TYPES } from "@/constants/docTypes";
 import {
-    ChevronDown, Download, FileText,
-    Archive, Smile, AlignLeft, Timer, Search, Star
+    ChevronDown, Download, FileText, FileQuestion, Receipt, ShoppingCart,
+    Box, CreditCard, Home, Banknote, Briefcase, LogOut, Mail, Award,
+    GraduationCap, CheckCircle, PlusSquare, Scissors, Minimize, FileInput,
+    FileOutput, Image, Calculator, Percent, BadgeIndianRupee, TrendingUp,
+    Coins, BarChart3, Tag, QrCode, Archive, Smile, AlignLeft, Timer, Search, X, Star
 } from "lucide-react";
 import WatermarkOverlay from "@/components/WatermarkOverlay";
 
@@ -20,10 +23,10 @@ const TB = "#99F6E4";
 const BG = "#F0F4F3";
 
 const STATS = [
-    { value: "10K+", label: "Documents Created" },
-    { value: "2K+", label: "Happy Users" },
-    { value: "99.9%", label: "Uptime" },
-    { value: "0.5s", label: "Avg Load Time" },
+    { num: 10, suffix: "K+", label: "Documents Created", decimals: 0 },
+    { num: 2, suffix: "K+", label: "Happy Users", decimals: 0 },
+    { num: 99.9, suffix: "%", label: "Uptime", decimals: 1 },
+    { num: 0.5, suffix: "s", label: "Avg Load Time", decimals: 1 },
 ];
 
 const FEATURES = [
@@ -44,29 +47,27 @@ const DOC_TABS = [
 
 const DOC_GROUPS = {
     finance: [
-        { id: "invoice", label: "GST INVOICE", description: "Tax invoice with CGST, SGST & IGST", icon: "📄", href: "/invoice" },
-        { id: "quotation", label: "QUOTATION", description: "Price quotes for clients", icon: "💬", href: "/quotation" },
-        { id: "receipt", label: "RECEIPT", description: "Payment receipt generator", icon: "🧾", href: "/receipt" },
-        { id: "proforma-invoice", label: "PROFORMA INVOICE", description: "Advance billing document", icon: "📋", href: "/proforma-invoice" },
-        { id: "rent-receipt", label: "RENT RECEIPT", description: "Monthly rent receipt for HRA", icon: "🏠", href: "/rent-receipt" },
-        { id: "payment-voucher", label: "PAYMENT VOUCHER", description: "Internal payment records", icon: "💳", href: "/payment-voucher" },
+        { id: "invoice", label: "GST INVOICE", description: "Create GST invoices with CGST, SGST & IGST", icon: FileText, href: "/invoice", badge: "Popular" },
+        { id: "quotation", label: "QUOTATION", description: "Professional price quotes for your clients", icon: FileQuestion, href: "/quotation" },
+        { id: "receipt", label: "RECEIPT", description: "Generate payment receipts instantly", icon: Receipt, href: "/receipt" },
+        { id: "proforma-invoice", label: "PROFORMA INVOICE", description: "Advance billing for pending orders", icon: FileText, href: "/proforma-invoice" },
+        { id: "rent-receipt", label: "RENT RECEIPT", description: "Monthly rent receipts for HRA claims", icon: Home, href: "/rent-receipt" },
+        { id: "payment-voucher", label: "PAYMENT VOUCHER", description: "Internal records for business payments", icon: CreditCard, href: "/payment-voucher" },
     ],
     hr: [
-        { id: "salary-slip", label: "SALARY SLIP", description: "Payslip with PF, TDS & allowances", icon: "💰", href: "/salary-slip" },
-        { id: "certificate", label: "CERTIFICATE", description: "Bulk verified certificates with QR", icon: "🏆", href: "/certificate" },
-        { id: "internship-certificate", label: "INTERNSHIP CERT", description: "Internship completion certificate", icon: "🎓", href: "/internship-certificate" },
-        { id: "experience-letter", label: "EXPERIENCE LETTER", description: "HR experience certificates", icon: "✉️", href: "/experience-letter" },
-        { id: "job-offer-letter", label: "JOB OFFER LETTER", description: "Formal offer letter template", icon: "🤝", href: "/job-offer-letter" },
+        { id: "salary-slip", label: "SALARY SLIP", description: "Generate payslips with PF, TDS & allowances", icon: Banknote, href: "/salary-slip", badge: "Popular" },
+        { id: "certificate", label: "CERTIFICATE", description: "Verified certificates with unique QR codes", icon: Award, href: "/certificate", badge: "Popular" },
+        { id: "internship-certificate", label: "INTERNSHIP CERT", description: "Completion certificates for your interns", icon: GraduationCap, href: "/internship-certificate" },
+        { id: "verify-certificate", label: "VERIFY CERTIFICATE", description: "Instant QR-based certificate validation", icon: CheckCircle, href: "/verify-certificate" },
     ],
     letters: [
-        { id: "resignation-letter", label: "RESIGNATION LETTER", description: "Professional resignation format", icon: "📝", href: "/resignation-letter" },
-        { id: "experience-letter", label: "EXPERIENCE LETTER", description: "HR experience certificates", icon: "✉️", href: "/experience-letter" },
-        { id: "job-offer-letter", label: "JOB OFFER LETTER", description: "Formal offer letter template", icon: "🤝", href: "/job-offer-letter" },
+        { id: "experience-letter", label: "EXPERIENCE LETTER", description: "Official HR letters for departing employees", icon: Briefcase, href: "/experience-letter" },
+        { id: "resignation-letter", label: "RESIGNATION LETTER", description: "Professional resignation letter formats", icon: LogOut, href: "/resignation-letter" },
+        { id: "job-offer-letter", label: "JOB OFFER LETTER", description: "Formal offer letters for new candidates", icon: Mail, href: "/job-offer-letter" },
     ],
     ops: [
-        { id: "purchase-order", label: "PURCHASE ORDER", description: "PO for vendors and suppliers", icon: "🛒", href: "/purchase-order" },
-        { id: "packing-slip", label: "PACKING SLIP", description: "Shipment packing list", icon: "📦", href: "/packing-slip" },
-        { id: "proforma-invoice", label: "PROFORMA INVOICE", description: "Advance billing document", icon: "📋", href: "/proforma-invoice" },
+        { id: "purchase-order", label: "PURCHASE ORDER", description: "Formal POs for vendors and suppliers", icon: ShoppingCart, href: "/purchase-order" },
+        { id: "packing-slip", label: "PACKING SLIP", description: "Professional shipment packing lists", icon: Box, href: "/packing-slip" },
     ],
 };
 
@@ -80,32 +81,32 @@ const TEMPLATE_PREVIEWS = {
         { name: "Elegant", pro: true, accent: "#D97706", bg: "#FFFBEB", desc: "Gold luxury design", layout: "header", from: "Mehta Creatives", gstin: "24MEHTA9603R1ZM", to: "Global Ventures Ltd.", items: [{ n: "Brand Strategy", hsn: "9983", q: 1, r: "80,000", g: "18%", a: "Rs.94,400" }, { n: "Marketing", hsn: "9983", q: 70, r: "1,000", g: "18%", a: "Rs.82,600" }], rows: [["CGST @9%", "Rs.13,500"], ["SGST @9%", "Rs.13,500"]], total: "Rs.1,77,000" },
     ],
     "salary-slip": [
-        { name: "Classic", pro: false, accent: "#0D9488", bg: "#F0FDFA", desc: "Standard payslip", from: "TechStart Pvt. Ltd.", gstin: "EMP001", to: "Sr. Software Developer", items: [["Basic Salary", "Rs.45,000"], ["HRA", "Rs.18,000"], ["DA", "Rs.4,500"]], rows: [["Employee PF", "-Rs.1,800"], ["Prof. Tax", "-Rs.200"]], total: "Rs.65,500" },
-        { name: "Minimal", pro: false, accent: "#111827", bg: "#F8F9FA", desc: "Clean black/white", from: "Innovate Labs", gstin: "EMP042", to: "Product Manager", items: [["Basic Salary", "Rs.70,000"], ["HRA", "Rs.28,000"], ["Conveyance", "Rs.1,600"]], rows: [["Employee PF", "-Rs.3,600"], ["TDS", "-Rs.2,500"]], total: "Rs.93,500" },
-        { name: "Modern", pro: true, accent: "#6366F1", bg: "#EEF2FF", desc: "Purple dark header", from: "Future Systems", gstin: "EMP108", to: "Lead Engineer", items: [["Basic Salary", "Rs.90,000"], ["HRA", "Rs.36,000"], ["Special Allow.", "Rs.10,000"]], rows: [["Employee PF", "-Rs.4,800"], ["TDS", "-Rs.8,000"]], total: "Rs.1,23,200" },
-        { name: "Corporate", pro: true, accent: "#1E3A5F", bg: "#EFF6FF", desc: "Navy HR format", from: "Blue Chip Corp", gstin: "EMP215", to: "Finance Manager", items: [["Basic Salary", "Rs.55,000"], ["HRA", "Rs.22,000"], ["LTA", "Rs.5,000"]], rows: [["Employee PF", "-Rs.2,640"], ["Prof. Tax", "-Rs.200"]], total: "Rs.79,160" },
-        { name: "Elegant", pro: true, accent: "#D97706", bg: "#FFFBEB", desc: "Gold premium format", from: "Prestige Consulting", gstin: "EMP089", to: "Senior Consultant", items: [["Basic Salary", "Rs.1,20,000"], ["HRA", "Rs.48,000"], ["Perf. Bonus", "Rs.25,000"]], rows: [["Employee PF", "-Rs.7,200"], ["TDS", "-Rs.18,000"]], total: "Rs.1,67,800" },
+        { name: "Classic", pro: false, layout: "header", accent: "#0D9488", bg: "#F0FDFA", desc: "Standard payslip", from: "TechStart Pvt. Ltd.", gstin: "EMP001", to: "Sr. Software Developer", items: [["Basic Salary", "Rs.45,000"], ["HRA", "Rs.18,000"], ["DA", "Rs.4,500"]], rows: [["Employee PF", "-Rs.1,800"], ["Prof. Tax", "-Rs.200"]], total: "Rs.65,500" },
+        { name: "Minimal", pro: false, layout: "minimal", accent: "#111827", bg: "#F8F9FA", desc: "Clean black/white", from: "Innovate Labs", gstin: "EMP042", to: "Product Manager", items: [["Basic Salary", "Rs.70,000"], ["HRA", "Rs.28,000"], ["Conveyance", "Rs.1,600"]], rows: [["Employee PF", "-Rs.3,600"], ["TDS", "-Rs.2,500"]], total: "Rs.93,500" },
+        { name: "Modern", pro: true, layout: "sidebar", accent: "#6366F1", bg: "#EEF2FF", desc: "Purple dark header", from: "Future Systems", gstin: "EMP108", to: "Lead Engineer", items: [["Basic Salary", "Rs.90,000"], ["HRA", "Rs.36,000"], ["Special Allow.", "Rs.10,000"]], rows: [["Employee PF", "-Rs.4,800"], ["TDS", "-Rs.8,000"]], total: "Rs.1,23,200" },
+        { name: "Corporate", pro: true, layout: "centered", accent: "#1E3A5F", bg: "#EFF6FF", desc: "Navy HR format", from: "Blue Chip Corp", gstin: "EMP215", to: "Finance Manager", items: [["Basic Salary", "Rs.55,000"], ["HRA", "Rs.22,000"], ["LTA", "Rs.5,000"]], rows: [["Employee PF", "-Rs.2,640"], ["Prof. Tax", "-Rs.200"]], total: "Rs.79,160" },
+        { name: "Elegant", pro: true, layout: "accent-bottom", accent: "#D97706", bg: "#FFFBEB", desc: "Gold premium format", from: "Prestige Consulting", gstin: "EMP089", to: "Senior Consultant", items: [["Basic Salary", "Rs.1,20,000"], ["HRA", "Rs.48,000"], ["Perf. Bonus", "Rs.25,000"]], rows: [["Employee PF", "-Rs.7,200"], ["TDS", "-Rs.18,000"]], total: "Rs.1,67,800" },
     ],
     certificate: [
-        { name: "Classic", pro: false, accent: "#0D9488", bg: "#F0FDFA", desc: "Traditional border", from: "Reddy Academy", gstin: "ID: DM-ABC123", to: "Rahul Gupta", items: [["Course", "Full Stack Dev"], ["Duration", "6 Months"], ["Grade", "A+"]], rows: [["Issued", "15 Mar 2026"], ["QR Verified", "Yes"]], total: "Authentic" },
-        { name: "Minimal", pro: false, accent: "#111827", bg: "#F8F9FA", desc: "Clean minimal lines", from: "Code Academy", gstin: "ID: DM-DEF456", to: "Priya Sharma", items: [["Course", "Data Science"], ["Duration", "3 Months"], ["Grade", "A"]], rows: [["Issued", "20 Mar 2026"], ["QR Verified", "Yes"]], total: "Authentic" },
-        { name: "Modern", pro: true, accent: "#6366F1", bg: "#EEF2FF", desc: "Indigo top bar", from: "Tech Institute", gstin: "ID: DM-GHI789", to: "Arjun Mehta", items: [["Course", "UI/UX Design"], ["Duration", "2 Months"], ["Grade", "A+"]], rows: [["Issued", "22 Mar 2026"], ["QR Verified", "Yes"]], total: "Authentic" },
-        { name: "Royal", pro: true, accent: "#D97706", bg: "#FFFBEB", desc: "Gold ornamental", from: "Premier Academy", gstin: "ID: DM-JKL012", to: "Sneha Patel", items: [["Course", "MBA Finance"], ["Duration", "12 Months"], ["Grade", "A+"]], rows: [["Issued", "25 Mar 2026"], ["QR Verified", "Yes"]], total: "Authentic" },
-        { name: "Elegant", pro: true, accent: "#7C3AED", bg: "#F5F3FF", desc: "Purple ribbon style", from: "Excellence Institute", gstin: "ID: DM-MNO345", to: "Kiran Reddy", items: [["Course", "Cloud Computing"], ["Duration", "4 Months"], ["Grade", "S"]], rows: [["Issued", "28 Mar 2026"], ["QR Verified", "Yes"]], total: "Authentic" },
+        { name: "Classic", pro: false, layout: "centered", accent: "#0D9488", bg: "#F0FDFA", desc: "Traditional border", from: "Reddy Academy", gstin: "ID: DM-ABC123", to: "Rahul Gupta", items: [["Course", "Full Stack Dev"], ["Duration", "6 Months"], ["Grade", "A+"]], rows: [["Issued", "15 Mar 2026"], ["QR Verified", "Yes"]], total: "Authentic" },
+        { name: "Minimal", pro: false, layout: "minimal", accent: "#111827", bg: "#F8F9FA", desc: "Clean minimal lines", from: "Code Academy", gstin: "ID: DM-DEF456", to: "Priya Sharma", items: [["Course", "Data Science"], ["Duration", "3 Months"], ["Grade", "A"]], rows: [["Issued", "20 Mar 2026"], ["QR Verified", "Yes"]], total: "Authentic" },
+        { name: "Modern", pro: true, layout: "header", accent: "#6366F1", bg: "#EEF2FF", desc: "Indigo top bar", from: "Tech Institute", gstin: "ID: DM-GHI789", to: "Arjun Mehta", items: [["Course", "UI/UX Design"], ["Duration", "2 Months"], ["Grade", "A+"]], rows: [["Issued", "22 Mar 2026"], ["QR Verified", "Yes"]], total: "Authentic" },
+        { name: "Royal", pro: true, layout: "accent-bottom", accent: "#D97706", bg: "#FFFBEB", desc: "Gold ornamental", from: "Premier Academy", gstin: "ID: DM-JKL012", to: "Sneha Patel", items: [["Course", "MBA Finance"], ["Duration", "12 Months"], ["Grade", "A+"]], rows: [["Issued", "25 Mar 2026"], ["QR Verified", "Yes"]], total: "Authentic" },
+        { name: "Elegant", pro: true, layout: "sidebar", accent: "#7C3AED", bg: "#F5F3FF", desc: "Purple ribbon style", from: "Excellence Institute", gstin: "ID: DM-MNO345", to: "Kiran Reddy", items: [["Course", "Cloud Computing"], ["Duration", "4 Months"], ["Grade", "S"]], rows: [["Issued", "28 Mar 2026"], ["QR Verified", "Yes"]], total: "Authentic" },
     ],
     quotation: [
-        { name: "Classic", pro: false, accent: "#0D9488", bg: "#F0FDFA", desc: "Standard quote format", from: "Arjun Design Studio", gstin: "29AABCU9603R1ZX", to: "Nair Industries Ltd.", items: [["UI Design", "Rs.20,000"], ["Development", "Rs.40,000"], ["Deployment", "Rs.8,000"]], rows: [["Subtotal", "Rs.68,000"], ["GST @18%", "Rs.12,240"]], total: "Rs.80,240" },
-        { name: "Minimal", pro: false, accent: "#111827", bg: "#F8F9FA", desc: "Clean minimal quote", from: "Studio Pixels", gstin: "27PIXEL9603R1ZM", to: "Green Energy Corp.", items: [["Brand Design", "Rs.35,000"], ["Web Dev", "Rs.55,000"], ["SEO", "Rs.10,000"]], rows: [["Subtotal", "Rs.1,00,000"], ["GST @18%", "Rs.18,000"]], total: "Rs.1,18,000" },
-        { name: "Modern", pro: true, accent: "#6366F1", bg: "#EEF2FF", desc: "Modern sidebar", from: "Creative Hub", gstin: "29CREAT9603R1ZX", to: "Sunrise Enterprises", items: [["Logo Design", "Rs.15,000"], ["Social Media", "Rs.25,000"], ["Content", "Rs.20,000"]], rows: [["Subtotal", "Rs.60,000"], ["GST @18%", "Rs.10,800"]], total: "Rs.70,800" },
-        { name: "Corporate", pro: true, accent: "#1E3A5F", bg: "#EFF6FF", desc: "Formal corporate", from: "Blue Solutions", gstin: "36BLUES9603R1ZM", to: "National Corp Ltd.", items: [["Consulting", "Rs.1,00,000"], ["Research", "Rs.50,000"], ["Training", "Rs.30,000"]], rows: [["Subtotal", "Rs.1,80,000"], ["GST @18%", "Rs.32,400"]], total: "Rs.2,12,400" },
-        { name: "Elegant", pro: true, accent: "#D97706", bg: "#FFFBEB", desc: "Gold premium quote", from: "Prestige Agency", gstin: "24PREST9603R1ZM", to: "Diamond Holdings", items: [["Campaign", "Rs.2,00,000"], ["Production", "Rs.80,000"], ["Analytics", "Rs.40,000"]], rows: [["Subtotal", "Rs.3,20,000"], ["GST @18%", "Rs.57,600"]], total: "Rs.3,77,600" },
+        { name: "Classic", pro: false, layout: "header", accent: "#0D9488", bg: "#F0FDFA", desc: "Standard quote format", from: "Arjun Design Studio", gstin: "29AABCU9603R1ZX", to: "Nair Industries Ltd.", items: [["UI Design", "Rs.20,000"], ["Development", "Rs.40,000"], ["Deployment", "Rs.8,000"]], rows: [["Subtotal", "Rs.68,000"], ["GST @18%", "Rs.12,240"]], total: "Rs.80,240" },
+        { name: "Minimal", pro: false, layout: "minimal", accent: "#111827", bg: "#F8F9FA", desc: "Clean minimal quote", from: "Studio Pixels", gstin: "27PIXEL9603R1ZM", to: "Green Energy Corp.", items: [["Brand Design", "Rs.35,000"], ["Web Dev", "Rs.55,000"], ["SEO", "Rs.10,000"]], rows: [["Subtotal", "Rs.1,00,000"], ["GST @18%", "Rs.18,000"]], total: "Rs.1,18,000" },
+        { name: "Modern", pro: true, layout: "sidebar", accent: "#6366F1", bg: "#EEF2FF", desc: "Modern sidebar", from: "Creative Hub", gstin: "29CREAT9603R1ZX", to: "Sunrise Enterprises", items: [["Logo Design", "Rs.15,000"], ["Social Media", "Rs.25,000"], ["Content", "Rs.20,000"]], rows: [["Subtotal", "Rs.60,000"], ["GST @18%", "Rs.10,800"]], total: "Rs.70,800" },
+        { name: "Corporate", pro: true, layout: "centered", accent: "#1E3A5F", bg: "#EFF6FF", desc: "Formal corporate", from: "Blue Solutions", gstin: "36BLUES9603R1ZM", to: "National Corp Ltd.", items: [["Consulting", "Rs.1,00,000"], ["Research", "Rs.50,000"], ["Training", "Rs.30,000"]], rows: [["Subtotal", "Rs.1,80,000"], ["GST @18%", "Rs.32,400"]], total: "Rs.2,12,400" },
+        { name: "Elegant", pro: true, layout: "accent-bottom", accent: "#D97706", bg: "#FFFBEB", desc: "Gold premium quote", from: "Prestige Agency", gstin: "24PREST9603R1ZM", to: "Diamond Holdings", items: [["Campaign", "Rs.2,00,000"], ["Production", "Rs.80,000"], ["Analytics", "Rs.40,000"]], rows: [["Subtotal", "Rs.3,20,000"], ["GST @18%", "Rs.57,600"]], total: "Rs.3,77,600" },
     ],
     receipt: [
-        { name: "Classic", pro: false, accent: "#0D9488", bg: "#F0FDFA", desc: "Standard receipt", from: "Patel Enterprises", gstin: "RCP-2026-001", to: "Sharma Consulting", items: [["Consulting Fee", "Rs.15,000"], ["GST @18%", "Rs.2,700"], ["Mode", "UPI"]], rows: [["Date", "19 Mar 2026"], ["Status", "Paid"]], total: "Rs.17,700" },
-        { name: "Minimal", pro: false, accent: "#111827", bg: "#F8F9FA", desc: "Clean receipt", from: "Kumar Services", gstin: "RCP-2026-042", to: "Singh Traders", items: [["Service Charge", "Rs.8,000"], ["GST @18%", "Rs.1,440"], ["Mode", "NEFT"]], rows: [["Date", "20 Mar 2026"], ["Status", "Paid"]], total: "Rs.9,440" },
-        { name: "Modern", pro: true, accent: "#6366F1", bg: "#EEF2FF", desc: "Modern design", from: "Reddy Solutions", gstin: "RCP-2026-108", to: "Mehta Group", items: [["Annual Maintenance", "Rs.24,000"], ["Support", "Rs.6,000"], ["Mode", "Cheque"]], rows: [["Date", "21 Mar 2026"], ["Status", "Paid"]], total: "Rs.35,400" },
-        { name: "Corporate", pro: true, accent: "#1E3A5F", bg: "#EFF6FF", desc: "Formal corporate", from: "Blue Services", gstin: "RCP-2026-215", to: "National Industries", items: [["License Fee", "Rs.50,000"], ["GST @18%", "Rs.9,000"], ["Mode", "RTGS"]], rows: [["Date", "22 Mar 2026"], ["Status", "Paid"]], total: "Rs.59,000" },
-        { name: "Elegant", pro: true, accent: "#D97706", bg: "#FFFBEB", desc: "Luxury receipt", from: "Prestige Services", gstin: "RCP-2026-089", to: "Diamond Corp", items: [["Premium Package", "Rs.1,50,000"], ["GST @18%", "Rs.27,000"], ["Mode", "Wire"]], rows: [["Date", "23 Mar 2026"], ["Status", "Paid"]], total: "Rs.1,77,000" },
+        { name: "Classic", pro: false, layout: "header", accent: "#0D9488", bg: "#F0FDFA", desc: "Standard receipt", from: "Patel Enterprises", gstin: "RCP-2026-001", to: "Sharma Consulting", items: [["Consulting Fee", "Rs.15,000"], ["GST @18%", "Rs.2,700"], ["Mode", "UPI"]], rows: [["Date", "19 Mar 2026"], ["Status", "Paid"]], total: "Rs.17,700" },
+        { name: "Minimal", pro: false, layout: "minimal", accent: "#111827", bg: "#F8F9FA", desc: "Clean receipt", from: "Kumar Services", gstin: "RCP-2026-042", to: "Singh Traders", items: [["Service Charge", "Rs.8,000"], ["GST @18%", "Rs.1,440"], ["Mode", "NEFT"]], rows: [["Date", "20 Mar 2026"], ["Status", "Paid"]], total: "Rs.9,440" },
+        { name: "Modern", pro: true, layout: "sidebar", accent: "#6366F1", bg: "#EEF2FF", desc: "Modern design", from: "Reddy Solutions", gstin: "RCP-2026-108", to: "Mehta Group", items: [["Annual Maintenance", "Rs.24,000"], ["Support", "Rs.6,000"], ["Mode", "Cheque"]], rows: [["Date", "21 Mar 2026"], ["Status", "Paid"]], total: "Rs.35,400" },
+        { name: "Corporate", pro: true, layout: "centered", accent: "#1E3A5F", bg: "#EFF6FF", desc: "Formal corporate", from: "Blue Services", gstin: "RCP-2026-215", to: "National Industries", items: [["License Fee", "Rs.50,000"], ["GST @18%", "Rs.9,000"], ["Mode", "RTGS"]], rows: [["Date", "22 Mar 2026"], ["Status", "Paid"]], total: "Rs.59,000" },
+        { name: "Elegant", pro: true, layout: "accent-bottom", accent: "#D97706", bg: "#FFFBEB", desc: "Luxury receipt", from: "Prestige Services", gstin: "RCP-2026-089", to: "Diamond Corp", items: [["Premium Package", "Rs.1,50,000"], ["GST @18%", "Rs.27,000"], ["Mode", "Wire"]], rows: [["Date", "23 Mar 2026"], ["Status", "Paid"]], total: "Rs.1,77,000" },
     ],
 };
 
@@ -121,75 +122,149 @@ const TESTIMONIALS = [
 const PRICING_PLANS = [
     {
         plan: "Free", price: "₹0", period: "forever",
-        description: "For freelancers and occasional document needs.",
+        description: "For individuals & freelancers getting started",
         subNote: "No expiration date, use anytime.",
-        includedFeatures: ["All 14 document types", "Unlimited PDF downloads", "Logo upload", "GST auto-calculation", "Basic templates"],
-        notIncludedFeatures: ["Batch CSV processing", "Cloud document storage"],
+        includedFeatures: ["All document types access", "Unlimited PDF downloads", "GST auto-calculation", "2 Free templates"],
+        notIncludedFeatures: ["Logo upload", "Batch CSV processing", "Cloud document storage"],
         ctaLabel: "Get Started Free", ctaHref: "/invoice",
         highlighted: false,
     },
     {
         plan: "Business Pro", price: "₹199", originalPrice: "₹399", period: "/month",
-        description: "Built for growing businesses with recurring document needs.",
-        subNote: "2+ months free when billed annually.",
-        includedFeatures: ["Everything in Free", "Batch CSV processing", "Cloud document storage", "Premium templates", "Priority support", "Custom branding & logo"],
+        description: "For individuals & growing businesses",
+        badge: "Most Popular",
+        includedFeatures: ["Everything in Free", "Logo upload & custom branding", "Batch document generation (CSV)", "Store up to 20 documents in cloud", "Premium templates", "Priority support"],
         notIncludedFeatures: [],
-        ctaLabel: "Start Free Trial", ctaHref: "/signup",
-        promoCode: "DOCMINTY20",
+        ctaLabel: "Start Pro – ₹199/month", ctaHref: "/signup",
         extraLink: "/batch", extraLinkLabel: "See Batch Processing →",
         highlighted: true,
     },
     {
-        plan: "Enterprise", price: "Custom", period: "",
-        description: "Lifetime access for large teams with no recurring bills.",
-        subNote: "One-time payment, unlimited usage.",
-        includedFeatures: ["Everything in Pro", "Custom branding", "API access", "Dedicated account manager", "SLA guarantee", "Custom templates"],
+        plan: "Enterprise", price: "₹399", originalPrice: "₹799", period: "/month",
+        description: "For teams & high-volume document workflows",
+        badge: "Best for Teams",
+        includedFeatures: ["Everything in Pro", "Store up to 50 documents in cloud", "Team access / multi-user login", "Priority processing & faster performance", "Dedicated support"],
         notIncludedFeatures: [],
-        ctaLabel: "Contact Us", ctaHref: "mailto:hello@docminty.com",
-        promoCode: "DOCMINTY20",
+        ctaLabel: "Upgrade to Enterprise", ctaHref: "/signup",
         highlighted: false,
     },
 ];
 
 const FAQS = [
-    { q: "What is a GST invoice?", a: "A GST invoice is a legal document issued by a GST-registered business. It includes GSTIN, HSN/SAC codes, CGST, SGST or IGST breakup, and is required for claiming input tax credit." },
-    { q: "Is DocMinty really free?", a: "Yes! Single document PDF downloads are completely free with no watermark. Pro features like batch processing, cloud saving, and premium templates require a paid plan." },
-    { q: "Can I add my company logo?", a: "Absolutely. Upload any PNG or JPG logo — it will be automatically resized and placed perfectly on your document." },
-    { q: "Is it GST-compliant for FY 2025-26?", a: "Yes. All tax rates, PF rules, and GST slabs are updated for FY 2025-26. CGST, SGST, and IGST are auto-calculated based on your state selection." },
-    { q: "Can I save my documents for later?", a: "Cloud saving is available on the Pro plan. Free users can download PDFs immediately but documents are not stored on our servers." },
-    { q: "Which formats can I download?", a: "All documents are available as PDF. Pro users can also export as HTML for presentations and sharing." },
+    { q: "What is DocMinty and how does it work?", a: "DocMinty is a digital document platform that allows you to create, manage, and sign documents online. You can generate documents, download PDFs, and manage everything from a single dashboard." },
+    { q: "Are my documents secure on DocMinty?", a: "Yes, we prioritize security. All your documents are securely stored and protected using industry-standard encryption to ensure your data remains safe and private." },
+    { q: "Can I use DocMinty for free?", a: "Yes, DocMinty offers a free plan with essential features. You can upgrade anytime to access advanced features like cloud storage, branding, and batch processing." },
+    { q: "What payment methods do you accept?", a: "We support secure online payments via UPI, credit cards, and other standard payment methods for a smooth and safe checkout experience." },
+    { q: "Will my subscription renew automatically?", a: "Yes, subscriptions may renew automatically depending on the plan. You can manage or cancel your subscription anytime from your account settings." },
+    { q: "Can I upgrade or downgrade my plan anytime?", a: "Absolutely. You can upgrade or change your plan at any time based on your needs, and the changes will reflect immediately." },
+    { q: "Do you offer support if I face any issues?", a: "Yes, we provide support for all users. Pro and Enterprise users get priority and dedicated support for faster assistance." },
+    { q: "Can multiple users access the same account?", a: "Yes, our Enterprise plan supports team access, allowing multiple users to collaborate and manage documents efficiently." },
 ];
 
 // ── Sub components ────────────────────────────────────────────
 
+function AnimatedNumber({ end, suffix, decimals = 0, duration = 2000 }) {
+    const [count, setCount] = useState(0);
+    const [isVisible, setIsVisible] = useState(false);
+    const ref = useRef(null);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(([entry]) => {
+            if (entry.isIntersecting) {
+                setIsVisible(true);
+                observer.disconnect();
+            }
+        }, { threshold: 0.1 });
+        if (ref.current) observer.observe(ref.current);
+        return () => observer.disconnect();
+    }, []);
+
+    useEffect(() => {
+        if (!isVisible) return;
+        let start = 0;
+        const startTime = performance.now();
+        const update = (currentTime) => {
+            const progress = Math.min((currentTime - startTime) / duration, 1);
+            const easeOut = 1 - Math.pow(1 - progress, 3); // cubic ease out
+            setCount(start + (end - start) * easeOut);
+            if (progress < 1) requestAnimationFrame(update);
+            else setCount(end);
+        };
+        requestAnimationFrame(update);
+    }, [isVisible, end, duration]);
+
+    return (
+        <span ref={ref}>
+            {count.toFixed(decimals)}
+            {suffix}
+        </span>
+    );
+}
+
 function FAQItem({ q, a }) {
     const [open, setOpen] = useState(false);
     return (
-        <div style={{ borderBottom: "1px solid #E5E7EB" }}>
-            <button onClick={() => setOpen(!open)} className="faq-btn">
+        <div style={{
+            transition: "all 0.3s ease",
+            background: "#fff",
+            border: "1px solid #E2E8F0",
+            borderRadius: "16px",
+            padding: "0 20px",
+            boxShadow: open ? "0 10px 15px -3px rgba(0,0,0,0.05)" : "none",
+            height: "fit-content"
+        }}>
+            <button
+                onClick={() => setOpen(!open)}
+                style={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    padding: "20px 0",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    textAlign: "left",
+                    gap: "16px"
+                }}
+            >
                 <span style={{
-                    fontSize: "15px", fontWeight: 600,
-                    color: open ? T : "#111827",
+                    fontSize: "15px",
+                    fontWeight: 600,
+                    color: open ? T : "#0F172A",
                     fontFamily: "Space Grotesk, sans-serif",
-                    transition: "color 150ms", textAlign: "left",
+                    transition: "color 0.2s",
+                    lineHeight: 1.4
                 }}>{q}</span>
                 <div style={{
-                    width: "24px", height: "24px", borderRadius: "50%",
-                    background: open ? T : "#F3F4F6", flexShrink: 0,
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    transition: "all 200ms",
+                    background: open ? T : "#F1F5F9",
+                    width: "24px",
+                    height: "24px",
+                    borderRadius: "50%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                    transform: open ? "rotate(180deg)" : "rotate(0deg)",
+                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
                 }}>
-                    <ChevronDown size={14} color={open ? "#fff" : "#6B7280"}
-                        style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 200ms" }}
-                    />
+                    <ChevronDown size={14} color={open ? "#fff" : "#94A3B8"} />
                 </div>
             </button>
-            {open && (
+            <div style={{
+                maxHeight: open ? "300px" : "0",
+                overflow: "hidden",
+                transition: "max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease",
+                opacity: open ? 1 : 0
+            }}>
                 <p style={{
-                    fontSize: "14px", color: "#6B7280", lineHeight: 1.7,
-                    margin: "0 0 16px", fontFamily: "Inter, sans-serif",
+                    fontSize: "14px",
+                    color: "#64748B",
+                    lineHeight: 1.6,
+                    margin: "0 0 20px",
+                    fontFamily: "Inter, sans-serif"
                 }}>{a}</p>
-            )}
+            </div>
         </div>
     );
 }
@@ -240,41 +315,69 @@ function DocCard({ doc }) {
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
             style={{
-                display: "flex", alignItems: "flex-start", gap: "12px",
-                padding: "16px",
-                border: `1px solid ${hovered ? T : "#D1D5DB"}`,
-                borderRadius: "10px",
-                background: hovered ? TL : "#fff",
+                display: "flex", flexDirection: "column", gap: "12px",
+                padding: "20px",
+                border: `1px solid ${hovered ? T : "#E5E7EB"}`,
+                borderRadius: "16px",
+                background: "#fff",
                 textDecoration: "none",
-                transition: "all 150ms",
-                transform: hovered ? "translateY(-2px)" : "translateY(0)",
-                boxShadow: hovered ? `0 4px 16px ${T}18` : "none",
+                transition: "all 200ms cubic-bezier(0.4, 0, 0.2, 1)",
+                transform: hovered ? "translateY(-4px)" : "translateY(0)",
+                boxShadow: hovered ? `0 12px 24px ${T}15` : "0 2px 4px rgba(0,0,0,0.02)",
+                position: "relative",
+                height: "100%",
+                flex: 1,
             }}
         >
-            <div style={{
-                width: "36px", height: "36px", flexShrink: 0,
-                borderRadius: "8px",
-                background: hovered ? T : TL,
-                border: `1px solid ${hovered ? T : TB}`,
-                display: "flex", alignItems: "center",
-                justifyContent: "center", fontSize: "16px",
-                transition: "all 150ms",
-            }}>
-                {doc.icon}
-            </div>
-            <div>
+            {doc.badge && (
+                <div style={{
+                    position: "absolute", top: "12px", right: "12px",
+                    background: "#FEF3C7", color: "#D97706",
+                    fontSize: "10px", fontWeight: 800, padding: "3px 8px",
+                    borderRadius: "20px", textTransform: "uppercase", letterSpacing: "0.05em"
+                }}>
+                    {doc.badge}
+                </div>
+            )}
+
+            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                <div style={{
+                    width: "40px", height: "40px", flexShrink: 0,
+                    borderRadius: "12px",
+                    background: hovered ? T : TL,
+                    border: `1px solid ${hovered ? T : TB}`,
+                    display: "flex", alignItems: "center",
+                    justifyContent: "center",
+                    transition: "all 200ms",
+                }}>
+                    <doc.icon size={22} color={hovered ? "#fff" : T} strokeWidth={1.5} />
+                </div>
                 <p style={{
                     fontFamily: "Space Grotesk, sans-serif",
-                    fontSize: "12px", fontWeight: 700,
+                    fontSize: "13px", fontWeight: 700,
                     color: hovered ? T : "#111827",
-                    margin: "0 0 3px",
-                    textTransform: "uppercase", letterSpacing: "0.04em",
-                    transition: "color 150ms",
+                    margin: 0,
+                    textTransform: "uppercase", letterSpacing: "0.05em",
+                    transition: "color 200ms",
                 }}>{doc.label}</p>
-                <p style={{
-                    fontSize: "12px", color: "#9CA3AF",
-                    margin: 0, fontFamily: "Inter, sans-serif", lineHeight: 1.4,
-                }}>{doc.description}</p>
+            </div>
+
+            <p style={{
+                fontSize: "13px", color: "#64748B",
+                margin: 0, fontFamily: "Inter, sans-serif", lineHeight: 1.5,
+                flex: 1
+            }}>{doc.description}</p>
+
+            <div style={{
+                marginTop: "4px",
+                display: "flex", alignItems: "center", gap: "4px",
+                fontSize: "13px", fontWeight: 700, color: T,
+                fontFamily: "Space Grotesk, sans-serif",
+                opacity: hovered ? 1 : 0.7,
+                transition: "opacity 200ms"
+            }}>
+                Generate Now
+                <span style={{ transform: hovered ? "translateX(4px)" : "none", transition: "transform 200ms" }}>→</span>
             </div>
         </Link>
     );
@@ -354,15 +457,14 @@ function TemplateCard({ tmpl, active, onClick }) {
     );
 }
 
-function TestiCard({ t, active, onClick }) {
+function TestiCard({ t }) {
     return (
-        <div onClick={onClick} style={{
-            border: `1px solid ${active ? T : "#E5E7EB"}`,
+        <div style={{
+            border: `1px solid #E5E7EB`,
             borderRadius: "12px", padding: "20px",
-            background: active ? TL : "#fff",
-            cursor: "pointer", transition: "all 200ms",
-            transform: active ? "translateY(-3px)" : "translateY(0)",
-            boxShadow: active ? `0 8px 24px ${T}18` : "none",
+            background: "#fff",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.02)",
+            whiteSpace: "normal"
         }}>
             <div style={{ display: "flex", gap: "2px", marginBottom: "10px" }}>
                 {[1, 2, 3, 4, 5].map(i => (
@@ -373,17 +475,17 @@ function TestiCard({ t, active, onClick }) {
                 fontSize: "14px", color: "#374151", lineHeight: 1.6,
                 margin: "0 0 14px", fontFamily: "Inter, sans-serif",
             }}>
-                "{active ? t.full : t.short}"
+                "{t.short}"
             </p>
             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                 <div style={{
                     width: "36px", height: "36px", borderRadius: "50%",
-                    background: active ? T : "#E5E7EB",
+                    background: "#E5E7EB",
                     display: "flex", alignItems: "center", justifyContent: "center",
                     fontSize: "13px", fontWeight: 700,
-                    color: active ? "#fff" : "#6B7280",
+                    color: "#6B7280",
                     fontFamily: "Space Grotesk, sans-serif",
-                    transition: "all 200ms", flexShrink: 0,
+                    flexShrink: 0,
                 }}>
                     {t.name.charAt(0)}
                 </div>
@@ -397,14 +499,6 @@ function TestiCard({ t, active, onClick }) {
                         margin: 0, fontFamily: "Inter, sans-serif",
                     }}>{t.role}, {t.company}</p>
                 </div>
-                {active && (
-                    <span style={{
-                        marginLeft: "auto", fontSize: "11px",
-                        color: T, fontFamily: "Inter, sans-serif", fontWeight: 600,
-                    }}>
-                        Read less ↑
-                    </span>
-                )}
             </div>
         </div>
     );
@@ -422,8 +516,8 @@ const HERO_SLIDES = [
             "GST-compliant with CGST, SGST, IGST auto-calculation.",
             "Export to PDF instantly — no sign-up, no watermark."
         ],
-        ctaParams: { type: "select" },
-        badges: ["Invoice", "Quotation", "Receipt", "Salary Slip", "Certificate"],
+        ctaParams: { type: "button", text: "Generate Invoice", href: "/invoice" },
+        badges: ["Invoice", "Quotation", "Receipt", "Purchase Order", "Delivery Note", "Packing Slip"],
         mockupType: "invoice"
     },
     {
@@ -543,14 +637,14 @@ function HeroMockupRender({ type }) {
                         <div style={{ width: "100%", height: "6px", background: "#F3F4F6", borderRadius: "3px", marginBottom: "8px" }}></div>
                         <div style={{ width: "100%", height: "6px", background: "#F3F4F6", borderRadius: "3px", marginBottom: "8px" }}></div>
                         <div style={{ width: "85%", height: "6px", background: "#F3F4F6", borderRadius: "3px", marginBottom: "24px" }}></div>
-                        
+
                         <div style={{ display: "flex", gap: "10px", alignItems: "center", borderTop: "1px dashed #E5E7EB", paddingTop: "16px" }}>
-                             <div style={{ width: "32px", height: "32px", background: TL, borderRadius: "50%", border: `1px solid ${TB}` }}></div>
-                             <div>
-                                 <div style={{ width: "80px", height: "8px", background: "#D1D5DB", borderRadius: "4px", marginBottom: "6px" }}></div>
-                                 <div style={{ width: "50px", height: "6px", background: "#F3F4F6", borderRadius: "3px" }}></div>
-                             </div>
-                             <div style={{ marginLeft: "auto", background: T, color: "#fff", padding: "4px 12px", borderRadius: "4px", fontSize: "10px", fontWeight: "bold" }}>Signed</div>
+                            <div style={{ width: "32px", height: "32px", background: TL, borderRadius: "50%", border: `1px solid ${TB}` }}></div>
+                            <div>
+                                <div style={{ width: "80px", height: "8px", background: "#D1D5DB", borderRadius: "4px", marginBottom: "6px" }}></div>
+                                <div style={{ width: "50px", height: "6px", background: "#F3F4F6", borderRadius: "3px" }}></div>
+                            </div>
+                            <div style={{ marginLeft: "auto", background: T, color: "#fff", padding: "4px 12px", borderRadius: "4px", fontSize: "10px", fontWeight: "bold" }}>Signed</div>
                         </div>
                     </div>
                 </div>
@@ -562,7 +656,7 @@ function HeroMockupRender({ type }) {
             <div className="hero-mockup" style={{ animation: "fadeIn 300ms ease" }}>
                 <div style={{ border: "1px solid #E5E7EB", borderRadius: "12px", overflow: "hidden", boxShadow: "0 8px 32px rgba(0,0,0,0.06)", background: "#fff", padding: "20px" }}>
                     <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "14px", margin: "0 0 16px", color: "#111827" }}>Merge PDF Files</p>
-                    
+
                     <div style={{ display: "flex", gap: "8px", marginBottom: "20px" }}>
                         <div style={{ flex: 1, height: "60px", background: "#F9FAFB", border: "1px dashed #D1D5DB", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
                             <FileText size={16} color="#9CA3AF" />
@@ -574,7 +668,7 @@ function HeroMockupRender({ type }) {
                             <span style={{ fontSize: "9px", color: "#6B7280", marginTop: "4px", fontFamily: "Inter, sans-serif" }}>Report_2.pdf</span>
                         </div>
                     </div>
-                    
+
                     <div style={{ background: TL, padding: "16px", borderRadius: "8px", textAlign: "center", border: `1px solid ${TB}` }}>
                         <div style={{ display: "flex", justifyContent: "center", marginBottom: "8px" }}>
                             <Archive size={20} color={T} />
@@ -593,8 +687,8 @@ function HeroMockupRender({ type }) {
         return (
             <div className="hero-mockup" style={{ animation: "fadeIn 300ms ease" }}>
                 <div style={{ border: "1px solid #E5E7EB", borderRadius: "12px", overflow: "hidden", boxShadow: "0 8px 32px rgba(0,0,0,0.06)", background: "#fff", padding: "20px" }}>
-                    <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "14px", margin: "0 0 16px", color: "#111827", display: "flex", alignItems: "center", gap: "6px" }}><Timer size={16} color={T}/> GST Calculator</p>
-                    
+                    <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "14px", margin: "0 0 16px", color: "#111827", display: "flex", alignItems: "center", gap: "6px" }}><Timer size={16} color={T} /> GST Calculator</p>
+
                     <div style={{ display: "flex", justifyContent: "space-between", background: "#F9FAFB", padding: "16px", borderRadius: "8px", marginBottom: "16px" }}>
                         <div>
                             <p style={{ fontSize: "11px", color: "#6B7280", margin: 0, fontFamily: "Inter, sans-serif" }}>Base Amount</p>
@@ -605,7 +699,7 @@ function HeroMockupRender({ type }) {
                             <p style={{ fontSize: "18px", fontWeight: 700, color: T, margin: "4px 0 0", fontFamily: "Space Grotesk, sans-serif" }}>18%</p>
                         </div>
                     </div>
-                    
+
                     <div style={{ padding: "0 4px" }}>
                         <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #F3F4F6", paddingBottom: "8px", marginBottom: "8px" }}>
                             <span style={{ fontSize: "13px", color: "#6B7280", fontFamily: "Inter, sans-serif" }}>CGST (9%)</span>
@@ -616,7 +710,7 @@ function HeroMockupRender({ type }) {
                             <span style={{ fontSize: "13px", fontWeight: "600", fontFamily: "Inter, sans-serif", color: "#111827" }}>₹900</span>
                         </div>
                     </div>
-                    
+
                     <div style={{ background: T, padding: "16px", borderRadius: "8px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         <span style={{ fontSize: "13px", color: "#fff", fontWeight: 500, fontFamily: "Inter, sans-serif" }}>Total Amount</span>
                         <span style={{ fontSize: "18px", color: "#fff", fontWeight: 700, fontFamily: "Space Grotesk, sans-serif" }}>₹11,800</span>
@@ -633,7 +727,7 @@ function HeroMockupRender({ type }) {
                         <span style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "14px", color: "#fff" }}>BATCH EXPORT</span>
                         <span style={{ fontSize: "10px", fontWeight: 800, color: "#D97706", background: "#FEF9C3", padding: "2px 8px", borderRadius: "4px" }}>PRO</span>
                     </div>
-                    
+
                     <div style={{ padding: "20px" }}>
                         <div style={{ display: "flex", gap: "12px", alignItems: "center", marginBottom: "20px" }}>
                             <div style={{ width: "40px", height: "40px", background: "#F3F4F6", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -644,11 +738,11 @@ function HeroMockupRender({ type }) {
                                 <p style={{ fontSize: "11px", color: "#0D9488", margin: "4px 0 0", fontWeight: 600, fontFamily: "Inter, sans-serif" }}>142 rows loaded successfully</p>
                             </div>
                         </div>
-                        
+
                         <div style={{ height: "6px", background: "#E5E7EB", borderRadius: "3px", overflow: "hidden", marginBottom: "20px" }}>
                             <div style={{ width: "100%", height: "100%", background: T, borderRadius: "3px" }}></div>
                         </div>
-                        
+
                         <div style={{ background: "#F9FAFB", border: "1px solid #E5E7EB", padding: "16px", borderRadius: "8px", textAlign: "center" }}>
                             <Archive size={28} color={T} style={{ marginBottom: "12px" }} />
                             <p style={{ fontSize: "14px", fontWeight: 700, margin: 0, color: "#111827", fontFamily: "Space Grotesk, sans-serif" }}>142_Salary_Slips.zip</p>
@@ -670,6 +764,30 @@ export default function LandingPage() {
     const [activeTemplateIdx, setActiveTemplateIdx] = useState(0);
     const [activeTestimonial, setActiveTestimonial] = useState(null);
     const [heroSlideIdx, setHeroSlideIdx] = useState(0);
+    const [billingCycle, setBillingCycle] = useState("monthly"); // monthly | annual
+    const [searchTerm, setSearchTerm] = useState("");
+
+    // Filter tools based on search term
+    const filteredTools = useMemo(() => {
+        const query = searchTerm.toLowerCase().trim();
+        if (!query) return Object.values(DOC_GROUPS).flat().filter(doc => {
+            // Only show the ones belonging to current tab if no search
+            return DOC_GROUPS[docTab].find(d => d.id === doc.id);
+        });
+
+        const results = [];
+        const seen = new Set();
+        Object.values(DOC_GROUPS).forEach(group => {
+            group.forEach(doc => {
+                if (seen.has(doc.id)) return;
+                if (doc.label.toLowerCase().includes(query) || doc.description.toLowerCase().includes(query)) {
+                    results.push(doc);
+                    seen.add(doc.id);
+                }
+            });
+        });
+        return results;
+    }, [searchTerm, docTab]);
 
     // Auto-advance hero slides every 5 seconds
     useEffect(() => {
@@ -683,9 +801,135 @@ export default function LandingPage() {
 
     return (
         <>
+            <style dangerouslySetInnerHTML={{
+                __html: `
+                @keyframes scroll-left {
+                    0% { transform: translateX(0); }
+                    100% { transform: translateX(calc(-50% - 8px)); }
+                }
+                @keyframes scroll-right {
+                    0% { transform: translateX(calc(-50% - 8px)); }
+                    100% { transform: translateX(0); }
+                }
+                .marquee-container {
+                    overflow: hidden;
+                    width: 100%;
+                    position: relative;
+                }
+                .marquee-container::before,
+                .marquee-container::after {
+                    content: "";
+                    position: absolute;
+                    top: 0;
+                    bottom: 0;
+                    width: 120px;
+                    z-index: 2;
+                    pointer-events: none;
+                }
+                .marquee-container::before {
+                    left: 0;
+                    background: linear-gradient(to right, #F0F4F3, transparent);
+                }
+                .marquee-container::after {
+                    right: 0;
+                    background: linear-gradient(to left, #F0F4F3, transparent);
+                }
+                .marquee-content {
+                    display: flex;
+                    gap: 16px;
+                    width: max-content;
+                }
+                .marquee-content.anim-left {
+                    animation: scroll-left 50s linear infinite;
+                }
+                .marquee-content.anim-right {
+                    animation: scroll-right 50s linear infinite;
+                }
+                .marquee-container:hover .marquee-content {
+                    animation-play-state: paused;
+                }
+                .templates-container { display: flex; flex-direction: column; border: 1px solid #D1D5DB; border-radius: 12px; overflow: hidden; background: #fff; }
+                .templates-tabs { display: flex; gap: 10px; border-bottom: 1px solid #E5E7EB; padding: 16px 20px; overflow-x: auto; scrollbar-width: none; background: #fff; -ms-overflow-style: none; }
+                .templates-tabs::-webkit-scrollbar { display: none; }
+                .tab-item, .tab-item-active {
+                    display: flex; align-items: center; gap: 8px; padding: 10px 18px; 
+                    border: 1px solid #E5E7EB; border-radius: 10px; background: #fff; 
+                    cursor: pointer; transition: all 200ms; white-space: nowrap; 
+                    font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 700; 
+                    color: #374151; transition: all 200ms; border: 1px solid #E5E7EB;
+                }
+                .tab-item:hover { border-color: #0D9488; color: #0D9488; transform: translateY(-1px); }
+                .tab-item-active { background: #0D9488 !important; color: #fff !important; border-color: #0D9488 !important; box-shadow: 0 4px 12px #0D948830; }
+                .section-title { font-family: 'Space Grotesk', sans-serif; font-size: clamp(28px, 4vw, 36px); font-weight: 800; color: #111827; text-align: center; margin-bottom: 12px; }
+                .section-subtitle { font-family: 'Inter', sans-serif; font-size: 16px; color: #6B7280; text-align: center; margin-bottom: 48px; max-width: 600px; margin-left: auto; margin-right: auto; }
+                
+                .templates-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+                .preview-frame { margin-top: 16px; border: 1px solid #E5E7EB; border-radius: 10px; overflow: hidden; background: #fff; position: relative; }
+                
+                 @media (max-width: 1200px) {
+                    .templates-grid { grid-template-columns: repeat(4, 1fr) !important; }
+                    .preview-doc-wrapper { zoom: 0.95; width: 800px !important; margin: 0 auto; }
+                    .preview-doc-container { height: auto !important; padding-bottom: 24px !important; }
+                 }
+                 
+                 @media (max-width: 1024px) {
+                    .templates-grid { grid-template-columns: repeat(3, 1fr) !important; }
+                    .preview-doc-wrapper {
+                        zoom: 0.9;
+                        width: 1030px !important;
+                        margin: 0 auto;
+                    }
+                 }
+                 
+                 @media (max-width: 768px) {
+                    .templates-tabs { padding: 12px 12px !important; }
+                    .tab-item, .tab-item-active { padding: 8px 14px !important; font-size: 12px !important; }
+                    .templates-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 8px !important; }
+                    .preview-header { flex-direction: column !important; align-items: flex-start !important; gap: 12px !important; }
+                    .preview-frame { border-radius: 12px !important; margin: 16px 0 !important; background: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border: 1px solid #E5E7EB !important; }
+                    .preview-doc-container { overflow: visible !important; padding: 0 !important; display: flex; justify-content: center; height: auto !important; }
+                    .preview-doc-wrapper { 
+                        width: 800px !important; 
+                        zoom: 0.85;
+                        flex-shrink: 0;
+                        margin: 0 auto;
+                        padding: 24px 24px !important;
+                    }
+                    .preview-columns { grid-template-columns: 1fr !important; }
+                    .preview-footer-columns { flex-direction: column !important; gap: 16px !important; }
+                    .preview-footer-columns > div { width: 100% !important; padding-left: 0 !important; }
+                    .tab-cta-container { display: none !important; }
+                    
+                    /* HOW IT WORKS MOBILE */
+                    .step-row-3col { 
+                        display: flex !important; 
+                        flex-direction: column !important; 
+                        gap: 20px !important; 
+                        text-align: center !important;
+                        margin-bottom: 60px !important;
+                    }
+                    .step-row-3col > div:nth-child(1) { order: 2; width: 100% !important; text-align: center !important; }
+                    .step-row-3col > div:nth-child(2) { order: 1; margin-bottom: 10px; }
+                    .step-row-3col > div:nth-child(3) { order: 3; width: 100% !important; text-align: center !important; }
+                    .step-row-3col h3, .step-row-3col p { text-align: center !important; width: 100% !important; }
+                    .tip-box { margin: 10px auto !important; max-width: 100% !important; text-align: left !important; }
+                 }
+                 
+                 @media (max-width: 640px) {
+                    .preview-doc-wrapper { zoom: 0.65; }
+                 }
+                 
+                 @media (max-width: 480px) {
+                    .preview-doc-wrapper { zoom: 0.45; padding: 24px 44px !important; }
+                 }
+                 
+                 @media (max-width: 380px) {
+                    .preview-doc-wrapper { zoom: 0.41; }
+                 }
+            `}} />
             <Navbar />
 
-                        {/* ── HERO ── */}
+            {/* ── HERO ── */}
             <section style={{ background: "#fff", padding: "64px 24px 72px" }}>
                 <div className="hero-grid" style={{
                     maxWidth: "1100px", margin: "0 auto",
@@ -738,23 +982,23 @@ export default function LandingPage() {
                                 ))}
                                 <span style={{ fontSize: "13px", color: "#9CA3AF", fontFamily: "Inter, sans-serif" }}>&nbsp;Used by 10,000+</span>
                             </div>
-                            
+
                             {/* Dotted Pagination */}
                             <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
                                 {HERO_SLIDES.map((_, idx) => (
-                                    <button 
-                                        key={idx} 
-                                        onClick={() => setHeroSlideIdx(idx)} 
-                                        style={{ 
-                                            width: heroSlideIdx === idx ? "28px" : "8px", 
-                                            height: "6px", 
-                                            borderRadius: "3px", 
-                                            background: heroSlideIdx === idx ? T : "#E5E7EB", 
-                                            border: "none", 
-                                            cursor: "pointer", 
+                                    <button
+                                        key={idx}
+                                        onClick={() => setHeroSlideIdx(idx)}
+                                        style={{
+                                            width: heroSlideIdx === idx ? "28px" : "8px",
+                                            height: "6px",
+                                            borderRadius: "3px",
+                                            background: heroSlideIdx === idx ? T : "#E5E7EB",
+                                            border: "none",
+                                            cursor: "pointer",
                                             padding: 0,
-                                            transition: "all 300ms ease" 
-                                        }} 
+                                            transition: "all 300ms ease"
+                                        }}
                                         aria-label={"Go to slide " + (idx + 1)}
                                     />
                                 ))}
@@ -795,30 +1039,78 @@ export default function LandingPage() {
 
             {/* ── PICK YOUR DOCUMENT ── */}
             <section style={{ background: BG, borderTop: "1px solid #D1D5DB" }}>
-                <div className="section-wrap">
+                <div className="section-wrap" style={{ padding: "64px 24px" }}>
                     <h2 className="section-title">Pick your document type</h2>
                     <p className="section-sub">Each tool is optimised for a specific business need.</p>
 
-                    {/* Tabs */}
-                    <div style={{
-                        display: "flex", gap: "8px", flexWrap: "wrap",
-                        justifyContent: "center", marginBottom: "24px",
-                    }}>
-                        {DOC_TABS.map((tab) => (
-                            <button key={tab.id} onClick={() => setDocTab(tab.id)}
-                                className={docTab === tab.id ? "tab-active" : "tab-inactive"}>
-                                {tab.label}
+                    {/* Search Input */}
+                    <div style={{ maxWidth: "500px", margin: "0 auto 32px", position: "relative" }}>
+                        <div style={{ position: "absolute", left: "16px", top: "50%", transform: "translateY(-50%)", color: "#64748B" }}>
+                            <Search size={18} />
+                        </div>
+                        <input
+                            type="text"
+                            placeholder="Search documents (Invoice, Salary Slip...)"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            style={{
+                                width: "100%", padding: "14px 14px 14px 48px",
+                                borderRadius: "12px", border: "1px solid #E2E8F0",
+                                background: "#fff", transition: "all 200ms",
+                                outline: "none", fontSize: "15px", fontFamily: "Inter, sans-serif",
+                                boxShadow: "0 2px 4px rgba(0,0,0,0.02)"
+                            }}
+                            onFocus={(e) => e.target.style.borderColor = T}
+                            onBlur={(e) => e.target.style.borderColor = "#E2E8F0"}
+                        />
+                        {searchTerm && (
+                            <button onClick={() => setSearchTerm("")} style={{ position: "absolute", right: "16px", top: "50%", transform: "translateY(-50%)", border: "none", background: "none", cursor: "pointer", color: "#64748B" }}>
+                                <X size={18} />
                             </button>
-                        ))}
+                        )}
                     </div>
 
+                    {!searchTerm && (
+                        /* Tabs - Scrollable on mobile */
+                        <div className="tab-scroll-container" style={{
+                            display: "flex", gap: "8px", overflowX: "auto",
+                            scrollbarWidth: "none", msOverflowStyle: "none",
+                            marginBottom: "24px", WebkitOverflowScrolling: "touch",
+                            paddingBottom: "4px" // prevent shadow cutoff
+                        }}>
+                            <style dangerouslySetInnerHTML={{ __html: `.tab-scroll-container::-webkit-scrollbar { display: none; }` }} />
+                            {DOC_TABS.map((tab) => (
+                                <button key={tab.id} onClick={() => setDocTab(tab.id)}
+                                    className={docTab === tab.id ? "tab-active" : "tab-inactive"}
+                                    style={{ whiteSpace: "nowrap" }}>
+                                    {tab.label}
+                                </button>
+                            ))}
+                        </div>
+                    )}
+
+                    {searchTerm && (
+                        <p style={{ fontSize: "14px", fontWeight: 700, color: "#64748B", marginBottom: "16px", textAlign: "center", fontFamily: "Space Grotesk, sans-serif" }}>
+                            {filteredTools.length} tools found matching "{searchTerm}"
+                        </p>
+                    )}
+
                     <div className="docs-grid" style={{
-                        display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "12px",
+                        display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "16px",
                     }}>
-                        {DOC_GROUPS[docTab].map((doc) => (
+                        {filteredTools.map((doc) => (
                             <DocCard key={doc.id} doc={doc} />
                         ))}
                     </div>
+
+                    {filteredTools.length === 0 && (
+                        <div style={{ textAlign: "center", padding: "48px 0", color: "#64748B" }}>
+                            <p style={{ fontSize: "16px", fontWeight: 600 }}>No documents found for "{searchTerm}"</p>
+                            <button onClick={() => setSearchTerm("")} style={{ marginTop: "12px", border: "none", background: "none", color: T, fontWeight: 700, cursor: "pointer", fontSize: "14px" }}>
+                                Clear search
+                            </button>
+                        </div>
+                    )}
                 </div>
             </section>
 
@@ -828,30 +1120,35 @@ export default function LandingPage() {
                     <h2 className="section-title">Document Templates</h2>
                     <p className="section-sub">5 professional templates for each document type. 2 free forever, 3 exclusive Pro designs.</p>
 
-                    <div style={{ display: "flex", border: "1px solid #D1D5DB", borderRadius: "12px", overflow: "hidden", background: "#fff" }}>
+                    {/* Main Container */}
+                    <div className="templates-container">
 
-                        {/* Sidebar - doc type selector */}
-                        <div style={{ width: "180px", flexShrink: 0, borderRight: "1px solid #E5E7EB", padding: "16px 0", display: "flex", flexDirection: "column" }}>
-                            <p style={{ fontSize: "11px", fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.08em", padding: "0 16px", margin: "0 0 12px", fontFamily: "Inter, sans-serif" }}>SELECT TYPE</p>
+                        {/* Top Navigation - doc type selector */}
+                        <div className="templates-tabs">
                             {PREVIEW_DOC_TYPES.slice(0, 5).map(dt => (
                                 <button key={dt.id} onClick={() => { setActiveDocType(dt.id); setActiveTemplateIdx(0); }}
-                                    className={activeDocType === dt.id ? "sidebar-item-active" : "sidebar-item"}>
-                                    <span style={{ fontSize: "15px" }}>{dt.icon}</span>
+                                    className={activeDocType === dt.id ? "tab-item-active" : "tab-item"}>
+                                    <dt.icon size={18} strokeWidth={2} />
                                     <span>{dt.label}</span>
                                 </button>
                             ))}
-                            <div style={{ marginTop: "auto", padding: "16px" }}>
-                                <Link href={`/${activeDocType}`} className="download-btn">
-                                    <Download size={13} /> CREATE FREE
+
+                            <div style={{ marginLeft: "auto", display: "flex", alignItems: "center" }}>
+                                <Link href={`/${activeDocType}`} style={{
+                                    textDecoration: "none", background: "#f0fdfa", color: "#0d9488",
+                                    fontSize: "12px", fontWeight: 700, padding: "8px 16px", borderRadius: "8px",
+                                    border: "1px solid #ccfbf1", display: "flex", alignItems: "center", gap: "6px",
+                                    fontFamily: "Inter, sans-serif"
+                                }}>
+                                    <Download size={14} /> CREATE FREE
                                 </Link>
-                                <p style={{ fontSize: "11px", color: "#9CA3AF", textAlign: "center", margin: "6px 0 0", fontFamily: "Inter, sans-serif" }}>No sign-up required</p>
                             </div>
                         </div>
 
                         {/* Templates area */}
-                        <div style={{ flex: 1, padding: "20px", background: BG }}>
+                        <div style={{ flex: 1, padding: "24px", background: BG, width: "100%", overflow: "hidden" }}>
                             {/* Header */}
-                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+                            <div className="preview-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
                                 <div>
                                     <p style={{ fontSize: "14px", fontWeight: 700, color: "#111827", margin: 0, fontFamily: "Space Grotesk, sans-serif" }}>
                                         {PREVIEW_DOC_TYPES.find(d => d.id === activeDocType)?.label} Templates
@@ -874,7 +1171,7 @@ export default function LandingPage() {
                             </div>
 
                             {/* Template cards grid */}
-                            <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "10px" }}>
+                            <div className="templates-grid">
                                 {(TEMPLATE_PREVIEWS[activeDocType] || []).map((tmpl, idx) => {
                                     const isActive = activeTemplateIdx === idx;
                                     const isPro = tmpl.pro;
@@ -889,8 +1186,7 @@ export default function LandingPage() {
                                                 position: "relative",
                                             }}>
                                             {/* Mini template preview */}
-                                            <div style={{ background: tmpl.bg, padding: "8px 8px 0", height: "100px", display: "flex", flexDirection: tmpl.layout === "sidebar" ? "row" : "column" }}>
-                                                {/* Structural change in mini-preview */}
+                                            <div style={{ background: tmpl.bg, padding: "8px 8px 0", height: "100px", display: "flex", flexDirection: tmpl.layout === "sidebar" ? "row" : "column", overflow: "hidden" }}>
                                                 {tmpl.layout === "sidebar" ? (
                                                     <>
                                                         <div style={{ width: "25px", height: "100%", background: tmpl.accent, borderRadius: "4px 0 0 0" }} />
@@ -900,16 +1196,31 @@ export default function LandingPage() {
                                                             ))}
                                                         </div>
                                                     </>
+                                                ) : tmpl.layout === "centered" ? (
+                                                    <div style={{ background: "#fff", padding: "6px", flex: 1, display: "flex", flexDirection: "column", alignItems: "center" }}>
+                                                        <div style={{ width: "50px", height: "4px", background: tmpl.accent, borderRadius: "2px", marginBottom: "4px" }} />
+                                                        <div style={{ width: "30px", height: "3px", background: "#E5E7EB", borderRadius: "1px", marginBottom: "7px" }} />
+                                                        {[80, 60, 80, 50].map((w, i) => (
+                                                            <div key={i} style={{ height: "2px", background: "#F3F4F6", borderRadius: "1px", marginBottom: "3px", width: `${w}%` }} />
+                                                        ))}
+                                                    </div>
+                                                ) : tmpl.layout === "accent-bottom" ? (
+                                                    <>
+                                                        <div style={{ background: "#fff", padding: "6px", flex: 1 }}>
+                                                            {[100, 70, 90, 60].map((w, i) => (
+                                                                <div key={i} style={{ height: "3px", background: "#F3F4F6", borderRadius: "1px", marginBottom: "4px", width: `${w}%` }} />
+                                                            ))}
+                                                        </div>
+                                                        <div style={{ height: "6px", background: tmpl.accent, margin: "0 -8px" }} />
+                                                    </>
                                                 ) : (
                                                     <>
-                                                        {/* Header style (Classic/Bold) */}
                                                         {tmpl.layout !== "minimal" && (
                                                             <div style={{ background: tmpl.accent, borderRadius: "4px 4px 0 0", padding: "4px 6px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                                                                 <div style={{ width: "40px", height: "4px", background: "rgba(255,255,255,0.8)", borderRadius: "2px" }} />
                                                                 <div style={{ width: "15px", height: "4px", background: "rgba(255,255,255,0.5)", borderRadius: "2px" }} />
                                                             </div>
                                                         )}
-                                                        {/* Minimal style (No background header) */}
                                                         {tmpl.layout === "minimal" && (
                                                             <div style={{ borderBottom: `1px solid ${tmpl.accent}`, padding: "4px 0", margin: "0 6px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                                                                 <div style={{ width: "30px", height: "3px", background: tmpl.accent, borderRadius: "1px" }} />
@@ -958,155 +1269,288 @@ export default function LandingPage() {
                             {(() => {
                                 const tmpl = (TEMPLATE_PREVIEWS[activeDocType] || [])[activeTemplateIdx];
                                 if (!tmpl) return null;
+                                const docTitle = { invoice: "GST INVOICE", "salary-slip": "SALARY SLIP", certificate: "CERTIFICATE", quotation: "QUOTATION", receipt: "RECEIPT" }[activeDocType] || "DOCUMENT";
+                                const toLabel = { invoice: "Bill To", "salary-slip": "Employee", certificate: "Recipient", quotation: "Quote For", receipt: "Received From" }[activeDocType] || "To";
                                 return (
-                                    <div style={{ marginTop: "16px", border: `1px solid ${tmpl.accent}40`, borderRadius: "10px", overflow: "hidden", background: "#fff" }}>
+                                    <div className="preview-frame">
                                         {/* Preview Structure Switching */}
-                                        <div style={{ display: "flex", gap: "24px", minHeight: "350px", position: "relative", padding: tmpl.layout === "sidebar" ? "0" : "24px" }}>
-                                            {tmpl.pro && <WatermarkOverlay />}
-                                            {/* Sidebar Layout Support */}
-                                            {tmpl.layout === "sidebar" && (
-                                                <div style={{ width: "120px", flexShrink: 0, background: tmpl.accent, margin: "-24px 0 -24px -24px", padding: "30px 16px", borderRadius: "12px 0 0 12px", color: "#fff" }}>
-                                                    <p style={{ fontSize: "16px", fontWeight: 800, margin: "0 0 4px", fontFamily: "Space Grotesk, sans-serif" }}>INVOICE</p>
-                                                    <p style={{ fontSize: "10px", opacity: 0.8, margin: "0 0 12px" }}>#{activeDocType.toUpperCase()}-2026</p>
-                                                    
-                                                    <p style={{ fontSize: "8px", fontWeight: 700, opacity: 0.6, textTransform: "uppercase", letterSpacing: "0.05em", margin: "20px 0 4px" }}>Bill To</p>
-                                                    <p style={{ fontSize: "10px", fontWeight: 600, margin: "0 0 12px" }}>{tmpl.to}</p>
-                                                    
-                                                    <p style={{ fontSize: "8px", fontWeight: 700, opacity: 0.6, textTransform: "uppercase", letterSpacing: "0.05em", margin: "20px 0 4px" }}>Amount Due</p>
-                                                    <p style={{ fontSize: "10px", fontWeight: 600, margin: 0 }}>{tmpl.total}</p>
-                                                </div>
-                                            )}
+                                        <div className="preview-doc-container">
+                                            <div className="preview-doc-wrapper" style={{ display: "flex", gap: "24px", minHeight: "350px", position: "relative", padding: tmpl.layout === "sidebar" ? "0" : "24px" }}>
+                                                {tmpl.pro && <WatermarkOverlay />}
+                                                {/* Sidebar Layout Support */}
+                                                {tmpl.layout === "sidebar" && (
+                                                    <div style={{ width: "120px", flexShrink: 0, background: tmpl.accent, margin: "-24px 0 -24px -24px", padding: "30px 16px", borderRadius: "12px 0 0 12px", color: "#fff" }}>
+                                                        <p style={{ fontSize: "14px", fontWeight: 800, margin: "0 0 4px", fontFamily: "Space Grotesk, sans-serif" }}>{docTitle}</p>
+                                                        <p style={{ fontSize: "10px", opacity: 0.8, margin: "0 0 12px" }}>{tmpl.name} Template</p>
 
-                                            <div style={{ flex: 1 }}>
-                                                {/* Standard Header Layout */}
-                                                {tmpl.layout === "header" && (
-                                                    <div style={{ background: tmpl.accent, padding: "16px 20px", margin: "-24px -24px 20px -24px", borderRadius: "12px 12px 0 0", color: "#fff", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                                                        <div>
-                                                            <h4 style={{ margin: 0, fontSize: "14px", fontWeight: 700, fontFamily: "Inter, sans-serif" }}>{tmpl.from}</h4>
-                                                            <p style={{ fontSize: "9px", margin: "2px 0 0", opacity: 0.8 }}>GSTIN: {tmpl.gstin}</p>
-                                                        </div>
-                                                        <div style={{ textAlign: "right" }}>
-                                                            <h3 style={{ margin: 0, fontSize: "18px", fontWeight: 800, textTransform: "uppercase", fontFamily: "Space Grotesk, sans-serif" }}>GST INVOICE</h3>
-                                                            <p style={{ fontSize: "9px", margin: "2px 0 0", opacity: 0.8 }}>{tmpl.name} Template</p>
-                                                        </div>
+                                                        <p style={{ fontSize: "8px", fontWeight: 700, opacity: 0.6, textTransform: "uppercase", letterSpacing: "0.05em", margin: "20px 0 4px" }}>Bill To</p>
+                                                        <p style={{ fontSize: "10px", fontWeight: 600, margin: "0 0 12px" }}>{tmpl.to}</p>
+
+                                                        <p style={{ fontSize: "8px", fontWeight: 700, opacity: 0.6, textTransform: "uppercase", letterSpacing: "0.05em", margin: "20px 0 4px" }}>Amount Due</p>
+                                                        <p style={{ fontSize: "10px", fontWeight: 600, margin: 0 }}>{tmpl.total}</p>
                                                     </div>
                                                 )}
 
-                                                {/* Minimal Header Layout */}
-                                                {tmpl.layout === "minimal" && (
-                                                    <div style={{ paddingBottom: "16px", marginBottom: "16px", borderBottom: `2px solid ${tmpl.accent}` }}>
-                                                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+                                                <div style={{ flex: 1 }}>
+                                                    {/* Standard Header Layout */}
+                                                    {tmpl.layout === "header" && (
+                                                        <div style={{ background: tmpl.accent, padding: "16px 20px", margin: "-24px -24px 20px -24px", borderRadius: "12px 12px 0 0", color: "#fff", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                                                             <div>
-                                                                <h4 style={{ margin: 0, fontSize: "16px", fontWeight: 800, color: tmpl.accent, fontFamily: "Inter, sans-serif" }}>{tmpl.from}</h4>
-                                                                <p style={{ fontSize: "9px", color: "#9CA3AF", margin: "2px 0 0" }}>GSTIN: {tmpl.gstin}</p>
+                                                                <h4 style={{ margin: 0, fontSize: "14px", fontWeight: 700, fontFamily: "Inter, sans-serif" }}>{tmpl.from}</h4>
+                                                                <p style={{ fontSize: "9px", margin: "2px 0 0", opacity: 0.8 }}>{tmpl.gstin}</p>
                                                             </div>
                                                             <div style={{ textAlign: "right" }}>
-                                                                <h3 style={{ margin: 0, fontSize: "20px", fontWeight: 700, color: "#111827", fontFamily: "Space Grotesk, sans-serif" }}>Invoice</h3>
-                                                                <p style={{ fontSize: "9px", color: "#9CA3AF", margin: "2px 0 0" }}>#INV-2026-001</p>
+                                                                <h3 style={{ margin: 0, fontSize: "18px", fontWeight: 800, textTransform: "uppercase", fontFamily: "Space Grotesk, sans-serif" }}>{docTitle}</h3>
+                                                                <p style={{ fontSize: "9px", margin: "2px 0 0", opacity: 0.8 }}>{tmpl.name} Template</p>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                )}
+                                                    )}
 
-                                                {/* Centered / Corporate Layout */}
-                                                {tmpl.layout === "centered" && (
-                                                    <div style={{ textAlign: "center", borderBottom: "1px solid #E5E7EB", paddingBottom: "20px", marginBottom: "20px" }}>
-                                                        <h3 style={{ margin: "0 0 4px", fontSize: "18px", fontWeight: 800, color: tmpl.accent, letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: "Space Grotesk, sans-serif" }}>{tmpl.from}</h3>
-                                                        <p style={{ fontSize: "9px", color: "#6B7280", margin: "0 0 12px" }}>OFFICIAL TAX INVOICE</p>
-                                                        <div style={{ display: "flex", justifyContent: "center", gap: "24px", fontSize: "9px", color: "#9CA3AF" }}>
-                                                            <span>GSTIN: {tmpl.gstin}</span>
-                                                            <span>•</span>
-                                                            <span>Date: 2026-03-31</span>
-                                                            <span>•</span>
-                                                            <span>No: #INV-2026-001</span>
+                                                    {/* Minimal Header Layout */}
+                                                    {tmpl.layout === "minimal" && (
+                                                        <div style={{ paddingBottom: "16px", marginBottom: "16px", borderBottom: `2px solid ${tmpl.accent}` }}>
+                                                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+                                                                <div>
+                                                                    <h4 style={{ margin: 0, fontSize: "16px", fontWeight: 800, color: tmpl.accent, fontFamily: "Inter, sans-serif" }}>{tmpl.from}</h4>
+                                                                    <p style={{ fontSize: "9px", color: "#9CA3AF", margin: "2px 0 0" }}>{tmpl.gstin}</p>
+                                                                </div>
+                                                                <div style={{ textAlign: "right" }}>
+                                                                    <h3 style={{ margin: 0, fontSize: "20px", fontWeight: 700, color: "#111827", fontFamily: "Space Grotesk, sans-serif" }}>{docTitle}</h3>
+                                                                    <p style={{ fontSize: "9px", color: "#9CA3AF", margin: "2px 0 0" }}>{tmpl.name} Template</p>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                )}
+                                                    )}
 
-                                                {/* Common Receiver Info for all but Sidebar (where it's in side) */}
-                                                {tmpl.layout !== "sidebar" && (
-                                                    <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "0 0 8px", fontFamily: "Inter, sans-serif" }}>
-                                                        To: <strong style={{ color: "#374151" }}>{tmpl.to}</strong>
-                                                    </p>
-                                                )}
-
-                                            {/* Items Table - "Real" look for Invoice/Quotation */}
-                                            {activeDocType === "invoice" || activeDocType === "quotation" ? (
-                                                <div style={{ marginTop: "12px" }}>
-                                                    <div style={{ display: "grid", gridTemplateColumns: "24px 1fr 50px 40px 60px 50px 60px", gap: "6px", background: "#F9FAFB", padding: "6px 8px", borderBottom: "1px solid #E5E7EB" }}>
-                                                        {["#", "DESCRIPTION", "HSN", "QTY", "RATE", "GST", "AMOUNT"].map(h => (
-                                                            <span key={h} style={{ fontSize: "9px", fontWeight: 700, color: "#9CA3AF", fontFamily: "Space Grotesk, sans-serif" }}>{h}</span>
-                                                        ))}
-                                                    </div>
-                                                    {tmpl.items.map((item, i) => (
-                                                        <div key={i} style={{ display: "grid", gridTemplateColumns: "24px 1fr 50px 40px 60px 50px 60px", gap: "6px", padding: "6px 8px", borderBottom: "1px solid #F3F4F6", alignItems: "center" }}>
-                                                            <span style={{ fontSize: "10px", color: "#9CA3AF", fontFamily: "Inter, sans-serif" }}>{i + 1}</span>
-                                                            <span style={{ fontSize: "11px", fontWeight: 600, color: "#374151", fontFamily: "Inter, sans-serif" }}>{item.n}</span>
-                                                            <span style={{ fontSize: "10px", color: "#6B7280", fontFamily: "Inter, sans-serif" }}>{item.hsn}</span>
-                                                            <span style={{ fontSize: "11px", color: "#374151", fontFamily: "Inter, sans-serif" }}>{item.q}</span>
-                                                            <span style={{ fontSize: "11px", color: "#374151", fontFamily: "Inter, sans-serif" }}>₹{item.r}</span>
-                                                            <span style={{ fontSize: "11px", color: "#374151", fontFamily: "Inter, sans-serif" }}>{item.g}</span>
-                                                            <span style={{ fontSize: "11px", fontWeight: 700, color: "#111827", fontFamily: "Space Grotesk, sans-serif", textAlign: "right" }}>{item.a}</span>
+                                                    {/* Centered / Corporate Layout */}
+                                                    {tmpl.layout === "centered" && (
+                                                        <div style={{ textAlign: "center", borderBottom: "1px solid #E5E7EB", paddingBottom: "20px", marginBottom: "20px" }}>
+                                                            <h3 style={{ margin: "0 0 4px", fontSize: "18px", fontWeight: 800, color: tmpl.accent, letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: "Space Grotesk, sans-serif" }}>{tmpl.from}</h3>
+                                                            <p style={{ fontSize: "9px", color: "#6B7280", margin: "0 0 12px" }}>{docTitle}</p>
+                                                            <div style={{ display: "flex", justifyContent: "center", gap: "24px", fontSize: "9px", color: "#9CA3AF" }}>
+                                                                <span>{tmpl.gstin}</span>
+                                                                <span>•</span>
+                                                                <span>Date: 31 Mar 2026</span>
+                                                                <span>•</span>
+                                                                <span>{tmpl.name} Template</span>
+                                                            </div>
                                                         </div>
-                                                    ))}
-                                                </div>
-                                            ) : (
-                                                <div style={{ marginTop: "8px" }}>
-                                                    {tmpl.items.map((item, i) => (
-                                                        <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: "1px solid #F3F4F6" }}>
-                                                            <span style={{ fontSize: "12px", color: "#374151", fontFamily: "Inter, sans-serif" }}>{(Array.isArray(item) ? item[0] : item.n)}</span>
-                                                            <span style={{ fontSize: "12px", fontWeight: 600, color: "#111827", fontFamily: "Space Grotesk, sans-serif" }}>{(Array.isArray(item) ? item[1] : item.a)}</span>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            )}
+                                                    )}
 
-                                            {/* Summary */}
-                                            <div style={{ display: "flex", justifyContent: "space-between", marginTop: "12px" }}>
-                                                <div style={{ flex: 1 }}>
-                                                    <div style={{ background: "#F9FAFB", padding: "10px", borderRadius: "8px", borderLeft: `3px solid ${tmpl.accent}` }}>
-                                                        <p style={{ fontSize: "9px", fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", margin: "0 0 2px" }}>Amount in Words</p>
-                                                        <p style={{ fontSize: "10px", color: "#374151", fontWeight: 600, margin: 0, fontStyle: "italic" }}>Rupees Fifty One Thousand Three Hundred Thirty Only</p>
-                                                    </div>
-                                                </div>
-                                                <div style={{ width: "200px", paddingLeft: "20px" }}>
-                                                    {tmpl.rows.map((row, i) => (
-                                                        <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "3px 0" }}>
-                                                            <span style={{ fontSize: "11px", color: "#9CA3AF", fontFamily: "Inter, sans-serif" }}>{row[0]}</span>
-                                                            <span style={{ fontSize: "11px", color: "#6B7280", fontFamily: "Inter, sans-serif" }}>{row[1]}</span>
+                                                    {/* Accent-Bottom Layout */}
+                                                    {tmpl.layout === "accent-bottom" && (
+                                                        <div style={{ paddingBottom: "16px", marginBottom: "16px" }}>
+                                                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+                                                                <div>
+                                                                    <h4 style={{ margin: 0, fontSize: "16px", fontWeight: 800, color: "#111827", fontFamily: "Inter, sans-serif" }}>{tmpl.from}</h4>
+                                                                    <p style={{ fontSize: "9px", color: "#9CA3AF", margin: "2px 0 0" }}>{tmpl.gstin}</p>
+                                                                </div>
+                                                                <div style={{ textAlign: "right" }}>
+                                                                    <h3 style={{ margin: 0, fontSize: "18px", fontWeight: 700, color: tmpl.accent, fontFamily: "Space Grotesk, sans-serif" }}>{docTitle}</h3>
+                                                                    <p style={{ fontSize: "9px", color: "#9CA3AF", margin: "2px 0 0" }}>{tmpl.name} Template</p>
+                                                                </div>
+                                                            </div>
+                                                            <div style={{ height: "3px", background: tmpl.accent, borderRadius: "2px", marginTop: "12px" }} />
                                                         </div>
-                                                    ))}
-                                                    <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 10px", background: tmpl.bg, borderRadius: "8px", marginTop: "8px", border: `1px solid ${tmpl.accent}30` }}>
-                                                        <span style={{ fontSize: "14px", fontWeight: 700, color: tmpl.accent, fontFamily: "Space Grotesk, sans-serif" }}>Total</span>
-                                                        <span style={{ fontSize: "14px", fontWeight: 800, color: tmpl.accent, fontFamily: "Space Grotesk, sans-serif" }}>{tmpl.total}</span>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                                    )}
 
-                                                {/* Terms Placeholder for realism */}
-                                                <div style={{ marginTop: "16px", borderTop: "1px dashed #E5E7EB", paddingTop: "12px" }}>
-                                                    <p style={{ fontSize: "10px", fontWeight: 700, color: "#9CA3AF", margin: "0 0 4px" }}>TERMS & CONDITIONS</p>
-                                                    <p style={{ fontSize: "10px", color: "#9CA3AF", margin: 0, fontFamily: "Inter, sans-serif" }}>1. Payment due within 30 days. 2. Please include invoice number on checks.</p>
-                                                </div>
-                                            </div>
-
-                                            {/* Pro watermark on preview */}
-                                            {tmpl.pro && (
-                                                <div style={{ position: "absolute", inset: 0, background: "rgba(255,255,255,0.7)", display: "flex", alignItems: "center", justifyContent: "center", borderRadius: "0 0 8px 8px" }}>
-                                                    <div style={{ textAlign: "center" }}>
-                                                        <div style={{ background: "#1E3A5F", padding: "6px 20px", borderRadius: "20px", marginBottom: "8px", display: "inline-block" }}>
-                                                            <span style={{ fontSize: "12px", fontWeight: 700, color: "#fff", fontFamily: "Space Grotesk, sans-serif", letterSpacing: "0.08em" }}>DocMinty PRO</span>
-                                                        </div>
-                                                        <p style={{ fontSize: "11px", color: "#6B7280", margin: 0, fontFamily: "Inter, sans-serif" }}>
-                                                            Upgrade to unlock this template
+                                                    {/* Common Receiver Info for all but Sidebar (where it's in side) */}
+                                                    {tmpl.layout !== "sidebar" && (
+                                                        <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "0 0 8px", fontFamily: "Inter, sans-serif" }}>
+                                                            {toLabel}: <strong style={{ color: "#374151" }}>{tmpl.to}</strong>
                                                         </p>
-                                                        <Link href="/pricing" style={{ display: "inline-block", marginTop: "6px", padding: "5px 16px", background: T, color: "#fff", borderRadius: "6px", fontSize: "11px", fontWeight: 700, textDecoration: "none", fontFamily: "Space Grotesk, sans-serif" }}>
-                                                            Upgrade — Rs.199/mo
-                                                        </Link>
-                                                    </div>
+                                                    )}
+
+                                                    {/* Invoice — full GST table */}
+                                                    {activeDocType === "invoice" && (
+                                                        <>
+                                                            <div className="preview-table-scroller">
+                                                                <div className="preview-table-inner">
+                                                                    <div style={{ display: "grid", gridTemplateColumns: "24px 1fr 50px 40px 60px 50px 60px", gap: "10px", background: "#F9FAFB", padding: "8px 12px", borderBottom: "1px solid #E5E7EB" }}>
+                                                                        {["#", "DESCRIPTION", "HSN", "QTY", "RATE", "GST", "AMOUNT"].map(h => (
+                                                                            <span key={h} style={{ fontSize: "10px", fontWeight: 700, color: "#9CA3AF", fontFamily: "Space Grotesk, sans-serif" }}>{h}</span>
+                                                                        ))}
+                                                                    </div>
+                                                                    {tmpl.items.map((item, i) => (
+                                                                        <div key={i} style={{ display: "grid", gridTemplateColumns: "24px 1fr 50px 40px 60px 50px 60px", gap: "10px", padding: "8px 12px", borderBottom: "1px solid #F3F4F6", alignItems: "center" }}>
+                                                                            <span style={{ fontSize: "10px", color: "#9CA3AF" }}>{i + 1}</span>
+                                                                            <span style={{ fontSize: "12px", fontWeight: 600, color: "#374151" }}>{item.n}</span>
+                                                                            <span style={{ fontSize: "11px", color: "#6B7280" }}>{item.hsn}</span>
+                                                                            <span style={{ fontSize: "12px", color: "#374151" }}>{item.q}</span>
+                                                                            <span style={{ fontSize: "12px", color: "#374151" }}>Rs.{item.r}</span>
+                                                                            <span style={{ fontSize: "12px", color: "#374151" }}>{item.g}</span>
+                                                                            <span style={{ fontSize: "12px", fontWeight: 700, color: "#111827", textAlign: "right" }}>{item.a}</span>
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+                                                            <div className="preview-footer-columns">
+                                                                <div style={{ flex: 1 }}>
+                                                                    <div style={{ background: "#F9FAFB", padding: "12px", borderRadius: "8px", borderLeft: `3px solid ${tmpl.accent}` }}>
+                                                                        <p style={{ fontSize: "9px", fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", margin: "0 0 4px" }}>Amount in Words</p>
+                                                                        <p style={{ fontSize: "11px", color: "#374151", fontWeight: 600, margin: 0, fontStyle: "italic" }}>Rupees Fifty One Thousand Three Hundred Thirty Only</p>
+                                                                    </div>
+                                                                </div>
+                                                                <div style={{ width: "220px", paddingLeft: "24px" }}>
+                                                                    {tmpl.rows.map((row, i) => (
+                                                                        <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "4px 0" }}>
+                                                                            <span style={{ fontSize: "12px", color: "#9CA3AF" }}>{row[0]}</span>
+                                                                            <span style={{ fontSize: "12px", color: "#6B7280" }}>{row[1]}</span>
+                                                                        </div>
+                                                                    ))}
+                                                                    <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 12px", background: tmpl.bg, borderRadius: "8px", marginTop: "10px", border: `1px solid ${tmpl.accent}30` }}>
+                                                                        <span style={{ fontSize: "15px", fontWeight: 700, color: tmpl.accent, fontFamily: "Space Grotesk, sans-serif" }}>Total</span>
+                                                                        <span style={{ fontSize: "15px", fontWeight: 800, color: tmpl.accent, fontFamily: "Space Grotesk, sans-serif" }}>{tmpl.total}</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div style={{ marginTop: "24px", borderTop: "1px dashed #E5E7EB", paddingTop: "16px" }}>
+                                                                <p style={{ fontSize: "11px", fontWeight: 700, color: "#9CA3AF", margin: "0 0 6px" }}>TERMS & CONDITIONS</p>
+                                                                <p style={{ fontSize: "11px", color: "#9CA3AF", margin: 0, fontFamily: "Inter, sans-serif", lineHeight: 1.5 }}>1. Payment due within 30 days. 2. Please include invoice number on checks.</p>
+                                                            </div>
+                                                        </>
+                                                    )}
+
+                                                    {/* Quotation — 2-column description + amount */}
+                                                    {activeDocType === "quotation" && (
+                                                        <>
+                                                            <div className="preview-table-scroller">
+                                                                <div className="preview-table-inner" style={{ minWidth: "500px" }}>
+                                                                    <div style={{ display: "grid", gridTemplateColumns: "1fr 120px", gap: "12px", background: "#F9FAFB", padding: "10px 16px", borderBottom: "1px solid #E5E7EB" }}>
+                                                                        {["DESCRIPTION", "AMOUNT"].map(h => (
+                                                                            <span key={h} style={{ fontSize: "10px", fontWeight: 700, color: "#9CA3AF", fontFamily: "Space Grotesk, sans-serif" }}>{h}</span>
+                                                                        ))}
+                                                                    </div>
+                                                                    {tmpl.items.map((item, i) => (
+                                                                        <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 120px", gap: "12px", padding: "12px 16px", borderBottom: "1px solid #F3F4F6" }}>
+                                                                            <span style={{ fontSize: "13px", color: "#374151" }}>{item[0]}</span>
+                                                                            <span style={{ fontSize: "13px", fontWeight: 600, color: "#111827", fontFamily: "Space Grotesk, sans-serif" }}>{item[1]}</span>
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+                                                            <div className="preview-footer-columns" style={{ justifyContent: "flex-end" }}>
+                                                                <div style={{ width: "240px" }}>
+                                                                    {tmpl.rows.map((row, i) => (
+                                                                        <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "5px 0" }}>
+                                                                            <span style={{ fontSize: "12px", color: "#9CA3AF" }}>{row[0]}</span>
+                                                                            <span style={{ fontSize: "12px", color: "#6B7280" }}>{row[1]}</span>
+                                                                        </div>
+                                                                    ))}
+                                                                    <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 14px", background: tmpl.bg, borderRadius: "8px", marginTop: "10px", border: `1px solid ${tmpl.accent}30` }}>
+                                                                        <span style={{ fontSize: "16px", fontWeight: 700, color: tmpl.accent, fontFamily: "Space Grotesk, sans-serif" }}>Total</span>
+                                                                        <span style={{ fontSize: "16px", fontWeight: 800, color: tmpl.accent, fontFamily: "Space Grotesk, sans-serif" }}>{tmpl.total}</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </>
+                                                    )}
+
+                                                    {/* Salary Slip — earnings / deductions columns + net pay */}
+                                                    {activeDocType === "salary-slip" && (
+                                                        <>
+                                                            <div className="preview-columns">
+                                                                <div>
+                                                                    <div style={{ background: "#F9FAFB", padding: "8px 12px", borderBottom: "1px solid #E5E7EB", marginBottom: "8px" }}>
+                                                                        <span style={{ fontSize: "10px", fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.08em" }}>Earnings</span>
+                                                                    </div>
+                                                                    {tmpl.items.map((item, i) => (
+                                                                        <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "6px 12px", borderBottom: "1px solid #F3F4F6" }}>
+                                                                            <span style={{ fontSize: "12px", color: "#374151" }}>{item[0]}</span>
+                                                                            <span style={{ fontSize: "12px", fontWeight: 600, color: "#111827" }}>{item[1]}</span>
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+                                                                <div>
+                                                                    <div style={{ background: "#F9FAFB", padding: "8px 12px", borderBottom: "1px solid #E5E7EB", marginBottom: "8px" }}>
+                                                                        <span style={{ fontSize: "10px", fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.08em" }}>Deductions</span>
+                                                                    </div>
+                                                                    {tmpl.rows.map((row, i) => (
+                                                                        <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "6px 12px", borderBottom: "1px solid #F3F4F6" }}>
+                                                                            <span style={{ fontSize: "12px", color: "#374151" }}>{row[0]}</span>
+                                                                            <span style={{ fontSize: "12px", fontWeight: 600, color: "#DC2626" }}>{row[1]}</span>
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+                                                            <div style={{ marginTop: "24px", background: tmpl.bg, border: `1px solid ${tmpl.accent}30`, borderRadius: "12px", padding: "16px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
+                                                                <div>
+                                                                    <p style={{ fontSize: "10px", fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", margin: "0 0 4px" }}>Net Pay</p>
+                                                                    <p style={{ fontSize: "28px", fontWeight: 800, color: tmpl.accent, margin: 0, fontFamily: "Space Grotesk, sans-serif" }}>{tmpl.total}</p>
+                                                                </div>
+                                                                <div style={{ textAlign: "right" }}>
+                                                                    <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "0 0 4px" }}>Designation</p>
+                                                                    <p style={{ fontSize: "14px", fontWeight: 600, color: "#374151", margin: 0 }}>{tmpl.to}</p>
+                                                                    <p style={{ fontSize: "11px", color: "#6B7280", margin: "4px 0 0" }}>ID: {tmpl.gstin}</p>
+                                                                </div>
+                                                            </div>
+                                                        </>
+                                                    )}
+
+                                                    {/* Certificate — centered recipient + detail pills */}
+                                                    {activeDocType === "certificate" && (
+                                                        <div style={{ marginTop: "16px", textAlign: "center", padding: "0 20px" }}>
+                                                            <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "0 0 4px", fontStyle: "italic" }}>This is to certify that</p>
+                                                            <h2 style={{ fontSize: "26px", fontWeight: 800, color: tmpl.accent, margin: "0 0 4px", fontFamily: "Space Grotesk, sans-serif" }}>{tmpl.to}</h2>
+                                                            <p style={{ fontSize: "10px", color: "#6B7280", margin: "0 0 16px" }}>of <strong>{tmpl.from}</strong> has successfully completed</p>
+                                                            <div style={{ display: "flex", justifyContent: "center", gap: "8px", flexWrap: "wrap", marginBottom: "16px" }}>
+                                                                {tmpl.items.map((item, i) => (
+                                                                    <div key={i} style={{ background: tmpl.bg, border: `1px solid ${tmpl.accent}30`, borderRadius: "20px", padding: "5px 14px" }}>
+                                                                        <span style={{ fontSize: "10px", color: "#9CA3AF" }}>{item[0]}: </span>
+                                                                        <span style={{ fontSize: "10px", fontWeight: 700, color: tmpl.accent }}>{item[1]}</span>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                            <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", background: "#F0FDF4", border: "1px solid #BBF7D0", borderRadius: "20px", padding: "5px 16px" }}>
+                                                                <span style={{ fontSize: "10px", color: "#16A34A", fontWeight: 700 }}>QR Verified Certificate</span>
+                                                            </div>
+                                                        </div>
+                                                    )}
+
+                                                    {/* Receipt — big amount + details + PAID badge */}
+                                                    {activeDocType === "receipt" && (
+                                                        <>
+                                                            <div style={{ marginTop: "12px", textAlign: "center", padding: "8px 0 4px" }}>
+                                                                <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "0 0 4px", textTransform: "uppercase", letterSpacing: "0.08em" }}>Amount Received</p>
+                                                                <p style={{ fontSize: "38px", fontWeight: 800, color: tmpl.accent, margin: "0 0 6px", fontFamily: "Space Grotesk, sans-serif" }}>{tmpl.total}</p>
+                                                                <span style={{ display: "inline-block", background: "#DCFCE7", color: "#16A34A", fontSize: "11px", fontWeight: 700, padding: "3px 16px", borderRadius: "20px", letterSpacing: "0.06em" }}>PAID</span>
+                                                            </div>
+                                                            <div style={{ marginTop: "16px" }}>
+                                                                {tmpl.items.map((item, i) => (
+                                                                    <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "7px 0", borderBottom: "1px solid #F3F4F6" }}>
+                                                                        <span style={{ fontSize: "11px", color: "#9CA3AF" }}>{item[0]}</span>
+                                                                        <span style={{ fontSize: "11px", fontWeight: 600, color: "#374151" }}>{item[1]}</span>
+                                                                    </div>
+                                                                ))}
+                                                                {tmpl.rows.map((row, i) => (
+                                                                    <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "7px 0", borderBottom: "1px solid #F3F4F6" }}>
+                                                                        <span style={{ fontSize: "11px", color: "#9CA3AF" }}>{row[0]}</span>
+                                                                        <span style={{ fontSize: "11px", fontWeight: 600, color: "#374151" }}>{row[1]}</span>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        </>
+                                                    )}
                                                 </div>
-                                            )}
+                                            </div>
                                         </div>
+
+                                        {/* Pro watermark on preview */}
+                                        {tmpl.pro && (
+                                            <div style={{ position: "absolute", inset: 0, background: "rgba(255,255,255,0.7)", display: "flex", alignItems: "center", justifyContent: "center", borderRadius: "0 0 8px 8px" }}>
+                                                <div style={{ textAlign: "center" }}>
+                                                    <div style={{ background: "#1E3A5F", padding: "6px 20px", borderRadius: "20px", marginBottom: "8px", display: "inline-block" }}>
+                                                        <span style={{ fontSize: "12px", fontWeight: 700, color: "#fff", fontFamily: "Space Grotesk, sans-serif", letterSpacing: "0.08em" }}>DocMinty PRO</span>
+                                                    </div>
+                                                    <p style={{ fontSize: "11px", color: "#6B7280", margin: 0, fontFamily: "Inter, sans-serif" }}>
+                                                        Upgrade to unlock this template
+                                                    </p>
+                                                    <Link href="/pricing" style={{ display: "inline-block", marginTop: "6px", padding: "5px 16px", background: T, color: "#fff", borderRadius: "6px", fontSize: "11px", fontWeight: 700, textDecoration: "none", fontFamily: "Space Grotesk, sans-serif" }}>
+                                                        Upgrade — Rs.199/mo
+                                                    </Link>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 );
                             })()}
@@ -1117,12 +1561,13 @@ export default function LandingPage() {
 
             {/* ── HOW IT WORKS ── */}
             <section style={{
-                background: BG, borderTop: "1px solid #D1D5DB",
+                backgroundColor: BG, borderTop: "1px solid #D1D5DB",
                 backgroundImage: "radial-gradient(circle, #C7D5D3 1px, transparent 1px)",
                 backgroundSize: "24px 24px",
             }}>
                 <div className="section-wrap">
                     <h2 className="section-title">How it works</h2>
+                    <p className="section-subtitle">Everything you need to know about DocMinty.</p>
 
                     <div style={{ position: "relative" }}>
                         <div className="hide-mobile" style={{
@@ -1219,7 +1664,9 @@ export default function LandingPage() {
                                     fontSize: "clamp(28px,3vw,40px)",
                                     fontWeight: 700, color: TB,
                                     margin: "0 0 4px", lineHeight: 1,
-                                }}>{s.value}</p>
+                                }}>
+                                    <AnimatedNumber end={s.num} suffix={s.suffix} decimals={s.decimals} />
+                                </p>
                                 <p style={{ fontSize: "13px", color: "#99F6E4", margin: 0, fontFamily: "Inter, sans-serif" }}>{s.label}</p>
                             </div>
                         ))}
@@ -1228,35 +1675,29 @@ export default function LandingPage() {
             </section>
 
             {/* ── TESTIMONIALS ── */}
-            <section style={{ background: BG, borderTop: "1px solid #D1D5DB" }}>
-                <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "64px 24px" }}>
-                    <h2 className="section-title">Hear what our customers say</h2>
-                    <p className="section-sub">Discover the stories of delighted customers and their experiences.</p>
-                    <p style={{
-                        fontSize: "13px", color: T, textAlign: "center",
-                        margin: "0 auto 32px", fontFamily: "Inter, sans-serif", fontWeight: 600,
-                    }}>
-                        Click any review to read the full story →
-                    </p>
-                    <div className="testimonial-grid" style={{
-                        display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "16px", marginBottom: "16px",
-                    }}>
-                        {TESTIMONIALS.slice(0, 3).map((t, i) => (
-                            <TestiCard key={i} t={t}
-                                active={activeTestimonial === i}
-                                onClick={() => setActiveTestimonial(activeTestimonial === i ? null : i)}
-                            />
-                        ))}
+            <section style={{ background: BG, borderTop: "1px solid #D1D5DB", overflow: "hidden" }}>
+                <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "64px 0" }}>
+                    <h2 className="section-title" style={{ padding: "0 24px" }}>Hear what our customers say</h2>
+                    <p className="section-sub" style={{ padding: "0 24px" }}>Discover the stories of delighted customers and their experiences.</p>
+
+                    <div className="marquee-container" style={{ marginBottom: "16px" }}>
+                        <div className="marquee-content anim-left">
+                            {[...TESTIMONIALS.slice(0, 3), ...TESTIMONIALS.slice(0, 3)].map((t, i) => (
+                                <div key={i} style={{ width: "340px", flexShrink: 0 }}>
+                                    <TestiCard t={t} />
+                                </div>
+                            ))}
+                        </div>
                     </div>
-                    <div className="testimonial-grid" style={{
-                        display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "16px",
-                    }}>
-                        {TESTIMONIALS.slice(3, 6).map((t, i) => (
-                            <TestiCard key={i + 3} t={t}
-                                active={activeTestimonial === i + 3}
-                                onClick={() => setActiveTestimonial(activeTestimonial === i + 3 ? null : i + 3)}
-                            />
-                        ))}
+
+                    <div className="marquee-container">
+                        <div className="marquee-content anim-right">
+                            {[...TESTIMONIALS.slice(3, 6), ...TESTIMONIALS.slice(3, 6)].map((t, i) => (
+                                <div key={i} style={{ width: "340px", flexShrink: 0 }}>
+                                    <TestiCard t={t} />
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </section>
@@ -1266,14 +1707,39 @@ export default function LandingPage() {
                 <div className="section-wrap">
                     <h2 className="section-title">Simple, transparent pricing</h2>
                     <p className="section-sub">Free forever for individual use. Upgrade when you need more.</p>
+
+                    {/* Billing Toggle */}
+                    <div style={{ display: "flex", justifyContent: "center", marginBottom: "32px" }}>
+                        <div style={{ display: "inline-flex", background: "#F3F4F6", borderRadius: "10px", padding: "4px", gap: "4px" }}>
+                            {[["monthly", "Monthly"], ["annual", "Annual"]].map(([val, label]) => (
+                                <button key={val} onClick={() => setBillingCycle(val)} style={{
+                                    padding: "8px 22px", borderRadius: "8px", border: "none",
+                                    fontSize: "13px", fontWeight: 700, cursor: "pointer",
+                                    fontFamily: "Space Grotesk, sans-serif",
+                                    background: billingCycle === val ? "#fff" : "transparent",
+                                    color: billingCycle === val ? "#111827" : "#6B7280",
+                                    boxShadow: billingCycle === val ? "0 1px 4px rgba(0,0,0,0.10)" : "none",
+                                    transition: "all 150ms",
+                                }}>
+                                    {label}
+                                    {val === "annual" && (
+                                        <span style={{ marginLeft: "6px", background: T, color: "#fff", fontSize: "10px", fontWeight: 700, padding: "1px 6px", borderRadius: "8px" }}>
+                                            40% OFF
+                                        </span>
+                                    )}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
                     <div className="pricing-grid" style={{
                         display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "20px", alignItems: "start",
                     }}>
-                        {PRICING_PLANS.map((plan, i) => <PricingCard key={i} {...plan} />)}
+                        {PRICING_PLANS.map((plan, i) => <PricingCard key={i} {...plan} billing={billingCycle} />)}
                     </div>
 
                     {/* Trust bar */}
-                    <div style={{ marginTop: "40px", display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
+                    <div style={{ marginTop: "40px", display: "flex", flexDirection: "column", alignItems: "center", gap: "14px" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                             <div style={{ display: "flex", gap: "2px" }}>
                                 {[1, 2, 3, 4, 5].map(i => <Star key={i} size={16} fill="#F59E0B" color="#F59E0B" />)}
@@ -1281,23 +1747,67 @@ export default function LandingPage() {
                             <span style={{ fontSize: "14px", fontWeight: 700, color: "#111827", fontFamily: "Space Grotesk, sans-serif" }}>100%</span>
                             <span style={{ fontSize: "14px", color: "#6B7280", fontFamily: "Inter, sans-serif" }}>positive reviews</span>
                         </div>
+
+                        {/* Trustpilot + Google badges with real icons */}
                         <div style={{ display: "flex", gap: "12px" }}>
-                            {[["#00B67A", "★", "Trustpilot"], ["#4285F4", "G", "Google"]].map(([c, ic, label]) => (
-                                <div key={label} className="trust-badge">
-                                    <span style={{ color: c, fontSize: "14px", fontWeight: 700 }}>{ic}</span>
-                                    <span style={{ fontSize: "13px", fontWeight: 600, color: "#374151", fontFamily: "Inter, sans-serif" }}>{label}</span>
-                                </div>
-                            ))}
+                            {/* Trustpilot */}
+                            <div className="trust-badge">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                                    <path d="M12 2L14.09 8.26H21L15.45 12.1L17.54 18.36L12 14.52L6.46 18.36L8.55 12.1L3 8.26H9.91L12 2Z" fill="#00B67A" />
+                                </svg>
+                                <span style={{ fontSize: "13px", fontWeight: 600, color: "#374151", fontFamily: "Inter, sans-serif" }}>Trustpilot</span>
+                            </div>
+                            {/* Google */}
+                            <div className="trust-badge">
+                                <svg width="14" height="14" viewBox="0 0 24 24">
+                                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+                                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+                                </svg>
+                                <span style={{ fontSize: "13px", fontWeight: 600, color: "#374151", fontFamily: "Inter, sans-serif" }}>Google</span>
+                            </div>
                         </div>
+
+                        {/* Indian user avatars — mix of photos + initials */}
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                             <div style={{ display: "flex" }}>
-                                {["RS", "PS", "AM", "SR", "VN", "DK", "RG", "AS"].map((init, i) => (
-                                    <div key={i} className="avatar" style={{
-                                        background: `hsl(${i * 45},60%,55%)`,
+                                {[
+                                    { type: "img", src: "https://i.pravatar.cc/32?img=11", label: "Rahul" },
+                                    { type: "img", src: "https://i.pravatar.cc/32?img=47", label: "Priya" },
+                                    { type: "text", init: "AM", bg: "#0D9488", color: "#fff" },
+                                    { type: "img", src: "https://i.pravatar.cc/32?img=32", label: "Sunita" },
+                                    { type: "text", init: "VN", bg: "#6366F1", color: "#fff" },
+                                    { type: "img", src: "https://i.pravatar.cc/32?img=60", label: "Deepa" },
+                                    { type: "text", init: "RG", bg: "#D97706", color: "#fff" },
+                                    { type: "img", src: "https://i.pravatar.cc/32?img=25", label: "Arjun" },
+                                ].map((av, i) => (
+                                    <div key={i} style={{
+                                        width: "32px", height: "32px", borderRadius: "50%",
+                                        border: "2px solid #fff",
+                                        overflow: "hidden",
                                         marginLeft: i === 0 ? "0" : "-8px",
                                         zIndex: 8 - i,
+                                        position: "relative",
+                                        flexShrink: 0,
+                                        background: av.type === "text" ? av.bg : "#E5E7EB",
+                                        display: "flex", alignItems: "center", justifyContent: "center",
+                                        fontSize: "11px", fontWeight: 700,
+                                        color: av.type === "text" ? av.color : "transparent",
+                                        fontFamily: "Inter, sans-serif",
+                                        transition: "transform 150ms",
+                                        cursor: "default",
                                     }}>
-                                        {init}
+                                        {av.type === "img" ? (
+                                            <img
+                                                src={av.src}
+                                                alt={av.label}
+                                                width={32}
+                                                height={32}
+                                                style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%" }}
+                                                onError={(e) => { e.target.style.display = "none"; }}
+                                            />
+                                        ) : av.init}
                                     </div>
                                 ))}
                             </div>
@@ -1310,11 +1820,29 @@ export default function LandingPage() {
             </section>
 
             {/* ── FAQ ── */}
-            <section style={{ background: BG, borderTop: "1px solid #D1D5DB" }}>
-                <div className="section-wrap" style={{ maxWidth: "680px" }}>
+            <section style={{ background: "#F1F5F9", borderTop: "1px solid #E2E8F0" }}>
+                <div className="section-wrap" style={{ maxWidth: "1100px", padding: "80px 24px" }}>
                     <h2 className="section-title">Frequently asked questions</h2>
                     <p className="section-sub">Everything you need to know about DocMinty.</p>
-                    {FAQS.map((faq, i) => <FAQItem key={i} {...faq} />)}
+
+                    <div style={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
+                        gap: "20px",
+                        alignItems: "start"
+                    }}>
+                        {FAQS.map((faq, i) => <FAQItem key={i} {...faq} />)}
+                    </div>
+
+                    <p style={{
+                        marginTop: "48px",
+                        textAlign: "center",
+                        fontSize: "15px",
+                        color: "#64748B",
+                        fontFamily: "Inter, sans-serif"
+                    }}>
+                        Have more questions? <a href="mailto:support@docminty.com" style={{ color: T, fontWeight: 600, textDecoration: "none" }}>Contact our support team anytime.</a>
+                    </p>
                 </div>
             </section>
 

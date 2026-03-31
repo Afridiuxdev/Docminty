@@ -1,9 +1,25 @@
 "use client";
 import Link from "next/link";
-import { Check, X } from "lucide-react";
+import { 
+    Check, X, FileText, Layout, Image, Cloud, 
+    MessageSquare, Zap, Users, ShieldCheck, 
+    ArrowRight, Star 
+} from "lucide-react";
 
 const T = "#0D9488";
-const TL = "#F0FDFA";
+
+// Helper to map feature text to icons
+const FeatureIcon = ({ text, color }) => {
+    const t = text.toLowerCase();
+    if (t.includes("document") || t.includes("pdf")) return <FileText size={16} color={color} />;
+    if (t.includes("template")) return <Layout size={16} color={color} />;
+    if (t.includes("logo") || t.includes("branding")) return <Image size={16} color={color} />;
+    if (t.includes("cloud") || t.includes("store")) return <Cloud size={16} color={color} />;
+    if (t.includes("support")) return <MessageSquare size={16} color={color} />;
+    if (t.includes("batch") || t.includes("process") || t.includes("faster")) return <Zap size={16} color={color} />;
+    if (t.includes("team") || t.includes("user")) return <Users size={16} color={color} />;
+    return <Check size={16} color={color} />;
+};
 
 export default function PricingCard({
     plan,
@@ -20,273 +36,309 @@ export default function PricingCard({
     extraLink,
     extraLinkLabel,
     highlighted = false,
-    dark = false,
+    badge, // New prop for custom badges
+    billing = "monthly", // "monthly" | "annual"
+    onClick,
 }) {
-    return (
-        <div style={{
-            border: highlighted ? `2px solid ${T}` : "1px solid #D1D5DB",
-            borderRadius: "12px",
-            background: highlighted ? "#fff" : "#fff",
-            position: "relative",
-            display: "flex",
-            flexDirection: "column",
-            overflow: "hidden",
-            boxShadow: highlighted
-                ? `0 20px 60px rgba(13,148,136,0.15)`
-                : "none",
-        }}>
+    // Parse numeric price
+    const numericPrice = parseInt(price?.replace(/[^\d]/g, "") || "0", 10);
+    const isPaidPlan = numericPrice > 0;
 
-            {/* Most Popular badge */}
-            {highlighted && (
+    // Apply 25% annual discount to all paid plans
+    const annualPerMonth = isPaidPlan ? Math.round(numericPrice * 0.75) : 0;
+    const annualTotal = annualPerMonth * 12;
+
+    const displayPrice = isPaidPlan && billing === "annual" ? `₹${annualPerMonth}` : price;
+    const displayOriginal = isPaidPlan && billing === "annual" ? `₹${numericPrice}` : originalPrice;
+    const displayPeriod = isPaidPlan ? (billing === "annual" ? "/mo" : period) : period;
+    
+    const annualSavings = isPaidPlan && billing === "annual"
+        ? `Save ₹${numericPrice * 12 - annualTotal}/yr`
+        : null;
+    const annualBilledText = isPaidPlan && billing === "annual"
+        ? `Billed annually at ₹${annualTotal}`
+        : null;
+
+    return (
+        <div 
+            className="pricing-card-container"
+            style={{
+                border: highlighted ? `2px solid ${T}` : "1px solid #E2E8F0",
+                borderRadius: "20px",
+                background: "#fff",
+                position: "relative",
+                display: "flex",
+                flexDirection: "column",
+                overflow: "hidden",
+                boxShadow: highlighted ? `0 20px 50px rgba(13,148,136,0.12)` : "0 4px 6px -1px rgba(0, 0, 0, 0.05)",
+                transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                height: "100%",
+                cursor: "default",
+            }}
+            onMouseEnter={e => {
+                e.currentTarget.style.transform = "translateY(-8px)";
+                e.currentTarget.style.boxShadow = highlighted 
+                    ? "0 30px 60px rgba(13,148,136,0.18)" 
+                    : "0 20px 25px -5px rgba(0, 0, 0, 0.1)";
+            }}
+            onMouseLeave={e => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = highlighted 
+                    ? "0 20px 50px rgba(13,148,136,0.12)" 
+                    : "0 4px 6px -1px rgba(0, 0, 0, 0.05)";
+            }}
+        >
+            {/* Header Badge */}
+            {(highlighted || badge) && (
                 <div style={{
                     position: "absolute",
-                    top: "16px", right: "16px",
-                    background: T,
-                    color: "white",
+                    top: "20px", right: "20px",
+                    background: highlighted ? T : "#F1F5F9",
+                    color: highlighted ? "white" : "#475569",
                     fontSize: "11px",
-                    fontWeight: 700,
-                    padding: "3px 10px",
-                    borderRadius: "4px",
+                    fontWeight: 800,
+                    padding: "4px 12px",
+                    borderRadius: "99px",
                     fontFamily: "Space Grotesk, sans-serif",
                     letterSpacing: "0.05em",
                     textTransform: "uppercase",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "4px",
+                    zIndex: 10,
                 }}>
-                    Most Popular
+                    {highlighted && <Star size={10} fill="currentColor" />}
+                    {badge || "Most Popular"}
                 </div>
             )}
 
-            {/* Card body */}
-            <div style={{ padding: "24px 24px 0" }}>
-
-                {/* Plan name */}
-                <p style={{
-                    fontSize: "18px",
-                    fontWeight: 700,
-                    color: "#111827",
-                    margin: "0 0 6px",
+            <div style={{ padding: "32px 32px 24px" }}>
+                {/* Plan Title */}
+                <h3 style={{
+                    fontSize: "20px",
+                    fontWeight: 800,
+                    color: "#0F172A",
+                    margin: "0 0 4px",
                     fontFamily: "Space Grotesk, sans-serif",
-                    paddingRight: highlighted ? "100px" : "0",
                 }}>
                     {plan}
-                </p>
-
-                {/* Description */}
+                </h3>
+                
+                {/* Subtitle / Description */}
                 <p style={{
                     fontSize: "14px",
-                    color: "#6B7280",
-                    margin: "0 0 16px",
+                    color: "#64748B",
+                    margin: "0 0 24px",
                     fontFamily: "Inter, sans-serif",
                     lineHeight: 1.5,
+                    minHeight: "42px",
                 }}>
                     {description}
                 </p>
 
-                {/* Price row */}
+                {/* Price Display */}
                 <div style={{
                     display: "flex",
                     alignItems: "baseline",
-                    gap: "6px",
-                    marginBottom: "4px",
-                    flexWrap: "wrap",
+                    gap: "8px",
+                    marginBottom: "8px",
                 }}>
-                    {originalPrice && (
-                        <span style={{
-                            fontSize: "16px",
-                            color: "#9CA3AF",
-                            textDecoration: "line-through",
-                            fontFamily: "Space Grotesk, sans-serif",
-                        }}>
-                            {originalPrice}
-                        </span>
-                    )}
                     <span style={{
                         fontFamily: "Space Grotesk, sans-serif",
-                        fontSize: "36px",
-                        fontWeight: 700,
-                        color: "#111827",
+                        fontSize: "44px",
+                        fontWeight: 800,
+                        color: "#0F172A",
                         lineHeight: 1,
                     }}>
-                        {price}
+                        {displayPrice}
                     </span>
-                    {period && (
+                    {displayPeriod && (
                         <span style={{
                             fontSize: "15px",
-                            color: "#6B7280",
+                            color: "#64748B",
+                            fontWeight: 500,
                             fontFamily: "Inter, sans-serif",
                         }}>
-                            {period}
+                            {displayPeriod}
                         </span>
                     )}
                 </div>
 
-                {/* Sub note */}
-                {subNote && (
+                {/* Original Price / Savings */}
+                <div style={{ display: "flex", alignItems: "center", gap: "10px", minHeight: "22px", marginBottom: "20px" }}>
+                    {displayOriginal && (
+                        <span style={{
+                            fontSize: "15px",
+                            color: "#94A3B8",
+                            textDecoration: "line-through",
+                            fontFamily: "Space Grotesk, sans-serif",
+                        }}>
+                            {displayOriginal}
+                        </span>
+                    )}
+                    {annualSavings && (
+                        <span style={{
+                            background: "#DCFCE7",
+                            color: "#166534",
+                            fontSize: "11px",
+                            fontWeight: 700,
+                            padding: "2px 8px",
+                            borderRadius: "6px",
+                            fontFamily: "Inter, sans-serif",
+                            textTransform: "uppercase",
+                        }}>
+                            {annualSavings}
+                        </span>
+                    )}
+                </div>
+
+                {/* Billed Text */}
+                {annualBilledText && (
                     <p style={{
                         fontSize: "13px",
-                        color: "#9CA3AF",
-                        margin: "0 0 20px",
+                        color: "#166534",
+                        fontWeight: 600,
+                        margin: "-12px 0 24px",
+                        fontFamily: "Inter, sans-serif",
+                    }}>
+                        {annualBilledText}
+                    </p>
+                )}
+                {subNote && billing !== "annual" && (
+                    <p style={{
+                        fontSize: "13px",
+                        color: "#94A3B8",
+                        margin: "-12px 0 24px",
                         fontFamily: "Inter, sans-serif",
                     }}>
                         {subNote}
                     </p>
                 )}
 
-                {/* Divider */}
-                <div style={{ borderTop: "1px solid #E5E7EB", margin: "16px 0 14px" }} />
+                <div style={{ height: "1px", background: "#F1F5F9", width: "100%", margin: "0 0 24px" }} />
 
-                {/* INCLUDED */}
-                {includedFeatures?.length > 0 && (
-                    <>
-                        <p style={{
-                            fontSize: "11px",
-                            fontWeight: 700,
-                            color: "#9CA3AF",
-                            textTransform: "uppercase",
-                            letterSpacing: "0.08em",
-                            margin: "0 0 10px",
-                            fontFamily: "Inter, sans-serif",
-                        }}>
-                            INCLUDED
-                        </p>
-                        <div style={{
-                            display: "flex", flexDirection: "column",
-                            gap: "8px", marginBottom: "16px",
-                        }}>
-                            {includedFeatures.map((f, i) => (
-                                <div key={i} style={{
-                                    display: "flex", alignItems: "flex-start", gap: "8px",
-                                }}>
-                                    <Check
-                                        size={14}
-                                        color={T}
-                                        style={{ flexShrink: 0, marginTop: "3px" }}
-                                    />
-                                    <span style={{
-                                        fontSize: "13px",
-                                        color: "#374151",
-                                        fontFamily: "Inter, sans-serif",
-                                        lineHeight: 1.5,
-                                    }}>
-                                        {f}
-                                    </span>
-                                </div>
-                            ))}
+                {/* Features List */}
+                <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+                    {/* INCLUDED */}
+                    {includedFeatures?.map((f, i) => (
+                        <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
+                            <div style={{ 
+                                marginTop: "2px",
+                                padding: "4px",
+                                borderRadius: "6px",
+                                background: highlighted ? "#F0FDFA" : "#F8FAFC",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center"
+                            }}>
+                                <FeatureIcon text={f} color={highlighted ? T : "#475569"} />
+                            </div>
+                            <span style={{
+                                fontSize: "14px",
+                                color: "#334155",
+                                fontFamily: "Inter, sans-serif",
+                                fontWeight: 500,
+                                lineHeight: 1.4,
+                            }}>
+                                {f}
+                            </span>
                         </div>
-                    </>
-                )}
+                    ))}
 
-                {/* NOT INCLUDED */}
-                {notIncludedFeatures?.length > 0 && (
-                    <>
-                        <p style={{
-                            fontSize: "11px",
-                            fontWeight: 700,
-                            color: "#9CA3AF",
-                            textTransform: "uppercase",
-                            letterSpacing: "0.08em",
-                            margin: "0 0 10px",
-                            fontFamily: "Inter, sans-serif",
-                        }}>
-                            NOT INCLUDED
-                        </p>
-                        <div style={{
-                            display: "flex", flexDirection: "column",
-                            gap: "8px", marginBottom: "20px",
-                        }}>
-                            {notIncludedFeatures.map((f, i) => (
-                                <div key={i} style={{
-                                    display: "flex", alignItems: "flex-start", gap: "8px",
-                                }}>
-                                    <X
-                                        size={14}
-                                        color="#D1D5DB"
-                                        style={{ flexShrink: 0, marginTop: "3px" }}
-                                    />
-                                    <span style={{
-                                        fontSize: "13px",
-                                        color: "#9CA3AF",
-                                        fontFamily: "Inter, sans-serif",
-                                        lineHeight: 1.5,
-                                    }}>
-                                        {f}
-                                    </span>
-                                </div>
-                            ))}
+                    {/* NOT INCLUDED */}
+                    {notIncludedFeatures?.map((f, i) => (
+                        <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: "12px", opacity: 0.6 }}>
+                            <div style={{ 
+                                marginTop: "2px",
+                                padding: "4px",
+                                borderRadius: "6px",
+                                background: "#F8FAFC",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center"
+                            }}>
+                                <X size={14} color="#94A3B8" />
+                            </div>
+                            <span style={{
+                                fontSize: "14px",
+                                color: "#94A3B8",
+                                fontFamily: "Inter, sans-serif",
+                                textDecoration: "line-through",
+                                lineHeight: 1.4,
+                            }}>
+                                {f}
+                            </span>
                         </div>
-                    </>
-                )}
+                    ))}
+                </div>
             </div>
 
-            {/* CTA — sticks to bottom */}
-            <div style={{ padding: "0 24px 20px", marginTop: "auto" }}>
-
-                {/* Divider */}
-                <div style={{ borderTop: "1px solid #E5E7EB", marginBottom: "16px" }} />
-
-                <Link href={ctaHref} style={{
-                    display: "block",
-                    textAlign: "center",
-                    padding: "13px",
-                    borderRadius: "8px",
-                    fontSize: "15px",
-                    fontWeight: 700,
-                    fontFamily: "Space Grotesk, sans-serif",
-                    textDecoration: "none",
-                    background: highlighted ? T : "transparent",
-                    color: highlighted ? "#fff" : "#111827",
-                    border: highlighted ? "none" : "1px solid #D1D5DB",
-                    transition: "all 150ms",
-                }}
-                    onMouseEnter={e => {
-                        if (highlighted) {
-                            e.currentTarget.style.background = "#0F766E";
-                        } else {
-                            e.currentTarget.style.borderColor = T;
-                            e.currentTarget.style.color = T;
-                        }
+            {/* CTA Section */}
+            <div style={{ padding: "0 32px 32px", marginTop: "auto" }}>
+                {onClick ? (
+                    <button 
+                        onClick={onClick}
+                        style={{
+                            width: "100%",
+                            padding: "16px",
+                            borderRadius: "12px",
+                            fontSize: "16px",
+                            fontWeight: 700,
+                            fontFamily: "Space Grotesk, sans-serif",
+                            border: "none",
+                            background: highlighted ? T : "#0F172A",
+                            color: "#fff",
+                            cursor: "pointer",
+                            transition: "all 0.2s",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "8px",
+                            boxShadow: highlighted ? `0 10px 20px -5px rgba(13,148,136,0.3)` : "none",
+                        }}
+                        onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.02)"; }}
+                        onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; }}
+                    >
+                        {ctaLabel}
+                        <ArrowRight size={18} />
+                    </button>
+                ) : (
+                    <Link href={ctaHref} style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "8px",
+                        width: "100%",
+                        padding: "16px",
+                        borderRadius: "12px",
+                        fontSize: "16px",
+                        fontWeight: 700,
+                        fontFamily: "Space Grotesk, sans-serif",
+                        textDecoration: "none",
+                        background: highlighted ? T : "#F8FAFC",
+                        color: highlighted ? "#fff" : "#0F172A",
+                        border: highlighted ? "none" : "1px solid #E2E8F0",
+                        transition: "all 0.2s",
                     }}
-                    onMouseLeave={e => {
-                        if (highlighted) {
-                            e.currentTarget.style.background = T;
-                        } else {
-                            e.currentTarget.style.borderColor = "#D1D5DB";
-                            e.currentTarget.style.color = "#111827";
-                        }
-                    }}
-                >
-                    {ctaLabel}
-                </Link>
-
-                {/* Promo code */}
-                {promoCode && (
-                    <p style={{
-                        fontSize: "12px",
-                        color: "#9CA3AF",
-                        textAlign: "center",
-                        margin: "8px 0 0",
-                        fontFamily: "Inter, sans-serif",
-                    }}>
-                        Use code{" "}
-                        <strong style={{ color: "#374151", letterSpacing: "0.05em" }}>
-                            {promoCode}
-                        </strong>{" "}
-                        at checkout
-                    </p>
+                        onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.02)"; }}
+                        onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; }}
+                    >
+                        {ctaLabel}
+                        <ArrowRight size={18} />
+                    </Link>
                 )}
 
-                {/* Extra link */}
                 {extraLink && (
                     <Link href={extraLink} style={{
                         display: "block",
                         textAlign: "center",
                         fontSize: "13px",
-                        fontWeight: 700,
+                        fontWeight: 600,
                         color: T,
                         textDecoration: "none",
-                        marginTop: "10px",
+                        marginTop: "16px",
                         fontFamily: "Space Grotesk, sans-serif",
-                        letterSpacing: "0.05em",
-                        textTransform: "uppercase",
+                        letterSpacing: "0.02em",
                     }}>
                         {extraLinkLabel}
                     </Link>

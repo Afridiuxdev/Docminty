@@ -134,295 +134,200 @@ function ItemRow({ item, index, onChange, onRemove, showHSN, showDiscount }) {
 }
 
 // ── PDF Preview ───────────────────────────────────────────────
-function InvoicePreview({ form }) {
-    const calc = calculateLineItems(
-        form.items,
-        form.taxType === "igst"
-    );
-
+function InvoicePreview({ form, template = "Classic", accent = "#0D9488" }) {
+    const calc = calculateLineItems(form.items, form.taxType === "igst");
     const fromState = INDIAN_STATES.find(s => s.code === form.fromState);
     const toState = INDIAN_STATES.find(s => s.code === form.toState);
 
+    // Shared body used by all template variants
+    const sharedBody = (
+        <div className="pdf-body">
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px", marginBottom: "20px" }}>
+                <div>
+                    <p style={{ fontSize: "10px", fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 6px", fontFamily: "Space Grotesk, sans-serif" }}>Bill To</p>
+                    <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "13px", color: "#111827", margin: 0 }}>{form.toName || "Client Name"}</p>
+                    {form.toGSTIN && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>GSTIN: {form.toGSTIN}</p>}
+                    {form.toAddress && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.toAddress}{form.toCity ? `, ${form.toCity}` : ""}</p>}
+                    {toState && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{toState.name}</p>}
+                </div>
+                <div>
+                    <p style={{ fontSize: "10px", fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 6px", fontFamily: "Space Grotesk, sans-serif" }}>Tax Type</p>
+                    <p style={{ fontSize: "12px", color: "#374151", fontFamily: "Inter, sans-serif", margin: 0 }}>
+                        {form.taxType === "cgst_sgst" ? "CGST + SGST (Intrastate)" : form.taxType === "igst" ? "IGST (Interstate)" : "No Tax"}
+                    </p>
+                </div>
+            </div>
+            <table className="pdf-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th style={{ width: "35%" }}>Description</th>
+                        {form.showHSN && <th>HSN/SAC</th>}
+                        <th>Qty</th>
+                        <th>Rate</th>
+                        {form.showDiscount && <th>Disc</th>}
+                        <th>GST%</th>
+                        <th style={{ textAlign: "right" }}>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {calc.items.map((item, i) => (
+                        <tr key={i}>
+                            <td>{i + 1}</td>
+                            <td>{item.description || "—"}</td>
+                            {form.showHSN && <td>{item.hsn || "—"}</td>}
+                            <td>{item.qty}</td>
+                            <td>Rs.{item.rate}</td>
+                            {form.showDiscount && <td>Rs.{item.discount}</td>}
+                            <td>{item.gstRate}%</td>
+                            <td style={{ textAlign: "right", fontWeight: 600 }}>Rs.{item.amount}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                <div className="pdf-totals">
+                    <div className="pdf-total-row"><span style={{ color: "#6B7280" }}>Subtotal</span><span>Rs.{calc.subtotal}</span></div>
+                    {parseFloat(calc.totalDiscount) > 0 && <div className="pdf-total-row"><span style={{ color: "#6B7280" }}>Discount</span><span style={{ color: "#EF4444" }}>-Rs.{calc.totalDiscount}</span></div>}
+                    {form.taxType === "cgst_sgst" && (<><div className="pdf-total-row"><span style={{ color: "#6B7280" }}>CGST</span><span>Rs.{calc.totalCGST}</span></div><div className="pdf-total-row"><span style={{ color: "#6B7280" }}>SGST</span><span>Rs.{calc.totalSGST}</span></div></>)}
+                    {form.taxType === "igst" && <div className="pdf-total-row"><span style={{ color: "#6B7280" }}>IGST</span><span>Rs.{calc.totalIGST}</span></div>}
+                    <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 12px", background: accent + "18", borderRadius: "6px", marginTop: "6px", fontWeight: 700, fontSize: "13px", color: accent }}>
+                        <span>Total</span><span>Rs.{calc.grandTotal}</span>
+                    </div>
+                </div>
+            </div>
+            <div style={{ marginTop: "16px", padding: "10px 14px", background: "#F8F9FA", borderRadius: "6px", borderLeft: `3px solid ${accent}` }}>
+                <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "0 0 2px", fontFamily: "Inter, sans-serif", textTransform: "uppercase", letterSpacing: "0.05em" }}>Amount in Words</p>
+                <p style={{ fontSize: "12px", color: "#374151", margin: 0, fontFamily: "Inter, sans-serif", fontStyle: "italic" }}>{numberToWords(parseFloat(calc.grandTotal))}</p>
+            </div>
+            {(form.notes || form.terms) && (
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginTop: "20px" }}>
+                    {form.notes && <div><p style={{ fontSize: "10px", fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 4px", fontFamily: "Space Grotesk, sans-serif" }}>Notes</p><p style={{ fontSize: "11px", color: "#6B7280", fontFamily: "Inter, sans-serif", lineHeight: 1.6, margin: 0 }}>{form.notes}</p></div>}
+                    {form.terms && <div><p style={{ fontSize: "10px", fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 4px", fontFamily: "Space Grotesk, sans-serif" }}>Terms & Conditions</p><p style={{ fontSize: "11px", color: "#6B7280", fontFamily: "Inter, sans-serif", lineHeight: 1.6, margin: 0 }}>{form.terms}</p></div>}
+                </div>
+            )}
+            <div style={{ marginTop: "24px", paddingTop: "12px", borderTop: "1px solid #E5E7EB", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <p style={{ fontSize: "10px", color: "#D1D5DB", fontFamily: "Inter, sans-serif", margin: 0 }}>Generated by DocMinty.com</p>
+                <div style={{ borderTop: "1px solid #374151", paddingTop: "4px", minWidth: "120px", textAlign: "center" }}>
+                    <p style={{ fontSize: "10px", color: "#9CA3AF", fontFamily: "Inter, sans-serif", margin: 0 }}>Authorised Signatory</p>
+                </div>
+            </div>
+        </div>
+    );
+
+    // Modern — sidebar layout
+    if (template === "Modern") {
+        return (
+            <div className="pdf-preview" style={{ display: "flex", padding: 0, overflow: "hidden" }}>
+                <div style={{ width: "130px", background: accent, padding: "24px 14px", flexShrink: 0, color: "#fff", display: "flex", flexDirection: "column" }}>
+                    <p style={{ fontSize: "15px", fontWeight: 800, margin: "0 0 4px", fontFamily: "Space Grotesk, sans-serif" }}>INVOICE</p>
+                    <p style={{ fontSize: "10px", opacity: 0.75, margin: "0 0 24px" }}>#{form.invoiceNumber}</p>
+                    <p style={{ fontSize: "8px", fontWeight: 700, opacity: 0.6, textTransform: "uppercase", letterSpacing: "0.06em", margin: "0 0 3px" }}>From</p>
+                    <p style={{ fontSize: "10px", fontWeight: 600, margin: "0 0 20px", lineHeight: 1.4 }}>{form.fromName || "Your Business"}</p>
+                    <p style={{ fontSize: "8px", fontWeight: 700, opacity: 0.6, textTransform: "uppercase", letterSpacing: "0.06em", margin: "0 0 3px" }}>Bill To</p>
+                    <p style={{ fontSize: "10px", fontWeight: 600, margin: "0 0 20px", lineHeight: 1.4 }}>{form.toName || "Client Name"}</p>
+                    <div style={{ marginTop: "auto" }}>
+                        <p style={{ fontSize: "8px", fontWeight: 700, opacity: 0.6, textTransform: "uppercase", letterSpacing: "0.06em", margin: "0 0 3px" }}>Amount Due</p>
+                        <p style={{ fontSize: "11px", fontWeight: 700, margin: 0 }}>Rs.{calc.grandTotal}</p>
+                    </div>
+                </div>
+                <div style={{ flex: 1 }}>
+                    <div style={{ padding: "16px 20px 12px", borderBottom: "1px solid #F3F4F6" }}>
+                        {form.logo && <img src={form.logo} alt="Logo" style={{ height: "36px", objectFit: "contain", marginBottom: "6px", display: "block" }} />}
+                        {form.fromGSTIN && <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "0 0 1px", fontFamily: "Inter, sans-serif" }}>GSTIN: {form.fromGSTIN}</p>}
+                        <p style={{ fontSize: "11px", color: "#9CA3AF", margin: 0, fontFamily: "Inter, sans-serif" }}>Date: {form.invoiceDate}</p>
+                    </div>
+                    {sharedBody}
+                </div>
+            </div>
+        );
+    }
+
+    // Corporate — centered header
+    if (template === "Corporate") {
+        return (
+            <div className="pdf-preview">
+                <div style={{ textAlign: "center", padding: "20px 24px 16px", borderBottom: `2px solid ${accent}` }}>
+                    {form.logo && <img src={form.logo} alt="Logo" style={{ height: "40px", objectFit: "contain", display: "block", margin: "0 auto 8px" }} />}
+                    <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "20px", color: accent, margin: "0 0 2px", letterSpacing: "0.05em" }}>{form.fromName || "Your Business Name"}</p>
+                    <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "0 0 8px" }}>TAX INVOICE</p>
+                    <div style={{ display: "flex", justifyContent: "center", gap: "16px", fontSize: "10px", color: "#9CA3AF" }}>
+                        {form.fromGSTIN && <span>GSTIN: {form.fromGSTIN}</span>}
+                        <span>#{form.invoiceNumber}</span>
+                        <span>Date: {form.invoiceDate}</span>
+                    </div>
+                </div>
+                {sharedBody}
+            </div>
+        );
+    }
+
+    // Elegant — bottom accent bar separator
+    if (template === "Elegant") {
+        return (
+            <div className="pdf-preview">
+                <div style={{ padding: "20px 24px 0" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", paddingBottom: "12px" }}>
+                        <div>
+                            {form.logo && <img src={form.logo} alt="Logo" style={{ height: "40px", objectFit: "contain", marginBottom: "6px", display: "block" }} />}
+                            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: "#111827", margin: 0 }}>{form.fromName || "Your Business Name"}</p>
+                            {form.fromGSTIN && <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>GSTIN: {form.fromGSTIN}</p>}
+                        </div>
+                        <div style={{ textAlign: "right" }}>
+                            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "22px", color: accent, margin: 0 }}>INVOICE</p>
+                            <p style={{ fontSize: "12px", color: "#6B7280", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>#{form.invoiceNumber}</p>
+                            <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>Date: {form.invoiceDate}</p>
+                        </div>
+                    </div>
+                    <div style={{ height: "4px", background: accent, borderRadius: "2px" }} />
+                </div>
+                {sharedBody}
+            </div>
+        );
+    }
+
+    // Classic — full colored header bar
+    if (template === "Classic") {
+        return (
+            <div className="pdf-preview">
+                <div style={{ background: accent, padding: "18px 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div>
+                        {form.logo && <img src={form.logo} alt="Logo" style={{ height: "36px", objectFit: "contain", marginBottom: "6px", display: "block" }} />}
+                        <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: "#fff", margin: 0 }}>{form.fromName || "Your Business Name"}</p>
+                        {form.fromGSTIN && <p style={{ fontSize: "10px", color: "rgba(255,255,255,0.8)", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>GSTIN: {form.fromGSTIN}</p>}
+                    </div>
+                    <div style={{ textAlign: "right" }}>
+                        <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "24px", color: "#fff", margin: 0 }}>INVOICE</p>
+                        <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.8)", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>#{form.invoiceNumber}</p>
+                        <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.7)", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>Date: {form.invoiceDate}</p>
+                    </div>
+                </div>
+                {sharedBody}
+            </div>
+        );
+    }
+
+    // Minimal (default) — accent underline separator
     return (
         <div className="pdf-preview">
-            {/* Header */}
-            <div className="pdf-header">
+            <div className="pdf-header" style={{ borderBottom: `2px solid ${accent}` }}>
                 <div>
-                    {form.logo && (
-                        <img src={form.logo} alt="Logo"
-                            style={{ height: "48px", objectFit: "contain", marginBottom: "8px", display: "block" }}
-                        />
-                    )}
-                    <p style={{
-                        fontFamily: "Space Grotesk, sans-serif",
-                        fontWeight: 700, fontSize: "16px",
-                        color: "#111827", margin: 0,
-                    }}>
-                        {form.fromName || "Your Business Name"}
-                    </p>
-                    {form.fromGSTIN && (
-                        <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>
-                            GSTIN: {form.fromGSTIN}
-                        </p>
-                    )}
-                    {form.fromAddress && (
-                        <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>
-                            {form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}
-                        </p>
-                    )}
-                    {fromState && (
-                        <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>
-                            {fromState.name}
-                        </p>
-                    )}
-                    {form.fromPhone && (
-                        <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>
-                            Ph: {form.fromPhone}
-                        </p>
-                    )}
+                    {form.logo && <img src={form.logo} alt="Logo" style={{ height: "48px", objectFit: "contain", marginBottom: "8px", display: "block" }} />}
+                    <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: "#111827", margin: 0 }}>{form.fromName || "Your Business Name"}</p>
+                    {form.fromGSTIN && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>GSTIN: {form.fromGSTIN}</p>}
+                    {form.fromAddress && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}</p>}
+                    {fromState && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{fromState.name}</p>}
+                    {form.fromPhone && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>Ph: {form.fromPhone}</p>}
                 </div>
-
                 <div style={{ textAlign: "right" }}>
-                    <p style={{
-                        fontFamily: "Space Grotesk, sans-serif",
-                        fontWeight: 800, fontSize: "22px",
-                        color: T, margin: 0,
-                    }}>
-                        INVOICE
-                    </p>
-                    <p style={{ fontSize: "12px", color: "#6B7280", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>
-                        #{form.invoiceNumber}
-                    </p>
-                    <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>
-                        Date: {form.invoiceDate}
-                    </p>
-                    {form.dueDate && (
-                        <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>
-                            Due: {form.dueDate}
-                        </p>
-                    )}
-                    {form.poNumber && (
-                        <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>
-                            PO#: {form.poNumber}
-                        </p>
-                    )}
+                    <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "22px", color: "#111827", margin: 0 }}>Invoice</p>
+                    <p style={{ fontSize: "12px", color: "#6B7280", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>#{form.invoiceNumber}</p>
+                    <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>Date: {form.invoiceDate}</p>
+                    {form.dueDate && <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>Due: {form.dueDate}</p>}
+                    {form.poNumber && <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>PO#: {form.poNumber}</p>}
                 </div>
             </div>
-
-            <div className="pdf-body">
-                {/* Bill To */}
-                <div style={{
-                    display: "grid", gridTemplateColumns: "1fr 1fr",
-                    gap: "24px", marginBottom: "20px",
-                }}>
-                    <div>
-                        <p style={{
-                            fontSize: "10px", fontWeight: 700,
-                            color: "#9CA3AF", textTransform: "uppercase",
-                            letterSpacing: "0.08em", margin: "0 0 6px",
-                            fontFamily: "Space Grotesk, sans-serif",
-                        }}>Bill To</p>
-                        <p style={{
-                            fontFamily: "Space Grotesk, sans-serif",
-                            fontWeight: 700, fontSize: "13px",
-                            color: "#111827", margin: 0,
-                        }}>
-                            {form.toName || "Client Name"}
-                        </p>
-                        {form.toGSTIN && (
-                            <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>
-                                GSTIN: {form.toGSTIN}
-                            </p>
-                        )}
-                        {form.toAddress && (
-                            <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>
-                                {form.toAddress}{form.toCity ? `, ${form.toCity}` : ""}
-                            </p>
-                        )}
-                        {toState && (
-                            <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>
-                                {toState.name}
-                            </p>
-                        )}
-                    </div>
-                    <div>
-                        <p style={{
-                            fontSize: "10px", fontWeight: 700,
-                            color: "#9CA3AF", textTransform: "uppercase",
-                            letterSpacing: "0.08em", margin: "0 0 6px",
-                            fontFamily: "Space Grotesk, sans-serif",
-                        }}>Tax Type</p>
-                        <p style={{
-                            fontSize: "12px", color: "#374151",
-                            fontFamily: "Inter, sans-serif", margin: 0,
-                        }}>
-                            {form.taxType === "cgst_sgst" ? "CGST + SGST (Intrastate)" :
-                                form.taxType === "igst" ? "IGST (Interstate)" :
-                                    "No Tax"}
-                        </p>
-                    </div>
-                </div>
-
-                {/* Line items table */}
-                <table className="pdf-table">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th style={{ width: "35%" }}>Description</th>
-                            {form.showHSN && <th>HSN/SAC</th>}
-                            <th>Qty</th>
-                            <th>Rate</th>
-                            {form.showDiscount && <th>Disc</th>}
-                            <th>GST%</th>
-                            <th style={{ textAlign: "right" }}>Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {calc.items.map((item, i) => (
-                            <tr key={i}>
-                                <td>{i + 1}</td>
-                                <td>{item.description || "—"}</td>
-                                {form.showHSN && <td>{item.hsn || "—"}</td>}
-                                <td>{item.qty}</td>
-                                <td>₹{item.rate}</td>
-                                {form.showDiscount && <td>₹{item.discount}</td>}
-                                <td>{item.gstRate}%</td>
-                                <td style={{ textAlign: "right", fontWeight: 600 }}>₹{item.amount}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-
-                {/* Totals */}
-                <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                    <div className="pdf-totals">
-                        <div className="pdf-total-row">
-                            <span style={{ color: "#6B7280" }}>Subtotal</span>
-                            <span>₹{calc.subtotal}</span>
-                        </div>
-                        {parseFloat(calc.totalDiscount) > 0 && (
-                            <div className="pdf-total-row">
-                                <span style={{ color: "#6B7280" }}>Discount</span>
-                                <span style={{ color: "#EF4444" }}>-₹{calc.totalDiscount}</span>
-                            </div>
-                        )}
-                        {form.taxType === "cgst_sgst" && (
-                            <>
-                                <div className="pdf-total-row">
-                                    <span style={{ color: "#6B7280" }}>CGST</span>
-                                    <span>₹{calc.totalCGST}</span>
-                                </div>
-                                <div className="pdf-total-row">
-                                    <span style={{ color: "#6B7280" }}>SGST</span>
-                                    <span>₹{calc.totalSGST}</span>
-                                </div>
-                            </>
-                        )}
-                        {form.taxType === "igst" && (
-                            <div className="pdf-total-row">
-                                <span style={{ color: "#6B7280" }}>IGST</span>
-                                <span>₹{calc.totalIGST}</span>
-                            </div>
-                        )}
-                        <div className="pdf-total-final">
-                            <span>Total</span>
-                            <span>₹{calc.grandTotal}</span>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Amount in words */}
-                <div style={{
-                    marginTop: "16px", padding: "10px 14px",
-                    background: "#F8F9FA", borderRadius: "6px",
-                    borderLeft: `3px solid ${T}`,
-                }}>
-                    <p style={{
-                        fontSize: "11px", color: "#9CA3AF",
-                        margin: "0 0 2px", fontFamily: "Inter, sans-serif",
-                        textTransform: "uppercase", letterSpacing: "0.05em",
-                    }}>
-                        Amount in Words
-                    </p>
-                    <p style={{
-                        fontSize: "12px", color: "#374151",
-                        margin: 0, fontFamily: "Inter, sans-serif",
-                        fontStyle: "italic",
-                    }}>
-                        {numberToWords(parseFloat(calc.grandTotal))}
-                    </p>
-                </div>
-
-                {/* Notes & Terms */}
-                {(form.notes || form.terms) && (
-                    <div style={{
-                        display: "grid", gridTemplateColumns: "1fr 1fr",
-                        gap: "16px", marginTop: "20px",
-                    }}>
-                        {form.notes && (
-                            <div>
-                                <p style={{
-                                    fontSize: "10px", fontWeight: 700,
-                                    color: "#9CA3AF", textTransform: "uppercase",
-                                    letterSpacing: "0.08em", margin: "0 0 4px",
-                                    fontFamily: "Space Grotesk, sans-serif",
-                                }}>Notes</p>
-                                <p style={{
-                                    fontSize: "11px", color: "#6B7280",
-                                    fontFamily: "Inter, sans-serif",
-                                    lineHeight: 1.6, margin: 0,
-                                }}>
-                                    {form.notes}
-                                </p>
-                            </div>
-                        )}
-                        {form.terms && (
-                            <div>
-                                <p style={{
-                                    fontSize: "10px", fontWeight: 700,
-                                    color: "#9CA3AF", textTransform: "uppercase",
-                                    letterSpacing: "0.08em", margin: "0 0 4px",
-                                    fontFamily: "Space Grotesk, sans-serif",
-                                }}>Terms & Conditions</p>
-                                <p style={{
-                                    fontSize: "11px", color: "#6B7280",
-                                    fontFamily: "Inter, sans-serif",
-                                    lineHeight: 1.6, margin: 0,
-                                }}>
-                                    {form.terms}
-                                </p>
-                            </div>
-                        )}
-                    </div>
-                )}
-
-                {/* Footer */}
-                <div style={{
-                    marginTop: "24px", paddingTop: "12px",
-                    borderTop: "1px solid #E5E7EB",
-                    display: "flex", justifyContent: "space-between",
-                    alignItems: "center",
-                }}>
-                    <p style={{
-                        fontSize: "10px", color: "#D1D5DB",
-                        fontFamily: "Inter, sans-serif", margin: 0,
-                    }}>
-                        Generated by DocMinty.com
-                    </p>
-                    <div style={{
-                        borderTop: "1px solid #374151",
-                        paddingTop: "4px",
-                        minWidth: "120px", textAlign: "center",
-                    }}>
-                        <p style={{
-                            fontSize: "10px", color: "#9CA3AF",
-                            fontFamily: "Inter, sans-serif", margin: 0,
-                        }}>
-                            Authorised Signatory
-                        </p>
-                    </div>
-                </div>
-            </div>
+            {sharedBody}
         </div>
     );
 }
@@ -1023,7 +928,7 @@ export default function InvoicePage() {
                         </div>
                         <div style={{ position: "relative" }}>
                             {showWatermark && <WatermarkOverlay />}
-                            <InvoicePreview form={form} />
+                            <InvoicePreview form={form} template={template} accent={templateMeta.accent} />
                         </div>
                     </div>
                 </div>

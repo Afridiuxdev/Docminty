@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Lock, Check } from "lucide-react";
+import { Check } from "lucide-react";
 import { TEMPLATE_REGISTRY } from "@/templates/registry";
 
 const T = "#0D9488";
@@ -135,7 +135,7 @@ export default function TemplatePicker({ docType, selected, onChange, isPro = fa
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "10px" }}>
             {Object.entries(templates).map(([key, tpl]) => {
               const isSelected = selected === key;
-              const isLocked = tpl.pro && !isPro;
+              const isProTemplate = tpl.pro && !isPro;
               return (
                 <div key={key} onClick={() => { onChange(key); setOpen(false); }} style={{ cursor: "pointer", position: "relative" }}>
                   <div style={{ border: "2px solid " + (isSelected ? tpl.accent : "#E5E7EB"), borderRadius: "8px", overflow: "hidden", marginBottom: "6px", transition: "border-color 150ms" }}>
@@ -145,12 +145,9 @@ export default function TemplatePicker({ docType, selected, onChange, isPro = fa
                         <Check size={10} color="#fff" />
                       </div>
                     )}
-                    {isLocked && !isSelected && (
-                      <div style={{ position: "absolute", inset: 0, background: "rgba(255,255,255,0.4)", display: "flex", alignItems: "center", justifyContent: "center", borderRadius: "6px" }}>
-                        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "3px" }}>
-                          <Lock size={14} color="#D97706" />
-                          <span style={{ fontSize: "9px", fontWeight: 700, color: "#D97706", fontFamily: "Inter, sans-serif" }}>PRO</span>
-                        </div>
+                    {isProTemplate && !isSelected && (
+                      <div style={{ position: "absolute", top: "6px", left: "6px", background: "#1E3A5F", padding: "2px 7px", borderRadius: "6px" }}>
+                        <span style={{ fontSize: "9px", fontWeight: 700, color: "#fff", fontFamily: "Space Grotesk, sans-serif", letterSpacing: "0.04em" }}>PRO</span>
                       </div>
                     )}
                   </div>
@@ -161,8 +158,8 @@ export default function TemplatePicker({ docType, selected, onChange, isPro = fa
           </div>
           {!isPro && (
             <div style={{ marginTop: "12px", padding: "10px 12px", background: "#FEF9C3", border: "1px solid #F59E0B", borderRadius: "8px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <p style={{ fontSize: "12px", color: "#92400E", fontFamily: "Inter, sans-serif", margin: 0 }}>Unlock all templates with Business Pro</p>
-              <a href="/pricing" style={{ fontSize: "12px", fontWeight: 700, color: "#92400E", fontFamily: "Inter, sans-serif", textDecoration: "none", background: "#F59E0B", color: "#fff", padding: "4px 12px", borderRadius: "6px" }}>Upgrade</a>
+              <p style={{ fontSize: "12px", color: "#92400E", fontFamily: "Inter, sans-serif", margin: 0 }}>Pro templates preview with watermark — upgrade to download clean</p>
+              <a href="/pricing" style={{ fontSize: "12px", fontWeight: 700, textDecoration: "none", background: "#F59E0B", color: "#fff", padding: "4px 12px", borderRadius: "6px", fontFamily: "Inter, sans-serif" }}>Upgrade</a>
             </div>
           )}
         </div>

@@ -5,14 +5,14 @@ import React from "react";
 export default function WatermarkOverlay({ text = "DocMinty PRO", scale = 1 }) {
     // We'll use a data URI SVG background for a cleaner, consistent look
     const svgString = `
-    <svg width="250" height="150" xmlns="http://www.w3.org/1992/svg">
-      <text x="50%" y="50%" 
-        font-family="Inter, system-ui, sans-serif" 
-        font-size="14" 
-        font-weight="700" 
-        fill="rgba(0, 0, 0, 0.04)" 
-        text-anchor="middle" 
-        transform="rotate(-25 125 75)">
+    <svg width="200" height="120" xmlns="http://www.w3.org/2000/svg">
+      <text x="50%" y="55%"
+        font-family="Inter, system-ui, sans-serif"
+        font-size="13"
+        font-weight="700"
+        fill="rgba(0, 0, 0, 0.10)"
+        text-anchor="middle"
+        transform="rotate(-25 100 60)">
         DOCMINTY PRO
       </text>
     </svg>
