@@ -1,10 +1,5 @@
-import dynamic from "next/dynamic";
-
-const PdfToWordClient = dynamic(
-  () => import("./PdfToWordClient"),
-  { ssr: false }
-);
+import PdfToWordClient from "./PdfToWordClient";
 
 export default function Page() {
   return <PdfToWordClient />;
-}
+} 
