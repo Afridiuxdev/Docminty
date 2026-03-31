@@ -46,194 +46,124 @@ const DEFAULT_FORM = {
   enableQR: true,
 };
 
-function CertPreview({ form }) {
-  const qrData = generateQRData(form.verificationId);
-
-  return (
-    <div style={{
-      background: "#fff",
-      border: "1px solid #E5E7EB",
-      borderRadius: "8px",
-      overflow: "hidden",
-      fontFamily: "Inter, sans-serif",
-    }}>
-      {/* Certificate border design */}
-      <div style={{
-        border: "8px solid #F0F4F3",
-        outline: `2px solid ${T}`,
-        outlineOffset: "-12px",
-        margin: "8px",
-        borderRadius: "6px",
-        padding: "32px 40px",
-        background: "linear-gradient(135deg, #F0FDFA 0%, #fff 50%, #F0FDFA 100%)",
-        textAlign: "center",
-        minHeight: "400px",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        position: "relative",
-      }}>
-        {/* Decorative corners */}
-        {["top-left", "top-right", "bottom-left", "bottom-right"].map((pos) => (
-          <div key={pos} style={{
-            position: "absolute",
-            [pos.includes("top") ? "top" : "bottom"]: "16px",
-            [pos.includes("left") ? "left" : "right"]: "16px",
-            width: "24px", height: "24px",
-            borderTop: pos.includes("top") ? `3px solid ${T}` : "none",
-            borderBottom: pos.includes("bottom") ? `3px solid ${T}` : "none",
-            borderLeft: pos.includes("left") ? `3px solid ${T}` : "none",
-            borderRight: pos.includes("right") ? `3px solid ${T}` : "none",
-          }} />
-        ))}
-
-        {/* Logo */}
-        {form.logo && (
-          <img src={form.logo} alt="Logo"
-            style={{ height: "52px", objectFit: "contain", marginBottom: "12px" }}
-          />
-        )}
-
-        {/* Org name */}
-        <p style={{
-          fontFamily: "Space Grotesk, sans-serif",
-          fontWeight: 700, fontSize: "18px",
-          color: "#111827", margin: "0 0 4px",
-          textTransform: "uppercase", letterSpacing: "0.1em",
-        }}>
-          {form.orgName || "Organisation Name"}
-        </p>
-
-        {form.orgAddress && (
-          <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "0 0 20px" }}>
-            {form.orgAddress}
-          </p>
-        )}
-
-        {/* Certificate type */}
-        <div style={{
-          background: T, color: "#fff",
-          padding: "6px 28px", borderRadius: "2px",
-          fontFamily: "Space Grotesk, sans-serif",
-          fontSize: "13px", fontWeight: 700,
-          letterSpacing: "0.15em", textTransform: "uppercase",
-          marginBottom: "20px",
-        }}>
-          {form.certType}
-        </div>
-
-        {/* This is to certify */}
-        <p style={{ fontSize: "13px", color: "#6B7280", margin: "0 0 8px" }}>
-          This is to certify that
-        </p>
-
-        {/* Recipient name */}
-        <p style={{
-          fontFamily: "Space Grotesk, sans-serif",
-          fontWeight: 800, fontSize: "28px",
-          color: "#111827", margin: "0 0 12px",
-          borderBottom: `2px solid ${T}`,
-          paddingBottom: "8px", minWidth: "200px",
-        }}>
-          {form.recipientName || "Recipient Name"}
-        </p>
-
-        {/* Description */}
-        <p style={{
-          fontSize: "13px", color: "#374151",
-          margin: "0 0 8px", lineHeight: 1.6,
-          maxWidth: "400px",
-        }}>
-          {form.description ||
-            `has successfully completed the course in`}
-        </p>
-
-        {/* Course */}
-        {form.course && (
-          <p style={{
-            fontFamily: "Space Grotesk, sans-serif",
-            fontWeight: 700, fontSize: "16px",
-            color: T, margin: "0 0 8px",
-          }}>
-            {form.course}
-          </p>
-        )}
-
-        {/* Duration & Grade */}
-        <div style={{
-          display: "flex", gap: "24px",
-          justifyContent: "center", marginBottom: "20px",
-        }}>
-          {form.duration && (
-            <div style={{ textAlign: "center" }}>
-              <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "0 0 2px", textTransform: "uppercase", letterSpacing: "0.08em" }}>Duration</p>
-              <p style={{ fontSize: "13px", fontWeight: 600, color: "#111827", margin: 0 }}>{form.duration}</p>
-            </div>
-          )}
-          {form.grade && (
-            <div style={{ textAlign: "center" }}>
-              <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "0 0 2px", textTransform: "uppercase", letterSpacing: "0.08em" }}>Grade</p>
-              <p style={{ fontSize: "13px", fontWeight: 600, color: T, margin: 0 }}>{form.grade}</p>
-            </div>
-          )}
-          <div style={{ textAlign: "center" }}>
-            <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "0 0 2px", textTransform: "uppercase", letterSpacing: "0.08em" }}>Date</p>
-            <p style={{ fontSize: "13px", fontWeight: 600, color: "#111827", margin: 0 }}>{form.issueDate}</p>
+function CertPreview({ form, template = "Classic", accent = "#0D9488" }) {
+  const certContent = (
+    <>
+      {form.logo && <img src={form.logo} alt="Logo" style={{ height: "52px", objectFit: "contain", marginBottom: "12px" }} />}
+      <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "18px", color: "#111827", margin: "0 0 4px", textTransform: "uppercase", letterSpacing: "0.1em" }}>
+        {form.orgName || "Organisation Name"}
+      </p>
+      {form.orgAddress && <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "0 0 20px" }}>{form.orgAddress}</p>}
+      <div style={{ background: accent, color: "#fff", padding: "6px 28px", borderRadius: "2px", fontFamily: "Space Grotesk, sans-serif", fontSize: "13px", fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "20px" }}>
+        {form.certType}
+      </div>
+      <p style={{ fontSize: "13px", color: "#6B7280", margin: "0 0 8px" }}>This is to certify that</p>
+      <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "28px", color: "#111827", margin: "0 0 12px", borderBottom: `2px solid ${accent}`, paddingBottom: "8px", minWidth: "200px" }}>
+        {form.recipientName || "Recipient Name"}
+      </p>
+      <p style={{ fontSize: "13px", color: "#374151", margin: "0 0 8px", lineHeight: 1.6, maxWidth: "400px" }}>
+        {form.description || "has successfully completed the course in"}
+      </p>
+      {form.course && <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: accent, margin: "0 0 8px" }}>{form.course}</p>}
+      <div style={{ display: "flex", gap: "24px", justifyContent: "center", marginBottom: "20px" }}>
+        {form.duration && <div style={{ textAlign: "center" }}><p style={{ fontSize: "10px", color: "#9CA3AF", margin: "0 0 2px", textTransform: "uppercase", letterSpacing: "0.08em" }}>Duration</p><p style={{ fontSize: "13px", fontWeight: 600, color: "#111827", margin: 0 }}>{form.duration}</p></div>}
+        {form.grade && <div style={{ textAlign: "center" }}><p style={{ fontSize: "10px", color: "#9CA3AF", margin: "0 0 2px", textTransform: "uppercase", letterSpacing: "0.08em" }}>Grade</p><p style={{ fontSize: "13px", fontWeight: 600, color: accent, margin: 0 }}>{form.grade}</p></div>}
+        <div style={{ textAlign: "center" }}><p style={{ fontSize: "10px", color: "#9CA3AF", margin: "0 0 2px", textTransform: "uppercase", letterSpacing: "0.08em" }}>Date</p><p style={{ fontSize: "13px", fontWeight: 600, color: "#111827", margin: 0 }}>{form.issueDate}</p></div>
+      </div>
+      <div style={{ display: "flex", gap: "48px", justifyContent: "center", alignItems: "flex-end" }}>
+        <div style={{ textAlign: "center" }}>
+          <div style={{ borderTop: "2px solid #374151", paddingTop: "6px", minWidth: "120px" }}>
+            <p style={{ fontSize: "12px", fontWeight: 600, color: "#111827", margin: 0 }}>{form.signatoryName || "Signatory Name"}</p>
+            <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "2px 0 0" }}>{form.signatoryDesignation || "Designation"}</p>
           </div>
         </div>
-
-        {/* Signature */}
-        <div style={{
-          display: "flex", gap: "48px",
-          justifyContent: "center", alignItems: "flex-end",
-        }}>
-          <div style={{ textAlign: "center" }}>
-            <div style={{
-              borderTop: `2px solid #374151`,
-              paddingTop: "6px", minWidth: "120px",
-            }}>
-              <p style={{ fontSize: "12px", fontWeight: 600, color: "#111827", margin: 0 }}>
-                {form.signatoryName || "Signatory Name"}
-              </p>
-              <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "2px 0 0" }}>
-                {form.signatoryDesignation || "Designation"}
-              </p>
-            </div>
-          </div>
-
-          {/* QR Code placeholder */}
-          {form.enableQR && (
-            <div style={{ textAlign: "center" }}>
-              <div style={{
-                width: "56px", height: "56px",
-                border: `2px solid ${T}`,
-                borderRadius: "4px",
-                display: "flex", alignItems: "center",
-                justifyContent: "center",
-                background: "#F0FDFA",
-                fontSize: "8px", color: T,
-                fontWeight: 600, flexDirection: "column",
-                gap: "2px",
-              }}>
-                <Shield size={16} color={T} />
-                <span>QR</span>
-              </div>
-              <p style={{ fontSize: "9px", color: "#9CA3AF", margin: "4px 0 0" }}>Scan to Verify</p>
-            </div>
-          )}
-        </div>
-
-        {/* Verification ID */}
         {form.enableQR && (
-          <p style={{
-            fontSize: "9px", color: "#D1D5DB",
-            margin: "12px 0 0", letterSpacing: "0.05em",
-            fontFamily: "monospace",
-          }}>
-            Verification ID: {form.verificationId}
-          </p>
+          <div style={{ textAlign: "center" }}>
+            <div style={{ width: "56px", height: "56px", border: `2px solid ${accent}`, borderRadius: "4px", display: "flex", alignItems: "center", justifyContent: "center", background: "#F8F9FA", fontSize: "8px", color: accent, fontWeight: 600, flexDirection: "column", gap: "2px" }}>
+              <Shield size={16} color={accent} />
+              <span>QR</span>
+            </div>
+            <p style={{ fontSize: "9px", color: "#9CA3AF", margin: "4px 0 0" }}>Scan to Verify</p>
+          </div>
         )}
+      </div>
+      {form.enableQR && <p style={{ fontSize: "9px", color: "#D1D5DB", margin: "12px 0 0", letterSpacing: "0.05em", fontFamily: "monospace" }}>Verification ID: {form.verificationId}</p>}
+    </>
+  );
+
+  if (template === "Minimal") {
+    return (
+      <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: "8px", overflow: "hidden", fontFamily: "Inter, sans-serif" }}>
+        <div style={{ padding: "40px", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", minHeight: "400px", justifyContent: "center" }}>
+          <div style={{ width: "40px", height: "3px", background: accent, marginBottom: "24px", borderRadius: "2px" }} />
+          {certContent}
+          <div style={{ width: "40px", height: "3px", background: accent, marginTop: "24px", borderRadius: "2px" }} />
+        </div>
+      </div>
+    );
+  }
+
+  if (template === "Modern") {
+    return (
+      <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: "8px", overflow: "hidden", fontFamily: "Inter, sans-serif" }}>
+        <div style={{ background: accent, padding: "20px 40px", textAlign: "center" }}>
+          <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "22px", color: "#fff", margin: 0, letterSpacing: "0.15em", textTransform: "uppercase" }}>Certificate</p>
+          <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.8)", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>{form.certType}</p>
+        </div>
+        <div style={{ padding: "32px 40px", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center" }}>
+          {form.logo && <img src={form.logo} alt="Logo" style={{ height: "44px", objectFit: "contain", marginBottom: "12px" }} />}
+          <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: "#111827", margin: "0 0 16px", textTransform: "uppercase", letterSpacing: "0.08em" }}>{form.orgName || "Organisation Name"}</p>
+          <p style={{ fontSize: "13px", color: "#6B7280", margin: "0 0 8px" }}>This is to certify that</p>
+          <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "26px", color: "#111827", margin: "0 0 12px", borderBottom: `2px solid ${accent}`, paddingBottom: "8px", minWidth: "200px" }}>{form.recipientName || "Recipient Name"}</p>
+          <p style={{ fontSize: "13px", color: "#374151", margin: "0 0 8px", lineHeight: 1.6 }}>{form.description || "has successfully completed the course in"}</p>
+          {form.course && <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: accent, margin: "0 0 16px" }}>{form.course}</p>}
+          <div style={{ display: "flex", gap: "24px", justifyContent: "center", marginBottom: "20px" }}>
+            {form.duration && <div style={{ textAlign: "center" }}><p style={{ fontSize: "10px", color: "#9CA3AF", margin: "0 0 2px", textTransform: "uppercase" }}>Duration</p><p style={{ fontSize: "13px", fontWeight: 600, color: "#111827", margin: 0 }}>{form.duration}</p></div>}
+            {form.grade && <div style={{ textAlign: "center" }}><p style={{ fontSize: "10px", color: "#9CA3AF", margin: "0 0 2px", textTransform: "uppercase" }}>Grade</p><p style={{ fontSize: "13px", fontWeight: 600, color: accent, margin: 0 }}>{form.grade}</p></div>}
+            <div style={{ textAlign: "center" }}><p style={{ fontSize: "10px", color: "#9CA3AF", margin: "0 0 2px", textTransform: "uppercase" }}>Date</p><p style={{ fontSize: "13px", fontWeight: 600, color: "#111827", margin: 0 }}>{form.issueDate}</p></div>
+          </div>
+          <div style={{ borderTop: "2px solid #374151", paddingTop: "6px", minWidth: "140px", textAlign: "center" }}>
+            <p style={{ fontSize: "12px", fontWeight: 600, color: "#111827", margin: 0 }}>{form.signatoryName || "Signatory Name"}</p>
+            <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "2px 0 0" }}>{form.signatoryDesignation || "Designation"}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (template === "Royal") {
+    return (
+      <div style={{ background: "#fff", border: `3px solid ${accent}`, borderRadius: "4px", overflow: "hidden", fontFamily: "Inter, sans-serif", padding: "6px" }}>
+        <div style={{ border: `1px solid ${accent}`, borderRadius: "2px", padding: "32px 40px", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", minHeight: "400px", justifyContent: "center", position: "relative" }}>
+          {["top-left", "top-right", "bottom-left", "bottom-right"].map((pos) => (
+            <div key={pos} style={{ position: "absolute", [pos.includes("top") ? "top" : "bottom"]: "12px", [pos.includes("left") ? "left" : "right"]: "12px", width: "20px", height: "20px", borderTop: pos.includes("top") ? `2px solid ${accent}` : "none", borderBottom: pos.includes("bottom") ? `2px solid ${accent}` : "none", borderLeft: pos.includes("left") ? `2px solid ${accent}` : "none", borderRight: pos.includes("right") ? `2px solid ${accent}` : "none" }} />
+          ))}
+          {certContent}
+        </div>
+      </div>
+    );
+  }
+
+  if (template === "Elegant") {
+    return (
+      <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: "8px", overflow: "hidden", fontFamily: "Inter, sans-serif", display: "flex" }}>
+        <div style={{ width: "12px", background: accent, flexShrink: 0 }} />
+        <div style={{ flex: 1, padding: "32px 40px", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", minHeight: "400px", justifyContent: "center" }}>
+          {certContent}
+        </div>
+        <div style={{ width: "12px", background: accent, flexShrink: 0 }} />
+      </div>
+    );
+  }
+
+  // Classic (default)
+  return (
+    <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: "8px", overflow: "hidden", fontFamily: "Inter, sans-serif" }}>
+      <div style={{ border: "8px solid #F0F4F3", outline: `2px solid ${accent}`, outlineOffset: "-12px", margin: "8px", borderRadius: "6px", padding: "32px 40px", background: "linear-gradient(135deg, #F8FFFE 0%, #fff 50%, #F8FFFE 100%)", textAlign: "center", minHeight: "400px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", position: "relative" }}>
+        {["top-left", "top-right", "bottom-left", "bottom-right"].map((pos) => (
+          <div key={pos} style={{ position: "absolute", [pos.includes("top") ? "top" : "bottom"]: "16px", [pos.includes("left") ? "left" : "right"]: "16px", width: "24px", height: "24px", borderTop: pos.includes("top") ? `3px solid ${accent}` : "none", borderBottom: pos.includes("bottom") ? `3px solid ${accent}` : "none", borderLeft: pos.includes("left") ? `3px solid ${accent}` : "none", borderRight: pos.includes("right") ? `3px solid ${accent}` : "none" }} />
+        ))}
+        {certContent}
       </div>
     </div>
   );
@@ -447,7 +377,7 @@ export default function CertificatePage() {
             </div>
             <div style={{ position: "relative" }}>
               {showWatermark && <WatermarkOverlay />}
-              <CertPreview form={form} />
+              <CertPreview form={form} template={template} accent={templateMeta.accent} />
             </div>
           </div>
         </div>

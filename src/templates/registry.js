@@ -37,6 +37,34 @@ export const TEMPLATE_REGISTRY = {
     Corporate: { name: "Corporate", pro: true,  description: "Formal corporate letterhead",              accent: "#1E3A5F", preview: "corporate" },
     Elegant:   { name: "Elegant",   pro: true,  description: "Premium elegant letter design",            accent: "#D97706", preview: "elegant"   },
   },
+  receipt: {
+    Classic:   { name: "Classic",   pro: false, description: "Standard receipt format",                 accent: "#0D9488", preview: "clean"     },
+    Minimal:   { name: "Minimal",   pro: false, description: "Clean minimal receipt layout",             accent: "#111827", preview: "minimal"   },
+    Modern:    { name: "Modern",    pro: true,  description: "Modern sidebar receipt",                   accent: "#6366F1", preview: "sidebar"   },
+    Corporate: { name: "Corporate", pro: true,  description: "Formal corporate receipt style",           accent: "#1E3A5F", preview: "corporate" },
+    Elegant:   { name: "Elegant",   pro: true,  description: "Premium elegant receipt",                  accent: "#D97706", preview: "elegant"   },
+  },
+  resignation: {
+    Classic:   { name: "Classic",   pro: false, description: "Standard resignation letter",              accent: "#0D9488", preview: "clean"     },
+    Minimal:   { name: "Minimal",   pro: false, description: "Clean minimal letter format",              accent: "#111827", preview: "minimal"   },
+    Modern:    { name: "Modern",    pro: true,  description: "Modern sidebar accent letter",              accent: "#6366F1", preview: "sidebar"   },
+    Corporate: { name: "Corporate", pro: true,  description: "Formal corporate letter style",             accent: "#1E3A5F", preview: "corporate" },
+    Elegant:   { name: "Elegant",   pro: true,  description: "Premium elegant letter design",             accent: "#D97706", preview: "elegant"   },
+  },
+  jobOffer: {
+    Classic:   { name: "Classic",   pro: false, description: "Standard offer letter format",             accent: "#0D9488", preview: "clean"     },
+    Minimal:   { name: "Minimal",   pro: false, description: "Clean minimal offer letter",                accent: "#111827", preview: "minimal"   },
+    Modern:    { name: "Modern",    pro: true,  description: "Modern sidebar offer letter",               accent: "#6366F1", preview: "sidebar"   },
+    Corporate: { name: "Corporate", pro: true,  description: "Formal corporate offer letter",             accent: "#1E3A5F", preview: "corporate" },
+    Elegant:   { name: "Elegant",   pro: true,  description: "Premium elegant offer letter",              accent: "#D97706", preview: "elegant"   },
+  },
+  internship: {
+    Classic:   { name: "Classic",   pro: false, description: "Traditional internship certificate",       accent: "#0D9488", preview: "clean"     },
+    Minimal:   { name: "Minimal",   pro: false, description: "Clean modern internship cert",              accent: "#111827", preview: "minimal"   },
+    Modern:    { name: "Modern",    pro: true,  description: "Modern header certificate",                 accent: "#6366F1", preview: "modern"    },
+    Royal:     { name: "Royal",     pro: true,  description: "Royal border certificate style",            accent: "#D97706", preview: "royal"     },
+    Elegant:   { name: "Elegant",   pro: true,  description: "Elegant sidebar certificate",               accent: "#7C3AED", preview: "elegant"   },
+  },
 };
 
 export function getTemplates(docType) {

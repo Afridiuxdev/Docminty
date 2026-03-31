@@ -12,6 +12,10 @@ import { useRouter } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
 import { documentsApi } from "@/api/documents";
 import { getAccessToken } from "@/api/auth";
+import TemplatePicker from "@/components/TemplatePicker";
+import WatermarkOverlay from "@/components/WatermarkOverlay";
+import { TEMPLATE_REGISTRY } from "@/templates/registry";
+import { useAuth } from "@/contexts/AuthContext";
 
 const T = "#0D9488";
 

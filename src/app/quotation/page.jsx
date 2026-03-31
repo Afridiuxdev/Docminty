@@ -65,97 +65,186 @@ function ItemRow({ item, index, onChange, onRemove, showHSN, showDiscount }) {
   );
 }
 
-function QuotationPreview({ form }) {
+function QuotationPreview({ form, template = "Classic", accent = "#0D9488" }) {
   const calc = calculateLineItems(form.items, form.taxType === "igst");
   const fromState = INDIAN_STATES.find(s => s.code === form.fromState);
   const toState = INDIAN_STATES.find(s => s.code === form.toState);
+
+  const sharedBody = (
+    <div className="pdf-body">
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px", marginBottom: "20px" }}>
+        <div>
+          <p style={{ fontSize: "10px", fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 6px", fontFamily: "Space Grotesk, sans-serif" }}>Quote For</p>
+          <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "13px", color: "#111827", margin: 0 }}>{form.toName || "Client Name"}</p>
+          {form.toGSTIN && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>GSTIN: {form.toGSTIN}</p>}
+          {form.toAddress && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.toAddress}</p>}
+          {toState && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{toState.name}</p>}
+        </div>
+      </div>
+      <table className="pdf-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th style={{ width: "40%" }}>Description</th>
+            {form.showHSN && <th>HSN</th>}
+            <th>Qty</th>
+            <th>Rate</th>
+            <th>GST%</th>
+            <th style={{ textAlign: "right" }}>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          {calc.items.map((item, i) => (
+            <tr key={i}>
+              <td>{i + 1}</td>
+              <td>{item.description || "—"}</td>
+              {form.showHSN && <td>{item.hsn || "—"}</td>}
+              <td>{item.qty}</td>
+              <td>Rs.{item.rate}</td>
+              <td>{item.gstRate}%</td>
+              <td style={{ textAlign: "right", fontWeight: 600 }}>Rs.{item.amount}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <div className="pdf-totals">
+          <div className="pdf-total-row"><span style={{ color: "#6B7280" }}>Subtotal</span><span>Rs.{calc.subtotal}</span></div>
+          {form.taxType === "cgst_sgst" && <>
+            <div className="pdf-total-row"><span style={{ color: "#6B7280" }}>CGST</span><span>Rs.{calc.totalCGST}</span></div>
+            <div className="pdf-total-row"><span style={{ color: "#6B7280" }}>SGST</span><span>Rs.{calc.totalSGST}</span></div>
+          </>}
+          {form.taxType === "igst" && <div className="pdf-total-row"><span style={{ color: "#6B7280" }}>IGST</span><span>Rs.{calc.totalIGST}</span></div>}
+          <div style={{ display: "flex", justifyContent: "space-between", fontWeight: 700, borderTop: "2px solid #E5E7EB", paddingTop: "6px", marginTop: "4px" }}><span>Total</span><span style={{ color: accent }}>Rs.{calc.grandTotal}</span></div>
+        </div>
+      </div>
+      <div style={{ marginTop: "16px", padding: "10px 14px", background: "#F8F9FA", borderRadius: "6px", borderLeft: `3px solid ${accent}` }}>
+        <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "0 0 2px", fontFamily: "Inter, sans-serif", textTransform: "uppercase", letterSpacing: "0.05em" }}>Amount in Words</p>
+        <p style={{ fontSize: "12px", color: "#374151", margin: 0, fontFamily: "Inter, sans-serif", fontStyle: "italic" }}>{numberToWords(parseFloat(calc.grandTotal))}</p>
+      </div>
+      {(form.notes || form.terms) && (
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginTop: "20px" }}>
+          {form.notes && <div>
+            <p style={{ fontSize: "10px", fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 4px", fontFamily: "Space Grotesk, sans-serif" }}>Notes</p>
+            <p style={{ fontSize: "11px", color: "#6B7280", fontFamily: "Inter, sans-serif", lineHeight: 1.6, margin: 0 }}>{form.notes}</p>
+          </div>}
+          {form.terms && <div>
+            <p style={{ fontSize: "10px", fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 4px", fontFamily: "Space Grotesk, sans-serif" }}>Terms</p>
+            <p style={{ fontSize: "11px", color: "#6B7280", fontFamily: "Inter, sans-serif", lineHeight: 1.6, margin: 0 }}>{form.terms}</p>
+          </div>}
+        </div>
+      )}
+      <div style={{ marginTop: "24px", paddingTop: "12px", borderTop: "1px solid #E5E7EB", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <p style={{ fontSize: "10px", color: "#D1D5DB", fontFamily: "Inter, sans-serif", margin: 0 }}>Generated by DocMinty.com</p>
+        <div style={{ borderTop: "1px solid #374151", paddingTop: "4px", minWidth: "120px", textAlign: "center" }}>
+          <p style={{ fontSize: "10px", color: "#9CA3AF", fontFamily: "Inter, sans-serif", margin: 0 }}>Authorised Signatory</p>
+        </div>
+      </div>
+    </div>
+  );
+
+  if (template === "Modern") {
+    return (
+      <div className="pdf-preview" style={{ display: "flex", gap: 0, padding: 0, overflow: "hidden" }}>
+        <div style={{ width: "140px", minWidth: "140px", background: accent, padding: "24px 16px", display: "flex", flexDirection: "column", gap: "20px" }}>
+          {form.logo && <img src={form.logo} alt="Logo" style={{ height: "36px", objectFit: "contain", filter: "brightness(0) invert(1)" }} />}
+          <div>
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "16px", color: "#fff", margin: 0 }}>QUOTATION</p>
+            <p style={{ fontSize: "10px", color: "rgba(255,255,255,0.7)", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>#{form.quoteNumber}</p>
+          </div>
+          <div>
+            <p style={{ fontSize: "9px", color: "rgba(255,255,255,0.6)", margin: "0 0 2px", textTransform: "uppercase", fontFamily: "Inter, sans-serif" }}>Date</p>
+            <p style={{ fontSize: "11px", color: "#fff", margin: 0, fontFamily: "Inter, sans-serif" }}>{form.quoteDate}</p>
+          </div>
+          <div>
+            <p style={{ fontSize: "9px", color: "rgba(255,255,255,0.6)", margin: "0 0 2px", textTransform: "uppercase", fontFamily: "Inter, sans-serif" }}>From</p>
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "12px", color: "#fff", margin: 0 }}>{form.fromName || "Your Business"}</p>
+            {form.fromGSTIN && <p style={{ fontSize: "9px", color: "rgba(255,255,255,0.7)", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.fromGSTIN}</p>}
+          </div>
+        </div>
+        <div style={{ flex: 1, overflow: "hidden" }}>{sharedBody}</div>
+      </div>
+    );
+  }
+
+  if (template === "Corporate") {
+    return (
+      <div className="pdf-preview">
+        <div style={{ background: accent, padding: "24px", textAlign: "center" }}>
+          {form.logo && <img src={form.logo} alt="Logo" style={{ height: "40px", objectFit: "contain", display: "block", margin: "0 auto 8px", filter: "brightness(0) invert(1)" }} />}
+          <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "15px", color: "#fff", margin: "0 0 2px" }}>{form.fromName || "Your Business Name"}</p>
+          {form.fromGSTIN && <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.75)", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>GSTIN: {form.fromGSTIN}</p>}
+          <div style={{ marginTop: "12px", display: "inline-block", background: "rgba(255,255,255,0.15)", borderRadius: "4px", padding: "4px 16px" }}>
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "18px", color: "#fff", margin: 0 }}>QUOTATION</p>
+            <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.8)", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>#{form.quoteNumber} &nbsp;|&nbsp; {form.quoteDate}</p>
+          </div>
+        </div>
+        {sharedBody}
+      </div>
+    );
+  }
+
+  if (template === "Elegant") {
+    return (
+      <div className="pdf-preview">
+        <div style={{ borderBottom: `4px solid ${accent}`, padding: "20px 24px 16px", display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+          <div>
+            {form.logo && <img src={form.logo} alt="Logo" style={{ height: "40px", objectFit: "contain", marginBottom: "8px", display: "block" }} />}
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: "#111827", margin: 0 }}>{form.fromName || "Your Business Name"}</p>
+            {form.fromGSTIN && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>GSTIN: {form.fromGSTIN}</p>}
+          </div>
+          <div style={{ textAlign: "right" }}>
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "22px", color: accent, margin: 0 }}>QUOTATION</p>
+            <p style={{ fontSize: "12px", color: "#6B7280", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>#{form.quoteNumber}</p>
+            <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.quoteDate}</p>
+          </div>
+        </div>
+        {sharedBody}
+      </div>
+    );
+  }
+
+  if (template === "Classic") {
+    return (
+      <div className="pdf-preview">
+        <div className="pdf-header" style={{ borderBottom: `2px solid ${accent}` }}>
+          <div>
+            {form.logo && <img src={form.logo} alt="Logo" style={{ height: "48px", objectFit: "contain", marginBottom: "8px", display: "block" }} />}
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: "#111827", margin: 0 }}>{form.fromName || "Your Business Name"}</p>
+            {form.fromGSTIN && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>GSTIN: {form.fromGSTIN}</p>}
+            {form.fromAddress && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}</p>}
+            {fromState && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{fromState.name}</p>}
+          </div>
+          <div style={{ textAlign: "right" }}>
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "22px", color: accent, margin: 0 }}>QUOTATION</p>
+            <p style={{ fontSize: "12px", color: "#6B7280", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>#{form.quoteNumber}</p>
+            <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>Date: {form.quoteDate}</p>
+            {form.validUntil && <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>Valid Until: {form.validUntil}</p>}
+          </div>
+        </div>
+        {sharedBody}
+      </div>
+    );
+  }
+
+  // Minimal (default)
   return (
     <div className="pdf-preview">
-      <div className="pdf-header">
-        <div>
-          {form.logo && <img src={form.logo} alt="Logo" style={{ height: "48px", objectFit: "contain", marginBottom: "8px", display: "block" }} />}
-          <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: "#111827", margin: 0 }}>{form.fromName || "Your Business Name"}</p>
-          {form.fromGSTIN && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>GSTIN: {form.fromGSTIN}</p>}
-          {form.fromAddress && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}</p>}
-          {fromState && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{fromState.name}</p>}
-        </div>
-        <div style={{ textAlign: "right" }}>
-          <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "22px", color: T, margin: 0 }}>QUOTATION</p>
-          <p style={{ fontSize: "12px", color: "#6B7280", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>#{form.quoteNumber}</p>
-          <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>Date: {form.quoteDate}</p>
-          {form.validUntil && <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>Valid Until: {form.validUntil}</p>}
-        </div>
-      </div>
-      <div className="pdf-body">
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px", marginBottom: "20px" }}>
+      <div style={{ padding: "20px 24px 16px", borderBottom: "1px solid #E5E7EB" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div>
-            <p style={{ fontSize: "10px", fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 6px", fontFamily: "Space Grotesk, sans-serif" }}>Quote For</p>
-            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "13px", color: "#111827", margin: 0 }}>{form.toName || "Client Name"}</p>
-            {form.toGSTIN && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>GSTIN: {form.toGSTIN}</p>}
-            {form.toAddress && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.toAddress}</p>}
-            {toState && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{toState.name}</p>}
+            {form.logo && <img src={form.logo} alt="Logo" style={{ height: "40px", objectFit: "contain", marginBottom: "6px", display: "block" }} />}
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "15px", color: "#111827", margin: 0 }}>{form.fromName || "Your Business Name"}</p>
+            {form.fromGSTIN && <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>GSTIN: {form.fromGSTIN}</p>}
+          </div>
+          <div style={{ textAlign: "right" }}>
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "20px", color: "#111827", margin: 0 }}>QUOTATION</p>
+            <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>#{form.quoteNumber} · {form.quoteDate}</p>
           </div>
         </div>
-        <table className="pdf-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th style={{ width: "40%" }}>Description</th>
-              {form.showHSN && <th>HSN</th>}
-              <th>Qty</th>
-              <th>Rate</th>
-              <th>GST%</th>
-              <th style={{ textAlign: "right" }}>Amount</th>
-            </tr>
-          </thead>
-          <tbody>
-            {calc.items.map((item, i) => (
-              <tr key={i}>
-                <td>{i + 1}</td>
-                <td>{item.description || "—"}</td>
-                {form.showHSN && <td>{item.hsn || "—"}</td>}
-                <td>{item.qty}</td>
-                <td>₹{item.rate}</td>
-                <td>{item.gstRate}%</td>
-                <td style={{ textAlign: "right", fontWeight: 600 }}>₹{item.amount}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
-          <div className="pdf-totals">
-            <div className="pdf-total-row"><span style={{ color: "#6B7280" }}>Subtotal</span><span>₹{calc.subtotal}</span></div>
-            {form.taxType === "cgst_sgst" && <>
-              <div className="pdf-total-row"><span style={{ color: "#6B7280" }}>CGST</span><span>₹{calc.totalCGST}</span></div>
-              <div className="pdf-total-row"><span style={{ color: "#6B7280" }}>SGST</span><span>₹{calc.totalSGST}</span></div>
-            </>}
-            {form.taxType === "igst" && <div className="pdf-total-row"><span style={{ color: "#6B7280" }}>IGST</span><span>₹{calc.totalIGST}</span></div>}
-            <div className="pdf-total-final"><span>Total</span><span>₹{calc.grandTotal}</span></div>
-          </div>
-        </div>
-        <div style={{ marginTop: "16px", padding: "10px 14px", background: "#F8F9FA", borderRadius: "6px", borderLeft: `3px solid ${T}` }}>
-          <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "0 0 2px", fontFamily: "Inter, sans-serif", textTransform: "uppercase", letterSpacing: "0.05em" }}>Amount in Words</p>
-          <p style={{ fontSize: "12px", color: "#374151", margin: 0, fontFamily: "Inter, sans-serif", fontStyle: "italic" }}>{numberToWords(parseFloat(calc.grandTotal))}</p>
-        </div>
-        {(form.notes || form.terms) && (
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginTop: "20px" }}>
-            {form.notes && <div>
-              <p style={{ fontSize: "10px", fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 4px", fontFamily: "Space Grotesk, sans-serif" }}>Notes</p>
-              <p style={{ fontSize: "11px", color: "#6B7280", fontFamily: "Inter, sans-serif", lineHeight: 1.6, margin: 0 }}>{form.notes}</p>
-            </div>}
-            {form.terms && <div>
-              <p style={{ fontSize: "10px", fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 4px", fontFamily: "Space Grotesk, sans-serif" }}>Terms</p>
-              <p style={{ fontSize: "11px", color: "#6B7280", fontFamily: "Inter, sans-serif", lineHeight: 1.6, margin: 0 }}>{form.terms}</p>
-            </div>}
-          </div>
-        )}
-        <div style={{ marginTop: "24px", paddingTop: "12px", borderTop: "1px solid #E5E7EB", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <p style={{ fontSize: "10px", color: "#D1D5DB", fontFamily: "Inter, sans-serif", margin: 0 }}>Generated by DocMinty.com</p>
-          <div style={{ borderTop: "1px solid #374151", paddingTop: "4px", minWidth: "120px", textAlign: "center" }}>
-            <p style={{ fontSize: "10px", color: "#9CA3AF", fontFamily: "Inter, sans-serif", margin: 0 }}>Authorised Signatory</p>
-          </div>
-        </div>
+        <div style={{ height: "2px", background: accent, marginTop: "12px", borderRadius: "1px" }} />
       </div>
+      {sharedBody}
     </div>
   );
 }
@@ -364,7 +453,7 @@ export default function QuotationPage() {
             </div>
             <div style={{ position: "relative" }}>
               {showWatermark && <WatermarkOverlay />}
-              <QuotationPreview form={form} />
+              <QuotationPreview form={form} template={template} accent={templateMeta.accent} />
             </div>
           </div>
         </div>

@@ -45,7 +45,7 @@ const DEFAULT_FORM = {
 
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
-function SalaryPreview({ form }) {
+function SalaryPreview({ form, template = "Classic", accent = "#0D9488" }) {
   const calc = calculateSalary({
     basic: form.basic, hra: form.hra, da: form.da,
     conveyance: form.conveyance, medical: form.medical,
@@ -54,134 +54,208 @@ function SalaryPreview({ form }) {
   });
   const companyState = INDIAN_STATES.find(s => s.code === form.companyState);
 
+  const salaryBody = (
+    <div className="pdf-body">
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", padding: "16px", background: "#F8F9FA", borderRadius: "8px", marginBottom: "16px" }}>
+        {[
+          ["Employee Name", form.employeeName || "—"],
+          ["Employee ID", form.employeeId || "—"],
+          ["Designation", form.designation || "—"],
+          ["Department", form.department || "—"],
+          ["PAN Number", form.panNumber || "—"],
+          ["PF Number", form.pfNumber || "—"],
+          ["Payment Date", form.paymentDate || "—"],
+          ["Working Days", `${form.paidDays} / ${form.workingDays}`],
+        ].map(([label, value]) => (
+          <div key={label}>
+            <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "0 0 2px", fontFamily: "Inter, sans-serif", textTransform: "uppercase", letterSpacing: "0.06em" }}>{label}</p>
+            <p style={{ fontSize: "12px", color: "#111827", margin: 0, fontFamily: "Inter, sans-serif", fontWeight: 600 }}>{value}</p>
+          </div>
+        ))}
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
+        <div>
+          <p style={{ fontSize: "11px", fontWeight: 700, color: "#fff", background: accent, padding: "6px 12px", borderRadius: "4px 4px 0 0", margin: 0, fontFamily: "Space Grotesk, sans-serif", textTransform: "uppercase", letterSpacing: "0.05em" }}>Earnings</p>
+          <table className="pdf-table" style={{ margin: 0 }}>
+            <tbody>
+              {[
+                ["Basic Salary", `Rs.${parseFloat(form.basic || 0).toLocaleString("en-IN")}`],
+                ["HRA", `Rs.${parseFloat(form.hra || 0).toLocaleString("en-IN")}`],
+                ["DA", `Rs.${parseFloat(form.da || 0).toLocaleString("en-IN")}`],
+                ["Conveyance", `Rs.${parseFloat(form.conveyance || 0).toLocaleString("en-IN")}`],
+                ["Medical Allow.", `Rs.${parseFloat(form.medical || 0).toLocaleString("en-IN")}`],
+                form.otherAllowances && ["Other Allowances", `Rs.${parseFloat(form.otherAllowances).toLocaleString("en-IN")}`],
+              ].filter(Boolean).map(([l, v]) => (
+                <tr key={l}>
+                  <td style={{ color: "#374151" }}>{l}</td>
+                  <td style={{ textAlign: "right", fontWeight: 600, color: "#111827" }}>{v}</td>
+                </tr>
+              ))}
+              <tr style={{ background: "#F0F9F8" }}>
+                <td style={{ fontWeight: 700, color: accent, fontFamily: "Space Grotesk, sans-serif" }}>Gross Salary</td>
+                <td style={{ textAlign: "right", fontWeight: 700, color: accent, fontFamily: "Space Grotesk, sans-serif" }}>Rs.{parseFloat(calc.grossSalary).toLocaleString("en-IN")}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <p style={{ fontSize: "11px", fontWeight: 700, color: "#fff", background: "#EF4444", padding: "6px 12px", borderRadius: "4px 4px 0 0", margin: 0, fontFamily: "Space Grotesk, sans-serif", textTransform: "uppercase", letterSpacing: "0.05em" }}>Deductions</p>
+          <table className="pdf-table" style={{ margin: 0 }}>
+            <tbody>
+              {[
+                ["Employee PF", `Rs.${parseFloat(calc.employeePF).toLocaleString("en-IN")}`],
+                ["Professional Tax", `Rs.${parseFloat(calc.professionalTax).toLocaleString("en-IN")}`],
+                parseFloat(calc.esi) > 0 && ["ESI", `Rs.${parseFloat(calc.esi).toLocaleString("en-IN")}`],
+                parseFloat(calc.incomeTax) > 0 && ["Income Tax (TDS)", `Rs.${parseFloat(calc.incomeTax).toLocaleString("en-IN")}`],
+                parseFloat(calc.otherDeductions) > 0 && ["Other Deductions", `Rs.${parseFloat(calc.otherDeductions).toLocaleString("en-IN")}`],
+              ].filter(Boolean).map(([l, v]) => (
+                <tr key={l}>
+                  <td style={{ color: "#374151" }}>{l}</td>
+                  <td style={{ textAlign: "right", fontWeight: 600, color: "#111827" }}>{v}</td>
+                </tr>
+              ))}
+              <tr style={{ background: "#FEF2F2" }}>
+                <td style={{ fontWeight: 700, color: "#EF4444", fontFamily: "Space Grotesk, sans-serif" }}>Total Deductions</td>
+                <td style={{ textAlign: "right", fontWeight: 700, color: "#EF4444", fontFamily: "Space Grotesk, sans-serif" }}>Rs.{parseFloat(calc.totalDeductions).toLocaleString("en-IN")}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div style={{ background: accent, borderRadius: "8px", padding: "16px 20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div>
+          <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.75)", margin: "0 0 2px", fontFamily: "Inter, sans-serif", textTransform: "uppercase", letterSpacing: "0.08em" }}>Net Pay</p>
+          <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "24px", color: "#fff", margin: 0 }}>Rs.{parseFloat(calc.netSalary).toLocaleString("en-IN")}</p>
+        </div>
+        <div style={{ textAlign: "right" }}>
+          <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.75)", margin: "0 0 2px", fontFamily: "Inter, sans-serif" }}>In Words</p>
+          <p style={{ fontSize: "11px", color: "#fff", margin: 0, fontFamily: "Inter, sans-serif", fontStyle: "italic", maxWidth: "200px" }}>
+            {`Rupees ${Math.floor(parseFloat(calc.netSalary)).toLocaleString("en-IN")} Only`}
+          </p>
+        </div>
+      </div>
+      {(form.bankName || form.accountNumber) && (
+        <div style={{ marginTop: "16px", padding: "12px 16px", background: "#F8F9FA", borderRadius: "6px" }}>
+          <p style={{ fontSize: "10px", fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 8px", fontFamily: "Space Grotesk, sans-serif" }}>Bank Details</p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px" }}>
+            {[["Bank", form.bankName], ["Account", form.accountNumber], ["IFSC", form.ifscCode]].map(([l, v]) => v && (
+              <div key={l}>
+                <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "0 0 2px", fontFamily: "Inter, sans-serif" }}>{l}</p>
+                <p style={{ fontSize: "12px", color: "#111827", margin: 0, fontFamily: "Inter, sans-serif", fontWeight: 600 }}>{v}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      <div style={{ marginTop: "24px", paddingTop: "12px", borderTop: "1px solid #E5E7EB", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <p style={{ fontSize: "10px", color: "#D1D5DB", fontFamily: "Inter, sans-serif", margin: 0 }}>Generated by DocMinty.com</p>
+        <div style={{ borderTop: "1px solid #374151", paddingTop: "4px", minWidth: "120px", textAlign: "center" }}>
+          <p style={{ fontSize: "10px", color: "#9CA3AF", fontFamily: "Inter, sans-serif", margin: 0 }}>HR Manager</p>
+        </div>
+      </div>
+    </div>
+  );
+
+  if (template === "Modern") {
+    return (
+      <div className="pdf-preview" style={{ display: "flex", gap: 0, padding: 0, overflow: "hidden" }}>
+        <div style={{ width: "140px", minWidth: "140px", background: accent, padding: "24px 16px", display: "flex", flexDirection: "column", gap: "20px" }}>
+          {form.logo && <img src={form.logo} alt="Logo" style={{ height: "36px", objectFit: "contain", filter: "brightness(0) invert(1)" }} />}
+          <div>
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "14px", color: "#fff", margin: 0 }}>SALARY SLIP</p>
+            <p style={{ fontSize: "10px", color: "rgba(255,255,255,0.7)", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>{form.month} {form.year}</p>
+          </div>
+          <div>
+            <p style={{ fontSize: "9px", color: "rgba(255,255,255,0.6)", margin: "0 0 2px", textTransform: "uppercase", fontFamily: "Inter, sans-serif" }}>Company</p>
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "12px", color: "#fff", margin: 0 }}>{form.companyName || "Company"}</p>
+          </div>
+          <div>
+            <p style={{ fontSize: "9px", color: "rgba(255,255,255,0.6)", margin: "0 0 2px", textTransform: "uppercase", fontFamily: "Inter, sans-serif" }}>Employee</p>
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "12px", color: "#fff", margin: 0 }}>{form.employeeName || "—"}</p>
+            {form.designation && <p style={{ fontSize: "10px", color: "rgba(255,255,255,0.7)", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.designation}</p>}
+          </div>
+        </div>
+        <div style={{ flex: 1, overflow: "hidden" }}>{salaryBody}</div>
+      </div>
+    );
+  }
+
+  if (template === "Corporate") {
+    return (
+      <div className="pdf-preview">
+        <div style={{ background: accent, padding: "20px 24px", textAlign: "center" }}>
+          {form.logo && <img src={form.logo} alt="Logo" style={{ height: "36px", objectFit: "contain", display: "block", margin: "0 auto 8px", filter: "brightness(0) invert(1)" }} />}
+          <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "15px", color: "#fff", margin: "0 0 2px" }}>{form.companyName || "Company Name"}</p>
+          {form.companyAddress && <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.75)", margin: "0 0 10px", fontFamily: "Inter, sans-serif" }}>{form.companyAddress}{form.companyCity ? `, ${form.companyCity}` : ""}</p>}
+          <div style={{ display: "inline-block", background: "rgba(255,255,255,0.15)", borderRadius: "4px", padding: "4px 16px" }}>
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "16px", color: "#fff", margin: 0 }}>SALARY SLIP</p>
+            <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.8)", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.month} {form.year}</p>
+          </div>
+        </div>
+        {salaryBody}
+      </div>
+    );
+  }
+
+  if (template === "Elegant") {
+    return (
+      <div className="pdf-preview">
+        <div style={{ borderBottom: `4px solid ${accent}`, padding: "20px 24px 16px", display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+          <div>
+            {form.logo && <img src={form.logo} alt="Logo" style={{ height: "40px", objectFit: "contain", marginBottom: "8px", display: "block" }} />}
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: "#111827", margin: 0 }}>{form.companyName || "Company Name"}</p>
+            {form.companyAddress && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.companyAddress}{form.companyCity ? `, ${form.companyCity}` : ""}</p>}
+          </div>
+          <div style={{ textAlign: "right" }}>
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "20px", color: accent, margin: 0 }}>SALARY SLIP</p>
+            <p style={{ fontSize: "12px", color: "#6B7280", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>{form.month} {form.year}</p>
+          </div>
+        </div>
+        {salaryBody}
+      </div>
+    );
+  }
+
+  if (template === "Classic") {
+    return (
+      <div className="pdf-preview">
+        <div style={{ background: accent, padding: "20px 24px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+            <div>
+              {form.logo && <img src={form.logo} alt="Logo" style={{ height: "40px", objectFit: "contain", marginBottom: "8px", display: "block", filter: "brightness(0) invert(1)" }} />}
+              <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: "#fff", margin: 0 }}>{form.companyName || "Company Name"}</p>
+              {form.companyAddress && <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.8)", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.companyAddress}{form.companyCity ? `, ${form.companyCity}` : ""}</p>}
+              {companyState && <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.8)", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{companyState.name}</p>}
+            </div>
+            <div style={{ textAlign: "right" }}>
+              <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "18px", color: "#fff", margin: 0 }}>SALARY SLIP</p>
+              <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.8)", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>{form.month} {form.year}</p>
+            </div>
+          </div>
+        </div>
+        {salaryBody}
+      </div>
+    );
+  }
+
+  // Minimal (default)
   return (
     <div className="pdf-preview">
-      {/* Header */}
-      <div style={{ background: T, padding: "20px 24px" }}>
+      <div style={{ padding: "20px 24px 16px", borderBottom: "1px solid #E5E7EB" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div>
-            {form.logo && <img src={form.logo} alt="Logo" style={{ height: "40px", objectFit: "contain", marginBottom: "8px", display: "block", filter: "brightness(0) invert(1)" }} />}
-            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: "#fff", margin: 0 }}>{form.companyName || "Company Name"}</p>
-            {form.companyAddress && <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.8)", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.companyAddress}{form.companyCity ? `, ${form.companyCity}` : ""}</p>}
-            {companyState && <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.8)", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{companyState.name}</p>}
+            {form.logo && <img src={form.logo} alt="Logo" style={{ height: "40px", objectFit: "contain", marginBottom: "6px", display: "block" }} />}
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "15px", color: "#111827", margin: 0 }}>{form.companyName || "Company Name"}</p>
+            {form.companyAddress && <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.companyAddress}</p>}
           </div>
           <div style={{ textAlign: "right" }}>
-            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "18px", color: "#fff", margin: 0 }}>SALARY SLIP</p>
-            <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.8)", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>{form.month} {form.year}</p>
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "18px", color: "#111827", margin: 0 }}>SALARY SLIP</p>
+            <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>{form.month} {form.year}</p>
           </div>
         </div>
+        <div style={{ height: "2px", background: accent, marginTop: "12px", borderRadius: "1px" }} />
       </div>
-
-      <div className="pdf-body">
-        {/* Employee info */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", padding: "16px", background: "#F8F9FA", borderRadius: "8px", marginBottom: "16px" }}>
-          {[
-            ["Employee Name", form.employeeName || "—"],
-            ["Employee ID", form.employeeId || "—"],
-            ["Designation", form.designation || "—"],
-            ["Department", form.department || "—"],
-            ["PAN Number", form.panNumber || "—"],
-            ["PF Number", form.pfNumber || "—"],
-            ["Payment Date", form.paymentDate || "—"],
-            ["Working Days", `${form.paidDays} / ${form.workingDays}`],
-          ].map(([label, value]) => (
-            <div key={label}>
-              <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "0 0 2px", fontFamily: "Inter, sans-serif", textTransform: "uppercase", letterSpacing: "0.06em" }}>{label}</p>
-              <p style={{ fontSize: "12px", color: "#111827", margin: 0, fontFamily: "Inter, sans-serif", fontWeight: 600 }}>{value}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Earnings & Deductions */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
-          {/* Earnings */}
-          <div>
-            <p style={{ fontSize: "11px", fontWeight: 700, color: "#fff", background: T, padding: "6px 12px", borderRadius: "4px 4px 0 0", margin: 0, fontFamily: "Space Grotesk, sans-serif", textTransform: "uppercase", letterSpacing: "0.05em" }}>Earnings</p>
-            <table className="pdf-table" style={{ margin: 0 }}>
-              <tbody>
-                {[
-                  ["Basic Salary", `₹${parseFloat(form.basic || 0).toLocaleString("en-IN")}`],
-                  ["HRA", `₹${parseFloat(form.hra || 0).toLocaleString("en-IN")}`],
-                  ["DA", `₹${parseFloat(form.da || 0).toLocaleString("en-IN")}`],
-                  ["Conveyance", `₹${parseFloat(form.conveyance || 0).toLocaleString("en-IN")}`],
-                  ["Medical Allow.", `₹${parseFloat(form.medical || 0).toLocaleString("en-IN")}`],
-                  form.otherAllowances && ["Other Allowances", `₹${parseFloat(form.otherAllowances).toLocaleString("en-IN")}`],
-                ].filter(Boolean).map(([l, v]) => (
-                  <tr key={l}>
-                    <td style={{ color: "#374151" }}>{l}</td>
-                    <td style={{ textAlign: "right", fontWeight: 600, color: "#111827" }}>{v}</td>
-                  </tr>
-                ))}
-                <tr style={{ background: "#F0FDFA" }}>
-                  <td style={{ fontWeight: 700, color: T, fontFamily: "Space Grotesk, sans-serif" }}>Gross Salary</td>
-                  <td style={{ textAlign: "right", fontWeight: 700, color: T, fontFamily: "Space Grotesk, sans-serif" }}>₹{parseFloat(calc.grossSalary).toLocaleString("en-IN")}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          {/* Deductions */}
-          <div>
-            <p style={{ fontSize: "11px", fontWeight: 700, color: "#fff", background: "#EF4444", padding: "6px 12px", borderRadius: "4px 4px 0 0", margin: 0, fontFamily: "Space Grotesk, sans-serif", textTransform: "uppercase", letterSpacing: "0.05em" }}>Deductions</p>
-            <table className="pdf-table" style={{ margin: 0 }}>
-              <tbody>
-                {[
-                  ["Employee PF", `₹${parseFloat(calc.employeePF).toLocaleString("en-IN")}`],
-                  ["Professional Tax", `₹${parseFloat(calc.professionalTax).toLocaleString("en-IN")}`],
-                  parseFloat(calc.esi) > 0 && ["ESI", `₹${parseFloat(calc.esi).toLocaleString("en-IN")}`],
-                  parseFloat(calc.incomeTax) > 0 && ["Income Tax (TDS)", `₹${parseFloat(calc.incomeTax).toLocaleString("en-IN")}`],
-                  parseFloat(calc.otherDeductions) > 0 && ["Other Deductions", `₹${parseFloat(calc.otherDeductions).toLocaleString("en-IN")}`],
-                ].filter(Boolean).map(([l, v]) => (
-                  <tr key={l}>
-                    <td style={{ color: "#374151" }}>{l}</td>
-                    <td style={{ textAlign: "right", fontWeight: 600, color: "#111827" }}>{v}</td>
-                  </tr>
-                ))}
-                <tr style={{ background: "#FEF2F2" }}>
-                  <td style={{ fontWeight: 700, color: "#EF4444", fontFamily: "Space Grotesk, sans-serif" }}>Total Deductions</td>
-                  <td style={{ textAlign: "right", fontWeight: 700, color: "#EF4444", fontFamily: "Space Grotesk, sans-serif" }}>₹{parseFloat(calc.totalDeductions).toLocaleString("en-IN")}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* Net Pay */}
-        <div style={{ background: "#134E4A", borderRadius: "8px", padding: "16px 20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div>
-            <p style={{ fontSize: "11px", color: "#99F6E4", margin: "0 0 2px", fontFamily: "Inter, sans-serif", textTransform: "uppercase", letterSpacing: "0.08em" }}>Net Pay</p>
-            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "24px", color: "#fff", margin: 0 }}>₹{parseFloat(calc.netSalary).toLocaleString("en-IN")}</p>
-          </div>
-          <div style={{ textAlign: "right" }}>
-            <p style={{ fontSize: "11px", color: "#99F6E4", margin: "0 0 2px", fontFamily: "Inter, sans-serif" }}>In Words</p>
-            <p style={{ fontSize: "11px", color: "#fff", margin: 0, fontFamily: "Inter, sans-serif", fontStyle: "italic", maxWidth: "200px" }}>
-              {`Rupees ${Math.floor(parseFloat(calc.netSalary)).toLocaleString("en-IN")} Only`}
-            </p>
-          </div>
-        </div>
-
-        {/* Bank details */}
-        {(form.bankName || form.accountNumber) && (
-          <div style={{ marginTop: "16px", padding: "12px 16px", background: "#F8F9FA", borderRadius: "6px" }}>
-            <p style={{ fontSize: "10px", fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 8px", fontFamily: "Space Grotesk, sans-serif" }}>Bank Details</p>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px" }}>
-              {[["Bank", form.bankName], ["Account", form.accountNumber], ["IFSC", form.ifscCode]].map(([l, v]) => v && (
-                <div key={l}>
-                  <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "0 0 2px", fontFamily: "Inter, sans-serif" }}>{l}</p>
-                  <p style={{ fontSize: "12px", color: "#111827", margin: 0, fontFamily: "Inter, sans-serif", fontWeight: 600 }}>{v}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        <div style={{ marginTop: "24px", paddingTop: "12px", borderTop: "1px solid #E5E7EB", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <p style={{ fontSize: "10px", color: "#D1D5DB", fontFamily: "Inter, sans-serif", margin: 0 }}>Generated by DocMinty.com</p>
-          <div style={{ borderTop: "1px solid #374151", paddingTop: "4px", minWidth: "120px", textAlign: "center" }}>
-            <p style={{ fontSize: "10px", color: "#9CA3AF", fontFamily: "Inter, sans-serif", margin: 0 }}>HR Manager</p>
-          </div>
-        </div>
-      </div>
+      {salaryBody}
     </div>
   );
 }
@@ -402,7 +476,7 @@ export default function SalarySlipPage() {
             </div>
             <div style={{ position: "relative" }}>
               {showWatermark && <WatermarkOverlay />}
-              <SalaryPreview form={form} />
+              <SalaryPreview form={form} template={template} accent={templateMeta.accent} />
             </div>
           </div>
         </div>
