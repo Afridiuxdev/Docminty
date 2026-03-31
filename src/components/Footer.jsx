@@ -108,7 +108,7 @@ export default function Footer() {
                             <p style={{
                                 fontSize: "13px", color: "#9CA3AF", marginTop: "16px",
                             }}>
-                                Made with ❤️ in India 🇮🇳
+                                Made with ❤️ in Chennai, India 🇮🇳
                             </p>
                         </div>
 
