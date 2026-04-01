@@ -11,6 +11,12 @@ export function generateVerificationId() {
 }
 
 export function generateQRData(verificationId) {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://docminty.com";
+    let baseUrl = process.env.NEXT_PUBLIC_APP_URL;
+    if (!baseUrl && typeof window !== "undefined") {
+        baseUrl = window.location.origin;
+    }
+    if (!baseUrl) {
+        baseUrl = "https://docminty.com";
+    }
     return `${baseUrl}/verify/${verificationId}`;
 }

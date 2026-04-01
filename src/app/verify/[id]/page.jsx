@@ -7,24 +7,7 @@ import Link from "next/link";
 import { Shield, CheckCircle, XCircle, Clock, FileText } from "lucide-react";
 
 const T = "#0D9488";
-
-// Mock verification — replace with real API call
-async function verifyDocument(id) {
-    await new Promise(r => setTimeout(r, 1500));
-    if (id.startsWith("DM-")) {
-        return {
-            valid: true,
-            id,
-            type: "Certificate",
-            issuedTo: "Rahul Gupta",
-            issuedBy: "Reddy Academy",
-            course: "Full Stack Development",
-            issueDate: "15 Mar 2026",
-            expiryDate: null,
-        };
-    }
-    return { valid: false, id };
-}
+import { documentsApi } from "@/api/documents";
 
 export default function VerifyPage() {
     const params = useParams();
@@ -43,9 +26,37 @@ export default function VerifyPage() {
 
     const verify = async (verifyId) => {
         setStatus("loading");
-        const result = await verifyDocument(verifyId);
-        setDocData(result);
-        setStatus(result.valid ? "valid" : "invalid");
+        try {
+            const res = await documentsApi.verify(verifyId);
+            if (res.success) {
+                const d = res.data;
+                // Parse formData if needed
+                let parsedForm = {};
+                try {
+                    parsedForm = JSON.parse(d.formData);
+                } catch (e) {
+                    console.error("Scale parsing error", e);
+                }
+
+                setDocData({
+                    valid: true,
+                    id: d.referenceNumber,
+                    type: d.docType,
+                    issuedTo: d.partyName,
+                    issuedBy: parsedForm.orgName || d.title,
+                    course: parsedForm.course || parsedForm.role || d.title,
+                    issueDate: d.createdAt ? new Date(d.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" }) : "",
+                });
+                setStatus("valid");
+            } else {
+                setDocData({ valid: false, id: verifyId });
+                setStatus("invalid");
+            }
+        } catch (err) {
+            console.error("Verification error:", err);
+            setDocData({ valid: false, id: verifyId });
+            setStatus("invalid");
+        }
     };
 
     return (

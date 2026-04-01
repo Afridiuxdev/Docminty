@@ -43,7 +43,7 @@ const TEMPLATE_GROUPS = [
         items: [
             { label: "Certificate", href: "/certificate", badge: "Popular", icon: Award },
             { label: "Internship Certificate", href: "/internship-certificate", icon: GraduationCap },
-            { label: "Verify Certificate", href: "/verify-certificate", icon: CheckCircle },
+            { label: "Verify Document", href: "/verify", icon: CheckCircle },
         ]
     }
 ];
