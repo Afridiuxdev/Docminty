@@ -3,46 +3,47 @@ import { Document, Page, Text, View, StyleSheet, Image } from "@react-pdf/render
 import { calculateLineItems, numberToWords } from "@/engine/gstCalc";
 import { INDIAN_STATES } from "@/constants/indianStates";
 
-const T = "#D97706";
-const styles = StyleSheet.create({
-    page: { fontFamily: "Helvetica", fontSize: 10, color: "#111827", padding: 40, backgroundColor: "#FFFDF5" },
-    header: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", borderBottomWidth: 2, borderBottomColor: T, paddingBottom: 14, marginBottom: 14 },
-    logo: { width: 55, height: 38, objectFit: "contain", marginBottom: 5 },
-    fromName: { fontSize: 13, fontFamily: "Helvetica-Bold", color: "#111827" },
-    small: { fontSize: 8, color: "#6B7280", marginTop: 2 },
-    title: { fontSize: 20, fontFamily: "Helvetica-Bold", color: T, textAlign: "right" },
-    num: { fontSize: 10, color: "#6B7280", textAlign: "right", marginTop: 3 },
-    meta: { fontSize: 8, color: "#9CA3AF", textAlign: "right", marginTop: 2 },
-    billSec: { flexDirection: "row", justifyContent: "space-between", marginBottom: 14 },
-    billL: { fontSize: 7, fontFamily: "Helvetica-Bold", color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 3 },
-    billN: { fontSize: 11, fontFamily: "Helvetica-Bold", color: "#111827" },
-    tHeader: { flexDirection: "row", backgroundColor: "#FEF9C3", padding: "5 6", borderBottomWidth: 1, borderBottomColor: "#E5E7EB" },
-    tRow: { flexDirection: "row", padding: "5 6", borderBottomWidth: 1, borderBottomColor: "#F3F4F6" },
-    thT: { fontSize: 8, fontFamily: "Helvetica-Bold", color: "#6B7280", textTransform: "uppercase" },
-    tdT: { fontSize: 9, color: "#374151" },
-    totBox: { alignSelf: "flex-end", width: 190, marginTop: 8 },
-    totRow: { flexDirection: "row", justifyContent: "space-between", padding: "4 0", borderBottomWidth: 1, borderBottomColor: "#F3F4F6" },
-    totL: { fontSize: 9, color: "#6B7280" },
-    totV: { fontSize: 9, color: "#374151" },
-    totFinal: { flexDirection: "row", justifyContent: "space-between", backgroundColor: "#FEF9C3", padding: "7 10", borderRadius: 3, marginTop: 4 },
-    totFT: { fontSize: 10, fontFamily: "Helvetica-Bold", color: T },
-    wordsBox: { backgroundColor: "#F8F9FA", padding: "6 10", borderLeftWidth: 3, borderLeftColor: T, marginTop: 10, marginBottom: 10 },
-    wordsL: { fontSize: 7, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 2 },
-    wordsT: { fontSize: 8, color: "#374151", fontStyle: "italic" },
-    notesGrid: { flexDirection: "row", gap: 14, marginTop: 10 },
-    noteBox: { flex: 1 },
-    noteL: { fontSize: 7, fontFamily: "Helvetica-Bold", color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 3 },
-    noteT: { fontSize: 8, color: "#6B7280", lineHeight: 1.5 },
-    footer: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", marginTop: 16, paddingTop: 10, borderTopWidth: 1, borderTopColor: "#E5E7EB" },
-    footerG: { fontSize: 7, color: "#D1D5DB" },
-    signBox: { borderTopWidth: 1, borderTopColor: "#374151", paddingTop: 4, width: 110, textAlign: "center" },
-    signT: { fontSize: 7, color: "#9CA3AF" },
-});
-
 export default function QuotationElegantTemplate({ form }) {
+    const T = form.templateColor || "#D97706";
     const calc = calculateLineItems(form.items, form.taxType === "igst");
     const fromState = INDIAN_STATES.find(s => s.code === form.fromState);
     const toState = INDIAN_STATES.find(s => s.code === form.toState);
+
+    const styles = StyleSheet.create({
+        page: { fontFamily: "Helvetica", fontSize: 10, color: "#111827", padding: 40, backgroundColor: "#FFFDF5" },
+        header: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", borderBottomWidth: 2, borderBottomColor: T, paddingBottom: 14, marginBottom: 14 },
+        logo: { width: 55, height: 38, objectFit: "contain", marginBottom: 5 },
+        fromName: { fontSize: 13, fontFamily: "Helvetica-Bold", color: "#111827" },
+        small: { fontSize: 8, color: "#6B7280", marginTop: 2 },
+        title: { fontSize: 20, fontFamily: "Helvetica-Bold", color: T, textAlign: "right" },
+        num: { fontSize: 10, color: "#6B7280", textAlign: "right", marginTop: 3 },
+        meta: { fontSize: 8, color: "#9CA3AF", textAlign: "right", marginTop: 2 },
+        billSec: { flexDirection: "row", justifyContent: "space-between", marginBottom: 14 },
+        billL: { fontSize: 7, fontFamily: "Helvetica-Bold", color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 3 },
+        billN: { fontSize: 11, fontFamily: "Helvetica-Bold", color: "#111827" },
+        tHeader: { flexDirection: "row", backgroundColor: T + "20", padding: "5 6", borderBottomWidth: 1, borderBottomColor: "#E5E7EB" },
+        tRow: { flexDirection: "row", padding: "5 6", borderBottomWidth: 1, borderBottomColor: "#F3F4F6" },
+        thT: { fontSize: 8, fontFamily: "Helvetica-Bold", color: "#6B7280", textTransform: "uppercase" },
+        tdT: { fontSize: 9, color: "#374151" },
+        totBox: { alignSelf: "flex-end", width: 190, marginTop: 8 },
+        totRow: { flexDirection: "row", justifyContent: "space-between", padding: "4 0", borderBottomWidth: 1, borderBottomColor: "#F3F4F6" },
+        totL: { fontSize: 9, color: "#6B7280" },
+        totV: { fontSize: 9, color: "#374151" },
+        totFinal: { flexDirection: "row", justifyContent: "space-between", backgroundColor: T + "20", padding: "7 10", borderRadius: 3, marginTop: 4 },
+        totFT: { fontSize: 10, fontFamily: "Helvetica-Bold", color: T },
+        wordsBox: { backgroundColor: "#F8F9FA", padding: "6 10", borderLeftWidth: 3, borderLeftColor: T, marginTop: 10, marginBottom: 10 },
+        wordsL: { fontSize: 7, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 2 },
+        wordsT: { fontSize: 8, color: "#374151", fontStyle: "italic" },
+        notesGrid: { flexDirection: "row", gap: 14, marginTop: 10 },
+        noteBox: { flex: 1 },
+        noteL: { fontSize: 7, fontFamily: "Helvetica-Bold", color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 3 },
+        noteT: { fontSize: 8, color: "#6B7280", lineHeight: 1.5 },
+        footer: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", marginTop: 16, paddingTop: 10, borderTopWidth: 1, borderTopColor: "#E5E7EB" },
+        footerG: { fontSize: 7, color: "#D1D5DB" },
+        signBox: { borderTopWidth: 1, borderTopColor: "#374151", paddingTop: 4, width: 110, textAlign: "center" },
+        signT: { fontSize: 7, color: "#9CA3AF" },
+    });
+
     return (
         <Document><Page size="A4" style={styles.page}>
             <View style={styles.header}>

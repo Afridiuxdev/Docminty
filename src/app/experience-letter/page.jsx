@@ -1,20 +1,22 @@
 "use client";
 import TemplatePicker from "@/components/TemplatePicker";
+import TemplateColorPicker from "@/components/TemplateColorPicker";
 
 import { useState, useCallback } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AdSense from "@/components/AdSense";
 import LogoUpload from "@/components/LogoUpload";
-import { Download, Eye, RefreshCw, Cloud } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import WatermarkOverlay from "@/components/WatermarkOverlay";
+import { TEMPLATE_REGISTRY } from "@/templates/registry";
+import SignatureModal from "@/components/SignatureModal";
+import { Download, Eye, RefreshCw, Cloud, PenTool } from "lucide-react";
 import { useDownloadPDF } from "@/hooks/useDownloadPDF";
 import { useRouter } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
 import { documentsApi } from "@/api/documents";
 import { getAccessToken } from "@/api/auth";
-import { useAuth } from "@/contexts/AuthContext";
-import WatermarkOverlay from "@/components/WatermarkOverlay";
-import { TEMPLATE_REGISTRY } from "@/templates/registry";
 
 const T = "#0D9488";
 
@@ -28,7 +30,9 @@ const DEFAULT_FORM = {
   letterNumber: `EXP-${new Date().getFullYear()}-001`,
   performance: "excellent",
   additionalNote: "",
-  signatoryName: "", signatoryDesignation: "", signatoryDept: "",
+  signatoryName: "", signatoryDesignation: "",  signatoryDept: "",
+  signature: null,
+  templateColor: "#0D9488",
 };
 
 function ExperiencePreview({ form, template = "Classic", accent = "#0D9488" }) {
@@ -69,11 +73,20 @@ function ExperiencePreview({ form, template = "Classic", accent = "#0D9488" }) {
         We wish {form.employeeName || "them"} all the best in their future endeavours.
       </p>
       <div style={{ marginTop: "32px" }}>
-        <div style={{ borderTop: "1px solid #374151", paddingTop: "6px", display: "inline-block", minWidth: "140px" }}>
-          <p style={{ fontSize: "12px", fontWeight: 700, color: "#111827", margin: 0, fontFamily: "Space Grotesk, sans-serif" }}>{form.signatoryName || "Authorised Signatory"}</p>
-          <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.signatoryDesignation || "Designation"}</p>
-          {form.signatoryDept && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.signatoryDept}</p>}
-          <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.companyName}</p>
+        <div style={{ paddingTop: "6px", display: "inline-block", minWidth: "140px" }}>
+          {form.signature ? (
+            <div style={{ marginBottom: "4px" }}>
+              <img src={form.signature} alt="Signature" style={{ maxHeight: "45px", maxWidth: "140px", display: "block" }} />
+            </div>
+          ) : (
+            <div style={{ height: "40px" }} />
+          )}
+          <div style={{ borderTop: "1px solid #374151", paddingTop: "4px" }}>
+            <p style={{ fontSize: "12px", fontWeight: 700, color: "#111827", margin: 0, fontFamily: "Space Grotesk, sans-serif" }}>{form.signatoryName || "Authorised Signatory"}</p>
+            <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.signatoryDesignation || "Designation"}</p>
+            {form.signatoryDept && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.signatoryDept}</p>}
+            <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.companyName}</p>
+          </div>
         </div>
       </div>
       <div style={{ marginTop: "24px", paddingTop: "12px", borderTop: "1px solid #E5E7EB" }}>
@@ -191,6 +204,7 @@ export default function ExperienceLetterPage() {
   const { download, downloading } = useDownloadPDF();
   const [template, setTemplate] = useState("Classic");
   const [activeTab, setActiveTab] = useState("company");
+  const [isSigModalOpen, setIsSigModalOpen] = useState(false);
   const router = useRouter();
 
   const isUserPro = user?.plan === "Business Pro" || user?.plan === "Enterprise";
@@ -242,9 +256,11 @@ export default function ExperienceLetterPage() {
               {downloading ? "Generating..." : "Download PDF"}
 
             </button>
-            <button onClick={handleSave} style={{ display: "flex", alignItems: "center", gap: "6px", height: "36px", padding: "0 14px", border: "1px solid #0D9488", borderRadius: "8px", background: "#fff", fontSize: "13px", fontWeight: 600, color: "#0D9488", cursor: "pointer", fontFamily: "Inter, sans-serif", transition: "all 150ms" }}>
+            {user && (
+<button onClick={handleSave} style={{ display: "flex", alignItems: "center", gap: "6px", height: "36px", padding: "0 14px", border: "1px solid #0D9488", borderRadius: "8px", background: "#fff", fontSize: "13px", fontWeight: 600, color: "#0D9488", cursor: "pointer", fontFamily: "Inter, sans-serif", transition: "all 150ms" }}>
               <Cloud size={14} /> Save
             </button>
+)}
           </div>
         </div>
       </div>
@@ -304,6 +320,49 @@ export default function ExperienceLetterPage() {
                 <div className="form-field"><label className="field-label">Performance</label><div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>{[{ v: "excellent", l: "Excellent — Outstanding performance" }, { v: "good", l: "Good — Reliable team member" }, { v: "satisfactory", l: "Satisfactory — Met expectations" }].map(opt => (<button key={opt.v} onClick={() => updateField("performance", opt.v)} className={`toggle-btn ${form.performance === opt.v ? "active" : ""}`} style={{ justifyContent: "flex-start" }}>{opt.l}</button>))}</div></div>
                 <div className="form-field"><label className="field-label">Additional Note (optional)</label><textarea className="doc-textarea" style={{ minHeight: "80px" }} placeholder="Any additional information..." value={form.additionalNote} onChange={e => updateField("additionalNote", e.target.value)} /></div>
                 <div style={{ borderTop: "1px solid #F3F4F6", margin: "16px 0" }} /><p className="form-label">Signatory</p><div className="form-field"><label className="field-label">Name</label><input className="doc-input" placeholder="HR Manager Name" value={form.signatoryName} onChange={e => updateField("signatoryName", e.target.value)} /></div><div className="form-field"><label className="field-label">Designation</label><input className="doc-input" placeholder="HR Manager" value={form.signatoryDesignation} onChange={e => updateField("signatoryDesignation", e.target.value)} /></div>
+                
+                <div style={{ borderTop: "1px solid #F3F4F6", margin: "16px 0" }} />
+                <p className="form-label">Digital Signature</p>
+                <div style={{
+                  border: "1px solid #E5E7EB", borderRadius: "12px", padding: "16px",
+                  display: "flex", flexDirection: "column", alignItems: "center", gap: "12px", background: "#fff"
+                }}>
+                  {form.signature ? (
+                    <div style={{ width: "100%", textAlign: "center" }}>
+                      <div style={{
+                        padding: "16px", background: "#F9FAFB", borderRadius: "8px",
+                        border: "1px dashed #D1D5DB", display: "inline-block", minWidth: "160px"
+                      }}>
+                        <img src={form.signature} alt="Signature" style={{ height: "50px", maxWidth: "100%", objectFit: "contain" }} />
+                      </div>
+                      <div style={{ display: "flex", gap: "8px", justifyContent: "center", marginTop: "12px" }}>
+                        <button onClick={() => setIsSigModalOpen(true)} style={{
+                          padding: "6px 12px", borderRadius: "6px", border: "1px solid #D1D5DB",
+                          background: "#fff", fontSize: "12px", fontWeight: 600, color: "#374151", cursor: "pointer"
+                        }}>Change</button>
+                        <button onClick={() => updateField("signature", null)} style={{
+                          padding: "6px 12px", borderRadius: "6px", border: "1px solid #FEE2E2",
+                          background: "#FEF2F2", fontSize: "12px", fontWeight: 600, color: "#EF4444", cursor: "pointer"
+                        }}>Remove</button>
+                      </div>
+                    </div>
+                  ) : (
+                    <button onClick={() => setIsSigModalOpen(true)} style={{
+                      width: "100%", padding: "30px 20px", display: "flex", flexDirection: "column",
+                      alignItems: "center", gap: "8px", background: "#F9FAFB", border: "1px dashed #D1D5DB",
+                      borderRadius: "10px", cursor: "pointer", transition: "all 200ms"
+                    }}>
+                      <div style={{
+                        width: "40px", height: "40px", borderRadius: "50%", background: "#fff",
+                        display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 2px 4px rgba(0,0,0,0.05)"
+                      }}>
+                        <PenTool size={18} color="#9CA3AF" />
+                      </div>
+                      <span style={{ fontSize: "13px", fontWeight: 600, color: "#374151" }}>Add signature</span>
+                    </button>
+                  )}
+                </div>
+
                 <div style={{ borderTop: "1px solid #F3F4F6", margin: "16px 0" }} />
                 <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn" style={{ width: "100%", justifyContent: "center" }}><Download size={15} /> Download PDF</button>
               </div>
@@ -316,10 +375,20 @@ export default function ExperienceLetterPage() {
                   <TemplatePicker 
                     docType="experience" 
                     selected={template} 
-                    onChange={setTemplate} 
+                    onChange={(t) => {
+                      setTemplate(t);
+                      const meta = TEMPLATE_REGISTRY.experience[t] || TEMPLATE_REGISTRY.experience.Classic;
+                      updateField("templateColor", meta.accent);
+                    }} 
                     isPro={isUserPro} 
                   />
                 </div>
+                <div style={{ borderTop: "1px solid #F3F4F6", margin: "20px 0" }} />
+                <p className="form-label">Template Color</p>
+                <TemplateColorPicker 
+                  value={form.templateColor || templateMeta.accent}
+                  onChange={(color) => updateField("templateColor", color)}
+                />
                 <div style={{ borderTop: "1px solid #F3F4F6", margin: "24px 0" }} />
                 <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn" style={{ width: "100%", justifyContent: "center" }}>
                   <Download size={15} /> Download PDF
@@ -344,7 +413,7 @@ export default function ExperienceLetterPage() {
             </div>
             <div style={{ position: "relative" }}>
               {showWatermark && <WatermarkOverlay />}
-              <ExperiencePreview form={form} template={template} accent={templateMeta.accent} />
+              <ExperiencePreview form={form} template={template} accent={form.templateColor || templateMeta.accent} />
             </div>
           </div>
         </div>
@@ -353,6 +422,11 @@ export default function ExperienceLetterPage() {
         </div>
       </div>
       <Footer />
+      <SignatureModal
+        isOpen={isSigModalOpen}
+        onClose={() => setIsSigModalOpen(false)}
+        onSave={(sig) => updateField("signature", sig)}
+      />
     </>
   );
 }

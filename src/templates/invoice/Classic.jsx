@@ -3,57 +3,46 @@ import { Document, Page, Text, View, StyleSheet, Image } from "@react-pdf/render
 import { calculateLineItems, numberToWords } from "@/engine/gstCalc";
 import { INDIAN_STATES } from "@/constants/indianStates";
 
-const T = "#0D9488";
-
-const styles = StyleSheet.create({
-    page: { fontFamily: "Helvetica", fontSize: 10, color: "#111827", padding: 40, backgroundColor: "#ffffff" },
-    header: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", borderBottomWidth: 2, borderBottomColor: T, paddingBottom: 16, marginBottom: 16 },
-    logo: { width: 60, height: 40, objectFit: "contain", marginBottom: 6 },
-    fromName: { fontSize: 14, fontFamily: "Helvetica-Bold", color: "#111827" },
-    title: { fontSize: 22, fontFamily: "Helvetica-Bold", color: T, textAlign: "right" },
-    num: { fontSize: 11, color: "#6B7280", textAlign: "right", marginTop: 4 },
-    meta: { fontSize: 9, color: "#9CA3AF", textAlign: "right", marginTop: 2 },
-    small: { fontSize: 9, color: "#6B7280", marginTop: 2 },
-    billSection: { flexDirection: "row", justifyContent: "space-between", marginBottom: 16 },
-    billLabel: { fontSize: 8, fontFamily: "Helvetica-Bold", color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 },
-    billName: { fontSize: 12, fontFamily: "Helvetica-Bold", color: "#111827" },
-    tableHeader: { flexDirection: "row", backgroundColor: "#F0F4F3", padding: "6 8", borderBottomWidth: 1, borderBottomColor: "#E5E7EB" },
-    tableRow: { flexDirection: "row", padding: "6 8", borderBottomWidth: 1, borderBottomColor: "#F3F4F6" },
-    thText: { fontSize: 8, fontFamily: "Helvetica-Bold", color: "#6B7280", textTransform: "uppercase" },
-    tdText: { fontSize: 9, color: "#374151" },
-    totalsBox: { alignSelf: "flex-end", width: 220, marginTop: 8 },
-    totalRow: { flexDirection: "row", justifyContent: "space-between", padding: "4 0", borderBottomWidth: 1, borderBottomColor: "#F3F4F6" },
-    totalLabel: { fontSize: 9, color: "#6B7280" },
-    totalValue: { fontSize: 9, color: "#374151" },
-    totalFinal: { flexDirection: "row", justifyContent: "space-between", backgroundColor: "#F0FDFA", padding: "8 10", borderRadius: 4, marginTop: 4 },
-    totalFinalT: { fontSize: 11, fontFamily: "Helvetica-Bold", color: T },
-    wordsBox: { backgroundColor: "#F8F9FA", padding: "8 12", borderLeftWidth: 3, borderLeftColor: T, marginTop: 12, marginBottom: 12 },
-    wordsLabel: { fontSize: 8, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 2 },
-    wordsText: { fontSize: 9, color: "#374151", fontStyle: "italic" },
-    footer: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", marginTop: 20, paddingTop: 10, borderTopWidth: 1, borderTopColor: "#E5E7EB" },
-    footerGen: { fontSize: 8, color: "#D1D5DB" },
-    signBox: { borderTopWidth: 1, borderTopColor: "#374151", paddingTop: 4, width: 120, textAlign: "center" },
-    signText: { fontSize: 8, color: "#9CA3AF" },
-    notesGrid: { flexDirection: "row", gap: 16, marginTop: 12 },
-    notesBox: { flex: 1 },
-    notesLabel: { fontSize: 8, fontFamily: "Helvetica-Bold", color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 },
-    notesText: { fontSize: 9, color: "#6B7280", lineHeight: 1.5 },
-});
-
-const COL = {
-    n: { flex: 0.3 },
-    desc: { flex: 2.5 },
-    hsn: { flex: 0.7 },
-    qty: { flex: 0.5 },
-    rate: { flex: 0.8 },
-    gst: { flex: 0.6 },
-    amt: { flex: 0.8 },
-};
-
 export default function InvoiceTemplate({ form }) {
+    const T = form.templateColor || "#0D9488";
     const calc = calculateLineItems(form.items, form.taxType === "igst");
     const fromState = INDIAN_STATES.find(s => s.code === form.fromState);
     const toState = INDIAN_STATES.find(s => s.code === form.toState);
+
+    const styles = StyleSheet.create({
+        page: { fontFamily: "Helvetica", fontSize: 10, color: "#111827", padding: 40, backgroundColor: "#ffffff" },
+        header: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", borderBottomWidth: 2, borderBottomColor: T, paddingBottom: 16, marginBottom: 16 },
+        logo: { width: 60, height: 40, objectFit: "contain", marginBottom: 6 },
+        fromName: { fontSize: 14, fontFamily: "Helvetica-Bold", color: "#111827" },
+        title: { fontSize: 22, fontFamily: "Helvetica-Bold", color: T, textAlign: "right" },
+        num: { fontSize: 11, color: "#6B7280", textAlign: "right", marginTop: 4 },
+        meta: { fontSize: 9, color: "#9CA3AF", textAlign: "right", marginTop: 2 },
+        small: { fontSize: 9, color: "#6B7280", marginTop: 2 },
+        billSection: { flexDirection: "row", justifyContent: "space-between", marginBottom: 16 },
+        billLabel: { fontSize: 8, fontFamily: "Helvetica-Bold", color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 },
+        billName: { fontSize: 12, fontFamily: "Helvetica-Bold", color: "#111827" },
+        tableHeader: { flexDirection: "row", backgroundColor: "#F0F4F3", padding: "6 8", borderBottomWidth: 1, borderBottomColor: "#E5E7EB" },
+        tableRow: { flexDirection: "row", padding: "6 8", borderBottomWidth: 1, borderBottomColor: "#F3F4F6" },
+        thText: { fontSize: 8, fontFamily: "Helvetica-Bold", color: "#6B7280", textTransform: "uppercase" },
+        tdText: { fontSize: 9, color: "#374151" },
+        totalsBox: { alignSelf: "flex-end", width: 220, marginTop: 8 },
+        totalRow: { flexDirection: "row", justifyContent: "space-between", padding: "4 0", borderBottomWidth: 1, borderBottomColor: "#F3F4F6" },
+        totalLabel: { fontSize: 9, color: "#6B7280" },
+        totalValue: { fontSize: 9, color: "#374151" },
+        totalFinal: { flexDirection: "row", justifyContent: "space-between", backgroundColor: T + "10", padding: "8 10", borderRadius: 4, marginTop: 4 },
+        totalFinalT: { fontSize: 11, fontFamily: "Helvetica-Bold", color: T },
+        wordsBox: { backgroundColor: "#F8F9FA", padding: "8 12", borderLeftWidth: 3, borderLeftColor: T, marginTop: 12, marginBottom: 12 },
+        wordsLabel: { fontSize: 8, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 2 },
+        wordsText: { fontSize: 9, color: "#374151", fontStyle: "italic" },
+        footer: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", marginTop: 20, paddingTop: 10, borderTopWidth: 1, borderTopColor: "#E5E7EB" },
+        footerGen: { fontSize: 8, color: "#D1D5DB" },
+        signBox: { borderTopWidth: 1, borderTopColor: "#374151", paddingTop: 4, width: 120, textAlign: "center" },
+        signText: { fontSize: 8, color: "#9CA3AF" },
+        notesGrid: { flexDirection: "row", gap: 16, marginTop: 12 },
+        notesBox: { flex: 1 },
+        notesLabel: { fontSize: 8, fontFamily: "Helvetica-Bold", color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 },
+        notesText: { fontSize: 9, color: "#6B7280", lineHeight: 1.5 },
+    });
 
     return (
         <Document>

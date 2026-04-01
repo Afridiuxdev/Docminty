@@ -1,6 +1,7 @@
 "use client";
 
 import TemplatePicker from "@/components/TemplatePicker";
+import TemplateColorPicker from "@/components/TemplateColorPicker";
 import { useDownloadPDF } from "@/hooks/useDownloadPDF";
 import { useState, useCallback } from "react";
 import Navbar from "@/components/Navbar";
@@ -14,6 +15,8 @@ import { useRouter } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
 import { documentsApi } from "@/api/documents";
 import { getAccessToken } from "@/api/auth";
+import SignatureModal from "@/components/SignatureModal";
+import { PenTool } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import WatermarkOverlay from "@/components/WatermarkOverlay";
 import { TEMPLATE_REGISTRY } from "@/templates/registry";
@@ -58,10 +61,11 @@ const DEFAULT_FORM = {
     // Extra
     notes: "",
     terms: "Payment due within 30 days.",
-    logo: null,
+    signature: null,
     showHSN: true,
     showDiscount: false,
     currency: "₹",
+    templateColor: "#0D9488",
 };
 
 // ── Line item row ─────────────────────────────────────────────
@@ -79,56 +83,54 @@ function ItemRow({ item, index, onChange, onRemove, showHSN, showDiscount }) {
 
     return (
         <div style={{
-            display: "grid",
-            gridTemplateColumns: showHSN
-                ? showDiscount ? "2fr 0.6fr 0.5fr 0.7fr 0.6fr 0.5fr 0.7fr auto"
-                    : "2fr 0.6fr 0.5fr 0.7fr 0.5fr 0.7fr auto"
-                : showDiscount ? "2fr 0.5fr 0.7fr 0.6fr 0.5fr 0.7fr auto"
-                    : "2fr 0.5fr 0.7fr 0.5fr 0.7fr auto",
-            gap: "6px",
-            marginBottom: "6px",
-            alignItems: "center",
+            background: "#fff", border: "1px solid #E5E7EB", borderRadius: "8px",
+            padding: "16px", marginBottom: "12px", boxShadow: "0 1px 2px rgba(0,0,0,0.02)", position: "relative"
         }}>
-            <input className="doc-input" placeholder="Item description"
-                value={item.description}
-                onChange={e => update("description", e.target.value)}
-            />
-            {showHSN && (
-                <input className="doc-input" placeholder="HSN"
-                    value={item.hsn}
-                    onChange={e => update("hsn", e.target.value)}
-                />
-            )}
-            <input className="doc-input" type="number" placeholder="1"
-                value={item.qty}
-                onChange={e => update("qty", e.target.value)}
-            />
-            <input className="doc-input" type="number" placeholder="0.00"
-                value={item.rate}
-                onChange={e => update("rate", e.target.value)}
-            />
-            {showDiscount && (
-                <input className="doc-input" type="number" placeholder="0"
-                    value={item.discount}
-                    onChange={e => update("discount", e.target.value)}
-                />
-            )}
-            <select className="doc-select" value={item.gstRate}
-                onChange={e => update("gstRate", e.target.value)}>
-                {[0, 5, 12, 18, 28].map(r => (
-                    <option key={r} value={r}>{r}%</option>
-                ))}
-            </select>
-            <span style={{
-                fontSize: "12px", fontWeight: 700,
-                color: "#111827", fontFamily: "Inter, sans-serif",
-                textAlign: "right", whiteSpace: "nowrap",
+            <div style={{ display: "flex", gap: "12px", marginBottom: "16px", alignItems: "flex-start" }}>
+                <div style={{ flex: 1 }}>
+                    <label style={{ display: "block", fontSize: "11px", fontWeight: 600, color: "#6B7280", marginBottom: "4px", textTransform: "uppercase", letterSpacing: "0.05em" }}>Description</label>
+                    <input className="doc-input" placeholder="Item description" value={item.description} onChange={e => update("description", e.target.value)} style={{ background: "#F9FAFB" }} />
+                </div>
+                <button onClick={() => onRemove(index)} title="Remove Item" style={{ background: "#FEE2E2", color: "#EF4444", border: "none", width: "36px", height: "36px", borderRadius: "6px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", marginTop: "18px", transition: "background 150ms" }}>
+                    <Trash2 size={16} />
+                </button>
+            </div>
+            <div style={{
+                display: "grid",
+                gridTemplateColumns: showHSN ? (showDiscount ? "repeat(5, 1fr) auto" : "repeat(4, 1fr) auto") : (showDiscount ? "repeat(4, 1fr) auto" : "repeat(3, 1fr) auto"),
+                gap: "12px", alignItems: "end"
             }}>
-                ₹{item.amount}
-            </span>
-            <button className="remove-item-btn" onClick={() => onRemove(index)}>
-                <Trash2 size={13} />
-            </button>
+                {showHSN && (
+                    <div>
+                        <label style={{ display: "block", fontSize: "11px", fontWeight: 600, color: "#6B7280", marginBottom: "4px" }}>HSN</label>
+                        <input className="doc-input" placeholder="HSN" value={item.hsn} onChange={e => update("hsn", e.target.value)} style={{ background: "#F9FAFB" }} />
+                    </div>
+                )}
+                <div>
+                    <label style={{ display: "block", fontSize: "11px", fontWeight: 600, color: "#6B7280", marginBottom: "4px" }}>Qty</label>
+                    <input className="doc-input" type="number" placeholder="1" value={item.qty} onChange={e => update("qty", e.target.value)} style={{ background: "#F9FAFB" }} />
+                </div>
+                <div>
+                    <label style={{ display: "block", fontSize: "11px", fontWeight: 600, color: "#6B7280", marginBottom: "4px" }}>Rate</label>
+                    <input className="doc-input" type="number" placeholder="0.00" value={item.rate} onChange={e => update("rate", e.target.value)} style={{ background: "#F9FAFB" }} />
+                </div>
+                {showDiscount && (
+                    <div>
+                        <label style={{ display: "block", fontSize: "11px", fontWeight: 600, color: "#6B7280", marginBottom: "4px" }}>Disc</label>
+                        <input className="doc-input" type="number" placeholder="0" value={item.discount} onChange={e => update("discount", e.target.value)} style={{ background: "#F9FAFB" }} />
+                    </div>
+                )}
+                <div>
+                    <label style={{ display: "block", fontSize: "11px", fontWeight: 600, color: "#6B7280", marginBottom: "4px" }}>GST (%)</label>
+                    <select className="doc-select" value={item.gstRate} onChange={e => update("gstRate", e.target.value)} style={{ background: "#F9FAFB" }}>
+                        {[0, 5, 12, 18, 28].map(r => <option key={r} value={r}>{r}%</option>)}
+                    </select>
+                </div>
+                <div style={{ textAlign: "right", height: "36px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                    <span style={{ fontSize: "10px", fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase" }}>Amount</span>
+                    <span style={{ fontSize: "15px", fontWeight: 800, color: "#0D9488", fontFamily: "Inter, sans-serif", whiteSpace: "nowrap" }}>₹{item.amount}</span>
+                </div>
+            </div>
         </div>
     );
 }
@@ -208,8 +210,15 @@ function InvoicePreview({ form, template = "Classic", accent = "#0D9488" }) {
             )}
             <div style={{ marginTop: "24px", paddingTop: "12px", borderTop: "1px solid #E5E7EB", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <p style={{ fontSize: "10px", color: "#D1D5DB", fontFamily: "Inter, sans-serif", margin: 0 }}>Generated by DocMinty.com</p>
-                <div style={{ borderTop: "1px solid #374151", paddingTop: "4px", minWidth: "120px", textAlign: "center" }}>
-                    <p style={{ fontSize: "10px", color: "#9CA3AF", fontFamily: "Inter, sans-serif", margin: 0 }}>Authorised Signatory</p>
+                <div style={{ textAlign: "right", minWidth: "120px" }}>
+                    {form.signature && (
+                        <div style={{ marginBottom: "4px" }}>
+                            <img src={form.signature} alt="Signature" style={{ maxHeight: "45px", maxWidth: "140px", display: "block", marginLeft: "auto" }} />
+                        </div>
+                    )}
+                    <div style={{ borderTop: "1px solid #374151", paddingTop: "4px" }}>
+                        <p style={{ fontSize: "10px", color: "#9CA3AF", fontFamily: "Inter, sans-serif", margin: 0 }}>Authorised Signatory</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -235,7 +244,13 @@ function InvoicePreview({ form, template = "Classic", accent = "#0D9488" }) {
                     <div style={{ padding: "16px 20px 12px", borderBottom: "1px solid #F3F4F6" }}>
                         {form.logo && <img src={form.logo} alt="Logo" style={{ height: "36px", objectFit: "contain", marginBottom: "6px", display: "block" }} />}
                         {form.fromGSTIN && <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "0 0 1px", fontFamily: "Inter, sans-serif" }}>GSTIN: {form.fromGSTIN}</p>}
-                        <p style={{ fontSize: "11px", color: "#9CA3AF", margin: 0, fontFamily: "Inter, sans-serif" }}>Date: {form.invoiceDate}</p>
+                        <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "0 0 12px", fontFamily: "Inter, sans-serif" }}>Date: {form.invoiceDate}</p>
+                        {form.signature && (
+                            <div style={{ borderTop: "1px solid #F3F4F6", paddingTop: "8px" }}>
+                                <img src={form.signature} alt="Signature" style={{ maxHeight: "36px", maxWidth: "100px", display: "block" }} />
+                                <p style={{ fontSize: "8px", color: "#9CA3AF", margin: "2px 0 0" }}>Authorised Signatory</p>
+                            </div>
+                        )}
                     </div>
                     {sharedBody}
                 </div>
@@ -256,6 +271,12 @@ function InvoicePreview({ form, template = "Classic", accent = "#0D9488" }) {
                         <span>#{form.invoiceNumber}</span>
                         <span>Date: {form.invoiceDate}</span>
                     </div>
+                    {form.signature && (
+                        <div style={{ marginTop: "12px", display: "flex", flexDirection: "column", alignItems: "center" }}>
+                            <img src={form.signature} alt="Signature" style={{ maxHeight: "40px", maxWidth: "120px", display: "block" }} />
+                            <p style={{ fontSize: "8px", color: "#9CA3AF", margin: "2px 0 0" }}>Authorised Signatory</p>
+                        </div>
+                    )}
                 </div>
                 {sharedBody}
             </div>
@@ -334,12 +355,13 @@ function InvoicePreview({ form, template = "Classic", accent = "#0D9488" }) {
 
 // ── Main Invoice Page ─────────────────────────────────────────
 export default function InvoicePage() {
-  const { user } = useAuth();
-  const { download, downloading } = useDownloadPDF();
-  const router = useRouter();
-  const [template, setTemplate] = useState("Classic");
+    const { user } = useAuth();
+    const { download, downloading } = useDownloadPDF();
+    const router = useRouter();
+    const [template, setTemplate] = useState("Classic");
     const [form, setForm] = useState(DEFAULT_FORM);
     const [activeTab, setActiveTab] = useState("from");
+    const [isSigModalOpen, setIsSigModalOpen] = useState(false);
 
     const isUserPro = user?.plan === "Business Pro" || user?.plan === "Enterprise";
     const templateMeta = TEMPLATE_REGISTRY.invoice[template] || TEMPLATE_REGISTRY.invoice.Classic;
@@ -453,16 +475,18 @@ export default function InvoicePage() {
                         <button onClick={handleDownload} className="download-pdf-btn">
                             <Download size={15} /> Download PDF
                         </button>
-                        <button onClick={handleSave} style={{
-                            display: "flex", alignItems: "center", gap: "6px",
-                            height: "36px", padding: "0 14px",
-                            border: "1px solid #0D9488", borderRadius: "8px",
-                            background: "#fff", fontSize: "13px", fontWeight: 600,
-                            color: "#0D9488", cursor: "pointer",
-                            fontFamily: "Inter, sans-serif", transition: "all 150ms",
-                        }}>
-                            <Cloud size={14} /> Save
-                        </button>
+                        {user && (
+                            <button onClick={handleSave} style={{
+                                display: "flex", alignItems: "center", gap: "6px",
+                                height: "36px", padding: "0 14px",
+                                border: "1px solid #0D9488", borderRadius: "8px",
+                                background: "#fff", fontSize: "13px", fontWeight: 600,
+                                color: "#0D9488", cursor: "pointer",
+                                fontFamily: "Inter, sans-serif", transition: "all 150ms",
+                            }}>
+                                <Cloud size={14} /> Save
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>
@@ -761,31 +785,7 @@ export default function InvoicePage() {
                                     </div>
                                 </div>
 
-                                {/* Column headers */}
-                                <div style={{
-                                    display: "grid",
-                                    gridTemplateColumns: form.showHSN
-                                        ? form.showDiscount ? "2fr 0.6fr 0.5fr 0.7fr 0.6fr 0.5fr 0.7fr auto"
-                                            : "2fr 0.6fr 0.5fr 0.7fr 0.5fr 0.7fr auto"
-                                        : form.showDiscount ? "2fr 0.5fr 0.7fr 0.6fr 0.5fr 0.7fr auto"
-                                            : "2fr 0.5fr 0.7fr 0.5fr 0.7fr auto",
-                                    gap: "6px",
-                                    marginBottom: "6px",
-                                    padding: "0 0 6px",
-                                    borderBottom: "1px solid #E5E7EB",
-                                }}>
-                                    {["Description", form.showHSN && "HSN", "Qty", "Rate",
-                                        form.showDiscount && "Disc", "GST%", "Amount", ""]
-                                        .filter(Boolean)
-                                        .map((h, i) => (
-                                            <span key={i} style={{
-                                                fontSize: "10px", fontWeight: 700,
-                                                color: "#9CA3AF", textTransform: "uppercase",
-                                                letterSpacing: "0.05em",
-                                                fontFamily: "Inter, sans-serif",
-                                            }}>{h}</span>
-                                        ))}
-                                </div>
+
 
                                 {/* Item rows */}
                                 {form.items.map((item, i) => (
@@ -871,20 +871,53 @@ export default function InvoicePage() {
                                 </div>
 
                                 <div style={{ borderTop: "1px solid #F3F4F6", margin: "16px 0" }} />
-                                <p className="form-label">Download</p>
+                                <p className="form-label">Signature</p>
+                                <div style={{
+                                    border: "1px solid #E5E7EB", borderRadius: "12px", padding: "16px",
+                                    display: "flex", flexDirection: "column", alignItems: "center", gap: "12px", background: "#fff"
+                                }}>
+                                    {form.signature ? (
+                                        <div style={{ width: "100%", textAlign: "center" }}>
+                                            <div style={{
+                                                padding: "16px", background: "#F9FAFB", borderRadius: "8px",
+                                                border: "1px dashed #D1D5DB", display: "inline-block", minWidth: "200px"
+                                            }}>
+                                                <img src={form.signature} alt="Signature" style={{ height: "60px", maxWidth: "100%", objectFit: "contain" }} />
+                                            </div>
+                                            <div style={{ display: "flex", gap: "8px", justifyContent: "center", marginTop: "12px" }}>
+                                                <button onClick={() => setIsSigModalOpen(true)} style={{
+                                                    padding: "8px 16px", borderRadius: "8px", border: "1px solid #D1D5DB",
+                                                    background: "#fff", fontSize: "13px", fontWeight: 600, color: "#374151", cursor: "pointer"
+                                                }}>Change</button>
+                                                <button onClick={() => updateField("signature", null)} style={{
+                                                    padding: "8px 16px", borderRadius: "8px", border: "1px solid #FEE2E2",
+                                                    background: "#FEF2F2", fontSize: "13px", fontWeight: 600, color: "#EF4444", cursor: "pointer"
+                                                }}>Remove</button>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <button onClick={() => setIsSigModalOpen(true)} style={{
+                                            width: "100%", padding: "40px 20px", display: "flex", flexDirection: "column",
+                                            alignItems: "center", gap: "12px", background: "#F9FAFB", border: "1px dashed #D1D5DB",
+                                            borderRadius: "10px", cursor: "pointer", transition: "all 200ms"
+                                        }}>
+                                            <div style={{
+                                                width: "48px", height: "48px", borderRadius: "50%", background: "#fff",
+                                                display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 2px 4px rgba(0,0,0,0.05)"
+                                            }}>
+                                                <PenTool size={20} color="#9CA3AF" />
+                                            </div>
+                                            <span style={{ fontSize: "14px", fontWeight: 600, color: "#374151" }}>Add digital signature</span>
+                                        </button>
+                                    )}
+                                </div>
+
+                                <div style={{ borderTop: "1px solid #F3F4F6", margin: "16px 0" }} />
 
                                 <button onClick={handleDownload} className="download-pdf-btn"
                                     style={{ width: "100%", justifyContent: "center" }}>
                                     <Download size={15} /> Download PDF — Free
                                 </button>
-
-                                <p style={{
-                                    fontSize: "11px", color: "#9CA3AF",
-                                    textAlign: "center", margin: "8px 0 0",
-                                    fontFamily: "Inter, sans-serif",
-                                }}>
-                                    No watermark · No sign-up · Instant download
-                                </p>
                             </div>
                         )}
 
@@ -892,12 +925,21 @@ export default function InvoicePage() {
                             <div>
                                 <p className="form-label">Template Design</p>
                                 <div style={{ marginTop: "8px" }}>
-                                    <TemplatePicker 
+                                    <TemplatePicker
                                         docType="invoice"
                                         selected={template}
-                                        onChange={setTemplate}
+                                        onChange={(val) => {
+                                            setTemplate(val);
+                                            const defaultAccent = TEMPLATE_REGISTRY.invoice[val]?.accent || "#0D9488";
+                                            updateField("templateColor", defaultAccent);
+                                        }}
                                         isPro={isUserPro} />
                                 </div>
+                                <div style={{ borderTop: "1px solid #F3F4F6", margin: "20px 0" }} />
+                                <TemplateColorPicker
+                                    selectedColor={form.templateColor || "#0D9488"}
+                                    onChange={(color) => updateField("templateColor", color)}
+                                />
                                 <div style={{ borderTop: "1px solid #F3F4F6", margin: "24px 0" }} />
                                 <button onClick={handleDownload} className="download-pdf-btn"
                                     style={{ width: "100%", justifyContent: "center" }}>
@@ -928,7 +970,7 @@ export default function InvoicePage() {
                         </div>
                         <div style={{ position: "relative" }}>
                             {showWatermark && <WatermarkOverlay />}
-                            <InvoicePreview form={form} template={template} accent={templateMeta.accent} />
+                            <InvoicePreview form={form} template={template} accent={form.templateColor || templateMeta.accent} />
                         </div>
                     </div>
                 </div>
@@ -940,6 +982,11 @@ export default function InvoicePage() {
             </div>
 
             <Footer />
+            <SignatureModal
+                isOpen={isSigModalOpen}
+                onClose={() => setIsSigModalOpen(false)}
+                onSave={(sig) => updateField("signature", sig)}
+            />
         </>
     );
 }

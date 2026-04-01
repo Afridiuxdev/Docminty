@@ -374,6 +374,24 @@ export default function Navbar() {
 
                         <Link href="/pricing" onClick={() => setMobileOpen(false)} style={{ padding: "12px 20px", fontSize: "14px", fontWeight: 600, color: "#111827", textDecoration: "none", borderBottom: "1px solid #F3F4F6" }}>Pricing</Link>
                         <Link href="/batch" onClick={() => setMobileOpen(false)} style={{ padding: "12px 20px", fontSize: "14px", fontWeight: 600, color: "#111827", textDecoration: "none", borderBottom: "1px solid #F3F4F6" }}>Bulk Export</Link>
+                        
+                        {/* Auth Links (Mobile) */}
+                        <div style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "12px" }}>
+                            {user ? (
+                                <button onClick={handleLogout} style={{ width: "100%", padding: "12px", background: "#F3F4F6", color: "#4B5563", border: "none", borderRadius: "8px", fontSize: "14px", fontWeight: 600, cursor: "pointer" }}>
+                                    Logout
+                                </button>
+                            ) : (
+                                <>
+                                    <Link href="/login" onClick={() => setMobileOpen(false)} style={{ width: "100%", padding: "12px", background: "#F3F4F6", color: "#4B5563", textAlign: "center", borderRadius: "8px", fontSize: "14px", fontWeight: 600, textDecoration: "none" }}>
+                                        Sign In
+                                    </Link>
+                                    <Link href="/invoice" onClick={() => setMobileOpen(false)} style={{ width: "100%", padding: "12px", background: T, color: "white", textAlign: "center", borderRadius: "8px", fontSize: "14px", fontWeight: 600, textDecoration: "none" }}>
+                                        Start Free →
+                                    </Link>
+                                </>
+                            )}
+                        </div>
                     </div>
                 )}
             </nav>

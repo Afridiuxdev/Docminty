@@ -2,40 +2,9 @@
 import { Document, Page, Text, View, StyleSheet, Image } from "@react-pdf/renderer";
 import { calculateSalary } from "@/engine/salaryCalc";
 import { INDIAN_STATES } from "@/constants/indianStates";
-const A = "#6366F1";
-const s = StyleSheet.create({
-  page:  { fontFamily: "Helvetica", fontSize: 10, color: "#111827", padding: 0 },
-  head:  { backgroundColor: A, padding: "18 36", flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" },
-  logo:  { width: 44, height: 30, objectFit: "contain", marginBottom: 5 },
-  cn:    { fontSize: 13, fontFamily: "Helvetica-Bold", color: "#fff" },
-  ca:    { fontSize: 8, color: "rgba(255,255,255,0.75)", marginTop: 2 },
-  st:    { fontSize: 16, fontFamily: "Helvetica-Bold", color: "#fff", textAlign: "right" },
-  sm:    { fontSize: 11, color: "rgba(255,255,255,0.8)", textAlign: "right", marginTop: 3 },
-  body:  { padding: "18 36" },
-  grid:  { flexDirection: "row", flexWrap: "wrap", backgroundColor: "#F8F9FA", padding: "10 14", borderRadius: 5, marginBottom: 14 },
-  ei:    { width: "25%", marginBottom: 7 },
-  el:    { fontSize: 7, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 2 },
-  ev:    { fontSize: 9, fontFamily: "Helvetica-Bold", color: "#111827" },
-  secH:  { backgroundColor: A, padding: "5 8", borderRadius: 3 },
-  secHR: { backgroundColor: "#EF4444", padding: "5 8", borderRadius: 3 },
-  secT:  { fontSize: 8, fontFamily: "Helvetica-Bold", color: "#fff", textTransform: "uppercase", letterSpacing: 1 },
-  tR:    { flexDirection: "row", justifyContent: "space-between", padding: "4 8", borderBottomWidth: 1, borderBottomColor: "#F3F4F6" },
-  rL:    { fontSize: 9, color: "#374151" },
-  rV:    { fontSize: 9, fontFamily: "Helvetica-Bold", color: "#111827" },
-  gRow:  { flexDirection: "row", justifyContent: "space-between", padding: "6 8", backgroundColor: "#EEF2FF" },
-  gL:    { fontSize: 9, fontFamily: "Helvetica-Bold", color: A },
-  dTR:   { flexDirection: "row", justifyContent: "space-between", padding: "6 8", backgroundColor: "#FEF2F2" },
-  dTL:   { fontSize: 9, fontFamily: "Helvetica-Bold", color: "#EF4444" },
-  netB:  { backgroundColor: "#1E1B4B", padding: "14 18", flexDirection: "row", justifyContent: "space-between", alignItems: "center", borderRadius: 6, marginTop: 14 },
-  netL:  { fontSize: 8, color: "#C7D2FE", textTransform: "uppercase", letterSpacing: 1, marginBottom: 3 },
-  netA:  { fontSize: 20, fontFamily: "Helvetica-Bold", color: "#fff" },
-  netW:  { fontSize: 8, color: "#C7D2FE", fontStyle: "italic", maxWidth: 180, textAlign: "right" },
-  foot:  { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", marginTop: 14, paddingTop: 8, borderTopWidth: 1, borderTopColor: "#E5E7EB" },
-  footG: { fontSize: 7, color: "#D1D5DB" },
-  signB: { borderTopWidth: 1, borderTopColor: "#374151", paddingTop: 4, width: 110, textAlign: "center" },
-  signT: { fontSize: 7, color: "#9CA3AF" },
-});
+
 export default function SalaryModernTemplate({ form }) {
+  const T = form.templateColor || "#6366F1";
   const calc = calculateSalary({
     basic: form.basic, hra: form.hra, da: form.da,
     conveyance: form.conveyance, medical: form.medical,
@@ -43,20 +12,20 @@ export default function SalaryModernTemplate({ form }) {
     incomeTax: form.incomeTax, otherDeductions: form.otherDeductions,
   });
   const state = INDIAN_STATES.find(function(st) { return st.code === form.companyState; });
-  var fmt = function(n) { return "Rs. " + parseFloat(n).toLocaleString("en-IN"); };
-  var earnings = [
+  const fmt = function(n) { return "Rs. " + parseFloat(n).toLocaleString("en-IN"); };
+  const earnings = [
     ["Basic Salary", fmt(form.basic || 0)],
     ["HRA", fmt(form.hra || 0)],
     ["DA", fmt(form.da || 0)],
     ["Conveyance", fmt(form.conveyance || 0)],
     ["Medical Allow.", fmt(form.medical || 0)],
   ];
-  var deductions = [
+  const deductions = [
     ["Employee PF", fmt(calc.employeePF)],
     ["Professional Tax", fmt(calc.professionalTax)],
     ["Income Tax (TDS)", fmt(calc.incomeTax)],
   ];
-  var empDetails = [
+  const empDetails = [
     ["Employee Name", form.employeeName || "-"],
     ["Employee ID", form.employeeId || "-"],
     ["Designation", form.designation || "-"],
@@ -66,6 +35,40 @@ export default function SalaryModernTemplate({ form }) {
     ["Payment Date", form.paymentDate || "-"],
     ["Working Days", (form.paidDays || "0") + "/" + (form.workingDays || "0")],
   ];
+
+  const s = StyleSheet.create({
+    page:  { fontFamily: "Helvetica", fontSize: 10, color: "#111827", padding: 0 },
+    head:  { backgroundColor: T, padding: "18 36", flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" },
+    logo:  { width: 44, height: 30, objectFit: "contain", marginBottom: 5 },
+    cn:    { fontSize: 13, fontFamily: "Helvetica-Bold", color: "#fff" },
+    ca:    { fontSize: 8, color: "rgba(255,255,255,0.75)", marginTop: 2 },
+    st:    { fontSize: 16, fontFamily: "Helvetica-Bold", color: "#fff", textAlign: "right" },
+    sm:    { fontSize: 11, color: "rgba(255,255,255,0.8)", textAlign: "right", marginTop: 3 },
+    body:  { padding: "18 36" },
+    grid:  { flexDirection: "row", flexWrap: "wrap", backgroundColor: "#F8F9FA", padding: "10 14", borderRadius: 5, marginBottom: 14 },
+    ei:    { width: "25%", marginBottom: 7 },
+    el:    { fontSize: 7, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 2 },
+    ev:    { fontSize: 9, fontFamily: "Helvetica-Bold", color: "#111827" },
+    secH:  { backgroundColor: T, padding: "5 8", borderRadius: 3 },
+    secHR: { backgroundColor: "#EF4444", padding: "5 8", borderRadius: 3 },
+    secT:  { fontSize: 8, fontFamily: "Helvetica-Bold", color: "#fff", textTransform: "uppercase", letterSpacing: 1 },
+    tR:    { flexDirection: "row", justifyContent: "space-between", padding: "4 8", borderBottomWidth: 1, borderBottomColor: "#F3F4F6" },
+    rL:    { fontSize: 9, color: "#374151" },
+    rV:    { fontSize: 9, fontFamily: "Helvetica-Bold", color: "#111827" },
+    gRow:  { flexDirection: "row", justifyContent: "space-between", padding: "6 8", backgroundColor: T + "10" },
+    gL:    { fontSize: 9, fontFamily: "Helvetica-Bold", color: T },
+    dTR:   { flexDirection: "row", justifyContent: "space-between", padding: "6 8", backgroundColor: "#FEF2F2" },
+    dTL:   { fontSize: 9, fontFamily: "Helvetica-Bold", color: "#EF4444" },
+    netB:  { backgroundColor: "#1E1B4B", padding: "14 18", flexDirection: "row", justifyContent: "space-between", alignItems: "center", borderRadius: 6, marginTop: 14 },
+    netL:  { fontSize: 8, color: "#C7D2FE", textTransform: "uppercase", letterSpacing: 1, marginBottom: 3 },
+    netA:  { fontSize: 20, fontFamily: "Helvetica-Bold", color: "#fff" },
+    netW:  { fontSize: 8, color: "#C7D2FE", fontStyle: "italic", maxWidth: 180, textAlign: "right" },
+    foot:  { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", marginTop: 14, paddingTop: 8, borderTopWidth: 1, borderTopColor: "#E5E7EB" },
+    footG: { fontSize: 7, color: "#D1D5DB" },
+    signB: { borderTopWidth: 1, borderTopColor: "#374151", paddingTop: 4, width: 110, textAlign: "center" },
+    signT: { fontSize: 7, color: "#9CA3AF" },
+  });
+
   return (
     <Document>
       <Page size="A4" style={s.page}>

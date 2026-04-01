@@ -2,33 +2,6 @@
 import { Document, Page, Text, View, StyleSheet, Image } from "@react-pdf/renderer";
 import { INDIAN_STATES } from "@/constants/indianStates";
 
-const T = "#0D9488";
-
-const styles = StyleSheet.create({
-    page: { fontFamily: "Helvetica", fontSize: 10, color: "#111827", padding: 40 },
-    header: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", borderBottomWidth: 2, borderBottomColor: T, paddingBottom: 14, marginBottom: 16 },
-    logo: { width: 55, height: 38, objectFit: "contain", marginBottom: 5 },
-    fromName: { fontSize: 13, fontFamily: "Helvetica-Bold", color: "#111827" },
-    small: { fontSize: 9, color: "#6B7280", marginTop: 2 },
-    title: { fontSize: 20, fontFamily: "Helvetica-Bold", color: T, textAlign: "right" },
-    num: { fontSize: 11, color: "#6B7280", textAlign: "right", marginTop: 3 },
-    meta: { fontSize: 9, color: "#9CA3AF", textAlign: "right", marginTop: 2 },
-    amtBox: { backgroundColor: "#F0FDFA", borderWidth: 2, borderColor: T, borderRadius: 8, padding: "16 20", alignItems: "center", marginBottom: 16 },
-    amtLabel: { fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 },
-    amtValue: { fontSize: 32, fontFamily: "Helvetica-Bold", color: T },
-    amtWords: { fontSize: 9, color: "#374151", fontStyle: "italic", marginTop: 6 },
-    tRow: { flexDirection: "row", padding: "7 0", borderBottomWidth: 1, borderBottomColor: "#F3F4F6" },
-    tLabel: { flex: 1, fontSize: 9, color: "#6B7280" },
-    tValue: { flex: 2, fontSize: 9, fontFamily: "Helvetica-Bold", color: "#111827" },
-    notesBox: { backgroundColor: "#F8F9FA", padding: "8 12", borderLeftWidth: 3, borderLeftColor: T, marginBottom: 16 },
-    notesL: { fontSize: 8, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 2 },
-    notesT: { fontSize: 9, color: "#374151" },
-    footer: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", marginTop: 20, paddingTop: 10, borderTopWidth: 1, borderTopColor: "#E5E7EB" },
-    footerG: { fontSize: 8, color: "#D1D5DB" },
-    signBox: { borderTopWidth: 1, borderTopColor: "#374151", paddingTop: 4, width: 120, textAlign: "center" },
-    signT: { fontSize: 8, color: "#9CA3AF" },
-});
-
 function numToWords(n) {
     if (!n || n === 0) return "Zero Rupees Only";
     const ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
@@ -44,9 +17,35 @@ function numToWords(n) {
 }
 
 export default function ReceiptTemplate({ form }) {
+    const T = form.templateColor || "#0D9488";
     const fromState = INDIAN_STATES.find(s => s.code === form.fromState);
     const amount = parseFloat(form.amount) || 0;
     const amtFmt = amount.toLocaleString("en-IN", { minimumFractionDigits: 2 });
+
+    const styles = StyleSheet.create({
+        page: { fontFamily: "Helvetica", fontSize: 10, color: "#111827", padding: 40 },
+        header: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", borderBottomWidth: 2, borderBottomColor: T, paddingBottom: 14, marginBottom: 16 },
+        logo: { width: 55, height: 38, objectFit: "contain", marginBottom: 5 },
+        fromName: { fontSize: 13, fontFamily: "Helvetica-Bold", color: "#111827" },
+        small: { fontSize: 9, color: "#6B7280", marginTop: 2 },
+        title: { fontSize: 20, fontFamily: "Helvetica-Bold", color: T, textAlign: "right" },
+        num: { fontSize: 11, color: "#6B7280", textAlign: "right", marginTop: 3 },
+        meta: { fontSize: 9, color: "#9CA3AF", textAlign: "right", marginTop: 2 },
+        amtBox: { backgroundColor: T + "10", borderWidth: 2, borderColor: T, borderRadius: 8, padding: "16 20", alignItems: "center", marginBottom: 16 },
+        amtLabel: { fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 },
+        amtValue: { fontSize: 32, fontFamily: "Helvetica-Bold", color: T },
+        amtWords: { fontSize: 9, color: "#374151", fontStyle: "italic", marginTop: 6 },
+        tRow: { flexDirection: "row", padding: "7 0", borderBottomWidth: 1, borderBottomColor: "#F3F4F6" },
+        tLabel: { flex: 1, fontSize: 9, color: "#6B7280" },
+        tValue: { flex: 2, fontSize: 9, fontFamily: "Helvetica-Bold", color: "#111827" },
+        notesBox: { backgroundColor: "#F8F9FA", padding: "8 12", borderLeftWidth: 3, borderLeftColor: T, marginBottom: 16 },
+        notesL: { fontSize: 8, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 2 },
+        notesT: { fontSize: 9, color: "#374151" },
+        footer: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", marginTop: 20, paddingTop: 10, borderTopWidth: 1, borderTopColor: "#E5E7EB" },
+        footerG: { fontSize: 8, color: "#D1D5DB" },
+        signBox: { borderTopWidth: 1, borderTopColor: "#374151", paddingTop: 4, width: 120, textAlign: "center" },
+        signT: { fontSize: 8, color: "#9CA3AF" },
+    });
 
     return (
         <Document>

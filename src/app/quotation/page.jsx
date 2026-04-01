@@ -1,6 +1,6 @@
 "use client";
 import TemplatePicker from "@/components/TemplatePicker";
-
+import TemplateColorPicker from "@/components/TemplateColorPicker";
 import { useDownloadPDF } from "@/hooks/useDownloadPDF";
 import { useState, useCallback } from "react";
 import Navbar from "@/components/Navbar";
@@ -9,11 +9,12 @@ import AdSense from "@/components/AdSense";
 import LogoUpload from "@/components/LogoUpload";
 import { INDIAN_STATES } from "@/constants/indianStates";
 import { calculateLineItems, numberToWords } from "@/engine/gstCalc";
-import { Plus, Trash2, Download, Eye, RefreshCw, Cloud } from "lucide-react";
-import { useRouter } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
 import { documentsApi } from "@/api/documents";
 import { getAccessToken } from "@/api/auth";
+import SignatureModal from "@/components/SignatureModal";
+import { Plus, Trash2, Download, Eye, RefreshCw, Cloud, PenTool } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import WatermarkOverlay from "@/components/WatermarkOverlay";
 import { TEMPLATE_REGISTRY } from "@/templates/registry";
@@ -32,37 +33,75 @@ const DEFAULT_FORM = {
   taxType: "cgst_sgst",
   items: [{ description: "", hsn: "", qty: "1", rate: "", discount: "0", gstRate: "18", amount: "0.00" }],
   notes: "", terms: "This quotation is valid for 30 days.",
+  signature: null,
   logo: null, showHSN: true, showDiscount: false,
+  templateColor: "#0D9488",
 };
 
 function ItemRow({ item, index, onChange, onRemove, showHSN, showDiscount }) {
-  const update = (field, value) => {
-    const u = { ...item, [field]: value };
-    const qty = parseFloat(u.qty) || 0;
-    const rate = parseFloat(u.rate) || 0;
-    const discount = parseFloat(u.discount) || 0;
-    const subtotal = qty * rate - discount;
-    const gst = (subtotal * (parseFloat(u.gstRate) || 0)) / 100;
-    u.amount = (subtotal + gst).toFixed(2);
-    onChange(index, u);
-  };
-  return (
-    <div style={{
-      display: "grid",
-      gridTemplateColumns: showHSN ? "2fr 0.6fr 0.5fr 0.7fr 0.5fr 0.7fr auto" : "2fr 0.5fr 0.7fr 0.5fr 0.7fr auto",
-      gap: "6px", marginBottom: "6px", alignItems: "center",
-    }}>
-      <input className="doc-input" placeholder="Item description" value={item.description} onChange={e => update("description", e.target.value)} />
-      {showHSN && <input className="doc-input" placeholder="HSN" value={item.hsn} onChange={e => update("hsn", e.target.value)} />}
-      <input className="doc-input" type="number" placeholder="1" value={item.qty} onChange={e => update("qty", e.target.value)} />
-      <input className="doc-input" type="number" placeholder="0.00" value={item.rate} onChange={e => update("rate", e.target.value)} />
-      <select className="doc-select" value={item.gstRate} onChange={e => update("gstRate", e.target.value)}>
-        {[0, 5, 12, 18, 28].map(r => <option key={r} value={r}>{r}%</option>)}
-      </select>
-      <span style={{ fontSize: "12px", fontWeight: 700, color: "#111827", fontFamily: "Inter, sans-serif", textAlign: "right", whiteSpace: "nowrap" }}>₹{item.amount}</span>
-      <button className="remove-item-btn" onClick={() => onRemove(index)}><Trash2 size={13} /></button>
-    </div>
-  );
+    const update = (field, value) => {
+        const updated = { ...item, [field]: value };
+        const qty = parseFloat(updated.qty) || 0;
+        const rate = parseFloat(updated.rate) || 0;
+        const discount = parseFloat(updated.discount) || 0;
+        const subtotal = qty * rate - discount;
+        const gst = (subtotal * (parseFloat(updated.gstRate) || 0)) / 100;
+        updated.amount = (subtotal + gst).toFixed(2);
+        onChange(index, updated);
+    };
+
+    return (
+        <div style={{
+            background: "#fff", border: "1px solid #E5E7EB", borderRadius: "8px",
+            padding: "16px", marginBottom: "12px", boxShadow: "0 1px 2px rgba(0,0,0,0.02)", position: "relative"
+        }}>
+            <div style={{ display: "flex", gap: "12px", marginBottom: "16px", alignItems: "flex-start" }}>
+                <div style={{ flex: 1 }}>
+                    <label style={{ display: "block", fontSize: "11px", fontWeight: 600, color: "#6B7280", marginBottom: "4px", textTransform: "uppercase", letterSpacing: "0.05em" }}>Description</label>
+                    <input className="doc-input" placeholder="Item description" value={item.description} onChange={e => update("description", e.target.value)} style={{ background: "#F9FAFB" }} />
+                </div>
+                <button onClick={() => onRemove(index)} title="Remove Item" style={{ background: "#FEE2E2", color: "#EF4444", border: "none", width: "36px", height: "36px", borderRadius: "6px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", marginTop: "18px", transition: "background 150ms" }}>
+                    <Trash2 size={16} />
+                </button>
+            </div>
+            <div style={{
+                display: "grid",
+                gridTemplateColumns: showHSN ? (showDiscount ? "repeat(5, 1fr) auto" : "repeat(4, 1fr) auto") : (showDiscount ? "repeat(4, 1fr) auto" : "repeat(3, 1fr) auto"),
+                gap: "12px", alignItems: "end"
+            }}>
+                {showHSN && (
+                    <div>
+                        <label style={{ display: "block", fontSize: "11px", fontWeight: 600, color: "#6B7280", marginBottom: "4px" }}>HSN</label>
+                        <input className="doc-input" placeholder="HSN" value={item.hsn} onChange={e => update("hsn", e.target.value)} style={{ background: "#F9FAFB" }} />
+                    </div>
+                )}
+                <div>
+                    <label style={{ display: "block", fontSize: "11px", fontWeight: 600, color: "#6B7280", marginBottom: "4px" }}>Qty</label>
+                    <input className="doc-input" type="number" placeholder="1" value={item.qty} onChange={e => update("qty", e.target.value)} style={{ background: "#F9FAFB" }} />
+                </div>
+                <div>
+                    <label style={{ display: "block", fontSize: "11px", fontWeight: 600, color: "#6B7280", marginBottom: "4px" }}>Rate</label>
+                    <input className="doc-input" type="number" placeholder="0.00" value={item.rate} onChange={e => update("rate", e.target.value)} style={{ background: "#F9FAFB" }} />
+                </div>
+                {showDiscount && (
+                    <div>
+                        <label style={{ display: "block", fontSize: "11px", fontWeight: 600, color: "#6B7280", marginBottom: "4px" }}>Disc</label>
+                        <input className="doc-input" type="number" placeholder="0" value={item.discount} onChange={e => update("discount", e.target.value)} style={{ background: "#F9FAFB" }} />
+                    </div>
+                )}
+                <div>
+                    <label style={{ display: "block", fontSize: "11px", fontWeight: 600, color: "#6B7280", marginBottom: "4px" }}>GST (%)</label>
+                    <select className="doc-select" value={item.gstRate} onChange={e => update("gstRate", e.target.value)} style={{ background: "#F9FAFB" }}>
+                        {[0, 5, 12, 18, 28].map(r => <option key={r} value={r}>{r}%</option>)}
+                    </select>
+                </div>
+                <div style={{ textAlign: "right", height: "36px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                    <span style={{ fontSize: "10px", fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase" }}>Amount</span>
+                    <span style={{ fontSize: "15px", fontWeight: 800, color: "#0D9488", fontFamily: "Inter, sans-serif", whiteSpace: "nowrap" }}>₹{item.amount}</span>
+                </div>
+            </div>
+        </div>
+    );
 }
 
 function QuotationPreview({ form, template = "Classic", accent = "#0D9488" }) {
@@ -136,8 +175,15 @@ function QuotationPreview({ form, template = "Classic", accent = "#0D9488" }) {
       )}
       <div style={{ marginTop: "24px", paddingTop: "12px", borderTop: "1px solid #E5E7EB", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <p style={{ fontSize: "10px", color: "#D1D5DB", fontFamily: "Inter, sans-serif", margin: 0 }}>Generated by DocMinty.com</p>
-        <div style={{ borderTop: "1px solid #374151", paddingTop: "4px", minWidth: "120px", textAlign: "center" }}>
-          <p style={{ fontSize: "10px", color: "#9CA3AF", fontFamily: "Inter, sans-serif", margin: 0 }}>Authorised Signatory</p>
+        <div style={{ textAlign: "right", minWidth: "120px" }}>
+          {form.signature && (
+            <div style={{ marginBottom: "4px" }}>
+              <img src={form.signature} alt="Signature" style={{ maxHeight: "45px", maxWidth: "140px", display: "block", marginLeft: "auto" }} />
+            </div>
+          )}
+          <div style={{ borderTop: "1px solid #374151", paddingTop: "4px" }}>
+            <p style={{ fontSize: "10px", color: "#9CA3AF", fontFamily: "Inter, sans-serif", margin: 0 }}>Authorised Signatory</p>
+          </div>
         </div>
       </div>
     </div>
@@ -255,6 +301,7 @@ export default function QuotationPage() {
   const { download, downloading } = useDownloadPDF();
   const [template, setTemplate] = useState("Classic");
   const [activeTab, setActiveTab] = useState("from");
+  const [isSigModalOpen, setIsSigModalOpen] = useState(false);
   const router = useRouter();
 
   const isUserPro = user?.plan === "Business Pro" || user?.plan === "Enterprise";
@@ -313,9 +360,11 @@ export default function QuotationPage() {
               <Download size={15} />
               {downloading ? "Generating..." : "Download PDF"}
             </button>
-            <button onClick={handleSave} style={{ display: "flex", alignItems: "center", gap: "6px", height: "36px", padding: "0 14px", border: "1px solid #0D9488", borderRadius: "8px", background: "#fff", fontSize: "13px", fontWeight: 600, color: "#0D9488", cursor: "pointer", fontFamily: "Inter, sans-serif", transition: "all 150ms" }}>
+            {user && (
+<button onClick={handleSave} style={{ display: "flex", alignItems: "center", gap: "6px", height: "36px", padding: "0 14px", border: "1px solid #0D9488", borderRadius: "8px", background: "#fff", fontSize: "13px", fontWeight: 600, color: "#0D9488", cursor: "pointer", fontFamily: "Inter, sans-serif", transition: "all 150ms" }}>
               <Cloud size={14} /> Save
             </button>
+)}
           </div>
         </div>
       </div>
@@ -418,6 +467,49 @@ export default function QuotationPage() {
                 <p className="form-label">Notes & Terms</p>
                 <div className="form-field"><label className="field-label">Notes</label><textarea className="doc-textarea" placeholder="Additional notes..." value={form.notes} onChange={e => updateField("notes", e.target.value)} style={{ minHeight: "80px" }} /></div>
                 <div className="form-field"><label className="field-label">Terms</label><textarea className="doc-textarea" value={form.terms} onChange={e => updateField("terms", e.target.value)} style={{ minHeight: "80px" }} /></div>
+                
+                <div style={{ borderTop: "1px solid #F3F4F6", margin: "16px 0" }} />
+                <p className="form-label">Signature</p>
+                <div style={{
+                  border: "1px solid #E5E7EB", borderRadius: "12px", padding: "16px",
+                  display: "flex", flexDirection: "column", alignItems: "center", gap: "12px", background: "#fff"
+                }}>
+                  {form.signature ? (
+                    <div style={{ width: "100%", textAlign: "center" }}>
+                      <div style={{
+                        padding: "16px", background: "#F9FAFB", borderRadius: "8px",
+                        border: "1px dashed #D1D5DB", display: "inline-block", minWidth: "200px"
+                      }}>
+                        <img src={form.signature} alt="Signature" style={{ height: "60px", maxWidth: "100%", objectFit: "contain" }} />
+                      </div>
+                      <div style={{ display: "flex", gap: "8px", justifyContent: "center", marginTop: "12px" }}>
+                        <button onClick={() => setIsSigModalOpen(true)} style={{
+                          padding: "8px 16px", borderRadius: "8px", border: "1px solid #D1D5DB",
+                          background: "#fff", fontSize: "13px", fontWeight: 600, color: "#374151", cursor: "pointer"
+                        }}>Change</button>
+                        <button onClick={() => updateField("signature", null)} style={{
+                          padding: "8px 16px", borderRadius: "8px", border: "1px solid #FEE2E2",
+                          background: "#FEF2F2", fontSize: "13px", fontWeight: 600, color: "#EF4444", cursor: "pointer"
+                        }}>Remove</button>
+                      </div>
+                    </div>
+                  ) : (
+                    <button onClick={() => setIsSigModalOpen(true)} style={{
+                      width: "100%", padding: "40px 20px", display: "flex", flexDirection: "column",
+                      alignItems: "center", gap: "12px", background: "#F9FAFB", border: "1px dashed #D1D5DB",
+                      borderRadius: "10px", cursor: "pointer", transition: "all 200ms"
+                    }}>
+                      <div style={{
+                        width: "48px", height: "48px", borderRadius: "50%", background: "#fff",
+                        display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 2px 4px rgba(0,0,0,0.05)"
+                      }}>
+                        <PenTool size={20} color="#9CA3AF" />
+                      </div>
+                      <span style={{ fontSize: "14px", fontWeight: 600, color: "#374151" }}>Add digital signature</span>
+                    </button>
+                  )}
+                </div>
+
                 <div style={{ borderTop: "1px solid #F3F4F6", margin: "16px 0" }} />
                 <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn" style={{ width: "100%", justifyContent: "center" }}><Download size={15} /> Download PDF</button>
               </div>
@@ -430,10 +522,20 @@ export default function QuotationPage() {
                   <TemplatePicker 
                     docType="quotation" 
                     selected={template} 
-                    onChange={setTemplate} 
+                    onChange={(t) => {
+                      setTemplate(t);
+                      const meta = TEMPLATE_REGISTRY.quotation[t] || TEMPLATE_REGISTRY.quotation.Classic;
+                      updateField("templateColor", meta.accent);
+                    }} 
                     isPro={isUserPro} 
                   />
                 </div>
+                <div style={{ borderTop: "1px solid #F3F4F6", margin: "20px 0" }} />
+                <p className="form-label">Template Color</p>
+                <TemplateColorPicker 
+                  value={form.templateColor || templateMeta.accent}
+                  onChange={(color) => updateField("templateColor", color)}
+                />
                 <div style={{ borderTop: "1px solid #F3F4F6", margin: "24px 0" }} />
                 <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn" style={{ width: "100%", justifyContent: "center" }}>
                   <Download size={15} /> Download PDF
@@ -453,7 +555,7 @@ export default function QuotationPage() {
             </div>
             <div style={{ position: "relative" }}>
               {showWatermark && <WatermarkOverlay />}
-              <QuotationPreview form={form} template={template} accent={templateMeta.accent} />
+              <QuotationPreview form={form} template={template} accent={form.templateColor || templateMeta.accent} />
             </div>
           </div>
         </div>
@@ -463,6 +565,11 @@ export default function QuotationPage() {
         </div>
       </div>
       <Footer />
+      <SignatureModal
+        isOpen={isSigModalOpen}
+        onClose={() => setIsSigModalOpen(false)}
+        onSave={(sig) => updateField("signature", sig)}
+      />
     </>
   );
 }

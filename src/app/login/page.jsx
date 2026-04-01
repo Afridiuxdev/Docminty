@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import { Eye, EyeOff, FileText } from "lucide-react";
 import { authApi, saveTokens } from "@/api/auth";
 import toast from "react-hot-toast";
+import { GoogleLogin } from "@react-oauth/google";
 
 const T = "#0D9488";
 
@@ -17,22 +18,10 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError]     = useState("");
 
-  const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com";
-
-  useEffect(() => {
-    // Load Google GSI Script
-    const script = document.createElement("script");
-    script.src = "https://accounts.google.com/gsi/client";
-    script.async = true;
-    script.defer = true;
-    document.body.appendChild(script);
-    return () => document.body.removeChild(script);
-  }, []);
-
-  const handleGoogleResponse = async (response) => {
+  const handleGoogleSuccess = async (credentialResponse) => {
     setLoading(true);
     try {
-      const res = await authApi.googleLogin(response.credential);
+      const res = await authApi.googleLogin(credentialResponse.credential);
       const { accessToken, refreshToken, user } = res.data.data;
       saveTokens(accessToken, refreshToken);
       toast.success("Welcome, " + user.name + "!");
@@ -42,19 +31,14 @@ export default function LoginPage() {
         router.push("/dashboard");
       }
     } catch (err) {
-      toast.error("Google login failed");
+      toast.error("Google login failed. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  const initGoogle = () => {
-    if (!window.google) return;
-    window.google.accounts.id.initialize({
-      client_id: GOOGLE_CLIENT_ID,
-      callback: handleGoogleResponse,
-    });
-    window.google.accounts.id.prompt();
+  const handleGoogleError = () => {
+    toast.error("Google sign-in was cancelled or failed.");
   };
 
   const handleSubmit = async () => {
@@ -140,27 +124,28 @@ export default function LoginPage() {
               {loading ? "Signing in..." : "Sign In"}
             </button>
 
-            {/* Google Login */}
-            <button 
-              onClick={initGoogle}
-              style={{ 
-                width: "100%", height: "44px", background: "#fff", color: "#374151", 
-                border: "1px solid #E5E7EB", borderRadius: "8px", fontSize: "14px", 
-                fontWeight: 600, cursor: "pointer", fontFamily: "Inter, sans-serif", 
-                marginTop: "12px", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px",
-                transition: "all 150ms"
-              }}
-              onMouseEnter={e => e.currentTarget.style.background = "#F9FAFB"}
-              onMouseLeave={e => e.currentTarget.style.background = "#fff"}
-            >
-              <svg width="18" height="18" viewBox="0 0 18 18"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z" fill="#4285f4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34a853"/><path d="M3.964 10.712c-.18-.54-.282-1.117-.282-1.712s.102-1.173.282-1.712V4.956H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.044l3.007-2.332z" fill="#fbbc05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.956l3.007 2.332C4.672 5.164 6.656 3.58 9 3.58z" fill="#ea4335"/></svg>
-              Continue with Google
-            </button>
-
             {/* Divider */}
             <div style={{ display: "flex", alignItems: "center", gap: "12px", margin: "20px 0" }}>
               <div style={{ flex: 1, height: "1px", background: "#E5E7EB" }} />
               <span style={{ fontSize: "12px", color: "#9CA3AF", fontFamily: "Inter, sans-serif" }}>or</span>
+              <div style={{ flex: 1, height: "1px", background: "#E5E7EB" }} />
+            </div>
+
+            {/* Google Login */}
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={handleGoogleError}
+                theme="outline"
+                size="large"
+                width="356"
+                text="signin_with"
+                shape="rectangular"
+              />
+            </div>
+
+            {/* Divider */}
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", margin: "20px 0" }}>
               <div style={{ flex: 1, height: "1px", background: "#E5E7EB" }} />
             </div>
 

@@ -1,5 +1,6 @@
 "use client";
 import TemplatePicker from "@/components/TemplatePicker";
+import TemplateColorPicker from "@/components/TemplateColorPicker";
 
 import { useState, useCallback } from "react";
 import Navbar from "@/components/Navbar";
@@ -7,15 +8,16 @@ import Footer from "@/components/Footer";
 import AdSense from "@/components/AdSense";
 import LogoUpload from "@/components/LogoUpload";
 import { generateVerificationId, generateQRData } from "@/engine/hashGen";
-import { Download, Eye, RefreshCw, Shield, Cloud } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import WatermarkOverlay from "@/components/WatermarkOverlay";
+import { TEMPLATE_REGISTRY } from "@/templates/registry";
+import SignatureModal from "@/components/SignatureModal";
+import { Download, Eye, RefreshCw, Shield, Cloud, PenTool } from "lucide-react";
 import { useDownloadPDF } from "@/hooks/useDownloadPDF";
 import { useRouter } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
 import { documentsApi } from "@/api/documents";
 import { getAccessToken } from "@/api/auth";
-import { useAuth } from "@/contexts/AuthContext";
-import WatermarkOverlay from "@/components/WatermarkOverlay";
-import { TEMPLATE_REGISTRY } from "@/templates/registry";
 
 const T = "#0D9488";
 
@@ -40,10 +42,12 @@ const DEFAULT_FORM = {
   issueDate: new Date().toISOString().split("T")[0],
   signatoryName: "",
   signatoryDesignation: "",
+  signature: null,
   description: "",
   logo: null,
   verificationId: generateVerificationId(),
   enableQR: true,
+  templateColor: "#0D9488",
 };
 
 function CertPreview({ form, template = "Classic", accent = "#0D9488" }) {
@@ -72,9 +76,18 @@ function CertPreview({ form, template = "Classic", accent = "#0D9488" }) {
       </div>
       <div style={{ display: "flex", gap: "48px", justifyContent: "center", alignItems: "flex-end" }}>
         <div style={{ textAlign: "center" }}>
-          <div style={{ borderTop: "2px solid #374151", paddingTop: "6px", minWidth: "120px" }}>
-            <p style={{ fontSize: "12px", fontWeight: 600, color: "#111827", margin: 0 }}>{form.signatoryName || "Signatory Name"}</p>
-            <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "2px 0 0" }}>{form.signatoryDesignation || "Designation"}</p>
+          <div style={{ minWidth: "120px" }}>
+            {form.signature ? (
+              <div style={{ marginBottom: "4px" }}>
+                <img src={form.signature} alt="Signature" style={{ maxHeight: "40px", maxWidth: "120px", display: "block", margin: "0 auto" }} />
+              </div>
+            ) : (
+              <div style={{ height: "30px" }} />
+            )}
+            <div style={{ borderTop: "2px solid #374151", paddingTop: "6px" }}>
+              <p style={{ fontSize: "12px", fontWeight: 600, color: "#111827", margin: 0 }}>{form.signatoryName || "Signatory Name"}</p>
+              <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "2px 0 0" }}>{form.signatoryDesignation || "Designation"}</p>
+            </div>
           </div>
         </div>
         {form.enableQR && (
@@ -175,6 +188,7 @@ export default function CertificatePage() {
   const { download, downloading } = useDownloadPDF();
   const [template, setTemplate] = useState("Classic");
   const [activeTab, setActiveTab] = useState("org");
+  const [isSigModalOpen, setIsSigModalOpen] = useState(false);
   const router = useRouter();
 
   const isUserPro = user?.plan === "Business Pro" || user?.plan === "Enterprise";
@@ -229,9 +243,11 @@ export default function CertificatePage() {
               <Download size={15} />
               {downloading ? "Generating..." : "Download PDF"}
             </button>
-            <button onClick={handleSave} style={{ display: "flex", alignItems: "center", gap: "6px", height: "36px", padding: "0 14px", border: "1px solid #0D9488", borderRadius: "8px", background: "#fff", fontSize: "13px", fontWeight: 600, color: "#0D9488", cursor: "pointer", fontFamily: "Inter, sans-serif", transition: "all 150ms" }}>
-              <Cloud size={14} /> Save
-            </button>
+            {user && (
+              <button onClick={handleSave} style={{ display: "flex", alignItems: "center", gap: "6px", height: "36px", padding: "0 14px", border: "1px solid #0D9488", borderRadius: "8px", background: "#fff", fontSize: "13px", fontWeight: 600, color: "#0D9488", cursor: "pointer", fontFamily: "Inter, sans-serif", transition: "all 150ms" }}>
+                <Cloud size={14} /> Save
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -294,6 +310,42 @@ export default function CertificatePage() {
                 <p className="form-label">Signatory</p>
                 <div className="form-field"><label className="field-label">Name</label><input className="doc-input" placeholder="Dr. Ravi Kumar" value={form.signatoryName} onChange={e => updateField("signatoryName", e.target.value)} /></div>
                 <div className="form-field"><label className="field-label">Designation</label><input className="doc-input" placeholder="Director" value={form.signatoryDesignation} onChange={e => updateField("signatoryDesignation", e.target.value)} /></div>
+
+                <div style={{ borderTop: "1px solid #F3F4F6", margin: "16px 0" }} />
+                <p className="form-label">Digital Signature</p>
+                <div style={{
+                  border: "1px solid #E5E7EB", borderRadius: "12px", padding: "16px",
+                  display: "flex", flexDirection: "column", alignItems: "center", gap: "10px", background: "#fff"
+                }}>
+                  {form.signature ? (
+                    <div style={{ width: "100%", textAlign: "center" }}>
+                      <div style={{
+                        padding: "12px", background: "#F9FAFB", borderRadius: "8px",
+                        border: "1px dashed #D1D5DB", display: "inline-block", minWidth: "140px"
+                      }}>
+                        <img src={form.signature} alt="Signature" style={{ height: "45px", maxWidth: "100%", objectFit: "contain" }} />
+                      </div>
+                      <div style={{ display: "flex", gap: "8px", justifyContent: "center", marginTop: "10px" }}>
+                        <button onClick={() => setIsSigModalOpen(true)} style={{ fontSize: "12px", fontWeight: 600, color: T, background: "none", border: "none", cursor: "pointer" }}>Change</button>
+                        <button onClick={() => updateField("signature", null)} style={{ fontSize: "12px", fontWeight: 600, color: "#EF4444", background: "none", border: "none", cursor: "pointer" }}>Remove</button>
+                      </div>
+                    </div>
+                  ) : (
+                    <button onClick={() => setIsSigModalOpen(true)} style={{
+                      width: "100%", padding: "24px 16px", display: "flex", flexDirection: "column",
+                      alignItems: "center", gap: "8px", background: "#F9FAFB", border: "1px dashed #D1D5DB",
+                      borderRadius: "10px", cursor: "pointer"
+                    }}>
+                      <div style={{
+                        width: "36px", height: "36px", borderRadius: "50%", background: "#fff",
+                        display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 2px 4px rgba(0,0,0,0.05)"
+                      }}>
+                        <PenTool size={16} color="#9CA3AF" />
+                      </div>
+                      <span style={{ fontSize: "13px", fontWeight: 600, color: "#374151" }}>Provide Signature</span>
+                    </button>
+                  )}
+                </div>
               </div>
             )}
 
@@ -351,10 +403,20 @@ export default function CertificatePage() {
                   <TemplatePicker 
                     docType="certificate" 
                     selected={template} 
-                    onChange={setTemplate} 
+                    onChange={(t) => {
+                      setTemplate(t);
+                      const meta = TEMPLATE_REGISTRY.certificate[t] || TEMPLATE_REGISTRY.certificate.Classic;
+                      updateField("templateColor", meta.accent);
+                    }} 
                     isPro={isUserPro} 
                   />
                 </div>
+                <div style={{ borderTop: "1px solid #F3F4F6", margin: "20px 0" }} />
+                <p className="form-label">Template Color</p>
+                <TemplateColorPicker 
+                  value={form.templateColor || templateMeta.accent}
+                  onChange={(color) => updateField("templateColor", color)}
+                />
                 <div style={{ borderTop: "1px solid #F3F4F6", margin: "24px 0" }} />
                 <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn" style={{ width: "100%", justifyContent: "center" }}>
                   <Download size={15} />
@@ -377,7 +439,7 @@ export default function CertificatePage() {
             </div>
             <div style={{ position: "relative" }}>
               {showWatermark && <WatermarkOverlay />}
-              <CertPreview form={form} template={template} accent={templateMeta.accent} />
+              <CertPreview form={form} template={template} accent={form.templateColor || templateMeta.accent} />
             </div>
           </div>
         </div>
@@ -386,6 +448,11 @@ export default function CertificatePage() {
         </div>
       </div>
       <Footer />
+      <SignatureModal
+        isOpen={isSigModalOpen}
+        onClose={() => setIsSigModalOpen(false)}
+        onSave={(sig) => updateField("signature", sig)}
+      />
     </>
   );
 }

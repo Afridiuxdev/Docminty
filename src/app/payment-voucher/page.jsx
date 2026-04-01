@@ -1,16 +1,18 @@
-﻿"use client";
+"use client";
 
 import { useState, useCallback } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AdSense from "@/components/AdSense";
 import LogoUpload from "@/components/LogoUpload";
-import { Download, Eye, RefreshCw, Cloud } from "lucide-react";
-import { useDownloadPDF } from "@/hooks/useDownloadPDF";
-import { useRouter } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
 import { documentsApi } from "@/api/documents";
 import { getAccessToken } from "@/api/auth";
+import SignatureModal from "@/components/SignatureModal";
+import { Download, Eye, RefreshCw, Cloud, PenTool } from "lucide-react";
+import { useDownloadPDF } from "@/hooks/useDownloadPDF";
+import { useRouter } from "next/navigation";
 
 const T = "#0D9488";
 
@@ -27,6 +29,8 @@ const DEFAULT_FORM = {
   accountHead: "",
   narration: "",
   preparedBy: "", approvedBy: "",
+  signaturePrepared: null,
+  signatureApproved: null,
 };
 
 const PAYMENT_MODES = ["Cash", "Cheque", "Bank Transfer", "UPI", "NEFT", "RTGS"];
@@ -171,7 +175,7 @@ function VoucherPreview({ form }) {
             )}
             {form.narration && (
               <tr>
-                <td style={{ fontWeight: 600, color: "#6B7280" }}>Narration</td>
+                <td style={{ fontWeight: 600, color: "#6B7280" }}>Description</td>
                 <td>{form.narration}</td>
               </tr>
             )}
@@ -184,24 +188,31 @@ function VoucherPreview({ form }) {
           gap: "16px", marginTop: "32px",
         }}>
           {[
-            ["Prepared By", form.preparedBy || "—"],
-            ["Approved By", form.approvedBy || "—"],
-            ["Received By", ""],
-          ].map(([label, name]) => (
-            <div key={label} style={{ textAlign: "center" }}>
+            { label: "Prepared By", name: form.preparedBy || "—", sig: form.signaturePrepared },
+            { label: "Approved By", name: form.approvedBy || "—", sig: form.signatureApproved },
+            { label: "Received By", name: "", sig: null },
+          ].map((item) => (
+            <div key={item.label} style={{ textAlign: "center" }}>
+              {item.sig ? (
+                <div style={{ marginBottom: "2px" }}>
+                  <img src={item.sig} alt={item.label} style={{ maxHeight: "40px", maxWidth: "100px", display: "block", margin: "0 auto" }} />
+                </div>
+              ) : (
+                <div style={{ height: "42px" }} />
+              )}
               <div style={{
                 borderTop: "1px solid #374151",
                 paddingTop: "6px",
               }}>
-                {name && <p style={{
-                  fontSize: "12px", fontWeight: 600,
+                {item.name && <p style={{
+                  fontSize: "11px", fontWeight: 600,
                   color: "#111827", margin: "0 0 2px",
                   fontFamily: "Space Grotesk, sans-serif"
-                }}>{name}</p>}
+                }}>{item.name}</p>}
                 <p style={{
                   fontSize: "10px", color: "#9CA3AF",
                   fontFamily: "Inter, sans-serif", margin: 0
-                }}>{label}</p>
+                }}>{item.label}</p>
               </div>
             </div>
           ))}
@@ -220,6 +231,7 @@ function VoucherPreview({ form }) {
 }
 
 export default function PaymentVoucherPage() {
+  const { user } = useAuth();
   const [form, setForm] = useState(DEFAULT_FORM);
   const { download, downloading } = useDownloadPDF();
   const router = useRouter();
@@ -233,6 +245,7 @@ export default function PaymentVoucherPage() {
     } catch { toast.error("Save failed"); }
   };
   const [activeTab, setActiveTab] = useState("company");
+  const [sigModalType, setSigModalType] = useState(null); // 'prepared' or 'approved'
   const updateField = useCallback((field, value) =>
     setForm(prev => ({ ...prev, [field]: value })), []);
 
@@ -284,9 +297,11 @@ export default function PaymentVoucherPage() {
               {downloading ? "Generating..." : "Download PDF"}
 
             </button>
-            <button onClick={handleSave} style={{ display: "flex", alignItems: "center", gap: "6px", height: "36px", padding: "0 14px", border: "1px solid #0D9488", borderRadius: "8px", background: "#fff", fontSize: "13px", fontWeight: 600, color: "#0D9488", cursor: "pointer", fontFamily: "Inter, sans-serif", transition: "all 150ms" }}>
+            {user && (
+<button onClick={handleSave} style={{ display: "flex", alignItems: "center", gap: "6px", height: "36px", padding: "0 14px", border: "1px solid #0D9488", borderRadius: "8px", background: "#fff", fontSize: "13px", fontWeight: 600, color: "#0D9488", cursor: "pointer", fontFamily: "Inter, sans-serif", transition: "all 150ms" }}>
               <Cloud size={14} /> Save
             </button>
+)}
           </div>
         </div>
       </div>
@@ -420,7 +435,7 @@ export default function PaymentVoucherPage() {
                     {ACCOUNT_HEADS.map(h => <option key={h} value={h}>{h}</option>)}
                   </select>
                 </div>
-                <div className="form-field"><label className="field-label">Narration</label>
+                <div className="form-field"><label className="field-label">Description</label>
                   <textarea className="doc-textarea"
                     placeholder="Additional details..."
                     value={form.narration}
@@ -442,6 +457,59 @@ export default function PaymentVoucherPage() {
                     value={form.approvedBy}
                     onChange={e => updateField("approvedBy", e.target.value)} />
                 </div>
+
+                <div style={{ borderTop: "1px solid #F3F4F6", margin: "16px 0" }} />
+                
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                  <div>
+                    <label className="field-label">Prepared By Sign</label>
+                    <div style={{ border: "1px solid #E5E7EB", borderRadius: "10px", padding: "12px", background: "#fff" }}>
+                      {form.signaturePrepared ? (
+                        <div style={{ textAlign: "center" }}>
+                          <img src={form.signaturePrepared} alt="Prepared By" style={{ height: "45px", maxWidth: "100%", objectFit: "contain" }} />
+                          <div style={{ display: "flex", gap: "6px", justifyContent: "center", marginTop: "8px" }}>
+                            <button onClick={() => setSigModalType('prepared')} style={{ fontSize: "11px", fontWeight: 600, color: T }}>Change</button>
+                            <button onClick={() => updateField("signaturePrepared", null)} style={{ fontSize: "11px", fontWeight: 600, color: "#EF4444" }}>Remove</button>
+                          </div>
+                        </div>
+                      ) : (
+                        <button onClick={() => setSigModalType('prepared')} style={{
+                          width: "100%", padding: "20px 10px", display: "flex", flexDirection: "column",
+                          alignItems: "center", gap: "8px", background: "#F9FAFB", border: "1px dashed #D1D5DB",
+                          borderRadius: "8px", cursor: "pointer"
+                        }}>
+                          <PenTool size={16} color="#9CA3AF" />
+                          <span style={{ fontSize: "12px", fontWeight: 600, color: "#6B7280" }}>Sign</span>
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="field-label">Approved By Sign</label>
+                    <div style={{ border: "1px solid #E5E7EB", borderRadius: "10px", padding: "12px", background: "#fff" }}>
+                      {form.signatureApproved ? (
+                        <div style={{ textAlign: "center" }}>
+                          <img src={form.signatureApproved} alt="Approved By" style={{ height: "45px", maxWidth: "100%", objectFit: "contain" }} />
+                          <div style={{ display: "flex", gap: "6px", justifyContent: "center", marginTop: "8px" }}>
+                            <button onClick={() => setSigModalType('approved')} style={{ fontSize: "11px", fontWeight: 600, color: T }}>Change</button>
+                            <button onClick={() => updateField("signatureApproved", null)} style={{ fontSize: "11px", fontWeight: 600, color: "#EF4444" }}>Remove</button>
+                          </div>
+                        </div>
+                      ) : (
+                        <button onClick={() => setSigModalType('approved')} style={{
+                          width: "100%", padding: "20px 10px", display: "flex", flexDirection: "column",
+                          alignItems: "center", gap: "8px", background: "#F9FAFB", border: "1px dashed #D1D5DB",
+                          borderRadius: "8px", cursor: "pointer"
+                        }}>
+                          <PenTool size={16} color="#9CA3AF" />
+                          <span style={{ fontSize: "12px", fontWeight: 600, color: "#6B7280" }}>Sign</span>
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
                 <div style={{ borderTop: "1px solid #F3F4F6", margin: "16px 0" }} />
                 <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn">
 
@@ -482,6 +550,15 @@ export default function PaymentVoucherPage() {
         </div>
       </div>
       <Footer />
+      <SignatureModal
+        isOpen={sigModalType !== null}
+        onClose={() => setSigModalType(null)}
+        onSave={(sig) => {
+          if (sigModalType === 'prepared') updateField("signaturePrepared", sig);
+          else if (sigModalType === 'approved') updateField("signatureApproved", sig);
+          setSigModalType(null);
+        }}
+      />
     </>
   );
 }

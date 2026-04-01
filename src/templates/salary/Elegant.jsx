@@ -3,48 +3,8 @@ import { Document, Page, Text, View, StyleSheet, Image } from "@react-pdf/render
 import { calculateSalary } from "@/engine/salaryCalc";
 import { INDIAN_STATES } from "@/constants/indianStates";
 
-const T = "#D97706";
-
-const styles = StyleSheet.create({
-    page: { fontFamily: "Helvetica", fontSize: 10, color: "#111827", padding: 0 },
-    header: { backgroundColor: T, padding: "20 40", flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" },
-    logo: { width: 50, height: 35, objectFit: "contain", marginBottom: 6 },
-    compName: { fontSize: 14, fontFamily: "Helvetica-Bold", color: "#ffffff" },
-    compAddr: { fontSize: 9, color: "rgba(255,255,255,0.8)", marginTop: 2 },
-    slipTitle: { fontSize: 18, fontFamily: "Helvetica-Bold", color: "#ffffff", textAlign: "right" },
-    slipMonth: { fontSize: 12, color: "rgba(255,255,255,0.8)", textAlign: "right", marginTop: 4 },
-    body: { padding: "20 40" },
-    empGrid: { flexDirection: "row", flexWrap: "wrap", backgroundColor: "#F8F9FA", padding: "12 16", borderRadius: 6, marginBottom: 16 },
-    empItem: { width: "25%", marginBottom: 8 },
-    empLabel: { fontSize: 8, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 2 },
-    empValue: { fontSize: 10, fontFamily: "Helvetica-Bold", color: "#111827" },
-    earnH: { backgroundColor: T, padding: "6 10", borderRadius: "4 4 0 0" },
-    dedH: { backgroundColor: "#EF4444", padding: "6 10", borderRadius: "4 4 0 0" },
-    sectionHT: { fontSize: 9, fontFamily: "Helvetica-Bold", color: "#ffffff", textTransform: "uppercase", letterSpacing: 1 },
-    tRow: { flexDirection: "row", justifyContent: "space-between", padding: "5 10", borderBottomWidth: 1, borderBottomColor: "#F3F4F6" },
-    rowLabel: { fontSize: 9, color: "#374151" },
-    rowValue: { fontSize: 9, fontFamily: "Helvetica-Bold", color: "#111827" },
-    grossRow: { flexDirection: "row", justifyContent: "space-between", padding: "7 10", backgroundColor: "#F0FDFA" },
-    grossL: { fontSize: 10, fontFamily: "Helvetica-Bold", color: T },
-    dedTotR: { flexDirection: "row", justifyContent: "space-between", padding: "7 10", backgroundColor: "#FEF2F2" },
-    dedTotL: { fontSize: 10, fontFamily: "Helvetica-Bold", color: "#EF4444" },
-    netBox: { backgroundColor: "#78350F", padding: "16 20", flexDirection: "row", justifyContent: "space-between", alignItems: "center", borderRadius: 8, marginTop: 16 },
-    netLabel: { fontSize: 9, color: "#99F6E4", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 },
-    netAmt: { fontSize: 22, fontFamily: "Helvetica-Bold", color: "#ffffff" },
-    netWords: { fontSize: 9, color: "#99F6E4", fontStyle: "italic", maxWidth: 200, textAlign: "right" },
-    bankBox: { backgroundColor: "#F8F9FA", padding: "10 14", borderRadius: 6, marginTop: 12 },
-    bankLabel: { fontSize: 8, fontFamily: "Helvetica-Bold", color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 6 },
-    bankGrid: { flexDirection: "row" },
-    bankItem: { flex: 1 },
-    bankKey: { fontSize: 8, color: "#9CA3AF", marginBottom: 2 },
-    bankVal: { fontSize: 9, fontFamily: "Helvetica-Bold", color: "#111827" },
-    footer: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", marginTop: 20, paddingTop: 10, borderTopWidth: 1, borderTopColor: "#E5E7EB" },
-    footerG: { fontSize: 8, color: "#D1D5DB" },
-    signBox: { borderTopWidth: 1, borderTopColor: "#374151", paddingTop: 4, width: 120, textAlign: "center" },
-    signT: { fontSize: 8, color: "#9CA3AF" },
-});
-
 export default function SalaryElegantTemplate({ form }) {
+    const T = form.templateColor || "#D97706";
     const calc = calculateSalary({
         basic: form.basic, hra: form.hra, da: form.da,
         conveyance: form.conveyance, medical: form.medical,
@@ -53,6 +13,45 @@ export default function SalaryElegantTemplate({ form }) {
     });
     const state = INDIAN_STATES.find(s => s.code === form.companyState);
     const fmt = (n) => "Rs. " + parseFloat(n).toLocaleString("en-IN");
+
+    const styles = StyleSheet.create({
+        page: { fontFamily: "Helvetica", fontSize: 10, color: "#111827", padding: 0 },
+        header: { backgroundColor: T, padding: "20 40", flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" },
+        logo: { width: 50, height: 35, objectFit: "contain", marginBottom: 6 },
+        compName: { fontSize: 14, fontFamily: "Helvetica-Bold", color: "#ffffff" },
+        compAddr: { fontSize: 9, color: "rgba(255,255,255,0.8)", marginTop: 2 },
+        slipTitle: { fontSize: 18, fontFamily: "Helvetica-Bold", color: "#ffffff", textAlign: "right" },
+        slipMonth: { fontSize: 12, color: "rgba(255,255,255,0.8)", textAlign: "right", marginTop: 4 },
+        body: { padding: "20 40" },
+        empGrid: { flexDirection: "row", flexWrap: "wrap", backgroundColor: "#F8F9FA", padding: "12 16", borderRadius: 6, marginBottom: 16 },
+        empItem: { width: "25%", marginBottom: 8 },
+        empLabel: { fontSize: 8, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 2 },
+        empValue: { fontSize: 10, fontFamily: "Helvetica-Bold", color: "#111827" },
+        earnH: { backgroundColor: T, padding: "6 10", borderRadius: "4 4 0 0" },
+        dedH: { backgroundColor: "#EF4444", padding: "6 10", borderRadius: "4 4 0 0" },
+        sectionHT: { fontSize: 9, fontFamily: "Helvetica-Bold", color: "#ffffff", textTransform: "uppercase", letterSpacing: 1 },
+        tRow: { flexDirection: "row", justifyContent: "space-between", padding: "5 10", borderBottomWidth: 1, borderBottomColor: "#F3F4F6" },
+        rowLabel: { fontSize: 9, color: "#374151" },
+        rowValue: { fontSize: 9, fontFamily: "Helvetica-Bold", color: "#111827" },
+        grossRow: { flexDirection: "row", justifyContent: "space-between", padding: "7 10", backgroundColor: T + "10" },
+        grossL: { fontSize: 10, fontFamily: "Helvetica-Bold", color: T },
+        dedTotR: { flexDirection: "row", justifyContent: "space-between", padding: "7 10", backgroundColor: "#FEF2F2" },
+        dedTotL: { fontSize: 10, fontFamily: "Helvetica-Bold", color: "#EF4444" },
+        netBox: { backgroundColor: "#78350F", padding: "16 20", flexDirection: "row", justifyContent: "space-between", alignItems: "center", borderRadius: 8, marginTop: 16 },
+        netLabel: { fontSize: 9, color: "rgba(255,255,255,0.8)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 },
+        netAmt: { fontSize: 22, fontFamily: "Helvetica-Bold", color: "#ffffff" },
+        netWords: { fontSize: 9, color: "rgba(255,255,255,0.8)", fontStyle: "italic", maxWidth: 200, textAlign: "right" },
+        bankBox: { backgroundColor: "#F8F9FA", padding: "10 14", borderRadius: 6, marginTop: 12 },
+        bankLabel: { fontSize: 8, fontFamily: "Helvetica-Bold", color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 6 },
+        bankGrid: { flexDirection: "row" },
+        bankItem: { flex: 1 },
+        bankKey: { fontSize: 8, color: "#9CA3AF", marginBottom: 2 },
+        bankVal: { fontSize: 9, fontFamily: "Helvetica-Bold", color: "#111827" },
+        footer: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", marginTop: 20, paddingTop: 10, borderTopWidth: 1, borderTopColor: "#E5E7EB" },
+        footerG: { fontSize: 8, color: "#D1D5DB" },
+        signBox: { borderTopWidth: 1, borderTopColor: "#374151", paddingTop: 4, width: 120, textAlign: "center" },
+        signT: { fontSize: 8, color: "#9CA3AF" },
+    });
 
     return (
         <Document>

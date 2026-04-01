@@ -53,9 +53,27 @@ export function useDownloadPDF() {
         case "ExperienceLetterElegant":   TemplateModule = await import("@/templates/experience/Elegant"); break;
         // Other single templates
         case "Receipt":          TemplateModule = await import("@/templates/ReceiptTemplate"); break;
-        case "ResignationLetter":TemplateModule = await import("@/templates/ResignationLetterTemplate"); break;
-        case "JobOffer":         TemplateModule = await import("@/templates/JobOfferTemplate"); break;
-        case "Internship":       TemplateModule = await import("@/templates/InternshipTemplate"); break;
+        // Resignation variants
+        case "ResignationLetter":
+        case "ResignationLetterClassic":   TemplateModule = await import("@/templates/resignation/Classic"); break;
+        case "ResignationLetterModern":    TemplateModule = await import("@/templates/resignation/Modern"); break;
+        case "ResignationLetterMinimal":   TemplateModule = await import("@/templates/resignation/Minimal"); break;
+        case "ResignationLetterCorporate": TemplateModule = await import("@/templates/resignation/Corporate"); break;
+        case "ResignationLetterElegant":   TemplateModule = await import("@/templates/resignation/Elegant"); break;
+        // Job Offer variants
+        case "JobOffer":
+        case "JobOfferClassic":   TemplateModule = await import("@/templates/job-offer/Classic"); break;
+        case "JobOfferModern":    TemplateModule = await import("@/templates/job-offer/Modern"); break;
+        case "JobOfferMinimal":   TemplateModule = await import("@/templates/job-offer/Minimal"); break;
+        case "JobOfferCorporate": TemplateModule = await import("@/templates/job-offer/Corporate"); break;
+        case "JobOfferElegant":   TemplateModule = await import("@/templates/job-offer/Elegant"); break;
+        // Internship variants
+        case "Internship":
+        case "InternshipClassic":   TemplateModule = await import("@/templates/internship/Classic"); break;
+        case "InternshipModern":    TemplateModule = await import("@/templates/internship/Modern"); break;
+        case "InternshipMinimal":   TemplateModule = await import("@/templates/internship/Minimal"); break;
+        case "InternshipRoyal":     TemplateModule = await import("@/templates/internship/Royal"); break;
+        case "InternshipElegant":   TemplateModule = await import("@/templates/internship/Elegant"); break;
         case "PurchaseOrder":    TemplateModule = await import("@/templates/PurchaseOrderTemplate"); break;
         case "PackingSlip":      TemplateModule = await import("@/templates/PackingSlipTemplate"); break;
         case "ProformaInvoice":  TemplateModule = await import("@/templates/ProformaInvoiceTemplate"); break;

@@ -8,6 +8,9 @@ export const authApi = {
   googleLogin: (idToken) => client.post("/auth/google", { idToken }),
   refresh: (refreshToken) => client.post("/auth/refresh", { refreshToken }),
   me: () => client.get("/auth/me"),
+  forgotPassword: (data) => client.post("/auth/forgot-password", data),
+  verifyResetOtp: (data) => client.post("/auth/verify-reset-otp", data),
+  resetPassword: (data) => client.post("/auth/reset-password", data),
 };
 
 export function saveTokens(accessToken, refreshToken) {

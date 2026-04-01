@@ -104,6 +104,21 @@ export async function loadTemplate(docType, templateName) {
     case "experience_Modern":    return (await import("./experience/Modern")).default;
     case "experience_Corporate": return (await import("./experience/Corporate")).default;
     case "experience_Elegant":   return (await import("./experience/Elegant")).default;
+    case "resignation_Classic":   return (await import("./resignation/Classic")).default;
+    case "resignation_Minimal":   return (await import("./resignation/Minimal")).default;
+    case "resignation_Modern":    return (await import("./resignation/Modern")).default;
+    case "resignation_Corporate": return (await import("./resignation/Corporate")).default;
+    case "resignation_Elegant":   return (await import("./resignation/Elegant")).default;
+    case "jobOffer_Classic":   return (await import("./job-offer/Classic")).default;
+    case "jobOffer_Minimal":   return (await import("./job-offer/Minimal")).default;
+    case "jobOffer_Modern":    return (await import("./job-offer/Modern")).default;
+    case "jobOffer_Corporate": return (await import("./job-offer/Corporate")).default;
+    case "jobOffer_Elegant":   return (await import("./job-offer/Elegant")).default;
+    case "internship_Classic":   return (await import("./internship/Classic")).default;
+    case "internship_Minimal":   return (await import("./internship/Minimal")).default;
+    case "internship_Modern":    return (await import("./internship/Modern")).default;
+    case "internship_Royal":     return (await import("./internship/Royal")).default;
+    case "internship_Elegant":   return (await import("./internship/Elegant")).default;
     default: return (await import("./invoice/Classic")).default;
   }
 }

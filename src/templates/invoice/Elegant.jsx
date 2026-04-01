@@ -3,44 +3,44 @@ import { Document, Page, Text, View, StyleSheet, Image } from "@react-pdf/render
 import { calculateLineItems, numberToWords } from "@/engine/gstCalc";
 import { INDIAN_STATES } from "@/constants/indianStates";
 
-const A = "#D97706";
-const BG = "#FFFDF5";
-
-const styles = StyleSheet.create({
-    page: { fontFamily: "Helvetica", fontSize: 10, color: "#111827", padding: 36, backgroundColor: BG },
-    header: { alignItems: "center", borderBottomWidth: 1, borderBottomColor: A, paddingBottom: 20, marginBottom: 20 },
-    logo: { width: 60, height: 40, objectFit: "contain", marginBottom: 8 },
-    fromName: { fontSize: 16, fontFamily: "Helvetica-Bold", color: "#111827", letterSpacing: 1, textTransform: "uppercase" },
-    small: { fontSize: 8, color: "#6B7280", marginTop: 2, textAlign: "center" },
-    invoiceL: { fontSize: 10, color: A, letterSpacing: 3, marginTop: 10, textTransform: "uppercase" },
-    num: { fontSize: 9, color: "#6B7280", marginTop: 4 },
-    accentLine: { borderBottomWidth: 1, borderBottomColor: A, marginBottom: 14 },
-    billSec: { flexDirection: "row", justifyContent: "space-between", marginBottom: 20 },
-    billL: { fontSize: 7, fontFamily: "Helvetica-Bold", color: A, textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 4 },
-    billN: { fontSize: 11, fontFamily: "Helvetica-Bold", color: "#111827" },
-    tHeader: { flexDirection: "row", borderBottomWidth: 2, borderBottomColor: A, padding: "5 4" },
-    tRow: { flexDirection: "row", padding: "5 4", borderBottomWidth: 1, borderBottomColor: "#F5ECD5" },
-    thT: { fontSize: 8, fontFamily: "Helvetica-Bold", color: A, textTransform: "uppercase", letterSpacing: 0.5 },
-    tdT: { fontSize: 9, color: "#374151" },
-    totBox: { alignSelf: "flex-end", width: 190, marginTop: 10 },
-    totRow: { flexDirection: "row", justifyContent: "space-between", padding: "4 0", borderBottomWidth: 1, borderBottomColor: "#F5ECD5" },
-    totL: { fontSize: 9, color: "#6B7280" },
-    totV: { fontSize: 9, color: "#374151" },
-    totFinal: { flexDirection: "row", justifyContent: "space-between", backgroundColor: "#FEF9C3", borderWidth: 1, borderColor: A, padding: "8 10", borderRadius: 3, marginTop: 4 },
-    totFT: { fontSize: 11, fontFamily: "Helvetica-Bold", color: A },
-    wordsBox: { backgroundColor: "#FEF9C3", padding: "6 10", borderLeftWidth: 3, borderLeftColor: A, marginTop: 10 },
-    wordsL: { fontSize: 7, color: "#92400E", textTransform: "uppercase", letterSpacing: 1, marginBottom: 2 },
-    wordsT: { fontSize: 8, color: "#374151", fontStyle: "italic" },
-    footer: { flexDirection: "row", justifyContent: "space-between", marginTop: 16, paddingTop: 10, borderTopWidth: 2, borderTopColor: A },
-    footerG: { fontSize: 7, color: "#D1D5DB" },
-    signBox: { borderTopWidth: 1, borderTopColor: A, paddingTop: 4, width: 110, textAlign: "center" },
-    signT: { fontSize: 7, color: "#9CA3AF" },
-});
-
 export default function InvoiceElegantTemplate({ form }) {
+    const A = form.templateColor || "#D97706";
+    const BG = "#FFFDF5";
     const calc = calculateLineItems(form.items, form.taxType === "igst");
     const fromState = INDIAN_STATES.find(s => s.code === form.fromState);
     const toState = INDIAN_STATES.find(s => s.code === form.toState);
+
+    const styles = StyleSheet.create({
+        page: { fontFamily: "Helvetica", fontSize: 10, color: "#111827", padding: 36, backgroundColor: BG },
+        header: { alignItems: "center", borderBottomWidth: 1, borderBottomColor: A, paddingBottom: 20, marginBottom: 20 },
+        logo: { width: 60, height: 40, objectFit: "contain", marginBottom: 8 },
+        fromName: { fontSize: 16, fontFamily: "Helvetica-Bold", color: "#111827", letterSpacing: 1, textTransform: "uppercase" },
+        small: { fontSize: 8, color: "#6B7280", marginTop: 2, textAlign: "center" },
+        invoiceL: { fontSize: 10, color: A, letterSpacing: 3, marginTop: 10, textTransform: "uppercase" },
+        num: { fontSize: 9, color: "#6B7280", marginTop: 4 },
+        accentLine: { borderBottomWidth: 1, borderBottomColor: A, marginBottom: 14 },
+        billSec: { flexDirection: "row", justifyContent: "space-between", marginBottom: 20 },
+        billL: { fontSize: 7, fontFamily: "Helvetica-Bold", color: A, textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 4 },
+        billN: { fontSize: 11, fontFamily: "Helvetica-Bold", color: "#111827" },
+        tHeader: { flexDirection: "row", borderBottomWidth: 2, borderBottomColor: A, padding: "5 4" },
+        tRow: { flexDirection: "row", padding: "5 4", borderBottomWidth: 1, borderBottomColor: "#F5ECD5" },
+        thT: { fontSize: 8, fontFamily: "Helvetica-Bold", color: A, textTransform: "uppercase", letterSpacing: 0.5 },
+        tdT: { fontSize: 9, color: "#374151" },
+        totBox: { alignSelf: "flex-end", width: 190, marginTop: 10 },
+        totRow: { flexDirection: "row", justifyContent: "space-between", padding: "4 0", borderBottomWidth: 1, borderBottomColor: "#F5ECD5" },
+        totL: { fontSize: 9, color: "#6B7280" },
+        totV: { fontSize: 9, color: "#374151" },
+        totFinal: { flexDirection: "row", justifyContent: "space-between", backgroundColor: A + "10", borderWidth: 1, borderColor: A, padding: "8 10", borderRadius: 3, marginTop: 4 },
+        totFT: { fontSize: 11, fontFamily: "Helvetica-Bold", color: A },
+        wordsBox: { backgroundColor: A + "10", padding: "6 10", borderLeftWidth: 3, borderLeftColor: A, marginTop: 10 },
+        wordsL: { fontSize: 7, color: "#92400E", textTransform: "uppercase", letterSpacing: 1, marginBottom: 2 },
+        wordsT: { fontSize: 8, color: "#374151", fontStyle: "italic" },
+        footer: { flexDirection: "row", justifyContent: "space-between", marginTop: 16, paddingTop: 10, borderTopWidth: 2, borderTopColor: A },
+        footerG: { fontSize: 7, color: "#D1D5DB" },
+        signBox: { borderTopWidth: 1, borderTopColor: A, paddingTop: 4, width: 110, textAlign: "center" },
+        signT: { fontSize: 7, color: "#9CA3AF" },
+    });
+
     return (
         <Document>
             <Page size="A4" style={styles.page}>

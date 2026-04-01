@@ -1,4 +1,4 @@
-import { Space_Grotesk, Inter } from "next/font/google";
+import { Space_Grotesk, Inter, Dancing_Script } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 
@@ -11,6 +11,12 @@ const spaceGrotesk = Space_Grotesk({
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+  display: "swap",
+});
+
+const dancingScript = Dancing_Script({
+  subsets: ["latin"],
+  variable: "--font-dancing-script",
   display: "swap",
 });
 
@@ -86,6 +92,7 @@ export const metadata = {
 };
 
 import { AuthProvider } from "@/contexts/AuthContext";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 export default function RootLayout({ children }) {
   return (
@@ -123,11 +130,13 @@ export default function RootLayout({ children }) {
           }}
         />
       </head>
-      <body className={`${spaceGrotesk.variable} ${inter.variable}`}>
-        <AuthProvider>
-          <Toaster position="top-right" />
-          {children}
-        </AuthProvider>
+      <body className={`${spaceGrotesk.variable} ${inter.variable} ${dancingScript.variable}`}>
+        <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}>
+          <AuthProvider>
+            <Toaster position="top-right" />
+            {children}
+          </AuthProvider>
+        </GoogleOAuthProvider>
       </body>
     </html>
   );

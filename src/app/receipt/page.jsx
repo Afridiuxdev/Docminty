@@ -6,16 +6,18 @@ import Footer from "@/components/Footer";
 import AdSense from "@/components/AdSense";
 import LogoUpload from "@/components/LogoUpload";
 import { INDIAN_STATES } from "@/constants/indianStates";
-import { Download, Eye, RefreshCw, Cloud } from "lucide-react";
-import { useDownloadPDF } from "@/hooks/useDownloadPDF";
-import { useRouter } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
 import { documentsApi } from "@/api/documents";
 import { getAccessToken } from "@/api/auth";
 import TemplatePicker from "@/components/TemplatePicker";
+import TemplateColorPicker from "@/components/TemplateColorPicker";
 import WatermarkOverlay from "@/components/WatermarkOverlay";
 import { TEMPLATE_REGISTRY } from "@/templates/registry";
 import { useAuth } from "@/contexts/AuthContext";
+import SignatureModal from "@/components/SignatureModal";
+import { Download, Eye, RefreshCw, Cloud, PenTool } from "lucide-react";
+import { useDownloadPDF } from "@/hooks/useDownloadPDF";
+import { useRouter } from "next/navigation";
 
 const T = "#0D9488";
 
@@ -28,12 +30,14 @@ const DEFAULT_FORM = {
   paymentMode: "UPI",
   purpose: "",
   notes: "",
+  signature: null,
   logo: null,
+  templateColor: "#0D9488",
 };
 
 const PAYMENT_MODES = ["UPI", "NEFT", "RTGS", "Cash", "Cheque", "Credit Card", "Debit Card", "Bank Transfer"];
 
-function ReceiptPreview({ form }) {
+function ReceiptPreview({ form, template = "Classic", accent = "#0D9488" }) {
   const fromState = INDIAN_STATES.find(s => s.code === form.fromState);
   const amountNum = parseFloat(form.amount) || 0;
 
@@ -52,99 +56,159 @@ function ReceiptPreview({ form }) {
     return "Rupees " + convert(Math.floor(n)) + " Only";
   }
 
-  return (
-    <div className="pdf-preview">
-      <div className="pdf-header">
-        <div>
-          {form.logo && <img src={form.logo} alt="Logo" style={{ height: "48px", objectFit: "contain", marginBottom: "8px", display: "block" }} />}
-          <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: "#111827", margin: 0 }}>{form.fromName || "Your Business Name"}</p>
-          {form.fromAddress && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}</p>}
-          {fromState && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{fromState.name}</p>}
-          {form.fromPhone && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>Ph: {form.fromPhone}</p>}
-        </div>
-        <div style={{ textAlign: "right" }}>
-          <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "22px", color: T, margin: 0 }}>RECEIPT</p>
-          <p style={{ fontSize: "12px", color: "#6B7280", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>#{form.receiptNumber}</p>
-          <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>Date: {form.receiptDate}</p>
-        </div>
+  const receiptBody = (
+    <div className="pdf-body">
+      <div style={{ background: "#F0FDFA", border: `2px solid ${accent}`, borderRadius: "10px", padding: "20px 24px", textAlign: "center", marginBottom: "20px" }}>
+        <p style={{ fontSize: "11px", color: "#6B7280", margin: "0 0 4px", fontFamily: "Inter, sans-serif", textTransform: "uppercase", letterSpacing: "0.08em" }}>Amount Received</p>
+        <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "36px", color: accent, margin: 0, lineHeight: 1 }}>
+          Rs.{form.amount ? parseFloat(form.amount).toLocaleString("en-IN", { minimumFractionDigits: 2 }) : "0.00"}
+        </p>
+        <p style={{ fontSize: "12px", color: "#374151", margin: "8px 0 0", fontFamily: "Inter, sans-serif", fontStyle: "italic" }}>{numToWords(amountNum)}</p>
       </div>
-
-      <div className="pdf-body">
-        {/* Amount box */}
-        <div style={{
-          background: "#F0FDFA", border: `2px solid ${T}`,
-          borderRadius: "10px", padding: "20px 24px",
-          textAlign: "center", marginBottom: "20px",
-        }}>
-          <p style={{ fontSize: "11px", color: "#6B7280", margin: "0 0 4px", fontFamily: "Inter, sans-serif", textTransform: "uppercase", letterSpacing: "0.08em" }}>Amount Received</p>
-          <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "36px", color: T, margin: 0, lineHeight: 1 }}>
-            ₹{form.amount ? parseFloat(form.amount).toLocaleString("en-IN", { minimumFractionDigits: 2 }) : "0.00"}
-          </p>
-          <p style={{ fontSize: "12px", color: "#374151", margin: "8px 0 0", fontFamily: "Inter, sans-serif", fontStyle: "italic" }}>
-            {numToWords(amountNum)}
-          </p>
+      <table className="pdf-table">
+        <tbody>
+          <tr><td style={{ fontWeight: 600, color: "#6B7280", width: "40%" }}>Received From</td><td>{form.receivedFrom || "—"}</td></tr>
+          {form.receivedFromAddress && <tr><td style={{ fontWeight: 600, color: "#6B7280" }}>Address</td><td>{form.receivedFromAddress}</td></tr>}
+          <tr>
+            <td style={{ fontWeight: 600, color: "#6B7280" }}>Payment Mode</td>
+            <td><span style={{ background: "#F0FDFA", color: accent, padding: "2px 8px", borderRadius: "4px", fontSize: "11px", fontWeight: 600, fontFamily: "Inter, sans-serif" }}>{form.paymentMode}</span></td>
+          </tr>
+          <tr><td style={{ fontWeight: 600, color: "#6B7280" }}>Purpose</td><td>{form.purpose || "—"}</td></tr>
+          <tr><td style={{ fontWeight: 600, color: "#6B7280" }}>Date</td><td>{form.receiptDate}</td></tr>
+        </tbody>
+      </table>
+      {form.notes && (
+        <div style={{ marginTop: "16px", padding: "10px 14px", background: "#F8F9FA", borderRadius: "6px", borderLeft: `3px solid ${accent}` }}>
+          <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "0 0 2px", fontFamily: "Inter, sans-serif", textTransform: "uppercase", letterSpacing: "0.05em" }}>Notes</p>
+          <p style={{ fontSize: "12px", color: "#374151", margin: 0, fontFamily: "Inter, sans-serif" }}>{form.notes}</p>
         </div>
-
-        {/* Details table */}
-        <table className="pdf-table">
-          <tbody>
-            <tr>
-              <td style={{ fontWeight: 600, color: "#6B7280", width: "40%" }}>Received From</td>
-              <td>{form.receivedFrom || "—"}</td>
-            </tr>
-            {form.receivedFromAddress && (
-              <tr>
-                <td style={{ fontWeight: 600, color: "#6B7280" }}>Address</td>
-                <td>{form.receivedFromAddress}</td>
-              </tr>
-            )}
-            <tr>
-              <td style={{ fontWeight: 600, color: "#6B7280" }}>Payment Mode</td>
-              <td>
-                <span style={{
-                  background: "#F0FDFA", color: T,
-                  padding: "2px 8px", borderRadius: "4px",
-                  fontSize: "11px", fontWeight: 600,
-                  fontFamily: "Inter, sans-serif",
-                }}>
-                  {form.paymentMode}
-                </span>
-              </td>
-            </tr>
-            <tr>
-              <td style={{ fontWeight: 600, color: "#6B7280" }}>Purpose</td>
-              <td>{form.purpose || "—"}</td>
-            </tr>
-            <tr>
-              <td style={{ fontWeight: 600, color: "#6B7280" }}>Date</td>
-              <td>{form.receiptDate}</td>
-            </tr>
-          </tbody>
-        </table>
-
-        {form.notes && (
-          <div style={{ marginTop: "16px", padding: "10px 14px", background: "#F8F9FA", borderRadius: "6px", borderLeft: `3px solid ${T}` }}>
-            <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "0 0 2px", fontFamily: "Inter, sans-serif", textTransform: "uppercase", letterSpacing: "0.05em" }}>Notes</p>
-            <p style={{ fontSize: "12px", color: "#374151", margin: 0, fontFamily: "Inter, sans-serif" }}>{form.notes}</p>
-          </div>
-        )}
-
-        <div style={{ marginTop: "24px", paddingTop: "12px", borderTop: "1px solid #E5E7EB", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <p style={{ fontSize: "10px", color: "#D1D5DB", fontFamily: "Inter, sans-serif", margin: 0 }}>Generated by DocMinty.com</p>
-          <div style={{ borderTop: "1px solid #374151", paddingTop: "4px", minWidth: "120px", textAlign: "center" }}>
+      )}
+      <div style={{ marginTop: "24px", paddingTop: "12px", borderTop: "1px solid #E5E7EB", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <p style={{ fontSize: "10px", color: "#D1D5DB", fontFamily: "Inter, sans-serif", margin: 0 }}>Generated by DocMinty.com</p>
+        <div style={{ textAlign: "right", minWidth: "120px" }}>
+          {form.signature && <div style={{ marginBottom: "4px" }}><img src={form.signature} alt="Signature" style={{ maxHeight: "45px", maxWidth: "140px", display: "block", marginLeft: "auto" }} /></div>}
+          <div style={{ borderTop: "1px solid #374151", paddingTop: "4px" }}>
             <p style={{ fontSize: "10px", color: "#9CA3AF", fontFamily: "Inter, sans-serif", margin: 0 }}>Authorised Signatory</p>
           </div>
         </div>
       </div>
     </div>
   );
+
+  if (template === "Modern") {
+    return (
+      <div className="pdf-preview" style={{ display: "flex", gap: 0, padding: 0, overflow: "hidden" }}>
+        <div style={{ width: "140px", minWidth: "140px", background: accent, padding: "24px 16px", display: "flex", flexDirection: "column", gap: "20px" }}>
+          {form.logo && <img src={form.logo} alt="Logo" style={{ height: "36px", objectFit: "contain", filter: "brightness(0) invert(1)" }} />}
+          <div>
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "16px", color: "#fff", margin: "0 0 4px" }}>RECEIPT</p>
+            <p style={{ fontSize: "10px", color: "rgba(255,255,255,0.7)", margin: 0, fontFamily: "Inter, sans-serif" }}>#{form.receiptNumber}</p>
+          </div>
+          <div>
+            <p style={{ fontSize: "9px", color: "rgba(255,255,255,0.6)", margin: "0 0 2px", fontFamily: "Inter, sans-serif", textTransform: "uppercase" }}>Date</p>
+            <p style={{ fontSize: "10px", color: "#fff", margin: 0, fontFamily: "Inter, sans-serif" }}>{form.receiptDate}</p>
+          </div>
+          <div>
+            <p style={{ fontSize: "9px", color: "rgba(255,255,255,0.6)", margin: "0 0 2px", fontFamily: "Inter, sans-serif", textTransform: "uppercase" }}>From</p>
+            <p style={{ fontSize: "10px", color: "#fff", margin: 0, fontFamily: "Space Grotesk, sans-serif", fontWeight: 600 }}>{form.fromName || "—"}</p>
+          </div>
+        </div>
+        <div style={{ flex: 1, overflow: "hidden" }}>{receiptBody}</div>
+      </div>
+    );
+  }
+  if (template === "Corporate") {
+    return (
+      <div className="pdf-preview">
+        <div style={{ background: accent, padding: "20px 24px", textAlign: "center" }}>
+          {form.logo && <img src={form.logo} alt="Logo" style={{ height: "36px", objectFit: "contain", filter: "brightness(0) invert(1)", display: "block", margin: "0 auto 8px" }} />}
+          <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "20px", color: "#fff", margin: 0 }}>RECEIPT</p>
+          <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.8)", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>{form.fromName || "Business Name"} · #{form.receiptNumber} · {form.receiptDate}</p>
+        </div>
+        {receiptBody}
+      </div>
+    );
+  }
+  if (template === "Elegant") {
+    return (
+      <div className="pdf-preview" style={{ borderBottom: `4px solid ${accent}` }}>
+        <div style={{ padding: "20px 24px 16px", borderBottom: "1px solid #E5E7EB" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+            <div>
+              {form.logo && <img src={form.logo} alt="Logo" style={{ height: "40px", objectFit: "contain", marginBottom: "6px", display: "block" }} />}
+              <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "15px", color: "#111827", margin: 0 }}>{form.fromName || "Your Business Name"}</p>
+            </div>
+            <div style={{ textAlign: "right" }}>
+              <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "20px", color: accent, margin: 0 }}>RECEIPT</p>
+              <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "3px 0 0", fontFamily: "Inter, sans-serif" }}>#{form.receiptNumber}</p>
+            </div>
+          </div>
+        </div>
+        {receiptBody}
+      </div>
+    );
+  }
+  if (template === "Classic") {
+    return (
+      <div className="pdf-preview">
+        <div className="pdf-header" style={{ borderBottom: `2px solid ${accent}` }}>
+          <div>
+            {form.logo && <img src={form.logo} alt="Logo" style={{ height: "48px", objectFit: "contain", marginBottom: "8px", display: "block" }} />}
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: "#111827", margin: 0 }}>{form.fromName || "Your Business Name"}</p>
+            {form.fromAddress && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}</p>}
+            {fromState && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{fromState.name}</p>}
+            {form.fromPhone && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>Ph: {form.fromPhone}</p>}
+          </div>
+          <div style={{ textAlign: "right" }}>
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "22px", color: accent, margin: 0 }}>RECEIPT</p>
+            <p style={{ fontSize: "12px", color: "#6B7280", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>#{form.receiptNumber}</p>
+            <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>Date: {form.receiptDate}</p>
+          </div>
+        </div>
+        {receiptBody}
+      </div>
+    );
+  }
+  // Minimal (default)
+  return (
+    <div className="pdf-preview">
+      <div style={{ padding: "20px 24px 16px", borderBottom: "1px solid #E5E7EB" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div>
+            {form.logo && <img src={form.logo} alt="Logo" style={{ height: "32px", objectFit: "contain", marginBottom: "4px", display: "block" }} />}
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "14px", color: "#111827", margin: 0 }}>{form.fromName || "Business Name"}</p>
+          </div>
+          <div style={{ textAlign: "right" }}>
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: "#111827", margin: 0 }}>RECEIPT</p>
+            <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>#{form.receiptNumber}</p>
+          </div>
+        </div>
+        <div style={{ height: "2px", background: accent, marginTop: "12px", borderRadius: "1px" }} />
+      </div>
+      {receiptBody}
+    </div>
+  );
 }
 
 export default function ReceiptPage() {
+  const { user } = useAuth();
   const [form, setForm] = useState(DEFAULT_FORM);
   const { download, downloading } = useDownloadPDF();
+  const [isSigModalOpen, setIsSigModalOpen] = useState(false);
   const router = useRouter();
-  const handleDownload = () => download("Receipt", form, `Receipt-${form.receiptNumber}.pdf`);
+  const [template, setTemplate] = useState("Classic");
+  const isUserPro = user?.plan === "Business Pro" || user?.plan === "Enterprise";
+  const templateMeta = TEMPLATE_REGISTRY.receipt[template] || TEMPLATE_REGISTRY.receipt.Classic;
+  const isProTemplate = templateMeta.pro;
+  const showWatermark = isProTemplate && !isUserPro;
+  const handleDownload = () => {
+    if (showWatermark) {
+      toast.error("This is a PRO template. Please upgrade to download without watermark!");
+      router.push("/#pricing");
+      return;
+    }
+    download("Receipt", form, `Receipt-${form.receiptNumber}.pdf`);
+  };
 
   const handleSave = async () => {
     if (!getAccessToken()) { toast.error("Please sign in to save"); router.push("/login"); return; }
@@ -181,9 +245,11 @@ export default function ReceiptPage() {
               <Download size={15} />
               {downloading ? "Generating..." : "Download PDF"}
             </button>
-            <button onClick={handleSave} style={{ display: "flex", alignItems: "center", gap: "6px", height: "36px", padding: "0 14px", border: "1px solid #0D9488", borderRadius: "8px", background: "#fff", fontSize: "13px", fontWeight: 600, color: "#0D9488", cursor: "pointer", fontFamily: "Inter, sans-serif", transition: "all 150ms" }}>
+            {user && (
+<button onClick={handleSave} style={{ display: "flex", alignItems: "center", gap: "6px", height: "36px", padding: "0 14px", border: "1px solid #0D9488", borderRadius: "8px", background: "#fff", fontSize: "13px", fontWeight: 600, color: "#0D9488", cursor: "pointer", fontFamily: "Inter, sans-serif", transition: "all 150ms" }}>
               <Cloud size={14} /> Save
             </button>
+)}
           </div>
         </div>
       </div>
@@ -255,6 +321,49 @@ export default function ReceiptPage() {
               <div>
                 <p className="form-label">Additional Notes</p>
                 <div className="form-field"><label className="field-label">Notes</label><textarea className="doc-textarea" placeholder="Any additional notes..." value={form.notes} onChange={e => updateField("notes", e.target.value)} style={{ minHeight: "100px" }} /></div>
+                
+                <div style={{ borderTop: "1px solid #F3F4F6", margin: "16px 0" }} />
+                <p className="form-label">Signature</p>
+                <div style={{
+                  border: "1px solid #E5E7EB", borderRadius: "12px", padding: "16px",
+                  display: "flex", flexDirection: "column", alignItems: "center", gap: "12px", background: "#fff"
+                }}>
+                  {form.signature ? (
+                    <div style={{ width: "100%", textAlign: "center" }}>
+                      <div style={{
+                        padding: "16px", background: "#F9FAFB", borderRadius: "8px",
+                        border: "1px dashed #D1D5DB", display: "inline-block", minWidth: "200px"
+                      }}>
+                        <img src={form.signature} alt="Signature" style={{ height: "60px", maxWidth: "100%", objectFit: "contain" }} />
+                      </div>
+                      <div style={{ display: "flex", gap: "8px", justifyContent: "center", marginTop: "12px" }}>
+                        <button onClick={() => setIsSigModalOpen(true)} style={{
+                          padding: "8px 16px", borderRadius: "8px", border: "1px solid #D1D5DB",
+                          background: "#fff", fontSize: "13px", fontWeight: 600, color: "#374151", cursor: "pointer"
+                        }}>Change</button>
+                        <button onClick={() => updateField("signature", null)} style={{
+                          padding: "8px 16px", borderRadius: "8px", border: "1px solid #FEE2E2",
+                          background: "#FEF2F2", fontSize: "13px", fontWeight: 600, color: "#EF4444", cursor: "pointer"
+                        }}>Remove</button>
+                      </div>
+                    </div>
+                  ) : (
+                    <button onClick={() => setIsSigModalOpen(true)} style={{
+                      width: "100%", padding: "40px 20px", display: "flex", flexDirection: "column",
+                      alignItems: "center", gap: "12px", background: "#F9FAFB", border: "1px dashed #D1D5DB",
+                      borderRadius: "10px", cursor: "pointer", transition: "all 200ms"
+                    }}>
+                      <div style={{
+                        width: "48px", height: "48px", borderRadius: "50%", background: "#fff",
+                        display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 2px 4px rgba(0,0,0,0.05)"
+                      }}>
+                        <PenTool size={20} color="#9CA3AF" />
+                      </div>
+                      <span style={{ fontSize: "14px", fontWeight: 600, color: "#374151" }}>Add digital signature</span>
+                    </button>
+                  )}
+                </div>
+
                 <div style={{ borderTop: "1px solid #F3F4F6", margin: "16px 0" }} />
                 <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn" style={{ width: "100%", justifyContent: "center" }}>
                   <Download size={15} />
@@ -267,16 +376,19 @@ export default function ReceiptPage() {
               <div>
                 <p className="form-label">Template Design</p>
                 <div style={{ marginTop: "8px" }}>
-                  <TemplatePicker 
-                    docType="receipt" 
-                    selected="Classic" 
-                    onChange={() => {}} 
-                    isPro={false} 
+                  <TemplatePicker
+                    docType="receipt"
+                    selected={template}
+                    onChange={setTemplate}
+                    isPro={isUserPro}
                   />
-                  <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "12px 0 0", fontStyle: "italic" }}>
-                    Receipt currently supports one professional design. More coming soon!
-                  </p>
                 </div>
+                <div style={{ borderTop: "1px solid #F3F4F6", margin: "20px 0" }} />
+                <p className="form-label">Template Color</p>
+                <TemplateColorPicker 
+                  value={form.templateColor || templateMeta.accent}
+                  onChange={(color) => updateField("templateColor", color)}
+                />
                 <div style={{ borderTop: "1px solid #F3F4F6", margin: "24px 0" }} />
                 <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn" style={{ width: "100%", justifyContent: "center" }}>
                   <Download size={15} /> Download PDF
@@ -296,7 +408,10 @@ export default function ReceiptPage() {
                 {downloading ? "Generating..." : "Download PDF"}
               </button>
             </div>
-            <ReceiptPreview form={form} />
+            <div style={{ position: "relative" }}>
+              {showWatermark && <WatermarkOverlay />}
+              <ReceiptPreview form={form} template={template} accent={form.templateColor || templateMeta.accent} />
+            </div>
           </div>
         </div>
         <div style={{ maxWidth: "1300px", margin: "0 auto", padding: "0 24px 40px" }}>
@@ -304,6 +419,11 @@ export default function ReceiptPage() {
         </div>
       </div>
       <Footer />
+      <SignatureModal
+        isOpen={isSigModalOpen}
+        onClose={() => setIsSigModalOpen(false)}
+        onSave={(sig) => updateField("signature", sig)}
+      />
     </>
   );
 }

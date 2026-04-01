@@ -1827,7 +1827,7 @@ export default function LandingPage() {
 
                     <div style={{
                         display: "grid",
-                        gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
+                        gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 400px), 1fr))",
                         gap: "20px",
                         alignItems: "start"
                     }}>
