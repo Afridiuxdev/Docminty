@@ -93,6 +93,7 @@ export const metadata = {
 
 import { AuthProvider } from "@/contexts/AuthContext";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import ExitIntentPopup from "@/components/ExitIntentPopup";
 
 export default function RootLayout({ children }) {
   return (
@@ -134,6 +135,7 @@ export default function RootLayout({ children }) {
         <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}>
           <AuthProvider>
             <Toaster position="top-right" />
+            <ExitIntentPopup />
             {children}
           </AuthProvider>
         </GoogleOAuthProvider>

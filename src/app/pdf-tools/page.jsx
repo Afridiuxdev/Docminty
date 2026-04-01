@@ -1,6 +1,15 @@
 import React from "react";
 import SEOLandingTemplate from "@/components/SEOLandingTemplate";
-import { FileText, FileSearch, Trash2, Combine, Scissors, FileUp, FileDown, Lock } from "lucide-react";
+import { 
+    Combine, 
+    Scissors, 
+    FileDown, 
+    FileText, 
+    FileUp, 
+    Image as ImageIcon, 
+    FileInput,
+    Minimize2 
+} from "lucide-react";
 
 export const metadata = {
     title: "Free Online PDF Tools - Merge, Split, Compress & Edit | DocMinty",
@@ -26,27 +35,33 @@ const PDFToolsPage = () => {
         { 
             title: "Compress PDF", 
             description: "Reduce the file size of your PDF while maintaining the best possible quality.", 
-            icon: <FileDown size={20} />, 
+            icon: <Minimize2 size={20} />, 
             href: "/tools/compress-pdf",
             badge: "Popular"
         },
         { 
-            title: "Protect PDF", 
-            description: "Secure your sensitive documents with a custom password for privacy.", 
-            icon: <Lock size={20} />, 
-            href: "/tools/protect-pdf" 
+            title: "PDF to Word", 
+            description: "Convert your PDF documents into editable Word files with high accuracy.", 
+            icon: <FileText size={20} />, 
+            href: "/tools/pdf-to-word" 
         },
         { 
-            title: "PDF to Image", 
-            description: "Convert each PDF page into high-quality JPEG or PNG image files.", 
+            title: "Word to PDF", 
+            description: "Easily transform your Microsoft Word documents into professional PDF files.", 
             icon: <FileUp size={20} />, 
-            href: "/tools/pdf-to-image" 
+            href: "/tools/word-to-pdf" 
         },
         { 
-            title: "Unlock PDF", 
-            description: "Remove passwords and restrictions from your PDF files for editing and sharing.", 
-            icon: <FileSearch size={20} />, 
-            href: "/tools/unlock-pdf" 
+            title: "PDF to JPG", 
+            description: "Extract images from your PDF or convert each page into a high-quality JPG image.", 
+            icon: <ImageIcon size={20} />, 
+            href: "/tools/pdf-to-jpg" 
+        },
+        { 
+            title: "JPG to PDF", 
+            description: "Convert your JPG, PNG, or BMP image files into a single, organized PDF document.", 
+            icon: <FileInput size={20} />, 
+            href: "/tools/jpg-to-pdf" 
         },
     ];
 

@@ -81,7 +81,7 @@ export default function Navbar() {
     
     // Individual group toggles for mobile Templates section
     const [expandedGroups, setExpandedGroups] = useState({
-        "Templates": true, 
+        "Templates": false, 
         "PDF Tools": false, 
         "Calculators": false,
         "QR Code": false
@@ -132,6 +132,7 @@ export default function Navbar() {
                     maxWidth: "1200px", margin: "0 auto", padding: "0 24px",
                     height: "64px", display: "flex", alignItems: "center",
                     justifyContent: "space-between", gap: "20px",
+                    position: "relative", zIndex: 110, background: "#fff",
                 }}>
 
                     {/* Logo Section */}
@@ -256,13 +257,26 @@ export default function Navbar() {
 
                     {/* Mobile toggle */}
                     <button onClick={() => setMobileOpen(!mobileOpen)} className="mobile-menu-btn" style={{ display: "none", background: "none", border: "none", cursor: "pointer" }}>
-                        {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+                        {mobileOpen ? <X size={22} color={T} /> : <Menu size={22} color={T} />}
                     </button>
                 </div>
 
                 {/* Mobile menu - Consolidated to match Desktop grouping */}
                 {mobileOpen && (
-                    <div style={{ borderTop: "1px solid #E5E7EB", background: "#fff", padding: "12px 0", display: "flex", flexDirection: "column", maxHeight: "80vh", overflowY: "auto" }}>
+                    <>
+                        <div 
+                            onClick={() => setMobileOpen(false)}
+                            style={{
+                                position: "fixed", top: "64px", left: 0, right: 0, bottom: 0,
+                                background: "rgba(0, 0, 0, 0.4)", zIndex: 90,
+                            }}
+                        />
+                        <div style={{ 
+                            position: "relative", zIndex: 100,
+                            borderTop: "1px solid #E5E7EB", background: "#fff", 
+                            padding: "12px 0", display: "flex", flexDirection: "column", 
+                            maxHeight: "80vh", overflowY: "auto" 
+                        }}>
                         
                         {/* 1. Templates */}
                         <div style={{ borderBottom: "1px solid #F3F4F6" }}>
@@ -271,7 +285,7 @@ export default function Navbar() {
                                     Templates
                                 </div>
                                 <button onClick={(e) => toggleGroup("Templates", e)} style={{ padding: "12px", background: "none", border: "none" }}>
-                                    <ChevronDown size={18} style={{ transform: expandedGroups["Templates"] ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 200ms" }} />
+                                    <ChevronDown size={18} color={T} style={{ transform: expandedGroups["Templates"] ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 200ms" }} />
                                 </button>
                             </div>
                             {expandedGroups["Templates"] && (
@@ -303,7 +317,7 @@ export default function Navbar() {
                             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingRight: "12px" }}>
                                 <div style={{ flex: 1, padding: "12px 20px", fontSize: "14px", fontWeight: 600, color: "#111827" }}>Tools</div>
                                 <button onClick={(e) => toggleGroup("Tools", e)} style={{ padding: "12px", background: "none", border: "none" }}>
-                                    <ChevronDown size={18} style={{ transform: expandedGroups["Tools"] ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 200ms" }} />
+                                    <ChevronDown size={18} color={T} style={{ transform: expandedGroups["Tools"] ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 200ms" }} />
                                 </button>
                             </div>
                             {expandedGroups["Tools"] && (
@@ -323,7 +337,7 @@ export default function Navbar() {
                             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingRight: "12px" }}>
                                 <div style={{ flex: 1, padding: "12px 20px", fontSize: "14px", fontWeight: 600, color: "#111827" }}>PDF Tools</div>
                                 <button onClick={(e) => toggleGroup("PDF Tools", e)} style={{ padding: "12px", background: "none", border: "none" }}>
-                                    <ChevronDown size={18} style={{ transform: expandedGroups["PDF Tools"] ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 200ms" }} />
+                                    <ChevronDown size={18} color={T} style={{ transform: expandedGroups["PDF Tools"] ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 200ms" }} />
                                 </button>
                             </div>
                             {expandedGroups["PDF Tools"] && (
@@ -350,7 +364,7 @@ export default function Navbar() {
                             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingRight: "12px" }}>
                                 <div style={{ flex: 1, padding: "12px 20px", fontSize: "14px", fontWeight: 600, color: "#111827" }}>Calculators</div>
                                 <button onClick={(e) => toggleGroup("Calculators", e)} style={{ padding: "12px", background: "none", border: "none" }}>
-                                    <ChevronDown size={18} style={{ transform: expandedGroups["Calculators"] ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 200ms" }} />
+                                    <ChevronDown size={18} color={T} style={{ transform: expandedGroups["Calculators"] ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 200ms" }} />
                                 </button>
                             </div>
                             {expandedGroups["Calculators"] && (
@@ -393,7 +407,8 @@ export default function Navbar() {
                             )}
                         </div>
                     </div>
-                )}
+                </>
+            )}
             </nav>
         </>
     );

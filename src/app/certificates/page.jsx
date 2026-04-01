@@ -10,43 +10,25 @@ export const metadata = {
 const CertificatesPage = () => {
     const tools = [
         { 
-            title: "Achievement Certificate", 
+            title: "Professional Certificate", 
             description: "Recognize student or employee accomplishments with high-fidelity award designs.", 
             icon: <Award size={20} />, 
-            href: "/achievement-certificate",
+            href: "/certificate",
             badge: "Popular"
         },
         { 
-            title: "Course Completion", 
+            title: "Internship Certificate", 
             description: "Generate professional certificates for and educational or training course.", 
             icon: <GraduationCap size={20} />, 
-            href: "/course-completion",
+            href: "/internship-certificate",
             badge: "Popular"
         },
         { 
-            title: "Appreciation Award", 
-            description: "Say thank you to your colleagues or volunteers with a heartfelt certificate.", 
-            icon: <Star size={20} />, 
-            href: "/appreciation-certificate",
-            badge: "Popular"
-        },
-        { 
-            title: "Training Participation", 
-            description: "Official documents to verify workshop or seminar attendance for your team.", 
-            icon: <Medal size={20} />, 
-            href: "/training-certificate" 
-        },
-        { 
-            title: "Professional Excellence", 
-            description: "Reward top-tier performance with elite-grade professional layouts and fonts.", 
-            icon: <Trophy size={20} />, 
-            href: "/professional-excellence" 
-        },
-        { 
-            title: "Verified Certificate", 
-            description: "Add custom QR codes or unique IDs to your certificates for easy verification.", 
+            title: "Verify Document", 
+            description: "Instantly check the authenticity of any document issued through DocMinty.", 
             icon: <Verified size={20} />, 
-            href: "/verified-certificate" 
+            href: "/verify",
+            badge: "Secure"
         },
     ];
 

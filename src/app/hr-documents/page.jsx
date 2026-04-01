@@ -17,24 +17,11 @@ const HRDocumentsPage = () => {
             badge: "Popular"
         },
         { 
-            title: "Job Offer Letter", 
-            description: "Formal offer letters with roles, compensation, and onboarding details.", 
-            icon: <UserPlus size={20} />, 
-            href: "/job-offer-letter",
-            badge: "Popular"
-        },
-        { 
             title: "Experience Letter", 
             description: "Official documents to verify employment history and performance.", 
             icon: <Briefcase size={20} />, 
             href: "/experience-letter",
             badge: "Popular"
-        },
-        { 
-            title: "Internship Certificate", 
-            description: "Acknowledge successful internship completions with official certificates.", 
-            icon: <FileCheck size={20} />, 
-            href: "/internship-certificate" 
         },
         { 
             title: "Resignation Letter", 
@@ -43,16 +30,11 @@ const HRDocumentsPage = () => {
             href: "/resignation-letter" 
         },
         { 
-            title: "Appointment Letter", 
-            description: "Confirm employee positions within your organization formally.", 
-            icon: <Users size={20} />, 
-            href: "/appointment-letter" 
-        },
-        { 
-            title: "Relieving Letter", 
-            description: "Necessary documentation for employees transitioning out of a company.", 
-            icon: <Building size={20} />, 
-            href: "/relieving-letter" 
+            title: "Job Offer Letter", 
+            description: "Formal offer letters with roles, compensation, and onboarding details.", 
+            icon: <UserPlus size={20} />, 
+            href: "/job-offer-letter",
+            badge: "Popular"
         },
     ];
 

@@ -208,6 +208,12 @@ export default function PricingPage() {
   return (
     <>
       <Navbar />
+      <style dangerouslySetInnerHTML={{ __html: `
+        .avatar-trust-group { display: flex; align-items: center; gap: 10px; }
+        @media (max-width: 768px) {
+          .avatar-trust-group { flex-direction: column !important; text-align: center !important; gap: 12px !important; }
+        }
+      `}} />
       <main style={{ background: "#fff" }}>
 
         {/* Hero */}
@@ -312,7 +318,7 @@ export default function PricingPage() {
               </div>
 
               {/* Avatars */}
-              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <div className="avatar-trust-group">
                 <div style={{ display: "flex" }}>
                   {[
                     { type: "img", src: "https://i.pravatar.cc/32?img=11", label: "Rahul" },

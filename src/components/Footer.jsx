@@ -159,6 +159,7 @@ export default function Footer() {
                             © {new Date().getFullYear()} DocMinty. All rights reserved.
                         </p>
                         <div style={{ display: "flex", gap: "16px" }}>
+                            <Link href="/blogs" className="footer-link">Blogs</Link>
                             <Link href="/privacy" className="footer-link">Privacy Policy</Link>
                             <Link href="/terms" className="footer-link">Terms of Service</Link>
                             <Link href="/contact" className="footer-link">Contact Us</Link>

@@ -1,52 +1,65 @@
 import React from "react";
 import SEOLandingTemplate from "@/components/SEOLandingTemplate";
-import { Calculate, Calculator, Percent, Coins, Landmark, IndianRupee, PieChart, Activity } from "lucide-react";
+import { 
+    Calculator, 
+    Percent, 
+    BadgeIndianRupee, 
+    TrendingUp, 
+    Coins, 
+    BarChart3, 
+    Tag,
+    Landmark
+} from "lucide-react";
 
 export const metadata = {
-    title: "Free Online Calculators - GST, SIP, Loan & Tax | DocMinty",
-    description: "Get accurate results with our suite of free online financial and business calculators. GST, SIP, EMI, and income tax calculation made simple.",
+    title: "Free Online Calculators - GST, Salary, Loan & Profit | DocMinty",
+    description: "Get accurate results with our suite of free online financial and business calculators. GST, Salary, EMI, and Profit Margin calculation made simple.",
 };
 
 const CalculatorsPage = () => {
     const tools = [
         { 
-            title: "GST Calculator", 
-            description: "Quickly find CGST, SGST, and IGST for any amount with inclusive or exclusive GST.", 
-            icon: <IndianRupee size={20} />, 
-            href: "/calculators/gst-calculator",
-            badge: "Popular"
-        },
-        { 
-            title: "SIP Calculator", 
-            description: "Plan your wealth and estimate future returns on your mutual fund investments.", 
-            icon: <PieChart size={20} />, 
-            href: "/calculators/sip-calculator",
-            badge: "Popular"
-        },
-        { 
             title: "EMI Calculator", 
             description: "Accurately calculate monthly loan repayments for home, car, or personal loans.", 
             icon: <Landmark size={20} />, 
-            href: "/calculators/emi-calculator",
+            href: "/calculators/emi-calculator"
+        },
+        { 
+            title: "GST Calculator", 
+            description: "Quickly find CGST, SGST, and IGST for any amount with inclusive or exclusive GST.", 
+            icon: <Percent size={20} />, 
+            href: "/calculators/gst-calculator"
+        },
+        { 
+            title: "Salary Calculator", 
+            description: "Calculate your take-home salary after PF, PT, and tax deductions in India.", 
+            icon: <BadgeIndianRupee size={20} />, 
+            href: "/calculators/salary-calculator",
             badge: "Popular"
         },
         { 
-            title: "Income Tax", 
-            description: "Quickly estimate your annual tax liability under old and new tax regimes in India.", 
-            icon: <Activity size={20} />, 
-            href: "/calculators/income-tax-calculator" 
+            title: "Interest Calculator", 
+            description: "Determine simple or compound interest earned on your savings or investments.", 
+            icon: <TrendingUp size={20} />, 
+            href: "/calculators/interest-calculator" 
         },
         { 
-            title: "Age Calculator", 
-            description: "Determine exact age in years, months, and days with just a few simple clicks.", 
-            icon: <Calculator size={20} />, 
-            href: "/calculators/age-calculator" 
-        },
-        { 
-            title: "Unit Converter", 
-            description: "Universal converter for distance, weights, and file storage for all your daily needs.", 
+            title: "Loan Calculator", 
+            description: "Calculate total interest and repayment schedule for any type of bank loan.", 
             icon: <Coins size={20} />, 
-            href: "/calculators/unit-converter" 
+            href: "/calculators/loan-calculator" 
+        },
+        { 
+            title: "Profit Margin", 
+            description: "Find the selling price or profit percentage for your products and services.", 
+            icon: <BarChart3 size={20} />, 
+            href: "/calculators/profit-margin-calculator" 
+        },
+        { 
+            title: "Discount Calculator", 
+            description: "Quickly calculate the final price after applying percentage or flat discounts.", 
+            icon: <Tag size={20} />, 
+            href: "/calculators/discount-calculator" 
         },
     ];
 

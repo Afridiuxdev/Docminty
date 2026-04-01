@@ -95,7 +95,7 @@ function ItemRow({ item, index, onChange, onRemove, showHSN, showDiscount }) {
                     <Trash2 size={16} />
                 </button>
             </div>
-            <div className="item-row-grid" style={{
+            <div style={{
                 display: "grid",
                 gridTemplateColumns: showHSN ? (showDiscount ? "repeat(5, 1fr) auto" : "repeat(4, 1fr) auto") : (showDiscount ? "repeat(4, 1fr) auto" : "repeat(3, 1fr) auto"),
                 gap: "12px", alignItems: "end"
@@ -505,28 +505,23 @@ export default function InvoicePage() {
                             background: "#F0F4F3",
                             borderRadius: "8px",
                             padding: "4px",
-                            overflowX: "auto",
-                            whiteSpace: "nowrap",
-                            msOverflowStyle: "none",
-                            scrollbarWidth: "none",
-                            WebkitOverflowScrolling: "touch"
-                        }} className="hide-scrollbar">
+                        }}>
                             {FORM_TABS.map(tab => (
-                                    <button key={tab.id}
-                                        onClick={() => setActiveTab(tab.id)}
-                                        style={{
-                                            flex: "0 0 auto", padding: "6px 12px",
-                                            borderRadius: "6px", border: "none",
-                                            fontSize: "12px", fontWeight: 600,
-                                            cursor: "pointer", transition: "all 150ms",
-                                            fontFamily: "Inter, sans-serif",
-                                            background: activeTab === tab.id ? "#fff" : "transparent",
-                                            color: activeTab === tab.id ? T : "#6B7280",
-                                            boxShadow: activeTab === tab.id ? "0 1px 4px rgba(0,0,0,0.08)" : "none",
-                                        }}
-                                    >
-                                        {tab.label}
-                                    </button>
+                                <button key={tab.id}
+                                    onClick={() => setActiveTab(tab.id)}
+                                    style={{
+                                        flex: 1, padding: "6px 4px",
+                                        borderRadius: "6px", border: "none",
+                                        fontSize: "12px", fontWeight: 600,
+                                        cursor: "pointer", transition: "all 150ms",
+                                        fontFamily: "Inter, sans-serif",
+                                        background: activeTab === tab.id ? "#fff" : "transparent",
+                                        color: activeTab === tab.id ? T : "#6B7280",
+                                        boxShadow: activeTab === tab.id ? "0 1px 4px rgba(0,0,0,0.08)" : "none",
+                                    }}
+                                >
+                                    {tab.label}
+                                </button>
                             ))}
                         </div>
 
