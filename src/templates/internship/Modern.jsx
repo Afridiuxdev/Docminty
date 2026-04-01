@@ -49,7 +49,13 @@ export default function InternshipModernTemplate({ form }) {
           <View style={styles.sigRow}>
             {form.enableQR && (
               <View style={{ alignItems: "center" }}>
-                <View style={styles.qrBox}><Text style={{ fontSize: 8, color: T, fontFamily: "Helvetica-Bold" }}>V</Text></View>
+                <View style={styles.qrBox}>
+                  {form.qrCodeDataUrl ? (
+                    <Image src={form.qrCodeDataUrl} style={{ width: "100%", height: "100%", padding: 2 }} />
+                  ) : (
+                    <Text style={{ fontSize: 8, color: T, fontFamily: "Helvetica-Bold" }}>V</Text>
+                  )}
+                </View>
                 <Text style={{ fontSize: 7, color: T, marginTop: 4 }}>Verified</Text>
               </View>
             )}

@@ -24,6 +24,7 @@ const s = StyleSheet.create({
   sigD:   { fontSize: 8, color: "#9CA3AF", textAlign: "center" },
   botBar: { backgroundColor: A, height: 8, position: "absolute", bottom: 0, left: 0, right: 0 },
   verifId:{ fontSize: 7, color: "#D1D5DB", textAlign: "center", marginTop: 10, fontFamily: "Courier" },
+  qrBox:  { width: 44, height: 44, border: `1pt solid ${A}`, borderRadius: 2, alignItems: "center", justifyContent: "center", position: "absolute", bottom: 20, right: 40 },
 });
 export default function CertificateCorporateTemplate({ form }) {
   return (
@@ -44,6 +45,11 @@ export default function CertificateCorporateTemplate({ form }) {
           <View style={s.metaI}><Text style={s.metaL}>Issue Date</Text><Text style={s.metaV}>{form.issueDate}</Text></View>
         </View>
         <View style={s.sigL}><Text style={s.sigN}>{form.signatoryName || "Signatory"}</Text><Text style={s.sigD}>{form.signatoryDesignation}</Text></View>
+        {form.enableQR && form.qrCodeDataUrl && (
+          <View style={s.qrBox}>
+            <Image src={form.qrCodeDataUrl} style={{ width: "100%", height: "100%", padding: 2 }} />
+          </View>
+        )}
         {form.enableQR && <Text style={s.verifId}>{"ID: " + form.verificationId}</Text>}
       </View>
       <View style={s.botBar} />

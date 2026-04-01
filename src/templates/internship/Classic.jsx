@@ -61,7 +61,13 @@ export default function InternshipClassicTemplate({ form }) {
               </View>
               {form.enableQR && (
                 <View style={{ alignItems: "center" }}>
-                  <View style={styles.qrBox}><Text style={styles.qrLabel}>VERIFY</Text></View>
+                  <View style={styles.qrBox}>
+                    {form.qrCodeDataUrl ? (
+                      <Image src={form.qrCodeDataUrl} style={{ width: "100%", height: "100%", padding: 2 }} />
+                    ) : (
+                      <Text style={styles.qrLabel}>VERIFY</Text>
+                    )}
+                  </View>
                   <Text style={{ fontSize: 7, color: "#9CA3AF", marginTop: 3 }}>Scan to Verify</Text>
                 </View>
               )}

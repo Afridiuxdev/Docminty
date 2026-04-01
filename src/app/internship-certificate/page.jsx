@@ -1,6 +1,8 @@
 "use client";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import QRCode from "qrcode";
+import { generateQRData } from "@/engine/hashGen";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AdSense from "@/components/AdSense";
@@ -32,11 +34,12 @@ const DEFAULT_FORM = {
   verificationId: generateVerificationId(),
   enableQR: true,
   templateColor: "#0D9488",
+  qrCodeDataUrl: null,
 };
 
 function InternshipPreview({ form, template = "Classic", accent = "#0D9488" }) {
   var start = form.startDate ? new Date(form.startDate).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" }) : "Start Date";
-  var end   = form.endDate   ? new Date(form.endDate).toLocaleDateString("en-IN",   { day: "numeric", month: "long", year: "numeric" }) : "End Date";
+  var end = form.endDate ? new Date(form.endDate).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" }) : "End Date";
   var perfMap = { excellent: "demonstrated exceptional commitment, creativity, and technical skills", good: "showed good work ethic and contributed meaningfully to the team", satisfactory: "performed their assigned duties satisfactorily" };
   var perfText = perfMap[form.performance] || perfMap.excellent;
 
@@ -66,7 +69,17 @@ function InternshipPreview({ form, template = "Classic", accent = "#0D9488" }) {
         </div>
         {form.enableQR && (
           <div style={{ textAlign: "center" }}>
-            <div style={{ width: "40px", height: "40px", background: "#F0FDFA", border: `2px solid ${accent}`, borderRadius: "5px", display: "flex", alignItems: "center", justifyContent: "center" }}><Shield size={16} color={accent} /></div>
+            <div style={{ 
+              width: "40px", height: "40px", background: "#F0FDFA", border: `2px solid ${accent}`, 
+              borderRadius: "5px", display: "flex", alignItems: "center", justifyContent: "center",
+              overflow: "hidden"
+            }}>
+              {form.qrCodeDataUrl ? (
+                <img src={form.qrCodeDataUrl} alt="QR" style={{ width: "100%", height: "100%", padding: "2px" }} />
+              ) : (
+                <Shield size={16} color={accent} />
+              )}
+            </div>
             <p style={{ fontSize: "8px", color: "#9CA3AF", margin: "2px 0 0" }}>Scan to Verify</p>
           </div>
         )}
@@ -157,12 +170,21 @@ export default function InternshipCertificatePage() {
   };
   const updateField = useCallback((field, value) => setForm(prev => ({ ...prev, [field]: value })), []);
 
+  useEffect(() => {
+    if (form.enableQR && form.verificationId) {
+      const qrUrl = generateQRData(form.verificationId);
+      QRCode.toDataURL(qrUrl, { margin: 1, width: 200, color: { dark: form.templateColor || "#0D9488" } })
+        .then(url => updateField("qrCodeDataUrl", url))
+        .catch(err => console.error("QR Generation Error:", err));
+    }
+  }, [form.verificationId, form.enableQR, form.templateColor, updateField]);
+
   const TABS = [
-    { id: "org",       label: "Organisation" },
-    { id: "intern",    label: "Intern"       },
-    { id: "content",   label: "Content"      },
-    { id: "verify",    label: "Verify"       },
-    { id: "templates", label: "Templates"    },
+    { id: "org", label: "Organisation" },
+    { id: "intern", label: "Intern" },
+    { id: "content", label: "Content" },
+    { id: "verify", label: "Verify" },
+    { id: "templates", label: "Templates" },
   ];
 
   return (
@@ -179,8 +201,8 @@ export default function InternshipCertificatePage() {
             <button onClick={() => setForm(DEFAULT_FORM)} style={{ display: "flex", alignItems: "center", gap: "6px", height: "36px", padding: "0 14px", border: "1px solid #E5E7EB", borderRadius: "8px", background: "#fff", fontSize: "13px", fontWeight: 600, color: "#6B7280", cursor: "pointer", fontFamily: "Inter, sans-serif" }}><RefreshCw size={13} /> Reset</button>
             <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn"><Download size={15} />{downloading ? "Generating..." : "Download PDF"}</button>
             {user && (
-<button onClick={handleSave} style={{ display: "flex", alignItems: "center", gap: "6px", height: "36px", padding: "0 14px", border: "1px solid #0D9488", borderRadius: "8px", background: "#fff", fontSize: "13px", fontWeight: 600, color: "#0D9488", cursor: "pointer", fontFamily: "Inter, sans-serif", transition: "all 150ms" }}><Cloud size={14} /> Save</button>
-)}
+              <button onClick={handleSave} style={{ display: "flex", alignItems: "center", gap: "6px", height: "36px", padding: "0 14px", border: "1px solid #0D9488", borderRadius: "8px", background: "#fff", fontSize: "13px", fontWeight: 600, color: "#0D9488", cursor: "pointer", fontFamily: "Inter, sans-serif", transition: "all 150ms" }}><Cloud size={14} /> Save</button>
+            )}
           </div>
         </div>
       </div>
@@ -234,7 +256,7 @@ export default function InternshipCertificatePage() {
                 <p className="form-label">Signatory</p>
                 <div className="form-field"><label className="field-label">Name</label><input className="doc-input" placeholder="Ravi Kumar" value={form.signatoryName} onChange={e => updateField("signatoryName", e.target.value)} /></div>
                 <div className="form-field"><label className="field-label">Designation</label><input className="doc-input" placeholder="HR Manager" value={form.signatoryDesignation} onChange={e => updateField("signatoryDesignation", e.target.value)} /></div>
-                
+
                 <div style={{ borderTop: "1px solid #F3F4F6", margin: "16px 0" }} />
                 <p className="form-label">Digital Signature</p>
                 <div style={{
@@ -290,7 +312,7 @@ export default function InternshipCertificatePage() {
                 <div className="form-field">
                   <label className="field-label">QR Code on Certificate</label>
                   <div style={{ display: "flex", gap: "8px" }}>
-                    {[["true","Yes ? Add QR Code"],["false","No ? Skip"]].map(function(opt) {
+                    {[["true", "Yes. Add QR Code"], ["false", "No. Skip"]].map(function (opt) {
                       return <button key={opt[0]} onClick={() => updateField("enableQR", opt[0] === "true")} className={"toggle-btn " + (String(form.enableQR) === opt[0] ? "active" : "")}>{opt[1]}</button>;
                     })}
                   </div>
@@ -303,19 +325,19 @@ export default function InternshipCertificatePage() {
             {activeTab === "templates" && (
               <div>
                 <p className="form-label">Template Design</p>
-                <TemplatePicker 
-                  docType="internship" 
-                  selected={template} 
+                <TemplatePicker
+                  docType="internship"
+                  selected={template}
                   onChange={(val) => {
                     setTemplate(val);
                     updateField("templateColor", TEMPLATE_REGISTRY.internship[val]?.accent || "#0D9488");
-                  }} 
-                  isPro={isUserPro} 
+                  }}
+                  isPro={isUserPro}
                 />
                 <div style={{ borderTop: "1px solid #F3F4F6", margin: "16px 0" }} />
-                <TemplateColorPicker 
-                  selectedColor={form.templateColor} 
-                  onChange={(color) => updateField("templateColor", color)} 
+                <TemplateColorPicker
+                  selectedColor={form.templateColor}
+                  onChange={(color) => updateField("templateColor", color)}
                 />
                 <div style={{ borderTop: "1px solid #F3F4F6", margin: "20px 0" }} />
                 <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn" style={{ width: "100%", justifyContent: "center" }}>

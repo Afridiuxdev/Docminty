@@ -27,6 +27,7 @@ export default function CertificateModernTemplate({ form }) {
     sigN:   { fontSize: 9, fontFamily: "Helvetica-Bold", color: "#111827", textAlign: "center" },
     sigD:   { fontSize: 8, color: "#9CA3AF", textAlign: "center" },
     verifId:{ fontSize: 7, color: "#D1D5DB", textAlign: "center", marginTop: 12, fontFamily: "Courier" },
+    qrBox:  { width: 44, height: 44, background: "#F5F3FF", borderWidth: 2, borderColor: T, borderRadius: 6, alignItems: "center", justifyContent: "center" },
     bottom: { backgroundColor: T, height: 5, position: "absolute", bottom: 0, left: 0, right: 0 },
   });
 
@@ -57,6 +58,11 @@ export default function CertificateModernTemplate({ form }) {
                 <Text style={s.sigD}>{form.signatoryDesignation || "Designation"}</Text>
               </View>
             </View>
+            {form.enableQR && form.qrCodeDataUrl && (
+              <View style={s.qrBox}>
+                <Image src={form.qrCodeDataUrl} style={{ width: "100%", height: "100%", padding: 2 }} />
+              </View>
+            )}
           </View>
           {form.enableQR && <Text style={s.verifId}>{"ID: " + form.verificationId}</Text>}
         </View>

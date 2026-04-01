@@ -53,7 +53,13 @@ export default function InternshipRoyalTemplate({ form }) {
             <View style={styles.sigRow}>
               {form.enableQR && (
                 <View style={{ alignItems: "center" }}>
-                  <View style={styles.qrBox}><Text style={{ fontSize: 10, color: T, fontFamily: "Helvetica-Bold" }}>QR</Text></View>
+                  <View style={styles.qrBox}>
+                    {form.qrCodeDataUrl ? (
+                      <Image src={form.qrCodeDataUrl} style={{ width: "100%", height: "100%", padding: 2 }} />
+                    ) : (
+                      <Text style={{ fontSize: 10, color: T, fontFamily: "Helvetica-Bold" }}>QR</Text>
+                    )}
+                  </View>
                   <Text style={{ fontSize: 7, color: T, marginTop: 4 }}>Verify Online</Text>
                 </View>
               )}

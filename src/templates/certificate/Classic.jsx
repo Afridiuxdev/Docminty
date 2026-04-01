@@ -77,7 +77,11 @@ export default function CertificateTemplate({ form }) {
                             {form.enableQR && (
                                 <View style={{ alignItems: "center" }}>
                                     <View style={styles.qrBox}>
-                                        <Text style={styles.qrText}>QR{"\n"}CODE</Text>
+                                        {form.qrCodeDataUrl ? (
+                                            <Image src={form.qrCodeDataUrl} style={{ width: "100%", height: "100%", padding: 2 }} />
+                                        ) : (
+                                            <Text style={styles.qrText}>QR{"\n"}CODE</Text>
+                                        )}
                                     </View>
                                     <Text style={{ fontSize: 7, color: "#9CA3AF", marginTop: 3 }}>Scan to Verify</Text>
                                 </View>

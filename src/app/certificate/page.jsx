@@ -2,8 +2,9 @@
 import TemplatePicker from "@/components/TemplatePicker";
 import TemplateColorPicker from "@/components/TemplateColorPicker";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Navbar from "@/components/Navbar";
+import QRCode from "qrcode";
 import Footer from "@/components/Footer";
 import AdSense from "@/components/AdSense";
 import LogoUpload from "@/components/LogoUpload";
@@ -48,6 +49,7 @@ const DEFAULT_FORM = {
   verificationId: generateVerificationId(),
   enableQR: true,
   templateColor: "#0D9488",
+  qrCodeDataUrl: null,
 };
 
 function CertPreview({ form, template = "Classic", accent = "#0D9488" }) {
@@ -92,9 +94,16 @@ function CertPreview({ form, template = "Classic", accent = "#0D9488" }) {
         </div>
         {form.enableQR && (
           <div style={{ textAlign: "center" }}>
-            <div style={{ width: "56px", height: "56px", border: `2px solid ${accent}`, borderRadius: "4px", display: "flex", alignItems: "center", justifyContent: "center", background: "#F8F9FA", fontSize: "8px", color: accent, fontWeight: 600, flexDirection: "column", gap: "2px" }}>
-              <Shield size={16} color={accent} />
-              <span>QR</span>
+            <div style={{ 
+              width: "56px", height: "56px", border: `2px solid ${accent}`, borderRadius: "4px", 
+              display: "flex", alignItems: "center", justifyContent: "center", background: "#F8F9FA", 
+              fontSize: "8px", color: accent, fontWeight: 600, overflow: "hidden" 
+            }}>
+              {form.qrCodeDataUrl ? (
+                <img src={form.qrCodeDataUrl} alt="Verification QR" style={{ width: "100%", height: "100%", padding: "2px" }} />
+              ) : (
+                <Shield size={16} color={accent} />
+              )}
             </div>
             <p style={{ fontSize: "9px", color: "#9CA3AF", margin: "4px 0 0" }}>Scan to Verify</p>
           </div>
@@ -214,6 +223,15 @@ export default function CertificatePage() {
   };
   const updateField = useCallback((field, value) =>
     setForm(prev => ({ ...prev, [field]: value })), []);
+
+  useEffect(() => {
+    if (form.enableQR && form.verificationId) {
+      const qrUrl = generateQRData(form.verificationId);
+      QRCode.toDataURL(qrUrl, { margin: 1, width: 200, color: { dark: form.templateColor || "#0D9488" } })
+        .then(url => updateField("qrCodeDataUrl", url))
+        .catch(err => console.error("QR Generation Error:", err));
+    }
+  }, [form.verificationId, form.enableQR, form.templateColor, updateField]);
 
   const TABS = [
     { id: "org", label: "Organisation" },

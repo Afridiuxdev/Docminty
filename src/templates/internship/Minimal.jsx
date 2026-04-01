@@ -54,7 +54,13 @@ export default function InternshipMinimalTemplate({ form }) {
           </View>
           {form.enableQR && (
             <View style={{ alignItems: "center" }}>
-              <View style={styles.qrBox}><Text style={{ fontSize: 6, color: "#9CA3AF" }}>VERIFY</Text></View>
+              <View style={styles.qrBox}>
+                {form.qrCodeDataUrl ? (
+                  <Image src={form.qrCodeDataUrl} style={{ width: "100%", height: "100%", padding: 2 }} />
+                ) : (
+                  <Text style={{ fontSize: 6, color: "#9CA3AF" }}>VERIFY</Text>
+                )}
+              </View>
               <Text style={{ fontSize: 6, color: "#D1D5DB", marginTop: 4 }}>QR Verified</Text>
             </View>
           )}

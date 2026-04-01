@@ -32,6 +32,7 @@ export default function InternshipElegantTemplate({ form }) {
     sigName: { fontSize: 11, fontFamily: "Helvetica-Bold", color: "#111827" },
     sigDesig: { fontSize: 9, color: "#9CA3AF", marginTop: 2 },
     footerGen: { position: "absolute", bottom: 40, left: 70, fontSize: 8, color: "#D1D5DB" },
+    qrBox: { width: 44, height: 44, borderWidth: 1, borderColor: T, borderRadius: 2, alignItems: "center", justifyContent: "center", marginBottom: 5 },
     borderBottom: { position: "absolute", bottom: 0, left: 0, right: 0, height: 6, background: T },
   });
 
@@ -63,7 +64,12 @@ export default function InternshipElegantTemplate({ form }) {
             </View>
           </View>
           {form.enableQR && (
-            <View style={{ textAlign: "right" }}>
+            <View style={{ alignItems: "flex-end" }}>
+              {form.qrCodeDataUrl && (
+                <View style={styles.qrBox}>
+                  <Image src={form.qrCodeDataUrl} style={{ width: "100%", height: "100%", padding: 2 }} />
+                </View>
+              )}
               <Text style={{ fontSize: 7, color: T, fontFamily: "Helvetica-Bold", marginBottom: 2 }}>QR VERIFIED</Text>
               <Text style={{ fontSize: 7, color: "#9CA3AF", fontFamily: "Courier" }}>ID: {form.verificationId}</Text>
               <Text style={{ fontSize: 7, color: "#D1D5DB", marginTop: 2 }}>{form.issueDate}</Text>

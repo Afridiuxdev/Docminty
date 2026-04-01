@@ -28,6 +28,7 @@ export default function CertificateRoyalTemplate({ form }) {
     sigN:   { fontSize: 9, fontFamily: "Helvetica-Bold", color: "#111827", textAlign: "center" },
     sigD:   { fontSize: 8, color: "#9CA3AF", textAlign: "center" },
     verifId:{ fontSize: 7, color: "#D1D5DB", textAlign: "center", marginTop: 10, fontFamily: "Courier" },
+    qrBox:  { width: 44, height: 44, borderWidth: 1, borderColor: T, borderRadius: 2, alignItems: "center", justifyContent: "center" },
   });
 
   return (
@@ -56,6 +57,11 @@ export default function CertificateRoyalTemplate({ form }) {
                   <Text style={s.sigD}>{form.signatoryDesignation}</Text>
                 </View>
               </View>
+              {form.enableQR && form.qrCodeDataUrl && (
+                <View style={s.qrBox}>
+                  <Image src={form.qrCodeDataUrl} style={{ width: "100%", height: "100%", padding: 2 }} />
+                </View>
+              )}
             </View>
             {form.enableQR && <Text style={s.verifId}>{"ID: " + form.verificationId}</Text>}
           </View>
