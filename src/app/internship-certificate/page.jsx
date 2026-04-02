@@ -47,7 +47,9 @@ function InternshipPreview({ form, template = "Classic", accent = "#0D9488" }) {
     <>
       {form.logo && <img src={form.logo} alt="Logo" style={{ height: "44px", objectFit: "contain", display: "block", margin: "0 auto 10px" }} />}
       <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "15px", color: "#111827", margin: "0 0 2px", textTransform: "uppercase", letterSpacing: "0.1em" }}>{form.orgName || "Organisation Name"}</p>
-      {form.orgAddress && <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "0 0 14px" }}>{form.orgAddress}</p>}
+      {form.orgAddress && <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "0 0 2px" }}>{form.orgAddress}</p>}
+      {form.orgWebsite && <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "0 0 14px" }}>{form.orgWebsite}</p>}
+      {!form.orgWebsite && form.orgAddress && <div style={{ marginBottom: "14px" }} />}
       <div style={{ display: "inline-block", background: accent, color: "#fff", padding: "3px 18px", borderRadius: "2px", marginBottom: "12px" }}>
         <p style={{ fontSize: "10px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", margin: 0 }}>Internship Certificate</p>
       </div>
@@ -59,6 +61,7 @@ function InternshipPreview({ form, template = "Classic", accent = "#0D9488" }) {
         {" from "}<strong style={{ color: accent }}>{start}</strong>{" to "}<strong style={{ color: accent }}>{end}</strong>.
       </p>
       {form.projectName && <p style={{ fontSize: "10px", color: "#374151", margin: "5px 0" }}>Project: <strong>{form.projectName}</strong></p>}
+      {form.issueDate && <p style={{ fontSize: "9px", color: "#9CA3AF", margin: "6px 0 0" }}>Date of Issue: {new Date(form.issueDate).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}</p>}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginTop: "18px" }}>
         <div style={{ minWidth: "110px", textAlign: "left" }}>
           {form.signature ? <div style={{ marginBottom: "2px" }}><img src={form.signature} alt="Signature" style={{ maxHeight: "35px", maxWidth: "100px", display: "block" }} /></div> : <div style={{ height: "30px" }} />}
@@ -210,7 +213,7 @@ export default function InternshipCertificatePage() {
       <div style={{ background: "#F0F4F3", minHeight: "calc(100vh - 120px)" }}>
         <div className="doc-page-wrap">
           <div className="form-panel">
-            <div style={{ display: "flex", gap: "4px", marginBottom: "20px", background: "#F0F4F3", borderRadius: "8px", padding: "4px" }}>
+            <div className="tab-bar" style={{ display: "flex", gap: "4px", marginBottom: "20px", background: "#F0F4F3", borderRadius: "8px", padding: "4px" }}>
               {TABS.map(tab => (
                 <button key={tab.id} onClick={() => setActiveTab(tab.id)} style={{ flex: 1, padding: "6px 4px", borderRadius: "6px", border: "none", fontSize: "11px", fontWeight: 600, cursor: "pointer", fontFamily: "Inter, sans-serif", background: activeTab === tab.id ? "#fff" : "transparent", color: activeTab === tab.id ? T : "#6B7280", boxShadow: activeTab === tab.id ? "0 1px 4px rgba(0,0,0,0.08)" : "none" }}>{tab.label}</button>
               ))}
@@ -219,7 +222,17 @@ export default function InternshipCertificatePage() {
             {activeTab === "org" && (
               <div>
                 <p className="form-label">Organisation Details</p>
-                <div style={{ marginBottom: "16px" }}><p style={{ fontSize: "11px", fontWeight: 600, color: "#6B7280", margin: "0 0 6px", fontFamily: "Inter, sans-serif" }}>Organisation Logo</p><LogoUpload value={form.logo} onChange={v => updateField("logo", v)} /></div>
+                <div style={{ marginBottom: "16px" }}>
+                  <p style={{ fontSize: "11px", fontWeight: 600, color: "#6B7280", margin: "0 0 6px", fontFamily: "Inter, sans-serif" }}>Organisation Logo</p>
+                  {isUserPro ? (
+                    <LogoUpload value={form.logo} onChange={v => updateField("logo", v)} />
+                  ) : (
+                    <div onClick={() => router.push("/#pricing")} style={{ padding: "14px 16px", border: "1px dashed #D1D5DB", borderRadius: "8px", background: "#F9FAFB", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer" }}>
+                      <span style={{ fontSize: "12px", color: "#9CA3AF", fontFamily: "Inter, sans-serif" }}>Logo upload — <strong style={{ color: "#6366F1" }}>Pro feature</strong></span>
+                      <span style={{ fontSize: "11px", background: "#EDE9FE", color: "#6366F1", padding: "3px 10px", borderRadius: "20px", fontWeight: 600 }}>Upgrade</span>
+                    </div>
+                  )}
+                </div>
                 <div className="form-field"><label className="field-label">Organisation Name</label><input className="doc-input" placeholder="Acme Pvt Ltd" value={form.orgName} onChange={e => updateField("orgName", e.target.value)} /></div>
                 <div className="form-field"><label className="field-label">Address</label><input className="doc-input" placeholder="123 Tech Park, Bengaluru" value={form.orgAddress} onChange={e => updateField("orgAddress", e.target.value)} /></div>
                 <div className="form-field"><label className="field-label">Website</label><input className="doc-input" placeholder="www.acme.com" value={form.orgWebsite} onChange={e => updateField("orgWebsite", e.target.value)} /></div>
@@ -345,15 +358,23 @@ export default function InternshipCertificatePage() {
                 </button>
               </div>
             )}
+
+            {TABS[TABS.length - 1].id !== activeTab && (
+              <div style={{ marginTop: "24px", paddingTop: "16px", borderTop: "1px solid #F3F4F6", display: "flex", justifyContent: "flex-end" }}>
+                <button
+                  onClick={() => setActiveTab(TABS[TABS.findIndex(t => t.id === activeTab) + 1].id)}
+                  style={{ display: "inline-flex", alignItems: "center", gap: "6px", height: "40px", padding: "0 20px", background: "#0D9488", color: "#fff", fontSize: "14px", fontWeight: 700, fontFamily: "Space Grotesk, sans-serif", border: "none", borderRadius: "8px", cursor: "pointer" }}
+                >
+                  Next →
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="preview-panel">
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                <Eye size={14} color="#9CA3AF" />
-                <span style={{ fontSize: "12px", color: "#9CA3AF", fontFamily: "Inter, sans-serif", fontWeight: 600 }}>LIVE PREVIEW</span>
-              </div>
-              <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn"><Download size={15} />{downloading ? "Generating..." : "Download PDF"}</button>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "16px" }}>
+              <Eye size={14} color="#9CA3AF" />
+              <span style={{ fontSize: "12px", color: "#9CA3AF", fontFamily: "Inter, sans-serif", fontWeight: 600 }}>LIVE PREVIEW</span>
             </div>
             <div style={{ position: "relative" }}>
               {showWatermark && <WatermarkOverlay />}

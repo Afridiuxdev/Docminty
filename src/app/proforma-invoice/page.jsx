@@ -581,7 +581,7 @@ export default function ProformaInvoicePage() {
 
           {/* Form */}
           <div className="form-panel">
-            <div style={{
+            <div className="tab-bar" style={{
               display: "flex", gap: "4px", marginBottom: "20px",
               background: "#F0F4F3", borderRadius: "8px", padding: "4px",
               flexWrap: "wrap"
@@ -935,6 +935,17 @@ export default function ProformaInvoicePage() {
 
                   {downloading ? "Generating..." : "Download PDF"}
 
+                </button>
+              </div>
+            )}
+
+            {TABS[TABS.length - 1].id !== activeTab && (
+              <div style={{ marginTop: "24px", paddingTop: "16px", borderTop: "1px solid #F3F4F6", display: "flex", justifyContent: "flex-end" }}>
+                <button
+                  onClick={() => setActiveTab(TABS[TABS.findIndex(t => t.id === activeTab) + 1].id)}
+                  style={{ display: "inline-flex", alignItems: "center", gap: "6px", height: "40px", padding: "0 20px", background: "#0D9488", color: "#fff", fontSize: "14px", fontWeight: 700, fontFamily: "Space Grotesk, sans-serif", border: "none", borderRadius: "8px", cursor: "pointer" }}
+                >
+                  Next →
                 </button>
               </div>
             )}

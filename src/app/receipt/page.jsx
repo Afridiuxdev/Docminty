@@ -58,6 +58,13 @@ function ReceiptPreview({ form, template = "Classic", accent = "#0D9488" }) {
 
   const receiptBody = (
     <div className="pdf-body">
+      {template !== "Classic" && (form.fromAddress || form.fromPhone || form.fromEmail) && (
+        <div style={{ marginBottom: "14px", padding: "8px 12px", background: "#F8F9FA", borderRadius: "6px", fontSize: "11px", color: "#6B7280", fontFamily: "Inter, sans-serif", lineHeight: 1.6 }}>
+          {form.fromAddress && <span>{form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}{fromState ? `, ${fromState.name}` : ""}&nbsp;&nbsp;</span>}
+          {form.fromPhone && <span>· Ph: {form.fromPhone}&nbsp;&nbsp;</span>}
+          {form.fromEmail && <span>· {form.fromEmail}</span>}
+        </div>
+      )}
       <div style={{ background: "#F0FDFA", border: `2px solid ${accent}`, borderRadius: "10px", padding: "20px 24px", textAlign: "center", marginBottom: "20px" }}>
         <p style={{ fontSize: "11px", color: "#6B7280", margin: "0 0 4px", fontFamily: "Inter, sans-serif", textTransform: "uppercase", letterSpacing: "0.08em" }}>Amount Received</p>
         <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "36px", color: accent, margin: 0, lineHeight: 1 }}>
@@ -158,6 +165,7 @@ function ReceiptPreview({ form, template = "Classic", accent = "#0D9488" }) {
             {form.fromAddress && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}</p>}
             {fromState && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{fromState.name}</p>}
             {form.fromPhone && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>Ph: {form.fromPhone}</p>}
+            {form.fromEmail && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.fromEmail}</p>}
           </div>
           <div style={{ textAlign: "right" }}>
             <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "22px", color: accent, margin: 0 }}>RECEIPT</p>
@@ -257,7 +265,7 @@ export default function ReceiptPage() {
       <div style={{ background: "#F0F4F3", minHeight: "calc(100vh - 120px)" }}>
         <div className="doc-page-wrap">
           <div className="form-panel">
-            <div style={{ display: "flex", gap: "4px", marginBottom: "20px", background: "#F0F4F3", borderRadius: "8px", padding: "4px" }}>
+            <div className="tab-bar" style={{ display: "flex", gap: "4px", marginBottom: "20px", background: "#F0F4F3", borderRadius: "8px", padding: "4px" }}>
               {TABS.map(tab => (
                 <button key={tab.id} onClick={() => setActiveTab(tab.id)} style={{ flex: 1, padding: "6px 4px", borderRadius: "6px", border: "none", fontSize: "12px", fontWeight: 600, cursor: "pointer", transition: "all 150ms", fontFamily: "Inter, sans-serif", background: activeTab === tab.id ? "#fff" : "transparent", color: activeTab === tab.id ? T : "#6B7280", boxShadow: activeTab === tab.id ? "0 1px 4px rgba(0,0,0,0.08)" : "none" }}>
                   {tab.label}
@@ -270,7 +278,14 @@ export default function ReceiptPage() {
                 <p className="form-label">Your Business Details</p>
                 <div style={{ marginBottom: "16px" }}>
                   <p style={{ fontSize: "11px", fontWeight: 600, color: "#6B7280", margin: "0 0 6px", fontFamily: "Inter, sans-serif" }}>Company Logo</p>
-                  <LogoUpload value={form.logo} onChange={v => updateField("logo", v)} />
+                  {isUserPro ? (
+                    <LogoUpload value={form.logo} onChange={v => updateField("logo", v)} />
+                  ) : (
+                    <div onClick={() => router.push("/#pricing")} style={{ padding: "14px 16px", border: "1px dashed #D1D5DB", borderRadius: "8px", background: "#F9FAFB", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer" }}>
+                      <span style={{ fontSize: "12px", color: "#9CA3AF", fontFamily: "Inter, sans-serif" }}>Logo upload — <strong style={{ color: "#6366F1" }}>Pro feature</strong></span>
+                      <span style={{ fontSize: "11px", background: "#EDE9FE", color: "#6366F1", padding: "3px 10px", borderRadius: "20px", fontWeight: 600 }}>Upgrade</span>
+                    </div>
+                  )}
                 </div>
                 <div className="form-field"><label className="field-label">Business Name</label><input className="doc-input" placeholder="Your Company Name" value={form.fromName} onChange={e => updateField("fromName", e.target.value)} /></div>
                 <div className="form-field"><label className="field-label">Address</label><textarea className="doc-textarea" placeholder="Street address" value={form.fromAddress} onChange={e => updateField("fromAddress", e.target.value)} /></div>
@@ -395,18 +410,23 @@ export default function ReceiptPage() {
                 </button>
               </div>
             )}
+
+            {TABS[TABS.length - 1].id !== activeTab && (
+              <div style={{ marginTop: "24px", paddingTop: "16px", borderTop: "1px solid #F3F4F6", display: "flex", justifyContent: "flex-end" }}>
+                <button
+                  onClick={() => setActiveTab(TABS[TABS.findIndex(t => t.id === activeTab) + 1].id)}
+                  style={{ display: "inline-flex", alignItems: "center", gap: "6px", height: "40px", padding: "0 20px", background: "#0D9488", color: "#fff", fontSize: "14px", fontWeight: 700, fontFamily: "Space Grotesk, sans-serif", border: "none", borderRadius: "8px", cursor: "pointer" }}
+                >
+                  Next →
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="preview-panel">
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                <Eye size={14} color="#9CA3AF" />
-                <span style={{ fontSize: "12px", color: "#9CA3AF", fontFamily: "Inter, sans-serif", fontWeight: 600 }}>LIVE PREVIEW</span>
-              </div>
-              <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn">
-                <Download size={15} />
-                {downloading ? "Generating..." : "Download PDF"}
-              </button>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "16px" }}>
+              <Eye size={14} color="#9CA3AF" />
+              <span style={{ fontSize: "12px", color: "#9CA3AF", fontFamily: "Inter, sans-serif", fontWeight: 600 }}>LIVE PREVIEW</span>
             </div>
             <div style={{ position: "relative" }}>
               {showWatermark && <WatermarkOverlay />}

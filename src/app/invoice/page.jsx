@@ -499,7 +499,7 @@ export default function InvoicePage() {
                     <div className="form-panel">
 
                         {/* Form tabs */}
-                        <div style={{
+                        <div className="tab-bar" style={{
                             display: "flex", gap: "4px",
                             marginBottom: "20px",
                             background: "#F0F4F3",
@@ -536,10 +536,14 @@ export default function InvoicePage() {
                                         color: "#6B7280", margin: "0 0 6px",
                                         fontFamily: "Inter, sans-serif",
                                     }}>Company Logo</p>
-                                    <LogoUpload
-                                        value={form.logo}
-                                        onChange={(v) => updateField("logo", v)}
-                                    />
+                                    {isUserPro ? (
+                                      <LogoUpload value={form.logo} onChange={(v) => updateField("logo", v)} />
+                                    ) : (
+                                      <div onClick={() => router.push("/#pricing")} style={{ padding: "14px 16px", border: "1px dashed #D1D5DB", borderRadius: "8px", background: "#F9FAFB", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer" }}>
+                                        <span style={{ fontSize: "12px", color: "#9CA3AF", fontFamily: "Inter, sans-serif" }}>Logo upload — <strong style={{ color: "#6366F1" }}>Pro feature</strong></span>
+                                        <span style={{ fontSize: "11px", background: "#EDE9FE", color: "#6366F1", padding: "3px 10px", borderRadius: "20px", fontWeight: 600 }}>Upgrade</span>
+                                      </div>
+                                    )}
                                 </div>
 
                                 <div className="form-field">
@@ -947,26 +951,24 @@ export default function InvoicePage() {
                                 </button>
                             </div>
                         )}
+
+                        {FORM_TABS[FORM_TABS.length - 1].id !== activeTab && (
+                            <div style={{ marginTop: "24px", paddingTop: "16px", borderTop: "1px solid #F3F4F6", display: "flex", justifyContent: "flex-end" }}>
+                                <button
+                                    onClick={() => setActiveTab(FORM_TABS[FORM_TABS.findIndex(t => t.id === activeTab) + 1].id)}
+                                    style={{ display: "inline-flex", alignItems: "center", gap: "6px", height: "40px", padding: "0 20px", background: "#0D9488", color: "#fff", fontSize: "14px", fontWeight: 700, fontFamily: "Space Grotesk, sans-serif", border: "none", borderRadius: "8px", cursor: "pointer" }}
+                                >
+                                    Next →
+                                </button>
+                            </div>
+                        )}
                     </div>
 
                     {/* ── RIGHT: PREVIEW ── */}
                     <div className="preview-panel">
-                        <div style={{
-                            display: "flex", justifyContent: "space-between",
-                            alignItems: "center", marginBottom: "16px",
-                        }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                                <Eye size={14} color="#9CA3AF" />
-                                <span style={{
-                                    fontSize: "12px", color: "#9CA3AF",
-                                    fontFamily: "Inter, sans-serif", fontWeight: 600,
-                                }}>
-                                    LIVE PREVIEW
-                                </span>
-                            </div>
-                            <button onClick={handleDownload} className="download-pdf-btn">
-                                <Download size={14} /> Download PDF
-                            </button>
+                        <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "16px" }}>
+                            <Eye size={14} color="#9CA3AF" />
+                            <span style={{ fontSize: "12px", color: "#9CA3AF", fontFamily: "Inter, sans-serif", fontWeight: 600 }}>LIVE PREVIEW</span>
                         </div>
                         <div style={{ position: "relative" }}>
                             {showWatermark && <WatermarkOverlay />}
