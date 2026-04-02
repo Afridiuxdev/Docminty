@@ -728,24 +728,9 @@ export default function PurchaseOrderPage() {
           </div>
 
           <div className="preview-panel">
-            <div style={{
-              display: "flex", justifyContent: "space-between",
-              alignItems: "center", marginBottom: "16px"
-            }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                <Eye size={14} color="#9CA3AF" />
-                <span style={{
-                  fontSize: "12px", color: "#9CA3AF",
-                  fontFamily: "Inter, sans-serif", fontWeight: 600
-                }}>LIVE PREVIEW</span>
-              </div>
-              <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn">
-
-                <Download size={15} />
-
-                {downloading ? "Generating..." : "Download PDF"}
-
-              </button>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "16px" }}>
+              <Eye size={14} color="#9CA3AF" />
+              <span style={{ fontSize: "12px", color: "#9CA3AF", fontFamily: "Inter, sans-serif", fontWeight: 600 }}>LIVE PREVIEW</span>
             </div>
             <POPreview form={form} />
           </div>
