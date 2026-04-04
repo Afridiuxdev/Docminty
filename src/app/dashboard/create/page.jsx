@@ -1,6 +1,13 @@
 "use client";
 import Link from "next/link";
 import DashHeader from "@/components/dashboard/DashHeader";
+import {
+    FileText, FileQuestion, Receipt, ShoppingCart, Box, CreditCard, Home,
+    Banknote, Briefcase, LogOut, Mail, Award, GraduationCap, QrCode,
+    Zap, PlusSquare, Scissors, Minimize, FileInput, FileOutput, Image,
+    Calculator, Percent, BadgeIndianRupee, TrendingUp, Coins, BarChart3, Tag,
+    Package, Scroll, Handshake, Book
+} from "lucide-react";
 
 const T = "#0D9488";
 
@@ -8,51 +15,51 @@ const DOC_CATEGORIES = [
     {
         category: "Finance & Business",
         docs: [
-            { label: "Invoice", href: "/invoice", icon: "📄", desc: "Professional GST & non-GST invoices", badge: "Most Used" },
-            { label: "Quotation", href: "/quotation", icon: "💬", desc: "Professional price quotations", badge: "" },
-            { label: "Receipt", href: "/receipt", icon: "🧾", desc: "Payment receipts for any transaction", badge: "" },
-            { label: "Proforma Invoice", href: "/proforma-invoice", icon: "📋", desc: "Pre-billing document with advance", badge: "" },
-            { label: "Purchase Order", href: "/purchase-order", icon: "🛒", desc: "PO for vendors and suppliers", badge: "" },
-            { label: "Packing Slip", href: "/packing-slip", icon: "📦", desc: "Shipment packing lists with tracking", badge: "" },
-            { label: "Rent Receipt", href: "/rent-receipt", icon: "🏠", desc: "HRA valid monthly rent receipts", badge: "HRA Valid" },
-            { label: "Payment Voucher", href: "/payment-voucher", icon: "💳", desc: "Internal payment and cash records", badge: "" },
+            { label: "Invoice", href: "/invoice", icon: FileText, desc: "Professional GST & non-GST invoices", badge: "Most Used" },
+            { label: "Quotation", href: "/quotation", icon: FileQuestion, desc: "Professional price quotations", badge: "" },
+            { label: "Receipt", href: "/receipt", icon: Receipt, desc: "Payment receipts for any transaction", badge: "" },
+            { label: "Proforma Invoice", href: "/proforma-invoice", icon: FileText, desc: "Pre-billing document with advance", badge: "" },
+            { label: "Purchase Order", href: "/purchase-order", icon: ShoppingCart, desc: "PO for vendors and suppliers", badge: "" },
+            { label: "Packing Slip", href: "/packing-slip", icon: Box, desc: "Shipment packing lists with tracking", badge: "" },
+            { label: "Rent Receipt", href: "/rent-receipt", icon: Home, desc: "HRA valid monthly rent receipts", badge: "HRA Valid" },
+            { label: "Payment Voucher", href: "/payment-voucher", icon: CreditCard, desc: "Internal payment and cash records", badge: "" },
         ],
     },
     {
         category: "HR & Legal",
         docs: [
-            { label: "Salary Slip", href: "/salary-slip", icon: "💰", desc: "Payslip with PF, ESI, TDS auto-calc", badge: "Popular" },
-            { label: "Experience Letter", href: "/experience-letter", icon: "📜", desc: "Employment experience certificates", badge: "" },
-            { label: "Job Offer Letter", href: "/job-offer-letter", icon: "🤝", desc: "Offer letter with CTC breakdown", badge: "" },
-            { label: "Resignation Letter", href: "/resignation-letter", icon: "👋", desc: "Professional resignation formats", badge: "" },
-            { label: "Internship Certificate", href: "/internship-certificate", icon: "🎓", desc: "Internship completion certificate", badge: "QR Verified" },
-            { label: "Certificate", href: "/certificate", icon: "🏆", desc: "General achievement certificates", badge: "QR Verified" },
+            { label: "Salary Slip", href: "/salary-slip", icon: Banknote, desc: "Payslip with PF, ESI, TDS auto-calc", badge: "Popular" },
+            { label: "Experience Letter", href: "/experience-letter", icon: Briefcase, desc: "Employment experience certificates", badge: "" },
+            { label: "Job Offer Letter", href: "/job-offer-letter", icon: Mail, desc: "Formal offer letters for new candidates", badge: "" },
+            { label: "Resignation Letter", href: "/resignation-letter", icon: LogOut, desc: "Professional resignation formats", badge: "" },
+            { label: "Internship Certificate", href: "/internship-certificate", icon: GraduationCap, desc: "Internship completion certificate", badge: "QR Verified" },
+            { label: "Certificate", href: "/certificate", icon: Award, desc: "General achievement certificates", badge: "QR Verified" },
         ],
     },
     {
         category: "PDF & Productivity",
         docs: [
-            { label: "Batch Processor", href: "/batch", icon: "⚡", desc: "Process thousands of docs at once", badge: "Pro" },
-            { label: "QR Generator", href: "/tools/qr-generator", icon: "🔍", desc: "Custom QR codes for any use", badge: "" },
-            { label: "Merge PDF", href: "/tools/merge-pdf", icon: "🖇️", desc: "Combine multiple PDFs into one", badge: "" },
-            { label: "Split PDF", href: "/tools/split-pdf", icon: "✂️", desc: "Extract pages from your PDF", badge: "" },
-            { label: "Compress PDF", href: "/tools/compress-pdf", icon: "🗜️", desc: "Reduce PDF file size instantly", badge: "" },
-            { label: "PDF to Word", href: "/tools/pdf-to-word", icon: "📝", desc: "Convert PDF to editable Word", badge: "" },
-            { label: "Word to PDF", href: "/tools/word-to-pdf", icon: "📘", desc: "Turn Word docs into clean PDFs", badge: "" },
-            { label: "PDF to JPG", href: "/tools/pdf-to-jpg", icon: "🖼️", desc: "Extract images from your PDF", badge: "" },
-            { label: "JPG to PDF", href: "/tools/jpg-to-pdf", icon: "📄", desc: "Convert images to PDF format", badge: "" },
+            { label: "Batch Processor", href: "/batch", icon: Zap, desc: "Process thousands of docs at once", badge: "Pro" },
+            { label: "QR Generator", href: "/tools/qr-generator", icon: QrCode, desc: "Custom QR codes for any use", badge: "" },
+            { label: "Merge PDF", href: "/tools/merge-pdf", icon: PlusSquare, desc: "Combine multiple PDFs into one", badge: "" },
+            { label: "Split PDF", href: "/tools/split-pdf", icon: Scissors, desc: "Extract pages from your PDF", badge: "" },
+            { label: "Compress PDF", href: "/tools/compress-pdf", icon: Minimize, desc: "Reduce PDF file size instantly", badge: "" },
+            { label: "PDF to Word", href: "/tools/pdf-to-word", icon: FileOutput, desc: "Convert PDF to editable Word", badge: "" },
+            { label: "Word to PDF", href: "/tools/word-to-pdf", icon: FileInput, desc: "Turn Word docs into clean PDFs", badge: "" },
+            { label: "PDF to JPG", href: "/tools/pdf-to-jpg", icon: Image, desc: "Extract images from your PDF", badge: "" },
+            { label: "JPG to PDF", href: "/tools/jpg-to-pdf", icon: FileText, desc: "Convert images to PDF format", badge: "" },
         ],
     },
     {
         category: "Smart Calculators",
         docs: [
-            { label: "EMI Calculator", href: "/calculators/emi-calculator", icon: "🏦", desc: "Calculate monthly loan payments", badge: "" },
-            { label: "GST Calculator", href: "/calculators/gst-calculator", icon: "📊", desc: "Inclusive/Exclusive GST auto-calc", badge: "" },
-            { label: "Salary Calculator", href: "/calculators/salary-calculator", icon: "💸", desc: "Gross to Net salary breakdown", badge: "" },
-            { label: "Interest Calculator", href: "/calculators/interest-calculator", icon: "📈", desc: "Simple & Compound interest", badge: "" },
-            { label: "Loan Calculator", href: "/calculators/loan-calculator", icon: "🏢", desc: "Advanced tool for home/car loans", badge: "" },
-            { label: "Profit Margin", href: "/calculators/profit-margin-calculator", icon: "📈", desc: "Calculate markup & profit margins", badge: "" },
-            { label: "Discount Calc", href: "/calculators/discount-calculator", icon: "🏷️", desc: "Quickly find final sale price", badge: "" },
+            { label: "EMI Calculator", href: "/calculators/emi-calculator", icon: Calculator, desc: "Calculate monthly loan payments", badge: "" },
+            { label: "GST Calculator", href: "/calculators/gst-calculator", icon: Percent, desc: "Inclusive/Exclusive GST auto-calc", badge: "" },
+            { label: "Salary Calculator", href: "/calculators/salary-calculator", icon: BadgeIndianRupee, desc: "Gross to Net salary breakdown", badge: "" },
+            { label: "Interest Calculator", href: "/calculators/interest-calculator", icon: TrendingUp, desc: "Simple & Compound interest", badge: "" },
+            { label: "Loan Calculator", href: "/calculators/loan-calculator", icon: Coins, desc: "Advanced tool for home/car loans", badge: "" },
+            { label: "Profit Margin", href: "/calculators/profit-margin-calculator", icon: BarChart3, desc: "Calculate markup & profit margins", badge: "" },
+            { label: "Discount Calc", href: "/calculators/discount-calculator", icon: Tag, desc: "Quickly find final sale price", badge: "" },
         ],
     },
 ];
@@ -122,7 +129,17 @@ export default function DashCreatePage() {
                                                 letterSpacing: "0.04em",
                                             }}>{doc.badge}</span>
                                         )}
-                                        <span style={{ fontSize: "28px" }}>{doc.icon}</span>
+                                        <div style={{
+                                            width: "48px", height: "48px",
+                                            background: "#F0FDFA",
+                                            borderRadius: "12px",
+                                            display: "flex", alignItems: "center",
+                                            justifyContent: "center",
+                                            border: "1px solid #CCFBF1",
+                                            marginBottom: "4px"
+                                        }}>
+                                            <doc.icon size={28} color={T} strokeWidth={1.5} />
+                                        </div>
                                         <div>
                                             <p style={{
                                                 fontFamily: "Space Grotesk, sans-serif",

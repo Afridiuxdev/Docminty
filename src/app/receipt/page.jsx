@@ -58,13 +58,6 @@ function ReceiptPreview({ form, template = "Classic", accent = "#0D9488" }) {
 
   const receiptBody = (
     <div className="pdf-body">
-      {template !== "Classic" && (form.fromAddress || form.fromPhone || form.fromEmail) && (
-        <div style={{ marginBottom: "14px", padding: "8px 12px", background: "#F8F9FA", borderRadius: "6px", fontSize: "11px", color: "#6B7280", fontFamily: "Inter, sans-serif", lineHeight: 1.6 }}>
-          {form.fromAddress && <span>{form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}{fromState ? `, ${fromState.name}` : ""}&nbsp;&nbsp;</span>}
-          {form.fromPhone && <span>· Ph: {form.fromPhone}&nbsp;&nbsp;</span>}
-          {form.fromEmail && <span>· {form.fromEmail}</span>}
-        </div>
-      )}
       <div style={{ background: "#F0FDFA", border: `2px solid ${accent}`, borderRadius: "10px", padding: "20px 24px", textAlign: "center", marginBottom: "20px" }}>
         <p style={{ fontSize: "11px", color: "#6B7280", margin: "0 0 4px", fontFamily: "Inter, sans-serif", textTransform: "uppercase", letterSpacing: "0.08em" }}>Amount Received</p>
         <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "36px", color: accent, margin: 0, lineHeight: 1 }}>
@@ -104,33 +97,46 @@ function ReceiptPreview({ form, template = "Classic", accent = "#0D9488" }) {
 
   if (template === "Modern") {
     return (
-      <div className="pdf-preview" style={{ display: "flex", gap: 0, padding: 0, overflow: "hidden" }}>
-        <div style={{ width: "140px", minWidth: "140px", background: accent, padding: "24px 16px", display: "flex", flexDirection: "column", gap: "20px" }}>
-          {form.logo && <img src={form.logo} alt="Logo" style={{ height: "36px", objectFit: "contain", filter: "brightness(0) invert(1)" }} />}
-          <div>
-            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "16px", color: "#fff", margin: "0 0 4px" }}>RECEIPT</p>
-            <p style={{ fontSize: "10px", color: "rgba(255,255,255,0.7)", margin: 0, fontFamily: "Inter, sans-serif" }}>#{form.receiptNumber}</p>
-          </div>
-          <div>
-            <p style={{ fontSize: "9px", color: "rgba(255,255,255,0.6)", margin: "0 0 2px", fontFamily: "Inter, sans-serif", textTransform: "uppercase" }}>Date</p>
-            <p style={{ fontSize: "10px", color: "#fff", margin: 0, fontFamily: "Inter, sans-serif" }}>{form.receiptDate}</p>
-          </div>
-          <div>
-            <p style={{ fontSize: "9px", color: "rgba(255,255,255,0.6)", margin: "0 0 2px", fontFamily: "Inter, sans-serif", textTransform: "uppercase" }}>From</p>
-            <p style={{ fontSize: "10px", color: "#fff", margin: 0, fontFamily: "Space Grotesk, sans-serif", fontWeight: 600 }}>{form.fromName || "—"}</p>
+      <div className="pdf-preview" style={{ display: "flex", padding: 0, overflow: "hidden" }}>
+        <div style={{ width: "135px", background: accent, padding: "24px 14px", flexShrink: 0, color: "#fff", display: "flex", flexDirection: "column", wordBreak: "break-word" }}>
+          <p style={{ fontSize: "15px", fontWeight: 800, margin: "0 0 4px", fontFamily: "Space Grotesk, sans-serif" }}>RECEIPT</p>
+          <p style={{ fontSize: "10px", opacity: 0.75, margin: "0 0 20px" }}>#{form.receiptNumber}</p>
+          <p style={{ fontSize: "8px", fontWeight: 700, opacity: 0.6, textTransform: "uppercase", letterSpacing: "0.06em", margin: "0 0 3px" }}>From</p>
+          <p style={{ fontSize: "10px", fontWeight: 600, margin: "0 0 4px", lineHeight: 1.3 }}>{form.fromName || "Your Business"}</p>
+          <p style={{ fontSize: "9px", opacity: 0.8, margin: "0 0 16px", lineHeight: 1.4, whiteSpace: "pre-wrap" }}>
+            {form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}{fromState ? `, ${fromState.name}` : ""}
+            {form.fromPhone && <><br />Ph: {form.fromPhone}</>}
+            {form.fromEmail && <><br /><span style={{ wordBreak: "break-all" }}>Em: {form.fromEmail}</span></>}
+          </p>
+          <div style={{ marginTop: "auto" }}>
+            <p style={{ fontSize: "8px", fontWeight: 700, opacity: 0.6, textTransform: "uppercase", letterSpacing: "0.06em", margin: "0 0 3px" }}>Date</p>
+            <p style={{ fontSize: "10px", fontWeight: 600, margin: 0 }}>{form.receiptDate}</p>
           </div>
         </div>
-        <div style={{ flex: 1, overflow: "hidden" }}>{receiptBody}</div>
+        <div style={{ flex: 1 }}>{receiptBody}</div>
       </div>
     );
   }
   if (template === "Corporate") {
     return (
       <div className="pdf-preview">
-        <div style={{ background: accent, padding: "20px 24px", textAlign: "center" }}>
-          {form.logo && <img src={form.logo} alt="Logo" style={{ height: "36px", objectFit: "contain", filter: "brightness(0) invert(1)", display: "block", margin: "0 auto 8px" }} />}
-          <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "20px", color: "#fff", margin: 0 }}>RECEIPT</p>
-          <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.8)", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>{form.fromName || "Business Name"} · #{form.receiptNumber} · {form.receiptDate}</p>
+        <div style={{ textAlign: "center", padding: "20px 24px 16px", borderBottom: `2px solid ${accent}`, wordBreak: "break-word" }}>
+          {form.logo && <img src={form.logo} alt="Logo" style={{ height: "40px", objectFit: "contain", display: "block", margin: "0 auto 8px" }} />}
+          <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "20px", color: accent, margin: "0 0 2px", letterSpacing: "0.05em" }}>{form.fromName || "Your Business Name"}</p>
+          <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 6px", lineHeight: 1.5, maxWidth: "500px", marginLeft: "auto", marginRight: "auto" }}>
+            {form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}{fromState ? `, ${fromState.name}` : ""}
+            {(form.fromPhone || form.fromEmail) && <><br />{form.fromPhone && `Ph: ${form.fromPhone}`}{form.fromEmail && ` | Em: ${form.fromEmail}`}</>}
+          </p>
+          <div style={{ display: "flex", justifyContent: "center", gap: "16px", fontSize: "10px", color: "#9CA3AF", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.04em" }}>
+            <span>RECEIPT #{form.receiptNumber}</span>
+            <span>Date: {form.receiptDate}</span>
+          </div>
+          {form.signature && (
+            <div style={{ marginTop: "12px", display: "flex", flexDirection: "column", alignItems: "center" }}>
+              <img src={form.signature} alt="Signature" style={{ maxHeight: "40px", maxWidth: "120px", display: "block" }} />
+              <p style={{ fontSize: "8px", color: "#9CA3AF", margin: "2px 0 0" }}>Authorised Signatory</p>
+            </div>
+          )}
         </div>
         {receiptBody}
       </div>
@@ -138,16 +144,31 @@ function ReceiptPreview({ form, template = "Classic", accent = "#0D9488" }) {
   }
   if (template === "Elegant") {
     return (
-      <div className="pdf-preview" style={{ borderBottom: `4px solid ${accent}` }}>
-        <div style={{ padding: "20px 24px 16px", borderBottom: "1px solid #E5E7EB" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-            <div>
-              {form.logo && <img src={form.logo} alt="Logo" style={{ height: "40px", objectFit: "contain", marginBottom: "6px", display: "block" }} />}
+      <div className="pdf-preview">
+        {/* Elegant: Left accent border strip + stacked layout */}
+        <div style={{ display: "flex", borderBottom: "1px solid #E5E7EB" }}>
+          <div style={{ width: "5px", background: accent, flexShrink: 0, borderRadius: "0" }} />
+          <div style={{ flex: 1, padding: "20px 20px 16px", display: "flex", justifyContent: "space-between", alignItems: "flex-start", wordBreak: "break-word" }}>
+            <div style={{ maxWidth: "60%" }}>
+              {form.logo && <img src={form.logo} alt="Logo" style={{ height: "40px", objectFit: "contain", marginBottom: "8px", display: "block" }} />}
               <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "15px", color: "#111827", margin: 0 }}>{form.fromName || "Your Business Name"}</p>
+              {(form.fromAddress || fromState) && (
+                <p style={{ fontSize: "10px", color: "#6B7280", margin: "4px 0 0", lineHeight: 1.5, fontFamily: "Inter, sans-serif" }}>
+                  {form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}{fromState ? `, ${fromState.name}` : ""}
+                </p>
+              )}
+              {(form.fromPhone || form.fromEmail) && (
+                <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "3px 0 0", lineHeight: 1.5, fontFamily: "Inter, sans-serif" }}>
+                  {form.fromPhone && `Ph: ${form.fromPhone}`}{form.fromPhone && form.fromEmail ? "  |  " : ""}{form.fromEmail && `Em: ${form.fromEmail}`}
+                </p>
+              )}
             </div>
             <div style={{ textAlign: "right" }}>
-              <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "20px", color: accent, margin: 0 }}>RECEIPT</p>
-              <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "3px 0 0", fontFamily: "Inter, sans-serif" }}>#{form.receiptNumber}</p>
+              <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "28px", color: accent, margin: 0, letterSpacing: "-0.5px" }}>RECEIPT</p>
+              <div style={{ marginTop: "6px", display: "flex", flexDirection: "column", gap: "2px", alignItems: "flex-end" }}>
+                <span style={{ fontSize: "10px", fontWeight: 600, color: "#9CA3AF", fontFamily: "Inter, sans-serif", textTransform: "uppercase", letterSpacing: "0.08em" }}>#{form.receiptNumber}</span>
+                <span style={{ fontSize: "10px", color: "#9CA3AF", fontFamily: "Inter, sans-serif" }}>{form.receiptDate}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -158,40 +179,52 @@ function ReceiptPreview({ form, template = "Classic", accent = "#0D9488" }) {
   if (template === "Classic") {
     return (
       <div className="pdf-preview">
-        <div className="pdf-header" style={{ borderBottom: `2px solid ${accent}` }}>
-          <div>
-            {form.logo && <img src={form.logo} alt="Logo" style={{ height: "48px", objectFit: "contain", marginBottom: "8px", display: "block" }} />}
-            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: "#111827", margin: 0 }}>{form.fromName || "Your Business Name"}</p>
-            {form.fromAddress && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}</p>}
-            {fromState && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{fromState.name}</p>}
-            {form.fromPhone && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>Ph: {form.fromPhone}</p>}
-            {form.fromEmail && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.fromEmail}</p>}
+        {/* Classic: Full accent-colored header bar */}
+        <div style={{ background: accent, padding: "20px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", wordBreak: "break-word" }}>
+          <div style={{ maxWidth: "60%" }}>
+            {form.logo && <img src={form.logo} alt="Logo" style={{ height: "36px", objectFit: "contain", marginBottom: "6px", display: "block" }} />}
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: "#fff", margin: 0 }}>{form.fromName || "Your Business Name"}</p>
+            <p style={{ fontSize: "10px", color: "rgba(255,255,255,0.85)", margin: "4px 0 0", lineHeight: 1.5, whiteSpace: "pre-wrap", fontFamily: "Inter, sans-serif" }}>
+              {form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}{fromState ? `, ${fromState.name}` : ""}
+              {(form.fromPhone || form.fromEmail) && (
+                <><br />{form.fromPhone && `Ph: ${form.fromPhone}`}{form.fromEmail && ` | Em: ${form.fromEmail}`}</>
+              )}
+            </p>
           </div>
-          <div style={{ textAlign: "right" }}>
-            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "22px", color: accent, margin: 0 }}>RECEIPT</p>
-            <p style={{ fontSize: "12px", color: "#6B7280", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>#{form.receiptNumber}</p>
-            <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>Date: {form.receiptDate}</p>
+          <div style={{ textAlign: "right", maxWidth: "35%" }}>
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "26px", color: "#fff", margin: 0, letterSpacing: "0.04em" }}>RECEIPT</p>
+            <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.8)", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>#{form.receiptNumber}</p>
+            <p style={{ fontSize: "10px", color: "rgba(255,255,255,0.7)", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>Date: {form.receiptDate}</p>
           </div>
         </div>
         {receiptBody}
       </div>
     );
   }
-  // Minimal (default)
+  // Minimal (default): Premium letterhead / stationery style
   return (
-    <div className="pdf-preview">
-      <div style={{ padding: "20px 24px 16px", borderBottom: "1px solid #E5E7EB" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div>
-            {form.logo && <img src={form.logo} alt="Logo" style={{ height: "32px", objectFit: "contain", marginBottom: "4px", display: "block" }} />}
-            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "14px", color: "#111827", margin: 0 }}>{form.fromName || "Business Name"}</p>
-          </div>
-          <div style={{ textAlign: "right" }}>
-            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: "#111827", margin: 0 }}>RECEIPT</p>
-            <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>#{form.receiptNumber}</p>
-          </div>
+    <div className="pdf-preview" style={{ padding: 0 }}>
+      {/* Thin top accent stripe */}
+      <div style={{ height: "6px", background: accent }} />
+      {/* Letterhead header */}
+      <div style={{ padding: "18px 24px 14px", display: "flex", justifyContent: "space-between", alignItems: "flex-start", borderBottom: "1px solid #E5E7EB", wordBreak: "break-word" }}>
+        <div>
+          {form.logo && <img src={form.logo} alt="Logo" style={{ height: "32px", objectFit: "contain", marginBottom: "6px", display: "block" }} />}
+          <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 300, fontSize: "22px", color: "#111827", margin: 0, letterSpacing: "-0.3px" }}>{form.fromName || "Your Business Name"}</p>
+          {(form.fromAddress || fromState || form.fromPhone || form.fromEmail) && (
+            <p style={{ fontSize: "9px", color: "#BDBDBD", margin: "5px 0 0", fontFamily: "Inter, sans-serif", letterSpacing: "0.04em", lineHeight: 1.6 }}>
+              {form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}{fromState ? `, ${fromState.name}` : ""}
+              {(form.fromPhone || form.fromEmail) && (
+                <><br />{form.fromPhone && `Ph: ${form.fromPhone}`}{form.fromPhone && form.fromEmail ? "  ·  " : ""}{form.fromEmail && `Em: ${form.fromEmail}`}</>
+              )}
+            </p>
+          )}
         </div>
-        <div style={{ height: "2px", background: accent, marginTop: "12px", borderRadius: "1px" }} />
+        <div style={{ textAlign: "right", paddingTop: "4px" }}>
+          <p style={{ fontSize: "9px", fontWeight: 700, color: "#BDBDBD", fontFamily: "Inter, sans-serif", textTransform: "uppercase", letterSpacing: "0.12em", margin: 0 }}>Receipt</p>
+          <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 600, fontSize: "13px", color: accent, margin: "4px 0 0" }}>#{form.receiptNumber}</p>
+          <p style={{ fontSize: "9px", color: "#BDBDBD", margin: "3px 0 0", fontFamily: "Inter, sans-serif", letterSpacing: "0.04em" }}>{form.receiptDate}</p>
+        </div>
       </div>
       {receiptBody}
     </div>
@@ -313,9 +346,12 @@ export default function ReceiptPage() {
                 <div className="form-field"><label className="field-label">Payer Address</label><textarea className="doc-textarea" placeholder="Payer address (optional)" value={form.receivedFromAddress} onChange={e => updateField("receivedFromAddress", e.target.value)} /></div>
                 <div className="form-field">
                   <label className="field-label">Amount Received (₹) *</label>
-                  <input className="doc-input" type="number" placeholder="0.00" value={form.amount} onChange={e => updateField("amount", e.target.value)}
+                  <input className="doc-input" type="number" placeholder="0.00" value={form.amount}
+                    onChange={e => { if (e.target.value.replace(/[^0-9.]/g, '').length <= 15) updateField("amount", e.target.value); }}
+                    maxLength={15}
                     style={{ fontSize: "16px", fontWeight: 700, color: T, fontFamily: "Space Grotesk, sans-serif" }}
                   />
+                  <p style={{ fontSize: "10px", color: "#9CA3AF", marginTop: "4px" }}>Maximum 15 digits allowed.</p>
                 </div>
                 <div className="form-field">
                   <label className="field-label">Payment Mode</label>

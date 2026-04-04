@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
 import { documentsApi } from "@/api/documents";
 import { getAccessToken } from "@/api/auth";
+import { INDIAN_STATES } from "@/constants/indianStates";
 
 const T = "#0D9488";
 
@@ -35,6 +36,8 @@ const DEFAULT_FORM = {
   certType: "Completion Certificate",
   orgName: "",
   orgAddress: "",
+  orgCity: "",
+  orgState: "27",
   orgWebsite: "",
   recipientName: "",
   course: "",
@@ -59,9 +62,16 @@ function CertPreview({ form, template = "Classic", accent = "#0D9488" }) {
       <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "18px", color: "#111827", margin: "0 0 4px", textTransform: "uppercase", letterSpacing: "0.1em" }}>
         {form.orgName || "Organisation Name"}
       </p>
-      {form.orgAddress && <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "0 0 2px" }}>{form.orgAddress}</p>}
+      {(form.orgAddress || form.orgCity || form.orgState) && (
+        <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "0 0 2px" }}>
+          {[
+            form.orgAddress || null,
+            (form.orgCity || form.orgState) ? `${form.orgCity ? form.orgCity + ", " : ""}${INDIAN_STATES.find(s => s.code === form.orgState)?.name || ""}` : null
+          ].filter(Boolean).join(", ")}
+        </p>
+      )}
       {form.orgWebsite && <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "0 0 20px" }}>{form.orgWebsite}</p>}
-      {!form.orgWebsite && form.orgAddress && <div style={{ marginBottom: "20px" }} />}
+      {!form.orgWebsite && (form.orgAddress || form.orgCity || form.orgState) && <div style={{ marginBottom: "20px" }} />}
       <div style={{ background: accent, color: "#fff", padding: "6px 28px", borderRadius: "2px", fontFamily: "Space Grotesk, sans-serif", fontSize: "13px", fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "20px" }}>
         {form.certType}
       </div>
@@ -136,20 +146,58 @@ function CertPreview({ form, template = "Classic", accent = "#0D9488" }) {
         </div>
         <div style={{ padding: "32px 40px", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center" }}>
           {form.logo && <img src={form.logo} alt="Logo" style={{ height: "44px", objectFit: "contain", marginBottom: "12px" }} />}
-          <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: "#111827", margin: "0 0 16px", textTransform: "uppercase", letterSpacing: "0.08em" }}>{form.orgName || "Organisation Name"}</p>
+          <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: "#111827", margin: "0 0 4px", textTransform: "uppercase", letterSpacing: "0.08em" }}>{form.orgName || "Organisation Name"}</p>
+          {(form.orgAddress || form.orgCity || form.orgState) && (
+            <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "0 0 2px" }}>
+              {[
+                form.orgAddress || null,
+                (form.orgCity || form.orgState) ? `${form.orgCity ? form.orgCity + ", " : ""}${INDIAN_STATES.find(s => s.code === form.orgState)?.name || ""}` : null
+              ].filter(Boolean).join(", ")}
+            </p>
+          )}
+          {form.orgWebsite && <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "0 0 16px" }}>{form.orgWebsite}</p>}
+          {!form.orgWebsite && (form.orgAddress || form.orgCity || form.orgState) && <div style={{ marginBottom: "16px" }} />}
           <p style={{ fontSize: "13px", color: "#6B7280", margin: "0 0 8px" }}>This is to certify that</p>
           <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "26px", color: "#111827", margin: "0 0 12px", borderBottom: `2px solid ${accent}`, paddingBottom: "8px", minWidth: "200px" }}>{form.recipientName || "Recipient Name"}</p>
           <p style={{ fontSize: "13px", color: "#374151", margin: "0 0 8px", lineHeight: 1.6 }}>{form.description || "has successfully completed the course in"}</p>
           {form.course && <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: accent, margin: "0 0 16px" }}>{form.course}</p>}
-          <div style={{ display: "flex", gap: "24px", justifyContent: "center", marginBottom: "20px" }}>
+          <div style={{ display: "flex", gap: "24px", justifyContent: "center", marginBottom: "32px" }}>
             {form.duration && <div style={{ textAlign: "center" }}><p style={{ fontSize: "10px", color: "#9CA3AF", margin: "0 0 2px", textTransform: "uppercase" }}>Duration</p><p style={{ fontSize: "13px", fontWeight: 600, color: "#111827", margin: 0 }}>{form.duration}</p></div>}
             {form.grade && <div style={{ textAlign: "center" }}><p style={{ fontSize: "10px", color: "#9CA3AF", margin: "0 0 2px", textTransform: "uppercase" }}>Grade</p><p style={{ fontSize: "13px", fontWeight: 600, color: accent, margin: 0 }}>{form.grade}</p></div>}
             <div style={{ textAlign: "center" }}><p style={{ fontSize: "10px", color: "#9CA3AF", margin: "0 0 2px", textTransform: "uppercase" }}>Date</p><p style={{ fontSize: "13px", fontWeight: 600, color: "#111827", margin: 0 }}>{form.issueDate}</p></div>
           </div>
-          <div style={{ borderTop: "2px solid #374151", paddingTop: "6px", minWidth: "140px", textAlign: "center" }}>
-            <p style={{ fontSize: "12px", fontWeight: 600, color: "#111827", margin: 0 }}>{form.signatoryName || "Signatory Name"}</p>
-            <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "2px 0 0" }}>{form.signatoryDesignation || "Designation"}</p>
+          <div style={{ display: "flex", gap: "48px", justifyContent: "center", alignItems: "flex-end", width: "100%" }}>
+            <div style={{ minWidth: "140px", textAlign: "center" }}>
+              {form.signature ? (
+                <div style={{ marginBottom: "4px" }}>
+                  <img src={form.signature} alt="Signature" style={{ maxHeight: "40px", maxWidth: "120px", display: "block", margin: "0 auto" }} />
+                </div>
+              ) : (
+                <div style={{ height: "30px" }} />
+              )}
+              <div style={{ borderTop: "2px solid #374151", paddingTop: "6px" }}>
+                <p style={{ fontSize: "12px", fontWeight: 600, color: "#111827", margin: 0 }}>{form.signatoryName || "Signatory Name"}</p>
+                <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "2px 0 0" }}>{form.signatoryDesignation || "Designation"}</p>
+              </div>
+            </div>
+            {form.enableQR && (
+              <div style={{ textAlign: "center" }}>
+                <div style={{ 
+                  width: "56px", height: "56px", border: `2px solid ${accent}`, borderRadius: "4px", 
+                  display: "flex", alignItems: "center", justifyContent: "center", background: "#F8F9FA", 
+                  fontSize: "8px", color: accent, fontWeight: 600, overflow: "hidden" 
+                }}>
+                  {form.qrCodeDataUrl ? (
+                    <img src={form.qrCodeDataUrl} alt="Verification QR" style={{ width: "100%", height: "100%", padding: "2px" }} />
+                  ) : (
+                    <Shield size={16} color={accent} />
+                  )}
+                </div>
+                <p style={{ fontSize: "9px", color: "#9CA3AF", margin: "4px 0 0" }}>Scan to Verify</p>
+              </div>
+            )}
           </div>
+          {form.enableQR && <p style={{ fontSize: "9px", color: "#D1D5DB", margin: "16px 0 0", letterSpacing: "0.05em", fontFamily: "monospace" }}>Verification ID: {form.verificationId}</p>}
         </div>
       </div>
     );
@@ -298,8 +346,16 @@ export default function CertificatePage() {
                   )}
                 </div>
                 <div className="form-field"><label className="field-label">Organisation Name *</label><input className="doc-input" placeholder="Reddy Academy" value={form.orgName} onChange={e => updateField("orgName", e.target.value)} /></div>
-                <div className="form-field"><label className="field-label">Address</label><input className="doc-input" placeholder="City, State" value={form.orgAddress} onChange={e => updateField("orgAddress", e.target.value)} /></div>
-                <div className="form-field"><label className="field-label">Website</label><input className="doc-input" placeholder="www.yourorg.com" value={form.orgWebsite} onChange={e => updateField("orgWebsite", e.target.value)} /></div>
+                <div className="form-field"><label className="field-label">Address</label><input className="doc-input" placeholder="Street Address" value={form.orgAddress || ""} onChange={e => updateField("orgAddress", e.target.value)} /></div>
+                <div className="form-row">
+                  <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">City</label><input className="doc-input" placeholder="Mumbai" value={form.orgCity || ""} onChange={e => updateField("orgCity", e.target.value)} /></div>
+                  <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">State</label>
+                    <select className="doc-select" value={form.orgState || "27"} onChange={e => updateField("orgState", e.target.value)}>
+                      {INDIAN_STATES.map(s => <option key={s.code} value={s.code}>{s.name}</option>)}
+                    </select>
+                  </div>
+                </div>
+                <div className="form-field" style={{ marginTop: "10px" }}><label className="field-label">Website</label><input className="doc-input" placeholder="www.yourorg.com" value={form.orgWebsite || ""} onChange={e => updateField("orgWebsite", e.target.value)} /></div>
                 <div className="form-field">
                   <label className="field-label">Certificate Type</label>
                   <select className="doc-select" value={form.certType} onChange={e => updateField("certType", e.target.value)}>
@@ -415,11 +471,6 @@ export default function CertificatePage() {
                     ))}
                   </div>
                 </div>
-                <div style={{ borderTop: "1px solid #F3F4F6", margin: "16px 0" }} />
-                <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn">
-                  <Download size={15} />
-                  {downloading ? "Generating..." : "Download PDF"}
-                </button>
               </div>
             )}
 

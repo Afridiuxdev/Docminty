@@ -1,11 +1,14 @@
-﻿"use client";
+"use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import DashHeader from "@/components/dashboard/DashHeader";
 import UsageBar from "@/components/dashboard/UsageBar";
 import DocCard from "@/components/dashboard/DocCard";
-import { FileText, TrendingUp, Clock, Star, ArrowRight, Plus } from "lucide-react";
+import {
+  FileText, TrendingUp, Clock, Star, ArrowRight, Plus,
+  FileQuestion, Banknote, Receipt, Home, Award, Briefcase, ShoppingCart, QrCode
+} from "lucide-react";
 import { documentsApi } from "@/api/documents";
 import { authApi, getAccessToken } from "@/api/auth";
 import toast from "react-hot-toast";
@@ -13,15 +16,15 @@ import toast from "react-hot-toast";
 const T = "#0D9488";
 
 const QUICK_CREATE = [
-  { label: "GST Invoice",      href: "/invoice",          color: T,         icon: "📄" },
-  { label: "Quotation",        href: "/quotation",        color: "#F59E0B", icon: "💬" },
-  { label: "Salary Slip",      href: "/salary-slip",      color: "#7C3AED", icon: "💰" },
-  { label: "Receipt",          href: "/receipt",          color: "#3B82F6", icon: "🧾" },
-  { label: "Rent Receipt",     href: "/rent-receipt",     color: "#10B981", icon: "🏠" },
-  { label: "Certificate",      href: "/certificate",      color: "#EC4899", icon: "🏆" },
-  { label: "Experience Letter",href: "/experience-letter",color: "#6366F1", icon: "📋" },
-  { label: "Purchase Order",   href: "/purchase-order",   color: "#D97706", icon: "🛒" },
-  { label: "QR Code Generator", href: "/tools/qr-generator", color: "#6366F1", icon: "📱" },
+  { label: "GST Invoice",      href: "/invoice",          icon: FileText },
+  { label: "Quotation",        href: "/quotation",        icon: FileQuestion },
+  { label: "Salary Slip",      href: "/salary-slip",      icon: Banknote },
+  { label: "Receipt",          href: "/receipt",          icon: Receipt },
+  { label: "Rent Receipt",     href: "/rent-receipt",     icon: Home },
+  { label: "Certificate",      href: "/certificate",      icon: Award },
+  { label: "Experience Letter",href: "/experience-letter",icon: Briefcase },
+  { label: "Purchase Order",   href: "/purchase-order",   icon: ShoppingCart },
+  { label: "QR Code Generator", href: "/tools/qr-generator", icon: QrCode },
 ];
 
 function timeAgo(dateStr) {
@@ -128,12 +131,20 @@ export default function DashboardPage() {
               <Link href="/dashboard/create" style={{ fontSize: "12px", color: T, textDecoration: "none", fontFamily: "Inter, sans-serif" }}>View all</Link>
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
-              {QUICK_CREATE.map(item => (
-                <Link key={item.href} href={item.href} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "10px 12px", border: "1px solid #E5E7EB", borderRadius: "8px", textDecoration: "none", transition: "all 150ms", background: "#FAFAFA" }}>
-                  <span style={{ fontSize: "16px" }}>{item.icon}</span>
-                  <span style={{ fontSize: "12px", fontWeight: 600, color: "#374151", fontFamily: "Inter, sans-serif" }}>{item.label}</span>
-                </Link>
-              ))}
+              {QUICK_CREATE.map(item => {
+                const Icon = item.icon;
+                return (
+                  <Link key={item.href} href={item.href} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "10px 12px", border: "1px solid #E5E7EB", borderRadius: "8px", textDecoration: "none", transition: "all 150ms", background: "#FAFAFA" }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = T; e.currentTarget.style.background = "#F0FDFA"; }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.background = "#FAFAFA"; }}
+                  >
+                    <div style={{ width: "24px", height: "24px", background: "#F0FDFA", borderRadius: "6px", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid #CCFBF1" }}>
+                      <Icon size={14} color={T} strokeWidth={1.5} />
+                    </div>
+                    <span style={{ fontSize: "12px", fontWeight: 600, color: "#374151", fontFamily: "Inter, sans-serif" }}>{item.label}</span>
+                  </Link>
+                );
+              })}
             </div>
           </div>
 

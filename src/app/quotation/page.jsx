@@ -39,69 +39,69 @@ const DEFAULT_FORM = {
 };
 
 function ItemRow({ item, index, onChange, onRemove, showHSN, showDiscount }) {
-    const update = (field, value) => {
-        const updated = { ...item, [field]: value };
-        const qty = parseFloat(updated.qty) || 0;
-        const rate = parseFloat(updated.rate) || 0;
-        const discount = parseFloat(updated.discount) || 0;
-        const subtotal = qty * rate - discount;
-        const gst = (subtotal * (parseFloat(updated.gstRate) || 0)) / 100;
-        updated.amount = (subtotal + gst).toFixed(2);
-        onChange(index, updated);
-    };
+  const update = (field, value) => {
+    const updated = { ...item, [field]: value };
+    const qty = parseFloat(updated.qty) || 0;
+    const rate = parseFloat(updated.rate) || 0;
+    const discount = parseFloat(updated.discount) || 0;
+    const subtotal = qty * rate - discount;
+    const gst = (subtotal * (parseFloat(updated.gstRate) || 0)) / 100;
+    updated.amount = (subtotal + gst).toFixed(2);
+    onChange(index, updated);
+  };
 
-    return (
-        <div style={{
-            background: "#fff", border: "1px solid #E5E7EB", borderRadius: "8px",
-            padding: "16px", marginBottom: "12px", boxShadow: "0 1px 2px rgba(0,0,0,0.02)", position: "relative"
-        }}>
-            <div style={{ display: "flex", gap: "12px", marginBottom: "16px", alignItems: "flex-start" }}>
-                <div style={{ flex: 1 }}>
-                    <label style={{ display: "block", fontSize: "11px", fontWeight: 600, color: "#6B7280", marginBottom: "4px", textTransform: "uppercase", letterSpacing: "0.05em" }}>Description</label>
-                    <input className="doc-input" placeholder="Item description" value={item.description} onChange={e => update("description", e.target.value)} style={{ background: "#F9FAFB" }} />
-                </div>
-                <button onClick={() => onRemove(index)} title="Remove Item" style={{ background: "#FEE2E2", color: "#EF4444", border: "none", width: "36px", height: "36px", borderRadius: "6px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", marginTop: "18px", transition: "background 150ms" }}>
-                    <Trash2 size={16} />
-                </button>
-            </div>
-            <div style={{
-                display: "grid",
-                gridTemplateColumns: showHSN ? (showDiscount ? "repeat(5, 1fr) auto" : "repeat(4, 1fr) auto") : (showDiscount ? "repeat(4, 1fr) auto" : "repeat(3, 1fr) auto"),
-                gap: "12px", alignItems: "end"
-            }}>
-                {showHSN && (
-                    <div>
-                        <label style={{ display: "block", fontSize: "11px", fontWeight: 600, color: "#6B7280", marginBottom: "4px" }}>HSN</label>
-                        <input className="doc-input" placeholder="HSN" value={item.hsn} onChange={e => update("hsn", e.target.value)} style={{ background: "#F9FAFB" }} />
-                    </div>
-                )}
-                <div>
-                    <label style={{ display: "block", fontSize: "11px", fontWeight: 600, color: "#6B7280", marginBottom: "4px" }}>Qty</label>
-                    <input className="doc-input" type="number" placeholder="1" value={item.qty} onChange={e => update("qty", e.target.value)} style={{ background: "#F9FAFB" }} />
-                </div>
-                <div>
-                    <label style={{ display: "block", fontSize: "11px", fontWeight: 600, color: "#6B7280", marginBottom: "4px" }}>Rate</label>
-                    <input className="doc-input" type="number" placeholder="0.00" value={item.rate} onChange={e => update("rate", e.target.value)} style={{ background: "#F9FAFB" }} />
-                </div>
-                {showDiscount && (
-                    <div>
-                        <label style={{ display: "block", fontSize: "11px", fontWeight: 600, color: "#6B7280", marginBottom: "4px" }}>Disc</label>
-                        <input className="doc-input" type="number" placeholder="0" value={item.discount} onChange={e => update("discount", e.target.value)} style={{ background: "#F9FAFB" }} />
-                    </div>
-                )}
-                <div>
-                    <label style={{ display: "block", fontSize: "11px", fontWeight: 600, color: "#6B7280", marginBottom: "4px" }}>GST (%)</label>
-                    <select className="doc-select" value={item.gstRate} onChange={e => update("gstRate", e.target.value)} style={{ background: "#F9FAFB" }}>
-                        {[0, 5, 12, 18, 28].map(r => <option key={r} value={r}>{r}%</option>)}
-                    </select>
-                </div>
-                <div style={{ textAlign: "right", height: "36px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-                    <span style={{ fontSize: "10px", fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase" }}>Amount</span>
-                    <span style={{ fontSize: "15px", fontWeight: 800, color: "#0D9488", fontFamily: "Inter, sans-serif", whiteSpace: "nowrap" }}>₹{item.amount}</span>
-                </div>
-            </div>
+  return (
+    <div style={{
+      background: "#fff", border: "1px solid #E5E7EB", borderRadius: "8px",
+      padding: "16px", marginBottom: "12px", boxShadow: "0 1px 2px rgba(0,0,0,0.02)", position: "relative"
+    }}>
+      <div style={{ display: "flex", gap: "12px", marginBottom: "16px", alignItems: "flex-start" }}>
+        <div style={{ flex: 1 }}>
+          <label style={{ display: "block", fontSize: "11px", fontWeight: 600, color: "#6B7280", marginBottom: "4px", textTransform: "uppercase", letterSpacing: "0.05em" }}>Description</label>
+          <input className="doc-input" placeholder="Item description" value={item.description} onChange={e => update("description", e.target.value)} style={{ background: "#F9FAFB" }} />
         </div>
-    );
+        <button onClick={() => onRemove(index)} title="Remove Item" style={{ background: "#FEE2E2", color: "#EF4444", border: "none", width: "36px", height: "36px", borderRadius: "6px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", marginTop: "18px", transition: "background 150ms" }}>
+          <Trash2 size={16} />
+        </button>
+      </div>
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: showHSN ? (showDiscount ? "repeat(5, 1fr) auto" : "repeat(4, 1fr) auto") : (showDiscount ? "repeat(4, 1fr) auto" : "repeat(3, 1fr) auto"),
+        gap: "12px", alignItems: "end"
+      }}>
+        {showHSN && (
+          <div>
+            <label style={{ display: "block", fontSize: "11px", fontWeight: 600, color: "#6B7280", marginBottom: "4px" }}>HSN</label>
+            <input className="doc-input" placeholder="HSN" value={item.hsn} onChange={e => update("hsn", e.target.value)} style={{ background: "#F9FAFB" }} />
+          </div>
+        )}
+        <div>
+          <label style={{ display: "block", fontSize: "11px", fontWeight: 600, color: "#6B7280", marginBottom: "4px" }}>Qty</label>
+          <input className="doc-input" type="number" placeholder="1" value={item.qty} onChange={e => update("qty", e.target.value)} style={{ background: "#F9FAFB" }} />
+        </div>
+        <div>
+          <label style={{ display: "block", fontSize: "11px", fontWeight: 600, color: "#6B7280", marginBottom: "4px" }}>Rate</label>
+          <input className="doc-input" type="number" placeholder="0.00" value={item.rate} onChange={e => update("rate", e.target.value)} style={{ background: "#F9FAFB" }} />
+        </div>
+        {showDiscount && (
+          <div>
+            <label style={{ display: "block", fontSize: "11px", fontWeight: 600, color: "#6B7280", marginBottom: "4px" }}>Disc</label>
+            <input className="doc-input" type="number" placeholder="0" value={item.discount} onChange={e => update("discount", e.target.value)} style={{ background: "#F9FAFB" }} />
+          </div>
+        )}
+        <div>
+          <label style={{ display: "block", fontSize: "11px", fontWeight: 600, color: "#6B7280", marginBottom: "4px" }}>GST (%)</label>
+          <select className="doc-select" value={item.gstRate} onChange={e => update("gstRate", e.target.value)} style={{ background: "#F9FAFB" }}>
+            {[0, 5, 12, 18, 28].map(r => <option key={r} value={r}>{r}%</option>)}
+          </select>
+        </div>
+        <div style={{ textAlign: "right", height: "36px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+          <span style={{ fontSize: "10px", fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase" }}>Amount</span>
+          <span style={{ fontSize: "15px", fontWeight: 800, color: "#0D9488", fontFamily: "Inter, sans-serif", whiteSpace: "nowrap" }}>₹{item.amount}</span>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 function QuotationPreview({ form, template = "Classic", accent = "#0D9488" }) {
@@ -112,23 +112,24 @@ function QuotationPreview({ form, template = "Classic", accent = "#0D9488" }) {
   const sharedBody = (
     <div className="pdf-body">
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px", marginBottom: "20px" }}>
-        <div>
-          <p style={{ fontSize: "10px", fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 6px", fontFamily: "Space Grotesk, sans-serif" }}>Billed By</p>
-          <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "13px", color: "#111827", margin: 0 }}>{form.fromName || "Your Business"}</p>
-          {form.fromGSTIN && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>GSTIN: {form.fromGSTIN}</p>}
-          {form.fromAddress && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}</p>}
-          {fromState && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{fromState.name}</p>}
-          {form.fromPhone && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>Ph: {form.fromPhone}</p>}
-          {form.fromEmail && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.fromEmail}</p>}
-        </div>
-        <div>
+        <div style={{ wordBreak: "break-word" }}>
           <p style={{ fontSize: "10px", fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 6px", fontFamily: "Space Grotesk, sans-serif" }}>Quote For</p>
           <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "13px", color: "#111827", margin: 0 }}>{form.toName || "Client Name"}</p>
           {form.toGSTIN && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>GSTIN: {form.toGSTIN}</p>}
-          {form.toAddress && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.toAddress}{form.toCity ? `, ${form.toCity}` : ""}</p>}
+          {form.toAddress && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif", whiteSpace: "pre-wrap" }}>{form.toAddress}{form.toCity ? `, ${form.toCity}` : ""}</p>}
           {toState && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{toState.name}</p>}
-          {form.toPhone && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>Ph: {form.toPhone}</p>}
-          {form.toEmail && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.toEmail}</p>}
+          {(form.toPhone || form.toEmail) && (
+            <p style={{ fontSize: "11px", color: "#6B7280", margin: "4px 0 0", fontFamily: "Inter, sans-serif", lineHeight: 1.4 }}>
+              {form.toPhone && <span style={{ display: "block" }}>Ph: {form.toPhone}</span>}
+              {form.toEmail && <span style={{ display: "block", wordBreak: "break-all" }}>Em: {form.toEmail}</span>}
+            </p>
+          )}
+        </div>
+        <div>
+          <p style={{ fontSize: "10px", fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 6px", fontFamily: "Space Grotesk, sans-serif" }}>Tax Type</p>
+          <p style={{ fontSize: "12px", color: "#374151", fontFamily: "Inter, sans-serif", margin: 0 }}>
+            {form.taxType === "cgst_sgst" ? "CGST + SGST (Intrastate)" : form.taxType === "igst" ? "IGST (Interstate)" : "No Tax"}
+          </p>
         </div>
       </div>
       <table className="pdf-table">
@@ -202,24 +203,45 @@ function QuotationPreview({ form, template = "Classic", accent = "#0D9488" }) {
 
   if (template === "Modern") {
     return (
-      <div className="pdf-preview" style={{ display: "flex", gap: 0, padding: 0, overflow: "hidden" }}>
-        <div style={{ width: "140px", minWidth: "140px", background: accent, padding: "24px 16px", display: "flex", flexDirection: "column", gap: "20px" }}>
-          {form.logo && <img src={form.logo} alt="Logo" style={{ height: "36px", objectFit: "contain", filter: "brightness(0) invert(1)" }} />}
-          <div>
-            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "16px", color: "#fff", margin: 0 }}>QUOTATION</p>
-            <p style={{ fontSize: "10px", color: "rgba(255,255,255,0.7)", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>#{form.quoteNumber}</p>
-          </div>
-          <div>
-            <p style={{ fontSize: "9px", color: "rgba(255,255,255,0.6)", margin: "0 0 2px", textTransform: "uppercase", fontFamily: "Inter, sans-serif" }}>Date</p>
-            <p style={{ fontSize: "11px", color: "#fff", margin: 0, fontFamily: "Inter, sans-serif" }}>{form.quoteDate}</p>
-          </div>
-          <div>
-            <p style={{ fontSize: "9px", color: "rgba(255,255,255,0.6)", margin: "0 0 2px", textTransform: "uppercase", fontFamily: "Inter, sans-serif" }}>From</p>
-            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "12px", color: "#fff", margin: 0 }}>{form.fromName || "Your Business"}</p>
-            {form.fromGSTIN && <p style={{ fontSize: "9px", color: "rgba(255,255,255,0.7)", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.fromGSTIN}</p>}
+      <div className="pdf-preview" style={{ display: "flex", padding: 0, overflow: "hidden" }}>
+        <div style={{ width: "135px", background: accent, padding: "24px 14px", flexShrink: 0, color: "#fff", display: "flex", flexDirection: "column", wordBreak: "break-word" }}>
+          <p style={{ fontSize: "15px", fontWeight: 800, margin: "0 0 4px", fontFamily: "Space Grotesk, sans-serif" }}>QUOTATION</p>
+          <p style={{ fontSize: "10px", opacity: 0.75, margin: "0 0 24px" }}>#{form.quoteNumber}</p>
+          <p style={{ fontSize: "8px", fontWeight: 700, opacity: 0.6, textTransform: "uppercase", letterSpacing: "0.06em", margin: "0 0 3px" }}>From</p>
+          <p style={{ fontSize: "10px", fontWeight: 600, margin: "0 0 4px", lineHeight: 1.3 }}>{form.fromName || "Your Business"}</p>
+          <p style={{ fontSize: "9px", opacity: 0.8, margin: "0 0 16px", lineHeight: 1.4, whiteSpace: "pre-wrap" }}>
+            {form.fromAddress} {form.fromCity && `${form.fromCity}, `} {fromState && fromState.name}
+            {form.fromPhone && <><br />Ph: {form.fromPhone}</>}
+            {form.fromEmail && <><br /><span style={{ wordBreak: "break-all" }}>Em: {form.fromEmail}</span></>}
+          </p>
+
+          <p style={{ fontSize: "8px", fontWeight: 700, opacity: 0.6, textTransform: "uppercase", letterSpacing: "0.06em", margin: "0 0 3px" }}>Quote For</p>
+          <p style={{ fontSize: "10px", fontWeight: 600, margin: "0 0 16px", lineHeight: 1.4 }}>{form.toName || "Client Name"}</p>
+
+          <div style={{ marginTop: "auto" }}>
+            {(form.validUntil) && (
+              <div style={{ marginBottom: "16px" }}>
+                <p style={{ fontSize: "8px", opacity: 0.7, margin: "0 0 2px" }}>VALID UNTIL: {form.validUntil}</p>
+              </div>
+            )}
+            <p style={{ fontSize: "8px", fontWeight: 700, opacity: 0.6, textTransform: "uppercase", letterSpacing: "0.06em", margin: "0 0 3px" }}>Amount</p>
+            <p style={{ fontSize: "11px", fontWeight: 700, margin: 0 }}>Rs.{calc.grandTotal}</p>
           </div>
         </div>
-        <div style={{ flex: 1, overflow: "hidden" }}>{sharedBody}</div>
+        <div style={{ flex: 1 }}>
+          <div style={{ padding: "16px 20px 12px", borderBottom: "1px solid #F3F4F6" }}>
+            {form.logo && <img src={form.logo} alt="Logo" style={{ height: "36px", objectFit: "contain", marginBottom: "6px", display: "block" }} />}
+            {form.fromGSTIN && <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "0 0 1px", fontFamily: "Inter, sans-serif" }}>GSTIN: {form.fromGSTIN}</p>}
+            <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "0 0 12px", fontFamily: "Inter, sans-serif" }}>Date: {form.quoteDate}</p>
+            {form.signature && (
+              <div style={{ borderTop: "1px solid #F3F4F6", paddingTop: "8px" }}>
+                <img src={form.signature} alt="Signature" style={{ maxHeight: "36px", maxWidth: "100px", display: "block" }} />
+                <p style={{ fontSize: "8px", color: "#9CA3AF", margin: "2px 0 0" }}>Authorised Signatory</p>
+              </div>
+            )}
+          </div>
+          {sharedBody}
+        </div>
       </div>
     );
   }
@@ -227,14 +249,29 @@ function QuotationPreview({ form, template = "Classic", accent = "#0D9488" }) {
   if (template === "Corporate") {
     return (
       <div className="pdf-preview">
-        <div style={{ background: accent, padding: "24px", textAlign: "center" }}>
-          {form.logo && <img src={form.logo} alt="Logo" style={{ height: "40px", objectFit: "contain", display: "block", margin: "0 auto 8px", filter: "brightness(0) invert(1)" }} />}
-          <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "15px", color: "#fff", margin: "0 0 2px" }}>{form.fromName || "Your Business Name"}</p>
-          {form.fromGSTIN && <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.75)", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>GSTIN: {form.fromGSTIN}</p>}
-          <div style={{ marginTop: "12px", display: "inline-block", background: "rgba(255,255,255,0.15)", borderRadius: "4px", padding: "4px 16px" }}>
-            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "18px", color: "#fff", margin: 0 }}>QUOTATION</p>
-            <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.8)", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>#{form.quoteNumber} &nbsp;|&nbsp; {form.quoteDate}</p>
+        <div style={{ textAlign: "center", padding: "20px 24px 16px", borderBottom: `2px solid ${accent}`, wordBreak: "break-word" }}>
+          {form.logo && <img src={form.logo} alt="Logo" style={{ height: "40px", objectFit: "contain", display: "block", margin: "0 auto 8px" }} />}
+          <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "20px", color: accent, margin: "0 0 2px", letterSpacing: "0.05em" }}>{form.fromName || "Your Business Name"}</p>
+          <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 6px", lineHeight: 1.5, maxWidth: "500px", marginLeft: "auto", marginRight: "auto" }}>
+            {form.fromAddress} {form.fromCity && `${form.fromCity}, `} {fromState && fromState.name}
+            {(form.fromPhone || form.fromEmail) && <><br />{form.fromPhone && `Ph: ${form.fromPhone}`} {form.fromEmail && `| Em: ${form.fromEmail}`}</>}
+          </p>
+          <div style={{ display: "flex", justifyContent: "center", gap: "16px", fontSize: "10px", color: "#9CA3AF", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.04em" }}>
+            {form.fromGSTIN && <span>GSTIN: {form.fromGSTIN}</span>}
+            <span>QT: #{form.quoteNumber}</span>
+            <span>Date: {form.quoteDate}</span>
           </div>
+          {form.validUntil && (
+            <div style={{ display: "flex", justifyContent: "center", gap: "16px", fontSize: "9px", color: "#9CA3AF", marginTop: "4px" }}>
+              <span>VALID UNTIL: {form.validUntil}</span>
+            </div>
+          )}
+          {form.signature && (
+            <div style={{ marginTop: "12px", display: "flex", flexDirection: "column", alignItems: "center" }}>
+              <img src={form.signature} alt="Signature" style={{ maxHeight: "40px", maxWidth: "120px", display: "block" }} />
+              <p style={{ fontSize: "8px", color: "#9CA3AF", margin: "2px 0 0" }}>Authorised Signatory</p>
+            </div>
+          )}
         </div>
         {sharedBody}
       </div>
@@ -244,17 +281,26 @@ function QuotationPreview({ form, template = "Classic", accent = "#0D9488" }) {
   if (template === "Elegant") {
     return (
       <div className="pdf-preview">
-        <div style={{ borderBottom: `4px solid ${accent}`, padding: "20px 24px 16px", display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
-          <div>
-            {form.logo && <img src={form.logo} alt="Logo" style={{ height: "40px", objectFit: "contain", marginBottom: "8px", display: "block" }} />}
-            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: "#111827", margin: 0 }}>{form.fromName || "Your Business Name"}</p>
-            {form.fromGSTIN && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>GSTIN: {form.fromGSTIN}</p>}
+        <div style={{ padding: "20px 24px 0" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", paddingBottom: "12px", wordBreak: "break-word" }}>
+            <div style={{ maxWidth: "60%" }}>
+              {form.logo && <img src={form.logo} alt="Logo" style={{ height: "40px", objectFit: "contain", marginBottom: "6px", display: "block" }} />}
+              <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: "#111827", margin: 0 }}>{form.fromName || "Your Business Name"}</p>
+              <p style={{ fontSize: "10px", color: "#6B7280", margin: "4px 0 0", lineHeight: 1.4, whiteSpace: "pre-wrap" }}>
+                {form.fromAddress} {form.fromCity && `${form.fromCity}, `} {fromState && fromState.name}
+                {(form.fromPhone || form.fromEmail || form.fromGSTIN) && (
+                  <><br />{form.fromGSTIN && `GSTIN: ${form.fromGSTIN}`} {form.fromPhone && `| Ph: ${form.fromPhone}`} {form.fromEmail && `| Em: ${form.fromEmail}`}</>
+                )}
+              </p>
+            </div>
+            <div style={{ textAlign: "right", maxWidth: "35%" }}>
+              <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "22px", color: accent, margin: 0 }}>QUOTATION</p>
+              <p style={{ fontSize: "12px", color: "#6B7280", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>#{form.quoteNumber}</p>
+              <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>Date: {form.quoteDate}</p>
+              {form.validUntil && <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "2px 0 0" }}>Valid: {form.validUntil}</p>}
+            </div>
           </div>
-          <div style={{ textAlign: "right" }}>
-            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "22px", color: accent, margin: 0 }}>QUOTATION</p>
-            <p style={{ fontSize: "12px", color: "#6B7280", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>#{form.quoteNumber}</p>
-            <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.quoteDate}</p>
-          </div>
+          <div style={{ height: "4px", background: accent, borderRadius: "2px" }} />
         </div>
         {sharedBody}
       </div>
@@ -264,19 +310,24 @@ function QuotationPreview({ form, template = "Classic", accent = "#0D9488" }) {
   if (template === "Classic") {
     return (
       <div className="pdf-preview">
-        <div className="pdf-header" style={{ borderBottom: `2px solid ${accent}` }}>
-          <div>
-            {form.logo && <img src={form.logo} alt="Logo" style={{ height: "48px", objectFit: "contain", marginBottom: "8px", display: "block" }} />}
-            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: "#111827", margin: 0 }}>{form.fromName || "Your Business Name"}</p>
-            {form.fromGSTIN && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>GSTIN: {form.fromGSTIN}</p>}
-            {form.fromAddress && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}</p>}
-            {fromState && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{fromState.name}</p>}
+        <div style={{ background: accent, padding: "18px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", wordBreak: "break-word" }}>
+          <div style={{ maxWidth: "60%" }}>
+            {form.logo && <img src={form.logo} alt="Logo" style={{ height: "36px", objectFit: "contain", marginBottom: "6px", display: "block" }} />}
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: "#fff", margin: 0 }}>{form.fromName || "Your Business Name"}</p>
+            <p style={{ fontSize: "10px", color: "rgba(255,255,255,0.85)", margin: "4px 0 0", lineHeight: 1.4, whiteSpace: "pre-wrap" }}>
+              {form.fromAddress} {form.fromCity && `${form.fromCity}, `} {fromState && fromState.name}
+              {(form.fromPhone || form.fromEmail || form.fromGSTIN) && (
+                <><br />{form.fromGSTIN && `GSTIN: ${form.fromGSTIN}`} {form.fromPhone && `| Ph: ${form.fromPhone}`} {form.fromEmail && `| Em: ${form.fromEmail}`}</>
+              )}
+            </p>
           </div>
-          <div style={{ textAlign: "right" }}>
-            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "22px", color: accent, margin: 0 }}>QUOTATION</p>
-            <p style={{ fontSize: "12px", color: "#6B7280", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>#{form.quoteNumber}</p>
-            <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>Date: {form.quoteDate}</p>
-            {form.validUntil && <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>Valid Until: {form.validUntil}</p>}
+          <div style={{ textAlign: "right", maxWidth: "35%" }}>
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "24px", color: "#fff", margin: 0 }}>QUOTATION</p>
+            <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.85)", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>#{form.quoteNumber}</p>
+            <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.75)", marginTop: "4px", display: "flex", flexDirection: "column", gap: "2px" }}>
+              <span>Date: {form.quoteDate}</span>
+              {form.validUntil && <span>Valid: {form.validUntil}</span>}
+            </div>
           </div>
         </div>
         {sharedBody}
@@ -287,20 +338,28 @@ function QuotationPreview({ form, template = "Classic", accent = "#0D9488" }) {
   // Minimal (default)
   return (
     <div className="pdf-preview">
-      <div style={{ padding: "20px 24px 16px", borderBottom: "1px solid #E5E7EB" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-          <div>
-            {form.logo && <img src={form.logo} alt="Logo" style={{ height: "40px", objectFit: "contain", marginBottom: "6px", display: "block" }} />}
-            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "15px", color: "#111827", margin: 0 }}>{form.fromName || "Your Business Name"}</p>
-            {form.fromGSTIN && <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>GSTIN: {form.fromGSTIN}</p>}
-          </div>
-          <div style={{ textAlign: "right" }}>
-            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "20px", color: "#111827", margin: 0 }}>QUOTATION</p>
-            <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>#{form.quoteNumber} · {form.quoteDate}</p>
-            {form.validUntil && <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>Valid Until: {form.validUntil}</p>}
-          </div>
+      <div className="pdf-header" style={{ borderBottom: `2px solid ${accent}`, wordBreak: "break-word" }}>
+        <div style={{ maxWidth: "60%" }}>
+          {form.logo && <img src={form.logo} alt="Logo" style={{ height: "48px", objectFit: "contain", marginBottom: "8px", display: "block" }} />}
+          <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: "#111827", margin: 0 }}>{form.fromName || "Your Business Name"}</p>
+          {form.fromGSTIN && <p style={{ fontSize: "11px", color: "#6B7280", margin: "4px 0 1px", fontFamily: "Inter, sans-serif" }}>GSTIN: {form.fromGSTIN}</p>}
+          <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif", whiteSpace: "pre-wrap" }}>
+            {form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}
+          </p>
+          {fromState && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0" }}>{fromState.name}</p>}
+          {(form.fromPhone || form.fromEmail) && (
+            <p style={{ fontSize: "11px", color: "#6B7280", margin: "4px 0 0", lineHeight: 1.4 }}>
+              {form.fromPhone && <span style={{ display: "block" }}>Ph: {form.fromPhone}</span>}
+              {form.fromEmail && <span style={{ display: "block", wordBreak: "break-all" }}>Em: {form.fromEmail}</span>}
+            </p>
+          )}
         </div>
-        <div style={{ height: "2px", background: accent, marginTop: "12px", borderRadius: "1px" }} />
+        <div style={{ textAlign: "right" }}>
+          <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "22px", color: "#111827", margin: 0 }}>Quotation</p>
+          <p style={{ fontSize: "12px", color: "#6B7280", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>#{form.quoteNumber}</p>
+          <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>Date: {form.quoteDate}</p>
+          {form.validUntil && <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>Valid: {form.validUntil}</p>}
+        </div>
       </div>
       {sharedBody}
     </div>
@@ -373,10 +432,10 @@ export default function QuotationPage() {
               {downloading ? "Generating..." : "Download PDF"}
             </button>
             {user && (
-<button onClick={handleSave} style={{ display: "flex", alignItems: "center", gap: "6px", height: "36px", padding: "0 14px", border: "1px solid #0D9488", borderRadius: "8px", background: "#fff", fontSize: "13px", fontWeight: 600, color: "#0D9488", cursor: "pointer", fontFamily: "Inter, sans-serif", transition: "all 150ms" }}>
-              <Cloud size={14} /> Save
-            </button>
-)}
+              <button onClick={handleSave} style={{ display: "flex", alignItems: "center", gap: "6px", height: "36px", padding: "0 14px", border: "1px solid #0D9488", borderRadius: "8px", background: "#fff", fontSize: "13px", fontWeight: 600, color: "#0D9488", cursor: "pointer", fontFamily: "Inter, sans-serif", transition: "all 150ms" }}>
+                <Cloud size={14} /> Save
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -409,7 +468,9 @@ export default function QuotationPage() {
                   )}
                 </div>
                 <div className="form-field"><label className="field-label">Business Name</label><input className="doc-input" placeholder="Your Company Name" value={form.fromName} onChange={e => updateField("fromName", e.target.value)} /></div>
-                <div className="form-field"><label className="field-label">GSTIN</label><input className="doc-input" placeholder="22AAAAA0000A1Z5" value={form.fromGSTIN} onChange={e => updateField("fromGSTIN", e.target.value.toUpperCase())} style={{ fontFamily: "monospace" }} /></div>
+                <div className="form-field">
+                  <label className="field-label">GSTIN</label>
+                  <input className="doc-input" placeholder="22AAAAA0000A1Z5" value={form.fromGSTIN} onChange={e => updateField("fromGSTIN", e.target.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase())} maxLength={15} style={{ fontFamily: "monospace", letterSpacing: "0.05em" }} />                </div>
                 <div className="form-field"><label className="field-label">Address</label><textarea className="doc-textarea" placeholder="Street address" value={form.fromAddress} onChange={e => updateField("fromAddress", e.target.value)} /></div>
                 <div className="form-row">
                   <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">City</label><input className="doc-input" placeholder="Mumbai" value={form.fromCity} onChange={e => updateField("fromCity", e.target.value)} /></div>
@@ -429,7 +490,7 @@ export default function QuotationPage() {
               <div>
                 <p className="form-label">Client Details</p>
                 <div className="form-field"><label className="field-label">Client Name</label><input className="doc-input" placeholder="Client Company" value={form.toName} onChange={e => updateField("toName", e.target.value)} /></div>
-                <div className="form-field"><label className="field-label">Client GSTIN</label><input className="doc-input" placeholder="22AAAAA0000A1Z5" value={form.toGSTIN} onChange={e => updateField("toGSTIN", e.target.value.toUpperCase())} style={{ fontFamily: "monospace" }} /></div>
+                <div className="form-field"><label className="field-label">Client GSTIN</label><input className="doc-input" placeholder="22AAAAA0000A1Z5" value={form.toGSTIN} onChange={e => updateField("toGSTIN", e.target.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase())} maxLength={15} style={{ fontFamily: "monospace", letterSpacing: "0.05em" }} /></div>
                 <div className="form-field"><label className="field-label">Address</label><textarea className="doc-textarea" placeholder="Client address" value={form.toAddress} onChange={e => updateField("toAddress", e.target.value)} /></div>
                 <div className="form-row">
                   <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">City</label><input className="doc-input" placeholder="Delhi" value={form.toCity} onChange={e => updateField("toCity", e.target.value)} /></div>
@@ -453,11 +514,6 @@ export default function QuotationPage() {
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
                   <p className="form-label" style={{ margin: 0, borderBottom: "none" }}>Line Items</p>
                   <button onClick={() => updateField("showHSN", !form.showHSN)} className={`toggle-btn ${form.showHSN ? "active" : ""}`}>HSN</button>
-                </div>
-                <div style={{ display: "grid", gridTemplateColumns: form.showHSN ? "2fr 0.6fr 0.5fr 0.7fr 0.5fr 0.7fr auto" : "2fr 0.5fr 0.7fr 0.5fr 0.7fr auto", gap: "6px", marginBottom: "6px", paddingBottom: "6px", borderBottom: "1px solid #E5E7EB" }}>
-                  {["Description", form.showHSN && "HSN", "Qty", "Rate", "GST%", "Amt", ""].filter(Boolean).map((h, i) => (
-                    <span key={i} style={{ fontSize: "10px", fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.05em", fontFamily: "Inter, sans-serif" }}>{h}</span>
-                  ))}
                 </div>
                 {form.items.map((item, i) => <ItemRow key={i} item={item} index={i} onChange={updateItem} onRemove={removeItem} showHSN={form.showHSN} showDiscount={false} />)}
                 <button className="add-item-btn" onClick={addItem}><Plus size={14} /> Add Line Item</button>
@@ -486,7 +542,7 @@ export default function QuotationPage() {
                 <p className="form-label">Notes & Terms</p>
                 <div className="form-field"><label className="field-label">Notes</label><textarea className="doc-textarea" placeholder="Additional notes..." value={form.notes} onChange={e => updateField("notes", e.target.value)} style={{ minHeight: "80px" }} /></div>
                 <div className="form-field"><label className="field-label">Terms</label><textarea className="doc-textarea" value={form.terms} onChange={e => updateField("terms", e.target.value)} style={{ minHeight: "80px" }} /></div>
-                
+
                 <div style={{ borderTop: "1px solid #F3F4F6", margin: "16px 0" }} />
                 <p className="form-label">Signature</p>
                 <div style={{
@@ -538,20 +594,20 @@ export default function QuotationPage() {
               <div>
                 <p className="form-label">Template Design</p>
                 <div style={{ marginTop: "8px" }}>
-                  <TemplatePicker 
-                    docType="quotation" 
-                    selected={template} 
+                  <TemplatePicker
+                    docType="quotation"
+                    selected={template}
                     onChange={(t) => {
                       setTemplate(t);
                       const meta = TEMPLATE_REGISTRY.quotation[t] || TEMPLATE_REGISTRY.quotation.Classic;
                       updateField("templateColor", meta.accent);
-                    }} 
-                    isPro={isUserPro} 
+                    }}
+                    isPro={isUserPro}
                   />
                 </div>
                 <div style={{ borderTop: "1px solid #F3F4F6", margin: "20px 0" }} />
                 <p className="form-label">Template Color</p>
-                <TemplateColorPicker 
+                <TemplateColorPicker
                   value={form.templateColor || templateMeta.accent}
                   onChange={(color) => updateField("templateColor", color)}
                 />

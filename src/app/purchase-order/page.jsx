@@ -40,69 +40,69 @@ const DEFAULT_FORM = {
 const UNITS = ["Nos", "Pcs", "Kg", "Gm", "Ltr", "Mtr", "Sqft", "Box", "Set", "Pair"];
 
 function ItemRow({ item, index, onChange, onRemove, showHSN, showDiscount }) {
-    const update = (field, value) => {
-        const updated = { ...item, [field]: value };
-        const qty = parseFloat(updated.qty) || 0;
-        const rate = parseFloat(updated.rate) || 0;
-        const discount = parseFloat(updated.discount) || 0;
-        const subtotal = qty * rate - discount;
-        const gst = (subtotal * (parseFloat(updated.gstRate) || 0)) / 100;
-        updated.amount = (subtotal + gst).toFixed(2);
-        onChange(index, updated);
-    };
+  const update = (field, value) => {
+    const updated = { ...item, [field]: value };
+    const qty = parseFloat(updated.qty) || 0;
+    const rate = parseFloat(updated.rate) || 0;
+    const discount = parseFloat(updated.discount) || 0;
+    const subtotal = qty * rate - discount;
+    const gst = (subtotal * (parseFloat(updated.gstRate) || 0)) / 100;
+    updated.amount = (subtotal + gst).toFixed(2);
+    onChange(index, updated);
+  };
 
-    return (
-        <div style={{
-            background: "#fff", border: "1px solid #E5E7EB", borderRadius: "8px",
-            padding: "16px", marginBottom: "12px", boxShadow: "0 1px 2px rgba(0,0,0,0.02)", position: "relative"
-        }}>
-            <div style={{ display: "flex", gap: "12px", marginBottom: "16px", alignItems: "flex-start" }}>
-                <div style={{ flex: 1 }}>
-                    <label style={{ display: "block", fontSize: "11px", fontWeight: 600, color: "#6B7280", marginBottom: "4px", textTransform: "uppercase", letterSpacing: "0.05em" }}>Description</label>
-                    <input className="doc-input" placeholder="Item description" value={item.description} onChange={e => update("description", e.target.value)} style={{ background: "#F9FAFB" }} />
-                </div>
-                <button onClick={() => onRemove(index)} title="Remove Item" style={{ background: "#FEE2E2", color: "#EF4444", border: "none", width: "36px", height: "36px", borderRadius: "6px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", marginTop: "18px", transition: "background 150ms" }}>
-                    <Trash2 size={16} />
-                </button>
-            </div>
-            <div style={{
-                display: "grid",
-                gridTemplateColumns: showHSN ? (showDiscount ? "repeat(5, 1fr) auto" : "repeat(4, 1fr) auto") : (showDiscount ? "repeat(4, 1fr) auto" : "repeat(3, 1fr) auto"),
-                gap: "12px", alignItems: "end"
-            }}>
-                {showHSN && (
-                    <div>
-                        <label style={{ display: "block", fontSize: "11px", fontWeight: 600, color: "#6B7280", marginBottom: "4px" }}>HSN</label>
-                        <input className="doc-input" placeholder="HSN" value={item.hsn} onChange={e => update("hsn", e.target.value)} style={{ background: "#F9FAFB" }} />
-                    </div>
-                )}
-                <div>
-                    <label style={{ display: "block", fontSize: "11px", fontWeight: 600, color: "#6B7280", marginBottom: "4px" }}>Qty</label>
-                    <input className="doc-input" type="number" placeholder="1" value={item.qty} onChange={e => update("qty", e.target.value)} style={{ background: "#F9FAFB" }} />
-                </div>
-                <div>
-                    <label style={{ display: "block", fontSize: "11px", fontWeight: 600, color: "#6B7280", marginBottom: "4px" }}>Rate</label>
-                    <input className="doc-input" type="number" placeholder="0.00" value={item.rate} onChange={e => update("rate", e.target.value)} style={{ background: "#F9FAFB" }} />
-                </div>
-                {showDiscount && (
-                    <div>
-                        <label style={{ display: "block", fontSize: "11px", fontWeight: 600, color: "#6B7280", marginBottom: "4px" }}>Disc</label>
-                        <input className="doc-input" type="number" placeholder="0" value={item.discount} onChange={e => update("discount", e.target.value)} style={{ background: "#F9FAFB" }} />
-                    </div>
-                )}
-                <div>
-                    <label style={{ display: "block", fontSize: "11px", fontWeight: 600, color: "#6B7280", marginBottom: "4px" }}>GST (%)</label>
-                    <select className="doc-select" value={item.gstRate} onChange={e => update("gstRate", e.target.value)} style={{ background: "#F9FAFB" }}>
-                        {[0, 5, 12, 18, 28].map(r => <option key={r} value={r}>{r}%</option>)}
-                    </select>
-                </div>
-                <div style={{ textAlign: "right", height: "36px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-                    <span style={{ fontSize: "10px", fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase" }}>Amount</span>
-                    <span style={{ fontSize: "15px", fontWeight: 800, color: "#0D9488", fontFamily: "Inter, sans-serif", whiteSpace: "nowrap" }}>₹{item.amount}</span>
-                </div>
-            </div>
+  return (
+    <div style={{
+      background: "#fff", border: "1px solid #E5E7EB", borderRadius: "8px",
+      padding: "16px", marginBottom: "12px", boxShadow: "0 1px 2px rgba(0,0,0,0.02)", position: "relative"
+    }}>
+      <div style={{ display: "flex", gap: "12px", marginBottom: "16px", alignItems: "flex-start" }}>
+        <div style={{ flex: 1 }}>
+          <label style={{ display: "block", fontSize: "11px", fontWeight: 600, color: "#6B7280", marginBottom: "4px", textTransform: "uppercase", letterSpacing: "0.05em" }}>Description</label>
+          <input className="doc-input" placeholder="Item description" value={item.description} onChange={e => update("description", e.target.value)} style={{ background: "#F9FAFB" }} />
         </div>
-    );
+        <button onClick={() => onRemove(index)} title="Remove Item" style={{ background: "#FEE2E2", color: "#EF4444", border: "none", width: "36px", height: "36px", borderRadius: "6px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", marginTop: "18px", transition: "background 150ms" }}>
+          <Trash2 size={16} />
+        </button>
+      </div>
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: showHSN ? (showDiscount ? "repeat(5, 1fr) auto" : "repeat(4, 1fr) auto") : (showDiscount ? "repeat(4, 1fr) auto" : "repeat(3, 1fr) auto"),
+        gap: "12px", alignItems: "end"
+      }}>
+        {showHSN && (
+          <div>
+            <label style={{ display: "block", fontSize: "11px", fontWeight: 600, color: "#6B7280", marginBottom: "4px" }}>HSN</label>
+            <input className="doc-input" placeholder="HSN" value={item.hsn} onChange={e => update("hsn", e.target.value)} style={{ background: "#F9FAFB" }} />
+          </div>
+        )}
+        <div>
+          <label style={{ display: "block", fontSize: "11px", fontWeight: 600, color: "#6B7280", marginBottom: "4px" }}>Qty</label>
+          <input className="doc-input" type="number" placeholder="1" value={item.qty} onChange={e => update("qty", e.target.value)} style={{ background: "#F9FAFB" }} />
+        </div>
+        <div>
+          <label style={{ display: "block", fontSize: "11px", fontWeight: 600, color: "#6B7280", marginBottom: "4px" }}>Rate</label>
+          <input className="doc-input" type="number" placeholder="0.00" value={item.rate} onChange={e => update("rate", e.target.value)} style={{ background: "#F9FAFB" }} />
+        </div>
+        {showDiscount && (
+          <div>
+            <label style={{ display: "block", fontSize: "11px", fontWeight: 600, color: "#6B7280", marginBottom: "4px" }}>Disc</label>
+            <input className="doc-input" type="number" placeholder="0" value={item.discount} onChange={e => update("discount", e.target.value)} style={{ background: "#F9FAFB" }} />
+          </div>
+        )}
+        <div>
+          <label style={{ display: "block", fontSize: "11px", fontWeight: 600, color: "#6B7280", marginBottom: "4px" }}>GST (%)</label>
+          <select className="doc-select" value={item.gstRate} onChange={e => update("gstRate", e.target.value)} style={{ background: "#F9FAFB" }}>
+            {[0, 5, 12, 18, 28].map(r => <option key={r} value={r}>{r}%</option>)}
+          </select>
+        </div>
+        <div style={{ textAlign: "right", height: "36px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+          <span style={{ fontSize: "10px", fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase" }}>Amount</span>
+          <span style={{ fontSize: "15px", fontWeight: 800, color: "#0D9488", fontFamily: "Inter, sans-serif", whiteSpace: "nowrap" }}>₹{item.amount}</span>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 function POPreview({ form }) {
@@ -132,10 +132,13 @@ function POPreview({ form }) {
           }}>
             {form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}
           </p>}
-          {fromState && <p style={{
-            fontSize: "11px", color: "#6B7280",
-            margin: "2px 0 0", fontFamily: "Inter, sans-serif"
-          }}>{fromState.name}</p>}
+          {fromState && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{fromState.name}</p>}
+          {(form.fromPhone || form.fromEmail) && (
+            <p style={{ fontSize: "11px", color: "#6B7280", margin: "4px 0 0", fontFamily: "Inter, sans-serif", lineHeight: 1.4 }}>
+              {form.fromPhone && <span style={{ display: "block" }}>Ph: {form.fromPhone}</span>}
+              {form.fromEmail && <span style={{ display: "block", wordBreak: "break-all" }}>Em: {form.fromEmail}</span>}
+            </p>
+          )}
         </div>
         <div style={{ textAlign: "right" }}>
           <p style={{
@@ -186,10 +189,13 @@ function POPreview({ form }) {
             }}>
               {form.toAddress}{form.toCity ? `, ${form.toCity}` : ""}
             </p>}
-            {toState && <p style={{
-              fontSize: "11px", color: "#6B7280",
-              margin: "2px 0 0", fontFamily: "Inter, sans-serif"
-            }}>{toState.name}</p>}
+            {toState && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{toState.name}</p>}
+            {(form.toPhone || form.toEmail) && (
+              <p style={{ fontSize: "11px", color: "#6B7280", margin: "4px 0 0", fontFamily: "Inter, sans-serif", lineHeight: 1.4 }}>
+                {form.toPhone && <span style={{ display: "block" }}>Ph: {form.toPhone}</span>}
+                {form.toEmail && <span style={{ display: "block", wordBreak: "break-all" }}>Em: {form.toEmail}</span>}
+              </p>
+            )}
           </div>
           {form.deliveryAddress && (
             <div>
@@ -361,6 +367,7 @@ export default function PurchaseOrderPage() {
   const [form, setForm] = useState(DEFAULT_FORM);
   const { download, downloading } = useDownloadPDF();
   const router = useRouter();
+  const isUserPro = user?.plan === "Business Pro" || user?.plan === "Enterprise";
   const handleDownload = () => download("PurchaseOrder", form, `PO-${form.poNumber}.pdf`);
 
   const handleSave = async () => {
@@ -438,10 +445,10 @@ export default function PurchaseOrderPage() {
 
             </button>
             {user && (
-<button onClick={handleSave} style={{ display: "flex", alignItems: "center", gap: "6px", height: "36px", padding: "0 14px", border: "1px solid #0D9488", borderRadius: "8px", background: "#fff", fontSize: "13px", fontWeight: 600, color: "#0D9488", cursor: "pointer", fontFamily: "Inter, sans-serif", transition: "all 150ms" }}>
-              <Cloud size={14} /> Save
-            </button>
-)}
+              <button onClick={handleSave} style={{ display: "flex", alignItems: "center", gap: "6px", height: "36px", padding: "0 14px", border: "1px solid #0D9488", borderRadius: "8px", background: "#fff", fontSize: "13px", fontWeight: 600, color: "#0D9488", cursor: "pointer", fontFamily: "Inter, sans-serif", transition: "all 150ms" }}>
+                <Cloud size={14} /> Save
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -475,7 +482,14 @@ export default function PurchaseOrderPage() {
                     fontSize: "11px", fontWeight: 600, color: "#6B7280",
                     margin: "0 0 6px", fontFamily: "Inter, sans-serif"
                   }}>Logo</p>
-                  <LogoUpload value={form.logo} onChange={v => updateField("logo", v)} />
+                  {isUserPro ? (
+                    <LogoUpload value={form.logo} onChange={v => updateField("logo", v)} />
+                  ) : (
+                    <div onClick={() => router.push("/#pricing")} style={{ padding: "14px 16px", border: "1px dashed #D1D5DB", borderRadius: "8px", background: "#F9FAFB", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer" }}>
+                      <span style={{ fontSize: "12px", color: "#9CA3AF", fontFamily: "Inter, sans-serif" }}>Logo upload — <strong style={{ color: "#6366F1" }}>Pro feature</strong></span>
+                      <span style={{ fontSize: "11px", background: "#EDE9FE", color: "#6366F1", padding: "3px 10px", borderRadius: "20px", fontWeight: 600 }}>Upgrade</span>
+                    </div>
+                  )}
                 </div>
                 <div className="form-field"><label className="field-label">Company Name *</label>
                   <input className="doc-input" placeholder="Your Company Pvt. Ltd."
@@ -484,8 +498,12 @@ export default function PurchaseOrderPage() {
                 <div className="form-field"><label className="field-label">GSTIN</label>
                   <input className="doc-input" placeholder="22AAAAA0000A1Z5"
                     value={form.fromGSTIN}
-                    onChange={e => updateField("fromGSTIN", e.target.value.toUpperCase())}
-                    style={{ fontFamily: "monospace" }} />
+                    onChange={e => updateField("fromGSTIN", e.target.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase())}
+                    maxLength={15}
+                    style={{ fontFamily: "monospace", letterSpacing: "0.05em" }} />                </div>
+                <div className="form-row" style={{ marginTop: "4px" }}>
+                  <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">Phone</label><input className="doc-input" placeholder="+91 98765 43210" value={form.fromPhone} onChange={e => updateField("fromPhone", e.target.value)} /></div>
+                  <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">Email</label><input className="doc-input" type="email" placeholder="you@company.com" value={form.fromEmail} onChange={e => updateField("fromEmail", e.target.value)} /></div>
                 </div>
                 <div className="form-field"><label className="field-label">Address</label>
                   <textarea className="doc-textarea" value={form.fromAddress}
@@ -537,8 +555,13 @@ export default function PurchaseOrderPage() {
                 <div className="form-field"><label className="field-label">Vendor GSTIN</label>
                   <input className="doc-input" placeholder="22AAAAA0000A1Z5"
                     value={form.toGSTIN}
-                    onChange={e => updateField("toGSTIN", e.target.value.toUpperCase())}
-                    style={{ fontFamily: "monospace" }} />
+                    onChange={e => updateField("toGSTIN", e.target.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase())}
+                    maxLength={15}
+                    style={{ fontFamily: "monospace", letterSpacing: "0.05em" }} />
+                </div>
+                <div className="form-row" style={{ marginTop: "4px" }}>
+                  <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">Phone</label><input className="doc-input" placeholder="+91 98765 43210" value={form.toPhone} onChange={e => updateField("toPhone", e.target.value)} /></div>
+                  <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">Email</label><input className="doc-input" type="email" placeholder="vendor@company.com" value={form.toEmail} onChange={e => updateField("toEmail", e.target.value)} /></div>
                 </div>
                 <div className="form-field"><label className="field-label">Address</label>
                   <textarea className="doc-textarea" value={form.toAddress}
@@ -705,12 +728,8 @@ export default function PurchaseOrderPage() {
                 </div>
 
                 <div style={{ borderTop: "1px solid #F3F4F6", margin: "16px 0" }} />
-                <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn">
-
-                  <Download size={15} />
-
-                  {downloading ? "Generating..." : "Download PDF"}
-
+                <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn" style={{ width: "100%", justifyContent: "center" }}>
+                  <Download size={15} /> {downloading ? "Generating..." : "Download PDF"}
                 </button>
               </div>
             )}

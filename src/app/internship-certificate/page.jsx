@@ -19,11 +19,12 @@ import { useRouter } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
 import { documentsApi } from "@/api/documents";
 import { getAccessToken } from "@/api/auth";
+import { INDIAN_STATES } from "@/constants/indianStates";
 
 const T = "#0D9488";
 
 const DEFAULT_FORM = {
-  orgName: "", orgAddress: "", orgWebsite: "",
+  orgName: "", orgAddress: "", orgCity: "", orgState: "27", orgWebsite: "",
   logo: null,
   internName: "", role: "", department: "",
   startDate: "", endDate: "",
@@ -47,9 +48,16 @@ function InternshipPreview({ form, template = "Classic", accent = "#0D9488" }) {
     <>
       {form.logo && <img src={form.logo} alt="Logo" style={{ height: "44px", objectFit: "contain", display: "block", margin: "0 auto 10px" }} />}
       <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "15px", color: "#111827", margin: "0 0 2px", textTransform: "uppercase", letterSpacing: "0.1em" }}>{form.orgName || "Organisation Name"}</p>
-      {form.orgAddress && <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "0 0 2px" }}>{form.orgAddress}</p>}
+      {(form.orgAddress || form.orgCity || form.orgState) && (
+        <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "0 0 2px" }}>
+          {[
+            form.orgAddress || null,
+            (form.orgCity || form.orgState) ? `${form.orgCity ? form.orgCity + ", " : ""}${INDIAN_STATES.find(s => s.code === form.orgState)?.name || ""}` : null
+          ].filter(Boolean).join(", ")}
+        </p>
+      )}
       {form.orgWebsite && <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "0 0 14px" }}>{form.orgWebsite}</p>}
-      {!form.orgWebsite && form.orgAddress && <div style={{ marginBottom: "14px" }} />}
+      {!form.orgWebsite && (form.orgAddress || form.orgCity || form.orgState) && <div style={{ marginBottom: "14px" }} />}
       <div style={{ display: "inline-block", background: accent, color: "#fff", padding: "3px 18px", borderRadius: "2px", marginBottom: "12px" }}>
         <p style={{ fontSize: "10px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", margin: 0 }}>Internship Certificate</p>
       </div>
@@ -234,8 +242,16 @@ export default function InternshipCertificatePage() {
                   )}
                 </div>
                 <div className="form-field"><label className="field-label">Organisation Name</label><input className="doc-input" placeholder="Acme Pvt Ltd" value={form.orgName} onChange={e => updateField("orgName", e.target.value)} /></div>
-                <div className="form-field"><label className="field-label">Address</label><input className="doc-input" placeholder="123 Tech Park, Bengaluru" value={form.orgAddress} onChange={e => updateField("orgAddress", e.target.value)} /></div>
-                <div className="form-field"><label className="field-label">Website</label><input className="doc-input" placeholder="www.acme.com" value={form.orgWebsite} onChange={e => updateField("orgWebsite", e.target.value)} /></div>
+                <div className="form-field"><label className="field-label">Address</label><input className="doc-input" placeholder="123 Tech Park" value={form.orgAddress || ""} onChange={e => updateField("orgAddress", e.target.value)} /></div>
+                <div className="form-row">
+                  <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">City</label><input className="doc-input" placeholder="Bengaluru" value={form.orgCity || ""} onChange={e => updateField("orgCity", e.target.value)} /></div>
+                  <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">State</label>
+                    <select className="doc-select" value={form.orgState || "27"} onChange={e => updateField("orgState", e.target.value)}>
+                      {INDIAN_STATES.map(s => <option key={s.code} value={s.code}>{s.name}</option>)}
+                    </select>
+                  </div>
+                </div>
+                <div className="form-field" style={{ marginTop: "10px" }}><label className="field-label">Website</label><input className="doc-input" placeholder="www.acme.com" value={form.orgWebsite || ""} onChange={e => updateField("orgWebsite", e.target.value)} /></div>
               </div>
             )}
 
@@ -330,8 +346,6 @@ export default function InternshipCertificatePage() {
                     })}
                   </div>
                 </div>
-                <div style={{ borderTop: "1px solid #F3F4F6", margin: "16px 0" }} />
-                <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn"><Download size={15} />{downloading ? "Generating..." : "Download PDF"}</button>
               </div>
             )}
 

@@ -13,15 +13,18 @@ import SignatureModal from "@/components/SignatureModal";
 import { Download, Eye, RefreshCw, Cloud, PenTool } from "lucide-react";
 import { useDownloadPDF } from "@/hooks/useDownloadPDF";
 import { useRouter } from "next/navigation";
+import { INDIAN_STATES } from "@/constants/indianStates";
 
 const T = "#0D9488";
 
 const DEFAULT_FORM = {
   voucherNumber: `PV-${new Date().getFullYear()}-001`,
   voucherDate: new Date().toISOString().split("T")[0],
-  companyName: "", companyAddress: "",
+  companyName: "", companyAddress: "", companyCity: "", companyState: "27",
+  companyPhone: "", companyEmail: "",
   logo: null,
-  paidTo: "", paidToAddress: "",
+  paidTo: "", paidToAddress: "", paidToCity: "", paidToState: "27",
+  paidToPhone: "", paidToEmail: "",
   amount: "",
   paymentMode: "Bank Transfer",
   bankName: "", chequeNumber: "", chequeDate: "",
@@ -41,6 +44,8 @@ const ACCOUNT_HEADS = [
 ];
 
 function VoucherPreview({ form }) {
+  const companyState = INDIAN_STATES.find(s => s.code === form.companyState);
+  const paidToState = INDIAN_STATES.find(s => s.code === form.paidToState);
   function numToWords(n) {
     if (!n || n === 0) return "Zero Rupees Only";
     const ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight",
@@ -75,11 +80,12 @@ function VoucherPreview({ form }) {
           }}>
             {form.companyName || "Company Name"}
           </p>
-          {form.companyAddress && (
-            <p style={{
-              fontSize: "11px", color: "#6B7280", margin: "2px 0 0",
-              fontFamily: "Inter, sans-serif"
-            }}>{form.companyAddress}</p>
+          {form.companyAddress && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif", whiteSpace: "pre-wrap" }}>{form.companyAddress}{form.companyCity ? `, ${form.companyCity}` : ""}{companyState ? `, ${companyState.name}` : ""}</p>}
+          {(form.companyPhone || form.companyEmail) && (
+            <p style={{ fontSize: "11px", color: "#6B7280", margin: "4px 0 0", fontFamily: "Inter, sans-serif", lineHeight: 1.4 }}>
+              {form.companyPhone && <span style={{ display: "block" }}>Ph: {form.companyPhone}</span>}
+              {form.companyEmail && <span style={{ display: "block", wordBreak: "break-all" }}>Em: {form.companyEmail}</span>}
+            </p>
           )}
         </div>
         <div style={{ textAlign: "right" }}>
@@ -143,10 +149,16 @@ function VoucherPreview({ form }) {
               <td style={{ fontWeight: 600, color: "#6B7280", width: "35%" }}>Paid To</td>
               <td><strong>{form.paidTo || "—"}</strong></td>
             </tr>
-            {form.paidToAddress && (
+            {(form.paidToAddress || form.paidToCity || form.paidToState) && (
               <tr>
                 <td style={{ fontWeight: 600, color: "#6B7280" }}>Address</td>
-                <td>{form.paidToAddress}</td>
+                <td>{form.paidToAddress}{form.paidToCity ? `, ${form.paidToCity}` : ""}{paidToState ? `, ${paidToState.name}` : ""}</td>
+              </tr>
+            )}
+            {(form.paidToPhone || form.paidToEmail) && (
+              <tr>
+                <td style={{ fontWeight: 600, color: "#6B7280" }}>Contact</td>
+                <td>{form.paidToPhone && `Ph: ${form.paidToPhone}`}{form.paidToPhone && form.paidToEmail ? "  |  " : ""}{form.paidToEmail && `Em: ${form.paidToEmail}`}</td>
               </tr>
             )}
             <tr>
@@ -235,6 +247,7 @@ export default function PaymentVoucherPage() {
   const [form, setForm] = useState(DEFAULT_FORM);
   const { download, downloading } = useDownloadPDF();
   const router = useRouter();
+  const isUserPro = user?.plan === "Business Pro" || user?.plan === "Enterprise";
   const handleDownload = () => download("PaymentVoucher", form, `Voucher-${form.voucherNumber}.pdf`);
 
   const handleSave = async () => {
@@ -335,7 +348,14 @@ export default function PaymentVoucherPage() {
                     fontSize: "11px", fontWeight: 600, color: "#6B7280",
                     margin: "0 0 6px", fontFamily: "Inter, sans-serif"
                   }}>Logo</p>
-                  <LogoUpload value={form.logo} onChange={v => updateField("logo", v)} />
+                  {isUserPro ? (
+                    <LogoUpload value={form.logo} onChange={v => updateField("logo", v)} />
+                  ) : (
+                    <div onClick={() => router.push("/#pricing")} style={{ padding: "14px 16px", border: "1px dashed #D1D5DB", borderRadius: "8px", background: "#F9FAFB", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer" }}>
+                      <span style={{ fontSize: "12px", color: "#9CA3AF", fontFamily: "Inter, sans-serif" }}>Logo upload — <strong style={{ color: "#6366F1" }}>Pro feature</strong></span>
+                      <span style={{ fontSize: "11px", background: "#EDE9FE", color: "#6366F1", padding: "3px 10px", borderRadius: "20px", fontWeight: 600 }}>Upgrade</span>
+                    </div>
+                  )}
                 </div>
                 <div className="form-field"><label className="field-label">Company Name *</label>
                   <input className="doc-input" placeholder="Company Pvt. Ltd."
@@ -343,8 +363,20 @@ export default function PaymentVoucherPage() {
                     onChange={e => updateField("companyName", e.target.value)} />
                 </div>
                 <div className="form-field"><label className="field-label">Address</label>
-                  <textarea className="doc-textarea" value={form.companyAddress}
+                  <textarea className="doc-textarea" value={form.companyAddress || ""}
                     onChange={e => updateField("companyAddress", e.target.value)} />
+                </div>
+                <div className="form-row">
+                  <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">City</label><input className="doc-input" placeholder="Mumbai" value={form.companyCity || ""} onChange={e => updateField("companyCity", e.target.value)} /></div>
+                  <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">State</label>
+                    <select className="doc-select" value={form.companyState || "27"} onChange={e => updateField("companyState", e.target.value)}>
+                      {INDIAN_STATES.map(s => <option key={s.code} value={s.code}>{s.name}</option>)}
+                    </select>
+                  </div>
+                </div>
+                <div className="form-row" style={{ marginTop: "10px" }}>
+                  <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">Phone</label><input className="doc-input" placeholder="+91 98765 43210" value={form.companyPhone || ""} onChange={e => updateField("companyPhone", e.target.value)} /></div>
+                  <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">Email</label><input className="doc-input" type="email" placeholder="you@company.com" value={form.companyEmail || ""} onChange={e => updateField("companyEmail", e.target.value)} /></div>
                 </div>
                 <div style={{ borderTop: "1px solid #F3F4F6", margin: "16px 0" }} />
                 <div className="form-row">
@@ -372,14 +404,30 @@ export default function PaymentVoucherPage() {
                 </div>
                 <div className="form-field"><label className="field-label">Payee Address</label>
                   <textarea className="doc-textarea"
-                    value={form.paidToAddress}
+                    value={form.paidToAddress || ""}
                     onChange={e => updateField("paidToAddress", e.target.value)} />
+                </div>
+                <div className="form-row">
+                  <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">City</label><input className="doc-input" placeholder="Delhi" value={form.paidToCity || ""} onChange={e => updateField("paidToCity", e.target.value)} /></div>
+                  <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">State</label>
+                    <select className="doc-select" value={form.paidToState || "27"} onChange={e => updateField("paidToState", e.target.value)}>
+                      {INDIAN_STATES.map(s => <option key={s.code} value={s.code}>{s.name}</option>)}
+                    </select>
+                  </div>
+                </div>
+                <div className="form-row" style={{ marginTop: "10px" }}>
+                  <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">Phone</label><input className="doc-input" placeholder="+91 98765 43210" value={form.paidToPhone || ""} onChange={e => updateField("paidToPhone", e.target.value)} /></div>
+                  <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">Email</label><input className="doc-input" type="email" placeholder="payee@company.com" value={form.paidToEmail || ""} onChange={e => updateField("paidToEmail", e.target.value)} /></div>
                 </div>
                 <div className="form-field">
                   <label className="field-label">Amount (₹) *</label>
                   <input className="doc-input" type="number" placeholder="0.00"
-                    value={form.amount}
-                    onChange={e => updateField("amount", e.target.value)}
+                    value={form.amount || ""}
+                    onChange={e => {
+                      if (e.target.value.length <= 15) {
+                        updateField("amount", e.target.value);
+                      }
+                    }}
                     style={{
                       fontSize: "16px", fontWeight: 700,
                       color: T, fontFamily: "Space Grotesk, sans-serif"
@@ -511,12 +559,8 @@ export default function PaymentVoucherPage() {
                 </div>
 
                 <div style={{ borderTop: "1px solid #F3F4F6", margin: "16px 0" }} />
-                <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn">
-
-                  <Download size={15} />
-
-                  {downloading ? "Generating..." : "Download PDF"}
-
+                <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn" style={{ width: "100%", justifyContent: "center" }}>
+                  <Download size={15} /> {downloading ? "Generating..." : "Download PDF"}
                 </button>
               </div>
             )}

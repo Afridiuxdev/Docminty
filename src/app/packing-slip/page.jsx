@@ -30,9 +30,9 @@ const COURIER_COMPANIES = [
 const DEFAULT_FORM = {
   slipNumber: `PS-${new Date().getFullYear()}-001`,
   slipDate: new Date().toISOString().split("T")[0],
-  fromName: "", fromAddress: "", fromCity: "", fromState: "27",
+  fromName: "", fromGSTIN: "", fromAddress: "", fromCity: "", fromState: "27",
   fromPhone: "", fromEmail: "",
-  toName: "", toAddress: "", toCity: "", toState: "27",
+  toName: "", toGSTIN: "", toAddress: "", toCity: "", toState: "27",
   toPhone: "", toEmail: "",
   orderNumber: "", shippingMethod: "", trackingNumber: "",
   courierName: "", customCourier: "", deliveryDate: "",
@@ -65,28 +65,17 @@ function PackingPreview({ form }) {
           }}>
             {form.fromName || "Your Company"}
           </p>
+          {form.fromGSTIN && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>GSTIN: {form.fromGSTIN}</p>}
           {form.fromAddress && (
-            <p style={{
-              fontSize: "11px", color: "#6B7280",
-              margin: "2px 0 0", fontFamily: "Inter, sans-serif"
-            }}>
+            <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>
               {form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}
             </p>
           )}
-          {fromState && (
-            <p style={{
-              fontSize: "11px", color: "#6B7280",
-              margin: "2px 0 0", fontFamily: "Inter, sans-serif"
-            }}>
-              {fromState.name}
-            </p>
-          )}
-          {form.fromPhone && (
-            <p style={{
-              fontSize: "11px", color: "#6B7280",
-              margin: "2px 0 0", fontFamily: "Inter, sans-serif"
-            }}>
-              Ph: {form.fromPhone}
+          {fromState && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{fromState.name}</p>}
+          {(form.fromPhone || form.fromEmail) && (
+            <p style={{ fontSize: "11px", color: "#6B7280", margin: "4px 0 0", fontFamily: "Inter, sans-serif", lineHeight: 1.4 }}>
+              {form.fromPhone && <span style={{ display: "block" }}>Ph: {form.fromPhone}</span>}
+              {form.fromEmail && <span style={{ display: "block", wordBreak: "break-all" }}>Em: {form.fromEmail}</span>}
             </p>
           )}
         </div>
@@ -140,28 +129,17 @@ function PackingPreview({ form }) {
             }}>
               {form.toName || "Recipient"}
             </p>
+            {form.toGSTIN && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>GSTIN: {form.toGSTIN}</p>}
             {form.toAddress && (
-              <p style={{
-                fontSize: "11px", color: "#6B7280",
-                margin: "2px 0 0", fontFamily: "Inter, sans-serif"
-              }}>
+              <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>
                 {form.toAddress}{form.toCity ? `, ${form.toCity}` : ""}
               </p>
             )}
-            {toState && (
-              <p style={{
-                fontSize: "11px", color: "#6B7280",
-                margin: "2px 0 0", fontFamily: "Inter, sans-serif"
-              }}>
-                {toState.name}
-              </p>
-            )}
-            {form.toPhone && (
-              <p style={{
-                fontSize: "11px", color: "#6B7280",
-                margin: "2px 0 0", fontFamily: "Inter, sans-serif"
-              }}>
-                Ph: {form.toPhone}
+            {toState && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{toState.name}</p>}
+            {(form.toPhone || form.toEmail) && (
+              <p style={{ fontSize: "11px", color: "#6B7280", margin: "4px 0 0", fontFamily: "Inter, sans-serif", lineHeight: 1.4 }}>
+                {form.toPhone && <span style={{ display: "block" }}>Ph: {form.toPhone}</span>}
+                {form.toEmail && <span style={{ display: "block", wordBreak: "break-all" }}>Em: {form.toEmail}</span>}
               </p>
             )}
           </div>
@@ -294,6 +272,7 @@ export default function PackingSlipPage() {
   const [form, setForm] = useState(DEFAULT_FORM);
   const { download, downloading } = useDownloadPDF();
   const router = useRouter();
+  const isUserPro = user?.plan === "Business Pro" || user?.plan === "Enterprise";
   const handleDownload = () => download("PackingSlip", form, `PackingSlip-${form.slipNumber}.pdf`);
 
   const handleSave = async () => {
@@ -440,8 +419,15 @@ export default function PackingSlipPage() {
                     color: "#6B7280", margin: "0 0 6px",
                     fontFamily: "Inter, sans-serif"
                   }}>Company Logo</p>
-                  <LogoUpload value={form.logo}
-                    onChange={v => updateField("logo", v)} />
+                  {isUserPro ? (
+                    <LogoUpload value={form.logo}
+                      onChange={v => updateField("logo", v)} />
+                  ) : (
+                    <div onClick={() => router.push("/#pricing")} style={{ padding: "14px 16px", border: "1px dashed #D1D5DB", borderRadius: "8px", background: "#F9FAFB", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer" }}>
+                      <span style={{ fontSize: "12px", color: "#9CA3AF", fontFamily: "Inter, sans-serif" }}>Logo upload — <strong style={{ color: "#6366F1" }}>Pro feature</strong></span>
+                      <span style={{ fontSize: "11px", background: "#EDE9FE", color: "#6366F1", padding: "3px 10px", borderRadius: "20px", fontWeight: 600 }}>Upgrade</span>
+                    </div>
+                  )}
                 </div>
                 <div className="form-field">
                   <label className="field-label">Company Name *</label>
@@ -449,6 +435,14 @@ export default function PackingSlipPage() {
                     placeholder="Your Company Name"
                     value={form.fromName}
                     onChange={e => updateField("fromName", e.target.value)} />
+                </div>
+                <div className="form-field">
+                  <label className="field-label">GSTIN</label>
+                  <input className="doc-input" placeholder="22AAAAA0000A1Z5"
+                    value={form.fromGSTIN}
+                    onChange={e => updateField("fromGSTIN", e.target.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase())}
+                    maxLength={15}
+                    style={{ fontFamily: "monospace", letterSpacing: "0.05em" }} />
                 </div>
                 <div className="form-field">
                   <label className="field-label">Address</label>
@@ -564,6 +558,14 @@ export default function PackingSlipPage() {
                     placeholder="Customer / Company Name"
                     value={form.toName}
                     onChange={e => updateField("toName", e.target.value)} />
+                </div>
+                <div className="form-field">
+                  <label className="field-label">GSTIN</label>
+                  <input className="doc-input" placeholder="22AAAAA0000A1Z5"
+                    value={form.toGSTIN}
+                    onChange={e => updateField("toGSTIN", e.target.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase())}
+                    maxLength={15}
+                    style={{ fontFamily: "monospace", letterSpacing: "0.05em" }} />
                 </div>
                 <div className="form-field">
                   <label className="field-label">Delivery Address</label>
@@ -823,15 +825,9 @@ export default function PackingSlipPage() {
                   </div>
                 </div>
 
-                <div style={{
-                  borderTop: "1px solid #F3F4F6", margin: "16px 0",
-                }} />
-                <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn">
-
-                  <Download size={15} />
-
-                  {downloading ? "Generating..." : "Download PDF"}
-
+                <div style={{ borderTop: "1px solid #F3F4F6", margin: "16px 0" }} />
+                <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn" style={{ width: "100%", justifyContent: "center" }}>
+                  <Download size={15} /> {downloading ? "Generating..." : "Download PDF"}
                 </button>
               </div>
             )}

@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
 import { documentsApi } from "@/api/documents";
 import { getAccessToken } from "@/api/auth";
+import { INDIAN_STATES } from "@/constants/indianStates";
 
 const T = "#0D9488";
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -22,8 +23,8 @@ const DEFAULT_FORM = {
   month: MONTHS[new Date().getMonth()],
   year: new Date().getFullYear().toString(),
   receiptDate: new Date().toISOString().split("T")[0],
-  landlordName: "", landlordPan: "", landlordAddress: "",
-  tenantName: "", propertyAddress: "",
+  landlordName: "", landlordPan: "", landlordAddress: "", landlordCity: "", landlordState: "27", landlordPhone: "", landlordEmail: "",
+  tenantName: "", propertyAddress: "", tenantCity: "", tenantState: "27", tenantPhone: "", tenantEmail: "",
   rentAmount: "", paymentMode: "Bank Transfer",
   logo: null,
   signature: null,
@@ -65,14 +66,45 @@ function RentPreview({ form }) {
           <p style={{ fontSize: "28px", fontWeight: 800, color: T, margin: "0 0 4px", fontFamily: "Space Grotesk, sans-serif" }}>{"Rs. " + amtFmt}</p>
           <p style={{ fontSize: "11px", color: "#374151", fontStyle: "italic", margin: 0, fontFamily: "Inter, sans-serif" }}>{numToWords(amount)}</p>
         </div>
-        {[["Received From (Tenant)", form.tenantName || "-"], ["Rent Period", form.month + " " + form.year], ["Property Address", form.propertyAddress || "-"], ["Payment Mode", form.paymentMode || "-"], ["Landlord Name", form.landlordName || "-"], ["Landlord PAN", form.landlordPan || "-"]].map(function (row) {
-          return (
-            <div key={row[0]} style={{ display: "flex", padding: "8px 0", borderBottom: "1px solid #F3F4F6" }}>
-              <span style={{ flex: 1.2, fontSize: "11px", color: "#9CA3AF", fontFamily: "Inter, sans-serif" }}>{row[0]}</span>
-              <span style={{ flex: 2, fontSize: "12px", fontWeight: 600, color: "#111827", fontFamily: "Inter, sans-serif" }}>{row[1]}</span>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px", marginBottom: "20px" }}>
+          <div>
+            <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "0 0 6px", fontFamily: "Inter, sans-serif", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600 }}>Received From (Tenant)</p>
+            <p style={{ fontSize: "13px", fontWeight: 700, color: "#111827", margin: "0 0 4px", fontFamily: "Inter, sans-serif" }}>{form.tenantName || "—"}</p>
+            {form.propertyAddress && <p style={{ fontSize: "11px", color: "#4B5563", margin: "0 0 2px", fontFamily: "Inter, sans-serif" }}>{form.propertyAddress}</p>}
+            {(form.tenantCity || form.tenantState) && <p style={{ fontSize: "11px", color: "#4B5563", margin: "0 0 2px", fontFamily: "Inter, sans-serif" }}>{form.tenantCity ? form.tenantCity + ", " : ""}{INDIAN_STATES.find(s => s.code === form.tenantState)?.name || ""}</p>}
+            {(form.tenantPhone || form.tenantEmail) && (
+              <p style={{ fontSize: "11px", color: "#4B5563", margin: "6px 0 0", fontFamily: "Inter, sans-serif", lineHeight: 1.4 }}>
+                {form.tenantPhone && <span style={{ display: "block" }}>Ph: {form.tenantPhone}</span>}
+                {form.tenantEmail && <span style={{ display: "block" }}>Em: {form.tenantEmail}</span>}
+              </p>
+            )}
+          </div>
+          
+          <div>
+            <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "0 0 6px", fontFamily: "Inter, sans-serif", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600 }}>Landlord Details</p>
+            <p style={{ fontSize: "13px", fontWeight: 700, color: "#111827", margin: "0 0 4px", fontFamily: "Inter, sans-serif" }}>{form.landlordName || "—"}</p>
+            {form.landlordAddress && <p style={{ fontSize: "11px", color: "#4B5563", margin: "0 0 2px", fontFamily: "Inter, sans-serif" }}>{form.landlordAddress}</p>}
+            {(form.landlordCity || form.landlordState) && <p style={{ fontSize: "11px", color: "#4B5563", margin: "0 0 2px", fontFamily: "Inter, sans-serif" }}>{form.landlordCity ? form.landlordCity + ", " : ""}{INDIAN_STATES.find(s => s.code === form.landlordState)?.name || ""}</p>}
+            {(form.landlordPhone || form.landlordEmail) && (
+              <p style={{ fontSize: "11px", color: "#4B5563", margin: "6px 0 0", fontFamily: "Inter, sans-serif", lineHeight: 1.4 }}>
+                {form.landlordPhone && <span style={{ display: "block" }}>Ph: {form.landlordPhone}</span>}
+                {form.landlordEmail && <span style={{ display: "block" }}>Em: {form.landlordEmail}</span>}
+              </p>
+            )}
+            {form.landlordPan && <p style={{ fontSize: "11px", color: "#111827", margin: "6px 0 0", fontFamily: "Inter, sans-serif", fontWeight: 600 }}>PAN: {form.landlordPan}</p>}
+          </div>
+        </div>
+
+        <div style={{ display: "flex", gap: "24px", padding: "12px 0", borderTop: "1px solid #F3F4F6", borderBottom: "1px solid #F3F4F6" }}>
+            <div style={{ flex: 1 }}>
+              <span style={{ fontSize: "11px", color: "#9CA3AF", fontFamily: "Inter, sans-serif", display: "block", marginBottom: "2px" }}>Rent Period</span>
+              <span style={{ fontSize: "13px", fontWeight: 600, color: "#111827", fontFamily: "Inter, sans-serif" }}>{form.month + " " + form.year}</span>
             </div>
-          );
-        })}
+            <div style={{ flex: 1 }}>
+              <span style={{ fontSize: "11px", color: "#9CA3AF", fontFamily: "Inter, sans-serif", display: "block", marginBottom: "2px" }}>Payment Mode</span>
+              <span style={{ fontSize: "13px", fontWeight: 600, color: "#111827", fontFamily: "Inter, sans-serif" }}>{form.paymentMode || "—"}</span>
+            </div>
+        </div>
         <div style={{ marginTop: "16px", padding: "8px 12px", background: "#F0FDFA", borderLeft: "3px solid " + T }}>
           <p style={{ fontSize: "10px", color: "#065F46", fontFamily: "Inter, sans-serif", margin: 0 }}>Valid for HRA exemption claim under Section 10(13A)</p>
         </div>
@@ -97,6 +129,7 @@ export default function RentReceiptPage() {
   const [activeTab, setActiveTab] = useState("landlord");
   const [isSigModalOpen, setIsSigModalOpen] = useState(false);
   const router = useRouter();
+  const isUserPro = user?.plan === "Business Pro" || user?.plan === "Enterprise";
   const handleDownload = () => download("RentReceipt", form, "RentReceipt-" + form.month + "-" + form.year + ".pdf");
 
   const handleSave = async () => {
@@ -146,10 +179,32 @@ export default function RentReceiptPage() {
             {activeTab === "landlord" && (
               <div>
                 <p className="form-label">Landlord Details</p>
-                <div style={{ marginBottom: "16px" }}><p style={{ fontSize: "11px", fontWeight: 600, color: "#6B7280", margin: "0 0 6px", fontFamily: "Inter, sans-serif" }}>Logo (optional)</p><LogoUpload value={form.logo} onChange={v => updateField("logo", v)} /></div>
+                <div style={{ marginBottom: "16px" }}><p style={{ fontSize: "11px", fontWeight: 600, color: "#6B7280", margin: "0 0 6px", fontFamily: "Inter, sans-serif" }}>Logo (optional)</p>
+                  {isUserPro ? (
+                    <LogoUpload value={form.logo} onChange={v => updateField("logo", v)} />
+                  ) : (
+                    <div onClick={() => router.push("/#pricing")} style={{ padding: "14px 16px", border: "1px dashed #D1D5DB", borderRadius: "8px", background: "#F9FAFB", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer" }}>
+                      <span style={{ fontSize: "12px", color: "#9CA3AF", fontFamily: "Inter, sans-serif" }}>Logo upload — <strong style={{ color: "#6366F1" }}>Pro feature</strong></span>
+                      <span style={{ fontSize: "11px", background: "#EDE9FE", color: "#6366F1", padding: "3px 10px", borderRadius: "20px", fontWeight: 600 }}>Upgrade</span>
+                    </div>
+                  )}
+                </div>
                 <div className="form-field"><label className="field-label">Landlord Name</label><input className="doc-input" placeholder="Ramesh Verma" value={form.landlordName} onChange={e => updateField("landlordName", e.target.value)} /></div>
-                <div className="form-field"><label className="field-label">Landlord PAN <span style={{ color: T, fontSize: "11px" }}>Required for HRA &gt; 1L/year</span></label><input className="doc-input" placeholder="ABCDE1234F" value={form.landlordPan} onChange={e => updateField("landlordPan", e.target.value.toUpperCase())} /></div>
+                <div className="form-field"><label className="field-label">Landlord PAN <span style={{ color: T, fontSize: "11px" }}>Required for HRA &gt; 1L/year</span></label><input className="doc-input" placeholder="ABCDE1234F" value={form.landlordPan} onChange={e => updateField("landlordPan", e.target.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase())} maxLength={10} /></div>
                 <div className="form-field"><label className="field-label">Landlord Address</label><input className="doc-input" placeholder="123 MG Road, Mumbai" value={form.landlordAddress} onChange={e => updateField("landlordAddress", e.target.value)} /></div>
+                
+                <div className="form-row">
+                  <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">City</label><input className="doc-input" placeholder="Mumbai" value={form.landlordCity || ""} onChange={e => updateField("landlordCity", e.target.value)} /></div>
+                  <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">State</label>
+                    <select className="doc-select" value={form.landlordState || "27"} onChange={e => updateField("landlordState", e.target.value)}>
+                      {INDIAN_STATES.map(s => <option key={s.code} value={s.code}>{s.name}</option>)}
+                    </select>
+                  </div>
+                </div>
+                <div className="form-row" style={{ marginTop: "10px" }}>
+                  <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">Phone</label><input className="doc-input" placeholder="+91 98765 43210" value={form.landlordPhone || ""} onChange={e => updateField("landlordPhone", e.target.value)} /></div>
+                  <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">Email</label><input className="doc-input" type="email" placeholder="landlord@company.com" value={form.landlordEmail || ""} onChange={e => updateField("landlordEmail", e.target.value)} /></div>
+                </div>
                 
                 <div style={{ borderTop: "1px solid #F3F4F6", margin: "16px 0" }} />
                 <p className="form-label">Digital Signature</p>
@@ -177,8 +232,23 @@ export default function RentReceiptPage() {
             {activeTab === "tenant" && (
               <div>
                 <p className="form-label">Tenant Details</p>
-                <div className="form-field"><label className="field-label">Tenant Name</label><input className="doc-input" placeholder="Priya Sharma" value={form.tenantName} onChange={e => updateField("tenantName", e.target.value)} /></div>
+                <div className="form-field"><label className="field-label">Tenant Name (First name, Last name)</label><input className="doc-input" placeholder="Priya Sharma" value={form.tenantName} onChange={e => updateField("tenantName", e.target.value)} /></div>
+                
+                <div className="form-row" style={{ marginTop: "10px", marginBottom: "16px" }}>
+                  <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">Phone</label><input className="doc-input" placeholder="+91 98765 43210" value={form.tenantPhone || ""} onChange={e => updateField("tenantPhone", e.target.value)} /></div>
+                  <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">Email</label><input className="doc-input" type="email" placeholder="tenant@company.com" value={form.tenantEmail || ""} onChange={e => updateField("tenantEmail", e.target.value)} /></div>
+                </div>
+
                 <div className="form-field"><label className="field-label">Property Address</label><input className="doc-input" placeholder="Flat 4B, Green Apartments, Pune" value={form.propertyAddress} onChange={e => updateField("propertyAddress", e.target.value)} /></div>
+                
+                <div className="form-row">
+                  <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">City</label><input className="doc-input" placeholder="Delhi" value={form.tenantCity || ""} onChange={e => updateField("tenantCity", e.target.value)} /></div>
+                  <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">State</label>
+                    <select className="doc-select" value={form.tenantState || "27"} onChange={e => updateField("tenantState", e.target.value)}>
+                      {INDIAN_STATES.map(s => <option key={s.code} value={s.code}>{s.name}</option>)}
+                    </select>
+                  </div>
+                </div>
               </div>
             )}
 
@@ -195,7 +265,7 @@ export default function RentReceiptPage() {
                   </div>
                   <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">Year</label><input className="doc-input" placeholder="2026" value={form.year} onChange={e => updateField("year", e.target.value)} /></div>
                 </div>
-                <div className="form-field" style={{ marginTop: "12px" }}><label className="field-label">Rent Amount (Rs.)</label><input className="doc-input" type="number" placeholder="15000" value={form.rentAmount} onChange={e => updateField("rentAmount", e.target.value)} /></div>
+                <div className="form-field" style={{ marginTop: "12px" }}><label className="field-label">Rent Amount (Rs.)</label><input className="doc-input" type="number" placeholder="15000" value={form.rentAmount} onChange={e => { if (e.target.value.length <= 15) updateField("rentAmount", e.target.value); }} /></div>
                 <div className="form-field"><label className="field-label">Receipt Date</label><input className="doc-input" type="date" value={form.receiptDate} onChange={e => updateField("receiptDate", e.target.value)} /></div>
                 <div className="form-field">
                   <label className="field-label">Payment Mode</label>
@@ -206,7 +276,7 @@ export default function RentReceiptPage() {
                   </div>
                 </div>
                 <div style={{ borderTop: "1px solid #F3F4F6", margin: "16px 0" }} />
-                <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn"><Download size={15} />{downloading ? "Generating..." : "Download PDF"}</button>
+                <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn" style={{ width: "100%", justifyContent: "center" }}><Download size={15} />{downloading ? "Generating..." : "Download PDF"}</button>
               </div>
             )}
 

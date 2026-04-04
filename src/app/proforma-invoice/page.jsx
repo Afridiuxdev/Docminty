@@ -163,11 +163,14 @@ function ProformaPreview({ form }) {
             </p>
           )}
           {fromState && (
-            <p style={{
-              fontSize: "11px", color: "#6B7280",
-              margin: "2px 0 0", fontFamily: "Inter, sans-serif"
-            }}>
+            <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>
               {fromState.name}
+            </p>
+          )}
+          {(form.fromPhone || form.fromEmail) && (
+            <p style={{ fontSize: "11px", color: "#6B7280", margin: "4px 0 0", fontFamily: "Inter, sans-serif", lineHeight: 1.4 }}>
+              {form.fromPhone && <span style={{ display: "block" }}>Ph: {form.fromPhone}</span>}
+              {form.fromEmail && <span style={{ display: "block", wordBreak: "break-all" }}>Em: {form.fromEmail}</span>}
             </p>
           )}
         </div>
@@ -234,11 +237,14 @@ function ProformaPreview({ form }) {
               </p>
             )}
             {toState && (
-              <p style={{
-                fontSize: "11px", color: "#6B7280",
-                margin: "2px 0 0", fontFamily: "Inter, sans-serif"
-              }}>
+              <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>
                 {toState.name}
+              </p>
+            )}
+            {(form.toPhone || form.toEmail) && (
+              <p style={{ fontSize: "11px", color: "#6B7280", margin: "4px 0 0", fontFamily: "Inter, sans-serif", lineHeight: 1.4 }}>
+                {form.toPhone && <span style={{ display: "block" }}>Ph: {form.toPhone}</span>}
+                {form.toEmail && <span style={{ display: "block", wordBreak: "break-all" }}>Em: {form.toEmail}</span>}
               </p>
             )}
           </div>
@@ -480,6 +486,7 @@ export default function ProformaInvoicePage() {
   const [form, setForm] = useState(DEFAULT_FORM);
   const { download, downloading } = useDownloadPDF();
   const router = useRouter();
+  const isUserPro = user?.plan === "Business Pro" || user?.plan === "Enterprise";
   const handleDownload = () => download("ProformaInvoice", form, `Proforma-${form.proformaNumber}.pdf`);
 
   const handleSave = async () => {
@@ -611,8 +618,15 @@ export default function ProformaInvoicePage() {
                     fontSize: "11px", fontWeight: 600, color: "#6B7280",
                     margin: "0 0 6px", fontFamily: "Inter, sans-serif"
                   }}>Logo</p>
-                  <LogoUpload value={form.logo}
-                    onChange={v => updateField("logo", v)} />
+                  {isUserPro ? (
+                    <LogoUpload value={form.logo}
+                      onChange={v => updateField("logo", v)} />
+                  ) : (
+                    <div onClick={() => router.push("/#pricing")} style={{ padding: "14px 16px", border: "1px dashed #D1D5DB", borderRadius: "8px", background: "#F9FAFB", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer" }}>
+                      <span style={{ fontSize: "12px", color: "#9CA3AF", fontFamily: "Inter, sans-serif" }}>Logo upload — <strong style={{ color: "#6366F1" }}>Pro feature</strong></span>
+                      <span style={{ fontSize: "11px", background: "#EDE9FE", color: "#6366F1", padding: "3px 10px", borderRadius: "20px", fontWeight: 600 }}>Upgrade</span>
+                    </div>
+                  )}
                 </div>
                 <div className="form-field">
                   <label className="field-label">Business Name *</label>
@@ -624,9 +638,12 @@ export default function ProformaInvoicePage() {
                   <label className="field-label">GSTIN</label>
                   <input className="doc-input" placeholder="22AAAAA0000A1Z5"
                     value={form.fromGSTIN}
-                    onChange={e => updateField("fromGSTIN",
-                      e.target.value.toUpperCase())}
-                    style={{ fontFamily: "monospace" }} />
+                    onChange={e => updateField("fromGSTIN", e.target.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase())}
+                    maxLength={15}
+                    style={{ fontFamily: "monospace", letterSpacing: "0.05em" }} />                </div>
+                <div className="form-row" style={{ marginTop: "4px" }}>
+                  <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">Phone</label><input className="doc-input" placeholder="+91 98765 43210" value={form.fromPhone} onChange={e => updateField("fromPhone", e.target.value)} /></div>
+                  <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">Email</label><input className="doc-input" type="email" placeholder="you@company.com" value={form.fromEmail} onChange={e => updateField("fromEmail", e.target.value)} /></div>
                 </div>
                 <div className="form-field">
                   <label className="field-label">Address</label>
@@ -685,9 +702,13 @@ export default function ProformaInvoicePage() {
                   <label className="field-label">Client GSTIN</label>
                   <input className="doc-input" placeholder="22AAAAA0000A1Z5"
                     value={form.toGSTIN}
-                    onChange={e => updateField("toGSTIN",
-                      e.target.value.toUpperCase())}
-                    style={{ fontFamily: "monospace" }} />
+                    onChange={e => updateField("toGSTIN", e.target.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase())}
+                    maxLength={15}
+                    style={{ fontFamily: "monospace", letterSpacing: "0.05em" }} />
+                </div>
+                <div className="form-row">
+                  <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">Phone</label><input className="doc-input" placeholder="+91 98765 43210" value={form.toPhone} onChange={e => updateField("toPhone", e.target.value)} /></div>
+                  <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">Email</label><input className="doc-input" type="email" placeholder="client@company.com" value={form.toEmail} onChange={e => updateField("toEmail", e.target.value)} /></div>
                 </div>
                 <div className="form-field">
                   <label className="field-label">Address</label>
@@ -929,12 +950,8 @@ export default function ProformaInvoicePage() {
                 </div>
 
                 <div style={{ borderTop: "1px solid #F3F4F6", margin: "16px 0" }} />
-                <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn">
-
-                  <Download size={15} />
-
-                  {downloading ? "Generating..." : "Download PDF"}
-
+                <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn" style={{ width: "100%", justifyContent: "center" }}>
+                  <Download size={15} /> {downloading ? "Generating..." : "Download PDF"}
                 </button>
               </div>
             )}
