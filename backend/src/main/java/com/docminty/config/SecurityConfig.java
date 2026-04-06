@@ -57,7 +57,12 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsSource() {
         CorsConfiguration c = new CorsConfiguration();
-        c.setAllowedOrigins(List.of("http://localhost:3000","https://docminty.com","https://docminty.vercel.app"));
+        c.setAllowedOriginPatterns(List.of(
+            "http://localhost:3000",
+            "https://docminty.com",
+            "https://www.docminty.com",
+            "https://*.vercel.app"
+        ));
         c.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
         c.setAllowedHeaders(List.of("*")); c.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource s = new UrlBasedCorsConfigurationSource();
