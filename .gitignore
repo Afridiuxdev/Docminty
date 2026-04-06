@@ -1,0 +1,22 @@
+# Node
+node_modules/
+.next/
+
+# Env
+.env
+.env.local
+
+# Logs
+logs/
+*.log
+
+# Backend (Spring Boot)
+backend/target/
+
+# Flutter
+docminty_flutter/build/
+docminty_flutter/.dart_tool/
+
+# OS
+.DS_Store
+Thumbs.db

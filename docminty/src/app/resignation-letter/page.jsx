@@ -1,0 +1,392 @@
+"use client";
+import { useState, useCallback } from "react";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import AdSense from "@/components/AdSense";
+import { Download, RefreshCw, Eye, Cloud, PenTool } from "lucide-react";
+import { useDownloadPDF } from "@/hooks/useDownloadPDF";
+import { useRouter } from "next/navigation";
+import toast, { Toaster } from "react-hot-toast";
+import { documentsApi } from "@/api/documents";
+import { getAccessToken } from "@/api/auth";
+import TemplatePicker from "@/components/TemplatePicker";
+import WatermarkOverlay from "@/components/WatermarkOverlay";
+import { TEMPLATE_REGISTRY } from "@/templates/registry";
+import { useAuth } from "@/contexts/AuthContext";
+import SignatureModal from "@/components/SignatureModal";
+import TemplateColorPicker from "@/components/TemplateColorPicker";
+
+const T = "#0D9488";
+
+const DEFAULT_FORM = {
+  employeeName: "", designation: "", department: "",
+  companyName: "", managerName: "", managerDesignation: "",
+  letterDate: new Date().toISOString().split("T")[0],
+  lastWorkingDate: "", noticePeriod: "30",
+  reason: "personal", customReason: "", gratitudeNote: "",
+  signature: null,
+  templateColor: "#0D9488",
+};
+
+const REASONS = {
+  personal: "I have decided to pursue a new opportunity that aligns more closely with my personal and professional goals.",
+  relocation: "Due to relocation constraints, I am unable to continue in my current position.",
+  health: "Due to personal health reasons, I am unable to continue in my current role.",
+  higher: "I have been offered an opportunity to pursue higher education, which requires my full commitment.",
+  custom: "",
+};
+
+export function ResignationPreview({ form, template = "Classic", accent = "#0D9488" }) {
+  var reasonText = form.reason === "custom" ? form.customReason : REASONS[form.reason];
+
+  const letterBody = (
+    <div className="pdf-body">
+      <p style={{ fontSize: "12px", color: "#374151", fontFamily: "Inter, sans-serif", margin: "0 0 2px" }}><strong>{form.managerName || "Manager Name"}</strong></p>
+      <p style={{ fontSize: "12px", color: "#6B7280", fontFamily: "Inter, sans-serif", margin: "0 0 16px" }}>{form.managerDesignation || "Designation"}{form.companyName ? ", " + form.companyName : ""}</p>
+      <p style={{ fontSize: "12px", color: "#374151", fontFamily: "Inter, sans-serif", margin: "0 0 12px" }}>Dear {form.managerName ? form.managerName.split(" ")[0] : "Sir/Madam"},</p>
+      <p style={{ fontSize: "12px", color: "#374151", fontFamily: "Inter, sans-serif", lineHeight: 1.8, margin: "0 0 12px" }}>
+        I am writing to formally notify you of my resignation from the position of{" "}
+        <strong>{form.designation || "[Designation]"}</strong>
+        {form.department ? " in the " + form.department + " department" : ""}
+        {form.companyName ? " at " + form.companyName : ""}.
+        {" "}My last working day will be{" "}
+        <strong style={{ color: accent }}>{form.lastWorkingDate || "[Last Working Date]"}</strong>,
+        {" "}serving a notice period of {form.noticePeriod} days.
+      </p>
+      {reasonText && <p style={{ fontSize: "12px", color: "#374151", fontFamily: "Inter, sans-serif", lineHeight: 1.8, margin: "0 0 12px" }}>{reasonText}</p>}
+      <p style={{ fontSize: "12px", color: "#374151", fontFamily: "Inter, sans-serif", lineHeight: 1.8, margin: "0 0 12px" }}>
+        {form.gratitudeNote || "I am grateful for the opportunities for professional and personal development provided during my tenure. I have enjoyed working with the team and value the experience gained here."}
+      </p>
+      <p style={{ fontSize: "12px", color: "#374151", fontFamily: "Inter, sans-serif", lineHeight: 1.8, margin: "0 0 24px" }}>
+        I will ensure a smooth transition and complete all pending tasks before my last working day.
+      </p>
+      <p style={{ fontSize: "12px", color: "#374151", fontFamily: "Inter, sans-serif", margin: "0 0 4px" }}>Yours sincerely,</p>
+      <div style={{ display: "inline-block", minWidth: "160px" }}>
+        {form.signature ? (
+          <div style={{ marginBottom: "4px" }}><img src={form.signature} alt="Signature" style={{ maxHeight: "45px", maxWidth: "140px", display: "block" }} /></div>
+        ) : (
+          <div style={{ height: "40px" }} />
+        )}
+        <div style={{ borderTop: "1px solid #374151", paddingTop: "8px" }}>
+          <p style={{ fontSize: "13px", fontWeight: 700, color: "#111827", fontFamily: "Space Grotesk, sans-serif", margin: "0 0 2px" }}>{form.employeeName || "[Your Name]"}</p>
+          <p style={{ fontSize: "11px", color: "#9CA3AF", fontFamily: "Inter, sans-serif", margin: 0 }}>{form.designation || ""}{form.department ? " - " + form.department : ""}</p>
+        </div>
+      </div>
+      <div style={{ marginTop: "24px", paddingTop: "12px", borderTop: "1px solid #E5E7EB" }}>
+        <p style={{ fontSize: "10px", color: "#D1D5DB", fontFamily: "Inter, sans-serif", margin: 0 }}>Generated by DocMinty.com</p>
+      </div>
+    </div>
+  );
+
+  if (template === "Modern") {
+    return (
+      <div className="pdf-preview" style={{ display: "flex", gap: 0, padding: 0, overflow: "hidden" }}>
+        <div style={{ width: "140px", minWidth: "140px", background: accent, padding: "24px 16px", display: "flex", flexDirection: "column", gap: "20px" }}>
+          <div>
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "13px", color: "#fff", margin: "0 0 4px", textTransform: "uppercase", letterSpacing: "0.05em" }}>Resignation</p>
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "13px", color: "#fff", margin: 0, textTransform: "uppercase", letterSpacing: "0.05em" }}>Letter</p>
+          </div>
+          <div>
+            <p style={{ fontSize: "9px", color: "rgba(255,255,255,0.6)", margin: "0 0 2px", fontFamily: "Inter, sans-serif", textTransform: "uppercase" }}>Date</p>
+            <p style={{ fontSize: "10px", color: "#fff", margin: 0, fontFamily: "Inter, sans-serif" }}>{form.letterDate}</p>
+          </div>
+          <div>
+            <p style={{ fontSize: "9px", color: "rgba(255,255,255,0.6)", margin: "0 0 2px", fontFamily: "Inter, sans-serif", textTransform: "uppercase" }}>From</p>
+            <p style={{ fontSize: "10px", color: "#fff", margin: 0, fontFamily: "Space Grotesk, sans-serif", fontWeight: 600 }}>{form.employeeName || "—"}</p>
+          </div>
+          <div>
+            <p style={{ fontSize: "9px", color: "rgba(255,255,255,0.6)", margin: "0 0 2px", fontFamily: "Inter, sans-serif", textTransform: "uppercase" }}>Last Day</p>
+            <p style={{ fontSize: "10px", color: "#fff", margin: 0, fontFamily: "Inter, sans-serif" }}>{form.lastWorkingDate || "—"}</p>
+          </div>
+        </div>
+        <div style={{ flex: 1, overflow: "hidden" }}>{letterBody}</div>
+      </div>
+    );
+  }
+  if (template === "Corporate") {
+    return (
+      <div className="pdf-preview">
+        <div style={{ background: accent, padding: "20px 24px", textAlign: "center" }}>
+          <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "20px", color: "#fff", margin: 0 }}>RESIGNATION LETTER</p>
+          <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.8)", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>{form.employeeName || "Employee Name"} · {form.letterDate}</p>
+        </div>
+        {letterBody}
+      </div>
+    );
+  }
+  if (template === "Elegant") {
+    return (
+      <div className="pdf-preview" style={{ borderBottom: `4px solid ${accent}` }}>
+        <div style={{ padding: "20px 24px 16px", borderBottom: "1px solid #E5E7EB", display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+          <div>
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "18px", color: accent, margin: "0 0 4px" }}>RESIGNATION LETTER</p>
+            <p style={{ fontSize: "11px", color: "#9CA3AF", margin: 0, fontFamily: "Inter, sans-serif" }}>Date: {form.letterDate}</p>
+          </div>
+          <div style={{ textAlign: "right" }}>
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "15px", color: "#111827", margin: 0 }}>{form.employeeName || "Employee Name"}</p>
+            {(form.designation || form.department) && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{[form.designation, form.department].filter(Boolean).join(" - ")}</p>}
+          </div>
+        </div>
+        {letterBody}
+      </div>
+    );
+  }
+  if (template === "Classic") {
+    return (
+      <div className="pdf-preview">
+        <div className="pdf-header" style={{ borderBottom: `2px solid ${accent}` }}>
+          <div>
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: accent, margin: 0 }}>RESIGNATION LETTER</p>
+            <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>Date: {form.letterDate}</p>
+          </div>
+          <div style={{ textAlign: "right" }}>
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "15px", color: "#111827", margin: 0 }}>{form.employeeName || "Employee Name"}</p>
+            {(form.designation || form.department) && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{[form.designation, form.department].filter(Boolean).join(" - ")}</p>}
+          </div>
+        </div>
+        {letterBody}
+      </div>
+    );
+  }
+  // Minimal (default)
+  return (
+    <div className="pdf-preview">
+      <div style={{ padding: "20px 24px 16px", borderBottom: "1px solid #E5E7EB" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+          <div>
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: "#111827", margin: "0 0 4px" }}>RESIGNATION LETTER</p>
+            <p style={{ fontSize: "11px", color: "#9CA3AF", margin: 0, fontFamily: "Inter, sans-serif" }}>Date: {form.letterDate}</p>
+          </div>
+          <div style={{ textAlign: "right" }}>
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "15px", color: "#111827", margin: 0 }}>{form.employeeName || "Employee Name"}</p>
+            {(form.designation || form.department) && <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{[form.designation, form.department].filter(Boolean).join(" - ")}</p>}
+          </div>
+        </div>
+        <div style={{ height: "2px", background: accent, marginTop: "12px", borderRadius: "1px" }} />
+      </div>
+      {letterBody}
+    </div>
+  );
+}
+
+export default function ResignationLetterPage() {
+  const { user } = useAuth();
+  const [form, setForm] = useState(DEFAULT_FORM);
+  const { download, downloading } = useDownloadPDF();
+  const [activeTab, setActiveTab] = useState("employee");
+  const [isSigModalOpen, setIsSigModalOpen] = useState(false);
+  const [template, setTemplate] = useState("Classic");
+  const router = useRouter();
+  const plan = user?.plan?.toUpperCase() || "FREE";
+  const isUserPro = plan === "PRO" || plan === "ENTERPRISE" || plan === "BUSINESS PRO";
+  const templateMeta = TEMPLATE_REGISTRY.resignation[template] || TEMPLATE_REGISTRY.resignation.Classic;
+  const isProTemplate = templateMeta.pro;
+  const showWatermark = isProTemplate && !isUserPro;
+  const handleDownload = () => {
+    download("resignation", template, form, "ResignationLetter.pdf");
+  };
+
+  const handleSave = async () => {
+    if (!getAccessToken()) { toast.error("Please sign in to save"); router.push("/login"); return; }
+    try {
+      await documentsApi.save({ 
+        docType: "resignation-letter", 
+        title: `Resignation Letter - ${form.employeeName || "Employee"}`, 
+        referenceNumber: form.letterDate, 
+        templateName: template,
+        partyName: form.employeeName, 
+        amount: "", 
+        formData: JSON.stringify(form) 
+      });
+      toast.success("Saved to your dashboard!");
+    } catch { toast.error("Save failed"); }
+  };
+  const updateField = useCallback((field, value) => setForm(prev => ({ ...prev, [field]: value })), []);
+
+  const TABS = [
+    { id: "employee", label: "Employee" },
+    { id: "manager", label: "Manager" },
+    { id: "details", label: "Details" },
+    { id: "content", label: "Content" },
+    { id: "templates", label: "Templates" },
+  ];
+
+  return (
+    <>
+      <Toaster position="top-right" />
+      <Navbar />
+      <div style={{ background: "#fff", borderBottom: "1px solid #E5E7EB", padding: "14px 24px" }}>
+        <div style={{ maxWidth: "1300px", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
+          <div>
+            <h1 style={{ fontFamily: "Space Grotesk, sans-serif", fontSize: "18px", fontWeight: 700, margin: 0, color: "#111827" }}>Resignation Letter Generator</h1>
+            <p style={{ fontSize: "12px", color: "#9CA3AF", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>Professional resignation with notice period</p>
+          </div>
+          <div style={{ display: "flex", gap: "8px" }}>
+            <button onClick={() => setForm(DEFAULT_FORM)} style={{ display: "flex", alignItems: "center", gap: "6px", height: "36px", padding: "0 14px", border: "1px solid #E5E7EB", borderRadius: "8px", background: "#fff", fontSize: "13px", fontWeight: 600, color: "#6B7280", cursor: "pointer", fontFamily: "Inter, sans-serif" }}><RefreshCw size={13} /> Reset</button>
+            <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn"><Download size={15} />{downloading ? "Generating..." : "Download PDF"}</button>
+            {user && isUserPro && (
+              <button onClick={handleSave} style={{ display: "flex", alignItems: "center", gap: "6px", height: "36px", padding: "0 14px", border: "1px solid #0D9488", borderRadius: "8px", background: "#fff", fontSize: "13px", fontWeight: 600, color: "#0D9488", cursor: "pointer", fontFamily: "Inter, sans-serif", transition: "all 150ms" }}><Cloud size={14} /> Save</button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div style={{ background: "#F0F4F3", minHeight: "calc(100vh - 120px)" }}>
+        <div className="doc-page-wrap">
+          <div className="form-panel">
+            <div className="tab-bar" style={{ display: "flex", gap: "4px", marginBottom: "20px", background: "#F0F4F3", borderRadius: "8px", padding: "4px" }}>
+              {TABS.map(tab => (
+                <button key={tab.id} onClick={() => setActiveTab(tab.id)} style={{ flex: 1, padding: "6px 4px", borderRadius: "6px", border: "none", fontSize: "12px", fontWeight: 600, cursor: "pointer", fontFamily: "Inter, sans-serif", background: activeTab === tab.id ? "#fff" : "transparent", color: activeTab === tab.id ? T : "#6B7280", boxShadow: activeTab === tab.id ? "0 1px 4px rgba(0,0,0,0.08)" : "none" }}>{tab.label}</button>
+              ))}
+            </div>
+
+            {activeTab === "employee" && (
+              <div>
+                <p className="form-label">Employee Details</p>
+                <div className="form-field"><label className="field-label">Your Full Name</label><input className="doc-input" placeholder="Rahul Sharma" value={form.employeeName} onChange={e => updateField("employeeName", e.target.value)} /></div>
+                <div className="form-field"><label className="field-label">Your Designation</label><input className="doc-input" placeholder="Software Engineer" value={form.designation} onChange={e => updateField("designation", e.target.value)} /></div>
+                 <div className="form-field"><label className="field-label">Department</label><input className="doc-input" placeholder="Engineering" value={form.department} onChange={e => updateField("department", e.target.value)} /></div>
+                 
+                 <div style={{ borderTop: "1px solid #F3F4F6", margin: "16px 0" }} />
+                 <p className="form-label">Digital Signature</p>
+                 <div style={{
+                   border: "1px solid #E5E7EB", borderRadius: "12px", padding: "16px",
+                   display: "flex", flexDirection: "column", alignItems: "center", gap: "10px", background: "#fff"
+                 }}>
+                   {form.signature ? (
+                     <div style={{ width: "100%", textAlign: "center" }}>
+                       <div style={{
+                         padding: "12px", background: "#F9FAFB", borderRadius: "8px",
+                         border: "1px dashed #D1D5DB", display: "inline-block", minWidth: "140px"
+                       }}>
+                         <img src={form.signature} alt="Signature" style={{ height: "45px", maxWidth: "100%", objectFit: "contain" }} />
+                       </div>
+                       <div style={{ display: "flex", gap: "8px", justifyContent: "center", marginTop: "10px" }}>
+                         <button onClick={() => setIsSigModalOpen(true)} style={{ fontSize: "12px", fontWeight: 600, color: T, background: "none", border: "none", cursor: "pointer" }}>Change</button>
+                         <button onClick={() => updateField("signature", null)} style={{ fontSize: "12px", fontWeight: 600, color: "#EF4444", background: "none", border: "none", cursor: "pointer" }}>Remove</button>
+                       </div>
+                     </div>
+                   ) : (
+                     <button onClick={() => setIsSigModalOpen(true)} style={{
+                       width: "100%", padding: "24px 16px", display: "flex", flexDirection: "column",
+                       alignItems: "center", gap: "8px", background: "#F9FAFB", border: "1px dashed #D1D5DB",
+                       borderRadius: "10px", cursor: "pointer"
+                     }}>
+                       <div style={{
+                         width: "36px", height: "36px", borderRadius: "50%", background: "#fff",
+                         display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 2px 4px rgba(0,0,0,0.05)"
+                       }}>
+                         <PenTool size={16} color="#9CA3AF" />
+                       </div>
+                       <span style={{ fontSize: "13px", fontWeight: 600, color: "#374151" }}>Provide Signature</span>
+                     </button>
+                   )}
+                 </div>
+               </div>
+             )}
+
+            {activeTab === "manager" && (
+              <div>
+                <p className="form-label">Reporting Manager</p>
+                <div className="form-field"><label className="field-label">Manager Name</label><input className="doc-input" placeholder="Priya Nair" value={form.managerName} onChange={e => updateField("managerName", e.target.value)} /></div>
+                <div className="form-field"><label className="field-label">Manager Designation</label><input className="doc-input" placeholder="Engineering Manager" value={form.managerDesignation} onChange={e => updateField("managerDesignation", e.target.value)} /></div>
+                <div className="form-field"><label className="field-label">Company Name</label><input className="doc-input" placeholder="Acme Pvt Ltd" value={form.companyName} onChange={e => updateField("companyName", e.target.value)} /></div>
+              </div>
+            )}
+
+            {activeTab === "details" && (
+              <div>
+                <p className="form-label">Resignation Details</p>
+                <div className="form-row">
+                  <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">Letter Date</label><input className="doc-input" type="date" value={form.letterDate} onChange={e => updateField("letterDate", e.target.value)} /></div>
+                  <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">Last Working Date</label><input className="doc-input" type="date" value={form.lastWorkingDate} onChange={e => updateField("lastWorkingDate", e.target.value)} /></div>
+                </div>
+                <div className="form-field" style={{ marginTop: "12px" }}><label className="field-label">Notice Period (days)</label><input className="doc-input" placeholder="30" value={form.noticePeriod} onChange={e => updateField("noticePeriod", e.target.value)} /></div>
+                <div className="form-field">
+                  <label className="field-label">Reason for Resignation</label>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                    {[{ v: "personal", l: "Personal / Career Growth" }, { v: "relocation", l: "Relocation" }, { v: "health", l: "Health Reasons" }, { v: "higher", l: "Higher Education" }, { v: "custom", l: "Custom Reason" }].map(opt => (
+                      <button key={opt.v} onClick={() => updateField("reason", opt.v)} className={"toggle-btn " + (form.reason === opt.v ? "active" : "")} style={{ justifyContent: "flex-start" }}>{opt.l}</button>
+                    ))}
+                  </div>
+                </div>
+                {form.reason === "custom" && (
+                  <div className="form-field">
+                    <label className="field-label">Custom Reason</label>
+                    <textarea className="doc-textarea" style={{ minHeight: "80px" }} placeholder="Enter your reason..." value={form.customReason} onChange={e => updateField("customReason", e.target.value)} />
+                  </div>
+                )}
+              </div>
+            )}
+
+            {activeTab === "content" && (
+              <div>
+                <p className="form-label">Letter Content</p>
+                <div className="form-field">
+                  <label className="field-label">Gratitude Note (optional)</label>
+                  <textarea className="doc-textarea" style={{ minHeight: "120px" }} placeholder="I am grateful for the opportunities provided..." value={form.gratitudeNote} onChange={e => updateField("gratitudeNote", e.target.value)} />
+                  <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>Leave blank to use default text</p>
+                </div>
+              </div>
+            )}
+
+            {activeTab === "templates" && (
+              <div>
+                <p className="form-label">Template Design</p>
+                <TemplatePicker 
+                  docType="resignation" 
+                  selected={template} 
+                  onChange={(val) => {
+                    setTemplate(val);
+                    updateField("templateColor", TEMPLATE_REGISTRY.resignation[val]?.accent || "#0D9488");
+                  }} 
+                  isPro={isUserPro} 
+                />
+                <div style={{ borderTop: "1px solid #F3F4F6", margin: "16px 0" }} />
+                <TemplateColorPicker 
+                  selectedColor={form.templateColor} 
+                  onChange={(color) => updateField("templateColor", color)} 
+                />
+                <div style={{ borderTop: "1px solid #F3F4F6", margin: "20px 0" }} />
+                <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn" style={{ width: "100%", justifyContent: "center" }}>
+                  <Download size={15} /> Download PDF
+                </button>
+              </div>
+            )}
+
+            {TABS[TABS.length - 1].id !== activeTab && (
+              <div style={{ marginTop: "24px", paddingTop: "16px", borderTop: "1px solid #F3F4F6", display: "flex", justifyContent: "flex-end" }}>
+                <button
+                  onClick={() => setActiveTab(TABS[TABS.findIndex(t => t.id === activeTab) + 1].id)}
+                  style={{ display: "inline-flex", alignItems: "center", gap: "6px", height: "40px", padding: "0 20px", background: "#0D9488", color: "#fff", fontSize: "14px", fontWeight: 700, fontFamily: "Space Grotesk, sans-serif", border: "none", borderRadius: "8px", cursor: "pointer" }}
+                >
+                  Next →
+                </button>
+              </div>
+            )}
+          </div>
+
+          <div className="preview-panel">
+            <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "16px" }}>
+              <Eye size={14} color="#9CA3AF" />
+              <span style={{ fontSize: "12px", color: "#9CA3AF", fontFamily: "Inter, sans-serif", fontWeight: 600 }}>LIVE PREVIEW</span>
+            </div>
+            <div style={{ position: "relative" }}>
+              {showWatermark && <WatermarkOverlay />}
+              <ResignationPreview form={form} template={template} accent={form.templateColor} />
+            </div>
+          </div>
+        </div>
+        <div style={{ maxWidth: "1300px", margin: "0 auto", padding: "0 24px 40px" }}>
+          <AdSense adSlot="SLOT_ID_RESIGNATION" />
+        </div>
+      </div>
+      <Footer />
+      <SignatureModal
+        isOpen={isSigModalOpen}
+        onClose={() => setIsSigModalOpen(false)}
+        onSave={(sig) => updateField("signature", sig)}
+      />
+    </>
+  );
+}

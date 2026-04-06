@@ -1,0 +1,105 @@
+import { 
+    FileText, FileQuestion, Receipt, Banknote, Award, Briefcase, 
+    LogOut, Mail, GraduationCap, ShoppingCart, Box, Home, CreditCard 
+} from "lucide-react";
+
+export const DOC_TYPES = [
+    {
+        id: "invoice",
+        label: "GST Invoice",
+        href: "/invoice",
+        description: "Tax invoice with CGST, SGST & IGST",
+        icon: FileText,
+    },
+    {
+        id: "quotation",
+        label: "Quotation",
+        href: "/quotation",
+        description: "Price quotes for clients",
+        icon: FileQuestion,
+    },
+    {
+        id: "receipt",
+        label: "Receipt",
+        href: "/receipt",
+        description: "Payment receipt generator",
+        icon: Receipt,
+    },
+    {
+        id: "salary-slip",
+        label: "Salary Slip",
+        href: "/salary-slip",
+        description: "Payslip with PF, TDS & allowances",
+        icon: Banknote,
+    },
+    {
+        id: "certificate",
+        label: "Certificate",
+        href: "/certificate",
+        description: "Bulk verified certificates with QR",
+        icon: Award,
+    },
+    {
+        id: "proforma-invoice",
+        label: "Proforma Invoice",
+        href: "/proforma-invoice",
+        description: "Advance billing document",
+        icon: FileText,
+    },
+    {
+        id: "experience-letter",
+        label: "Experience Letter",
+        href: "/experience-letter",
+        description: "HR experience certificates",
+        icon: Briefcase,
+    },
+    {
+        id: "resignation-letter",
+        label: "Resignation Letter",
+        href: "/resignation-letter",
+        description: "Professional resignation format",
+        icon: LogOut,
+    },
+    {
+        id: "job-offer-letter",
+        label: "Job Offer Letter",
+        href: "/job-offer-letter",
+        description: "Formal offer letter template",
+        icon: Mail,
+    },
+    {
+        id: "internship-certificate",
+        label: "Internship Certificate",
+        href: "/internship-certificate",
+        description: "Internship completion certificate",
+        icon: GraduationCap,
+    },
+    {
+        id: "purchase-order",
+        label: "Purchase Order",
+        href: "/purchase-order",
+        description: "PO for vendors and suppliers",
+        icon: ShoppingCart,
+    },
+    {
+        id: "packing-slip",
+        label: "Packing Slip",
+        href: "/packing-slip",
+        description: "Shipment packing list",
+        icon: Box,
+    },
+    {
+        id: "rent-receipt",
+        label: "Rent Receipt",
+        href: "/rent-receipt",
+        description: "Monthly rent receipt for HRA",
+        icon: Home,
+    },
+    {
+        id: "payment-voucher",
+        label: "Payment Voucher",
+        href: "/payment-voucher",
+        description: "Internal payment records",
+        icon: CreditCard,
+    },
+];
