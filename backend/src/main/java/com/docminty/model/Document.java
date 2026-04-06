@@ -11,5 +11,14 @@ public class Document {
     private String templateName; private String referenceNumber;
     private String partyName; private Double amount;
     @Column(columnDefinition="TEXT") private String formData;
+    private String cloudinaryUrl;
+    private String publicId;
+    
+    @Column(columnDefinition="BOOLEAN DEFAULT FALSE") 
+    @Builder.Default private Boolean isPublic = false;
+    
+    @Column(unique=true) 
+    private String shareToken;
+
     @Column(nullable=false,updatable=false) @Builder.Default private LocalDateTime createdAt = LocalDateTime.now();
 }

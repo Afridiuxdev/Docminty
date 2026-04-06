@@ -58,10 +58,8 @@ public class SecurityConfig {
     public CorsConfigurationSource corsSource() {
         CorsConfiguration c = new CorsConfiguration();
         c.setAllowedOriginPatterns(List.of(
-            "http://localhost:3000",
             "https://docminty.com",
-            "https://www.docminty.com",
-            "https://*.vercel.app"
+            "https://www.docminty.com"
         ));
         c.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
         c.setAllowedHeaders(List.of("*")); c.setAllowCredentials(true);

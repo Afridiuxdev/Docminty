@@ -456,7 +456,7 @@ export function POPreview({ form, template = "Classic", accent = "#0D9488" }) {
 export default function PurchaseOrderPage() {
   const { user } = useAuth();
   const [form, setForm] = useState(DEFAULT_FORM);
-  const { download, downloading } = useDownloadPDF();
+  const { download, generateBlob, downloading } = useDownloadPDF();
   const router = useRouter();
   const plan = user?.plan?.toUpperCase() || "FREE";
   useProfileSync(form, setForm, plan);
@@ -481,9 +481,15 @@ export default function PurchaseOrderPage() {
         amount: form.items.reduce((s, i) => s + parseFloat(i.amount || 0), 0).toFixed(2), 
         formData: JSON.stringify(form) 
       };
-      await documentsApi.save(payload);
+      const pendingToast = toast.loading("Saving document...");
+            payload.file = await generateBlob("purchase", template, form, `PO-${form.poNumber}.pdf`);
+            const pendingToast = toast.loading("Saving document...");
+            payload.file = await generateBlob("purchase", template, form, `PO-${form.poNumber}.pdf`);
+            await documentsApi.save(payload);
+            toast.dismiss(pendingToast);
+            toast.dismiss(pendingToast);
       toast.success("Saved to your dashboard!");
-    } catch { toast.error("Save failed"); }
+    } catch (err) { if (err.message !== "PLAN_LIMIT_REACHED") toast.error("Save failed"); }
   };
   const [activeTab, setActiveTab] = useState("from");
   const [isSigModalOpen, setIsSigModalOpen] = useState(false);

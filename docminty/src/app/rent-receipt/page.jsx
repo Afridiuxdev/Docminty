@@ -254,7 +254,7 @@ export default function RentReceiptPage() {
         formData: JSON.stringify(form) 
       });
       toast.success("Saved to your dashboard!");
-    } catch { toast.error("Save failed"); }
+    } catch (err) { if (err.message !== "PLAN_LIMIT_REACHED") toast.error("Save failed"); }
   };
   const updateField = useCallback((field, value) => setForm(prev => ({ ...prev, [field]: value })), []);
 

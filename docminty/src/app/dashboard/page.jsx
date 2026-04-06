@@ -42,15 +42,19 @@ export default function DashboardPage() {
   const router = useRouter();
   const [user,    setUser]    = useState(null);
   const [docs,    setDocs]    = useState([]);
+  const [docCount, setDocCount] = useState({ used: 0, limit: 0, plan: "FREE" });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = getAccessToken();
     if (!token) { router.push("/login"); return; }
-    Promise.all([authApi.me(), documentsApi.getAll()])
-      .then(([userRes, docsRes]) => {
+    Promise.all([authApi.me(), documentsApi.getAll(), documentsApi.getCount()])
+      .then(([userRes, docsRes, countRes]) => {
         setUser(userRes.data.data);
         setDocs(docsRes.data.data || []);
+        if (countRes.data?.data) {
+          setDocCount(countRes.data.data);
+        }
       })
       .catch(() => { router.push("/login"); })
       .finally(() => setLoading(false));
@@ -132,16 +136,15 @@ export default function DashboardPage() {
           ))}
         </div>
 
-        {/* Usage bar */}
         <div style={{ marginBottom: "24px" }}>
-          <UsageBar used={docs.length} total={isPro ? (plan === "ENTERPRISE" ? 50 : 20) : 0} label="Cloud storage usage" />
-          {limit > 0 && docs.length >= (limit * 0.8) && (
+          <UsageBar used={docCount.used} total={docCount.limit} label="Cloud storage usage" />
+          {docCount.limit > 0 && docCount.used >= (docCount.limit * 0.8) && (
             <div style={{ marginTop: "8px", padding: "10px 14px", background: "#FFFBEB", border: "1px solid #FCD34D", borderRadius: "8px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <p style={{ fontSize: "12px", color: "#92400E", margin: 0, fontFamily: "Inter, sans-serif" }}>You are approaching your plan limit of {limit} documents.</p>
+              <p style={{ fontSize: "12px", color: "#92400E", margin: 0, fontFamily: "Inter, sans-serif" }}>You are approaching your plan limit of {docCount.limit} documents.</p>
               <Link href="/dashboard/billing" style={{ fontSize: "12px", fontWeight: 700, color: "#D97706", textDecoration: "none", fontFamily: "Space Grotesk, sans-serif", whiteSpace: "nowrap" }}>Upgrade Plan</Link>
             </div>
           )}
-          {limit === 0 && (
+          {docCount.limit === 0 && (
             <div style={{ marginTop: "8px", padding: "10px 14px", background: "#F0FDFA", border: "1px solid #99F6E4", borderRadius: "8px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <p style={{ fontSize: "12px", color: T, margin: 0, fontFamily: "Inter, sans-serif" }}>Cloud storage is disabled for Free users. Upgrade to save documents.</p>
               <Link href="/dashboard/billing" style={{ fontSize: "12px", fontWeight: 700, color: T, textDecoration: "none", fontFamily: "Space Grotesk, sans-serif", whiteSpace: "nowrap" }}>View Plans →</Link>

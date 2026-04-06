@@ -61,5 +61,21 @@ export function useDownloadPDF() {
     }
   };
 
-  return { download, downloading };
+  const generateBlob = async (docType, variant, form, filename) => {
+    const templates = TEMPLATE_REGISTRY[docType] || {};
+    const meta = templates[variant] || { pro: false };
+    if (meta.pro && !isUserPro) {
+      throw new Error("PRO template");
+    }
+    registerFonts();
+    const React = (await import("react")).default;
+    const { pdf } = await import("@react-pdf/renderer");
+    const Template = await loadTemplate(docType, variant);
+    if (!Template) throw new Error(`Could not load template: ${docType}_${variant}`);
+    const element = React.createElement(Template, { form });
+    const blob = await pdf(element).toBlob();
+    return new File([blob], filename, { type: "application/pdf" });
+  };
+
+  return { download, generateBlob, downloading };
 }

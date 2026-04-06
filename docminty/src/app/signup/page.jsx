@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import { Eye, EyeOff, FileText, Check, Shield } from "lucide-react";
 import { authApi, saveTokens } from "@/api/auth";
 import toast from "react-hot-toast";
-import { GoogleLogin } from "@react-oauth/google";
+import NativeGoogleLogin from "@/components/NativeGoogleLogin";
 
 const T = "#0D9488";
 const BENEFITS = [
@@ -235,14 +235,10 @@ export default function SignupPage() {
 
                 {/* Google Sign up */}
                 <div style={{ display: "flex", justifyContent: "center" }}>
-                  <GoogleLogin
+                  <NativeGoogleLogin
                     onSuccess={handleGoogleSuccess}
                     onError={handleGoogleError}
-                    theme="outline"
-                    size="large"
-                    width="376"
                     text="signup_with"
-                    shape="rectangular"
                   />
                 </div>
 

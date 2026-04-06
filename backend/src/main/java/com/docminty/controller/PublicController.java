@@ -25,4 +25,9 @@ public class PublicController {
     public ResponseEntity<?> verifyDocument(@PathVariable String id) {
         return ResponseEntity.ok(documentService.verifyDocument(id));
     }
+
+    @GetMapping("/documents/{token}")
+    public ResponseEntity<?> getPublicDocument(@PathVariable String token) {
+        return ResponseEntity.ok(documentService.getPublicDocument(token));
+    }
 }

@@ -12,10 +12,12 @@ import java.util.Optional;
 
 @Repository
 public interface DocumentRepository extends JpaRepository<Document, Long> {
+    List<Document> findAllByOrderByCreatedAtDesc();
     List<Document> findByUserOrderByCreatedAtDesc(User user);
     List<Document> findByUser_IdOrderByCreatedAtDesc(Long userId);
     List<Document> findByUserAndDocTypeOrderByCreatedAtDesc(User user, String docType);
     Optional<Document> findByReferenceNumber(String referenceNumber);
+    Optional<Document> findByShareToken(String shareToken);
     long countByUser(User user);
     long countByCreatedAtAfter(LocalDateTime date);
 

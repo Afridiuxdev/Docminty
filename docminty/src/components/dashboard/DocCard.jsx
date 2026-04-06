@@ -34,6 +34,7 @@ export default function DocCard({ doc, onAction }) {
               onMouseLeave={() => setMenuOpen(false)}>
               {[
                 { icon: Eye,      label: "View",      color: "#374151" },
+                { icon: Copy,     label: "Share",     color: "#0D9488" },
                 { icon: Edit2,    label: "Edit",      color: "#374151" },
                 { icon: Copy,     label: "Duplicate", color: "#374151" },
                 { icon: Download, label: "Download",  color: T         },

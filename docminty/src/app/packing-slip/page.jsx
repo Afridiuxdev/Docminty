@@ -397,7 +397,7 @@ export default function PackingSlipPage() {
         formData: JSON.stringify(form) 
       });
       toast.success("Saved to your dashboard!");
-    } catch { toast.error("Save failed"); }
+    } catch (err) { if (err.message !== "PLAN_LIMIT_REACHED") toast.error("Save failed"); }
   };
   const [activeTab, setActiveTab] = useState("from");
   const [isSigModalOpen, setIsSigModalOpen] = useState(false);

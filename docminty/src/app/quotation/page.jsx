@@ -371,7 +371,7 @@ export function QuotationPreview({ form, template = "Classic", accent = "#0D9488
 export default function QuotationPage() {
   const { user } = useAuth();
   const [form, setForm] = useState(DEFAULT_FORM);
-  const { download, downloading } = useDownloadPDF();
+  const { download, generateBlob, downloading } = useDownloadPDF();
   const [template, setTemplate] = useState("Classic");
   const [activeTab, setActiveTab] = useState("from");
   const [isSigModalOpen, setIsSigModalOpen] = useState(false);
@@ -411,9 +411,15 @@ export default function QuotationPage() {
        payload.id = docMetaData.id;
     }
     try {
-      await documentsApi.save(payload);
+      const pendingToast = toast.loading("Saving document...");
+            payload.file = await generateBlob("quotation", template, form, `Quotation-${form.quoteNumber}.pdf`);
+            const pendingToast = toast.loading("Saving document...");
+            payload.file = await generateBlob("quotation", template, form, `Quotation-${form.quoteNumber}.pdf`);
+            await documentsApi.save(payload);
+            toast.dismiss(pendingToast);
+            toast.dismiss(pendingToast);
       toast.success(isEditMode ? "Document updated successfully!" : "Saved to your dashboard!");
-    } catch { toast.error("Save failed"); }
+    } catch (err) { if (err.message !== "PLAN_LIMIT_REACHED") toast.error("Save failed"); }
   };
 
   const updateField = useCallback((field, value) => setForm(prev => ({ ...prev, [field]: value })), []);

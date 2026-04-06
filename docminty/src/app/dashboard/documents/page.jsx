@@ -8,6 +8,8 @@ import { Search, FileText, Trash2 } from "lucide-react";
 import { documentsApi } from "@/api/documents";
 import { authApi, getAccessToken } from "@/api/auth";
 import toast from "react-hot-toast";
+import DocumentModal from "@/components/DocumentModal";
+import ShareModal from "@/components/ShareModal";
 
 const T = "#0D9488";
 const DOC_TYPES = ["All","invoice","quotation","salary-slip","certificate","receipt","rent-receipt","experience-letter","purchase-order","packing-slip","proforma-invoice","payment-voucher","job-offer-letter","internship-certificate","resignation-letter"];
@@ -34,6 +36,9 @@ export default function DashDocumentsPage() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("All");
   const [deleting, setDeleting] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [selectedDoc, setSelectedDoc] = useState(null);
 
   useEffect(() => {
     const token = getAccessToken();
@@ -73,13 +78,20 @@ export default function DashDocumentsPage() {
         data.editMode = false;
         localStorage.setItem("docminty_draft", JSON.stringify(data));
         router.push(`/${doc.docType}`);
+      } else if (action === "share") {
+        setSelectedDoc(doc);
+        setShareModalOpen(true);
       } else if (action === "view" || action === "download") {
-        data.autoDownload = action === "download";
-        data.viewMode = action === "view";
-        // Pass docId if it's viewing to prevent 'Save' button from thinking it's dirty? We leave it read-only if possible.
-        data.docId = doc.id; 
-        localStorage.setItem("docminty_draft", JSON.stringify(data));
-        router.push(`/${doc.docType}`);
+        if (action === "view" && doc.cloudinaryUrl) {
+          setSelectedDoc(doc);
+          setModalOpen(true);
+        } else {
+          data.autoDownload = action === "download";
+          data.viewMode = action === "view";
+          data.docId = doc.id; 
+          localStorage.setItem("docminty_draft", JSON.stringify(data));
+          router.push(`/${doc.docType}`);
+        }
       }
     } catch (e) {
       console.error(e);
@@ -176,7 +188,10 @@ export default function DashDocumentsPage() {
                   name: doc.title,
                   amount: doc.amount ? "Rs." + Number(doc.amount).toLocaleString("en-IN") : "",
                   date: timeAgo(doc.createdAt),
-                  formData: doc.formData
+                  formData: doc.formData,
+                  cloudinaryUrl: doc.cloudinaryUrl,
+                  isPublic: doc.isPublic,
+                  shareToken: doc.shareToken
                 }}
                 onAction={handleAction}
                 onDelete={handleDelete}
@@ -185,6 +200,22 @@ export default function DashDocumentsPage() {
           </div>
         )}
       </div>
+
+      <DocumentModal 
+        isOpen={modalOpen} 
+        onClose={() => setModalOpen(false)} 
+        documentUrl={selectedDoc?.cloudinaryUrl} 
+        title={selectedDoc?.name || selectedDoc?.title} 
+      />
+      <ShareModal
+        isOpen={shareModalOpen}
+        onClose={() => setShareModalOpen(false)}
+        doc={selectedDoc}
+        onUpdate={(updatedDoc) => {
+          setDocs(docs.map(d => d.id === updatedDoc.id ? { ...d, isPublic: updatedDoc.isPublic, shareToken: updatedDoc.shareToken } : d));
+          setSelectedDoc(updatedDoc);
+        }}
+      />
     </>
   );
 }

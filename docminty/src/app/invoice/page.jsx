@@ -410,7 +410,7 @@ export function InvoicePreview({ form, template = "Classic", accent = "#0D9488" 
 // ── Main Invoice Page ─────────────────────────────────────────
 export default function InvoicePage() {
     const { user } = useAuth();
-    const { download, downloading } = useDownloadPDF();
+    const { download, generateBlob, downloading } = useDownloadPDF();
     const router = useRouter();
     const [template, setTemplate] = useState("Classic");
     const [form, setForm] = useState(DEFAULT_FORM);
@@ -485,9 +485,15 @@ export default function InvoicePage() {
         }
 
         try {
+            const pendingToast = toast.loading("Saving document...");
+            payload.file = await generateBlob("invoice", template, form, `Invoice-${form.invoiceNumber}.pdf`);
+            const pendingToast = toast.loading("Saving document...");
+            payload.file = await generateBlob("invoice", template, form, `Invoice-${form.invoiceNumber}.pdf`);
             await documentsApi.save(payload);
+            toast.dismiss(pendingToast);
+            toast.dismiss(pendingToast);
             toast.success(isEditMode ? "Document updated successfully!" : "Saved to your dashboard!");
-        } catch { toast.error("Save failed"); }
+        } catch (err) { if (err.message !== "PLAN_LIMIT_REACHED") toast.error("Save failed"); }
     };
 
     const FORM_TABS = [
