@@ -16,14 +16,11 @@ public class AdminInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        // We'll use a simpler password to avoid any special character issues
         String adminEmail = "docmintyofficial@gmail.com";
-        String adminPass  = "Admin123!"; 
+        String adminPass  = "admin123"; 
         
-        User admin = userRepository.findByEmail(adminEmail).orElse(null);
-        
-        if (admin == null) {
-            admin = User.builder()
+        if (!userRepository.existsByEmail(adminEmail)) {
+            User admin = User.builder()
                     .name("Admin")
                     .email(adminEmail)
                     .password(passwordEncoder.encode(adminPass))
@@ -33,16 +30,9 @@ public class AdminInitializer implements CommandLineRunner {
                     .emailVerified(true)
                     .build();
             userRepository.save(admin);
-            System.out.println(">>> Final Admin Reset: " + adminEmail + " | Pass: " + adminPass);
+            System.out.println(">>> Default Admin user created successfully.");
         } else {
-            admin.setName("Admin");
-            admin.setRole(User.Role.ADMIN);
-            admin.setPlan(User.Plan.PRO);
-            admin.setStatus(User.UserStatus.ACTIVE);
-            admin.setPassword(passwordEncoder.encode(adminPass));
-            admin.setEmailVerified(true);
-            userRepository.save(admin);
-            System.out.println(">>> Final Admin Reset: " + adminEmail + " | Pass: " + adminPass);
+            System.out.println(">>> Admin user already exists. Skipping creation.");
         }
     }
 }
