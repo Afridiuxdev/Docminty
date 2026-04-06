@@ -210,8 +210,7 @@ export default function PricingPage() {
 
     const token = getAccessToken();
     if (!token) {
-      toast.error("Please sign in to upgrade");
-      router.push("/login?redirect=/pricing");
+      router.push(`/signup?plan=${encodeURIComponent(planName)}&billing=${billingCycle}`);
       return;
     }
 

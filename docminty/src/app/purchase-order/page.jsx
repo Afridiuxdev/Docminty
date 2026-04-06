@@ -482,12 +482,9 @@ export default function PurchaseOrderPage() {
         formData: JSON.stringify(form) 
       };
       const pendingToast = toast.loading("Saving document...");
-            payload.file = await generateBlob("purchase", template, form, `PO-${form.poNumber}.pdf`);
-            const pendingToast = toast.loading("Saving document...");
-            payload.file = await generateBlob("purchase", template, form, `PO-${form.poNumber}.pdf`);
-            await documentsApi.save(payload);
-            toast.dismiss(pendingToast);
-            toast.dismiss(pendingToast);
+      payload.file = await generateBlob("purchase", template, form, `PO-${form.poNumber}.pdf`);
+      await documentsApi.save(payload);
+      toast.dismiss(pendingToast);
       toast.success("Saved to your dashboard!");
     } catch (err) { if (err.message !== "PLAN_LIMIT_REACHED") toast.error("Save failed"); }
   };

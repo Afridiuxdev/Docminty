@@ -35,7 +35,7 @@ export default function ModernTemplate({ form }) {
         
         splitSection: { flexDirection: "row", gap: 16, marginBottom: 16 },
         tableBox: { flex: 1 },
-        tableTitle: { fontSize: 10, fontWeight: 700, color: "#ffffff", padding: "6 12", borderRadius: "4 4 0 0" },
+        tableTitle: { fontSize: 10, fontWeight: 700, color: "#ffffff", padding: "6 12", borderTopLeftRadius: 4, borderTopRightRadius: 4 },
         table: { borderWidth: 1, borderColor: "#E5E7EB", borderTopWidth: 0 },
         tr: { flexDirection: "row", justifyContent: "space-between", padding: "8 12", borderBottomWidth: 1, borderBottomColor: "#F3F4F6" },
         tdLabel: { fontSize: 9, color: "#374151" },

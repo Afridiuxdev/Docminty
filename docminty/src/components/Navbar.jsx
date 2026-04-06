@@ -1,12 +1,12 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { 
-    Menu, X, ChevronDown, FileText, FileQuestion, Receipt, ShoppingCart, 
-    Box, CreditCard, Home, Banknote, Briefcase, LogOut, Mail, Award, 
-    GraduationCap, CheckCircle, PlusSquare, Scissors, Minimize, FileInput, 
-    FileOutput, Image, Calculator, Percent, BadgeIndianRupee, TrendingUp, 
-    Coins, BarChart3, Tag, QrCode
+import {
+    Menu, X, ChevronDown, FileText, FileQuestion, Receipt, ShoppingCart,
+    Box, CreditCard, Home, Banknote, Briefcase, LogOut, Mail, Award,
+    GraduationCap, CheckCircle, PlusSquare, Scissors, Minimize, FileInput,
+    FileOutput, Image, Calculator, Percent, BadgeIndianRupee, TrendingUp,
+    Coins, BarChart3, Tag, QrCode, Mic
 } from "lucide-react";
 import { getAccessToken, clearTokens } from "@/api/auth";
 
@@ -69,6 +69,7 @@ const CALCULATORS = [
 ];
 
 const TOOLS = [
+    { label: "Audio to Text", href: "/tools/audio-to-text", icon: Mic, badge: "New" },
     { label: "QR Code Generator", href: "/tools/qr-generator", icon: QrCode },
 ];
 
@@ -78,11 +79,11 @@ export default function Navbar() {
     const [toolsOpen, setToolsOpen] = useState(false);
     const [pdfOpen, setPdfOpen] = useState(false);
     const [calcOpen, setCalcOpen] = useState(false);
-    
+
     // Individual group toggles for mobile Templates section
     const [expandedGroups, setExpandedGroups] = useState({
-        "Templates": false, 
-        "PDF Tools": false, 
+        "Templates": false,
+        "PDF Tools": false,
         "Calculators": false,
         "QR Code": false
     });
@@ -107,10 +108,11 @@ export default function Navbar() {
 
     // Style helper for nav items
     const navBtnStyle = (isOpen) => ({
-        background: "none", border: "none", padding: "6px 12px",
-        fontSize: "14px", fontWeight: 500, color: isOpen ? T : "#4B5563",
-        display: "flex", alignItems: "center", gap: "4px",
-        cursor: "pointer", transition: "all 200ms", textDecoration: "none"
+        background: "none", border: "none", padding: "8px 14px",
+        fontSize: "14px", fontWeight: 600, color: isOpen ? T : "#1F2937",
+        display: "flex", alignItems: "center", gap: "6px",
+        cursor: "pointer", transition: "all 200ms", textDecoration: "none",
+        borderRadius: "8px"
     });
 
     return (
@@ -146,8 +148,8 @@ export default function Navbar() {
                     </Link>
 
                     {/* Desktop nav - Refined structure */}
-                    <div style={{ display: "flex", alignItems: "center", gap: "2px" }} className="desktop-nav">
-                        
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }} className="desktop-nav">
+
                         {/* 1. Templates (Mega Dropdown) */}
                         <div style={{ position: "relative" }} onMouseEnter={() => setDocsOpen(true)} onMouseLeave={() => setDocsOpen(false)}>
                             <div style={navBtnStyle(docsOpen)}>
@@ -181,14 +183,28 @@ export default function Navbar() {
                             )}
                         </div>
 
-                        {/* 2. QR Code (Main Menu Item) */}
-                        <div style={{ position: "relative" }}>
-                            <Link href="/tools/qr-generator" style={navBtnStyle(false)}>
-                                <QrCode size={16} color={T} strokeWidth={1.5} style={{ marginRight: "4px" }} /> QR Code
-                                <span style={{ fontSize: "8px", fontWeight: 700, padding: "1px 4px", background: T, color: "white", borderRadius: "3px", textTransform: "uppercase", position: "absolute", top: "-4px", right: "0px" }}>
-                                    New
-                                </span>
-                            </Link>
+                        {/* 2. Tools (Dropdown) */}
+                        <div style={{ position: "relative" }} onMouseEnter={() => setToolsOpen(true)} onMouseLeave={() => setToolsOpen(false)}>
+                            <div style={navBtnStyle(toolsOpen)}>
+                                Tools <ChevronDown size={14} />
+                            </div>
+                            {toolsOpen && (
+                                <div className="dropdown" style={{ minWidth: "220px" }}>
+                                    {TOOLS.map((l) => (
+                                        <Link key={l.href} href={l.href} className="dropdown-item" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "10px", padding: "10px 14px" }}>
+                                            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                                <l.icon size={15} color={T} strokeWidth={1.5} />
+                                                <span style={{ fontSize: "13px" }}>{l.label}</span>
+                                            </div>
+                                            {l.badge && (
+                                                <span style={{ fontSize: "9px", fontWeight: 700, padding: "2px 6px", background: "#F1F5F9", color: "#64748B", borderRadius: "4px", textTransform: "uppercase" }}>
+                                                    {l.badge}
+                                                </span>
+                                            )}
+                                        </Link>
+                                    ))}
+                                </div>
+                            )}
                         </div>
 
                         {/* 3. PDF Tools */}
@@ -268,156 +284,156 @@ export default function Navbar() {
                 {/* Mobile menu - Consolidated to match Desktop grouping */}
                 {mobileOpen && (
                     <>
-                        <div 
+                        <div
                             onClick={() => setMobileOpen(false)}
                             style={{
                                 position: "fixed", top: "64px", left: 0, right: 0, bottom: 0,
                                 background: "rgba(0, 0, 0, 0.4)", zIndex: 90,
                             }}
                         />
-                        <div style={{ 
+                        <div style={{
                             position: "relative", zIndex: 100,
-                            borderTop: "1px solid #E5E7EB", background: "#fff", 
-                            padding: "12px 0", display: "flex", flexDirection: "column", 
-                            maxHeight: "80vh", overflowY: "auto" 
+                            borderTop: "1px solid #E5E7EB", background: "#fff",
+                            padding: "12px 0", display: "flex", flexDirection: "column",
+                            maxHeight: "80vh", overflowY: "auto"
                         }}>
-                        
-                        {/* 1. Templates */}
-                        <div style={{ borderBottom: "1px solid #F3F4F6" }}>
-                            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingRight: "12px" }}>
-                                <div style={{ flex: 1, padding: "12px 20px", fontSize: "14px", fontWeight: 600, color: "#111827" }}>
-                                    Templates
-                                </div>
-                                <button onClick={(e) => toggleGroup("Templates", e)} style={{ padding: "12px", background: "none", border: "none" }}>
-                                    <ChevronDown size={18} color={T} style={{ transform: expandedGroups["Templates"] ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 200ms" }} />
-                                </button>
-                            </div>
-                            {expandedGroups["Templates"] && (
-                                <div style={{ background: "#F9FAFB", paddingBottom: "12px" }}>
-                                    {TEMPLATE_GROUPS.map((group) => (
-                                        <div key={group.title}>
-                                            <div style={{ padding: "8px 40px", fontSize: "11px", fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase" }}>{group.title}</div>
-                                            {group.items.map((l) => (
-                                                <Link key={l.href} href={l.href} onClick={() => setMobileOpen(false)} style={{ padding: "8px 50px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "10px", fontSize: "13px", color: "#4B5563", textDecoration: "none" }}>
-                                                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                                                        <l.icon size={14} color={T} />
-                                                        {l.label}
-                                                    </div>
-                                                    {l.badge && (
-                                                        <span style={{ fontSize: "8px", fontWeight: 700, padding: "1px 5px", background: "#F1F5F9", color: "#64748B", borderRadius: "3px", textTransform: "uppercase", marginRight: "20px" }}>
-                                                            {l.badge}
-                                                        </span>
-                                                    )}
-                                                </Link>
-                                            ))}
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
 
-                        {/* 2. Tools */}
-                        <div style={{ borderBottom: "1px solid #F3F4F6" }}>
-                            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingRight: "12px" }}>
-                                <div style={{ flex: 1, padding: "12px 20px", fontSize: "14px", fontWeight: 600, color: "#111827" }}>Tools</div>
-                                <button onClick={(e) => toggleGroup("Tools", e)} style={{ padding: "12px", background: "none", border: "none" }}>
-                                    <ChevronDown size={18} color={T} style={{ transform: expandedGroups["Tools"] ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 200ms" }} />
-                                </button>
-                            </div>
-                            {expandedGroups["Tools"] && (
-                                <div style={{ background: "#F9FAFB", paddingBottom: "8px" }}>
-                                    {TOOLS.map((l) => (
-                                        <Link key={l.href} href={l.href} onClick={() => setMobileOpen(false)} style={{ padding: "10px 40px", display: "flex", alignItems: "center", gap: "10px", fontSize: "13px", color: "#4B5563", textDecoration: "none" }}>
-                                            <l.icon size={14} color={T} />
-                                            {l.label}
-                                        </Link>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-
-                        {/* 3. PDF Tools */}
-                        <div style={{ borderBottom: "1px solid #F3F4F6" }}>
-                            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingRight: "12px" }}>
-                                <div style={{ flex: 1, padding: "12px 20px", fontSize: "14px", fontWeight: 600, color: "#111827" }}>PDF Tools</div>
-                                <button onClick={(e) => toggleGroup("PDF Tools", e)} style={{ padding: "12px", background: "none", border: "none" }}>
-                                    <ChevronDown size={18} color={T} style={{ transform: expandedGroups["PDF Tools"] ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 200ms" }} />
-                                </button>
-                            </div>
-                            {expandedGroups["PDF Tools"] && (
-                                <div style={{ background: "#F9FAFB", paddingBottom: "8px" }}>
-                                    {PDF_TOOLS.map((l) => (
-                                        <Link key={l.href} href={l.href} onClick={() => setMobileOpen(false)} style={{ padding: "10px 40px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "10px", fontSize: "13px", color: "#4B5563", textDecoration: "none" }}>
-                                            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                                                <l.icon size={14} color={T} />
-                                                {l.label}
-                                            </div>
-                                            {l.badge && (
-                                                <span style={{ fontSize: "8px", fontWeight: 700, padding: "1px 5px", background: "#F1F5F9", color: "#64748B", borderRadius: "3px", textTransform: "uppercase", marginRight: "20px" }}>
-                                                    {l.badge}
-                                                </span>
-                                            )}
-                                        </Link>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-
-                        {/* 4. Calculators */}
-                        <div style={{ borderBottom: "1px solid #F3F4F6" }}>
-                            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingRight: "12px" }}>
-                                <div style={{ flex: 1, padding: "12px 20px", fontSize: "14px", fontWeight: 600, color: "#111827" }}>Calculators</div>
-                                <button onClick={(e) => toggleGroup("Calculators", e)} style={{ padding: "12px", background: "none", border: "none" }}>
-                                    <ChevronDown size={18} color={T} style={{ transform: expandedGroups["Calculators"] ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 200ms" }} />
-                                </button>
-                            </div>
-                            {expandedGroups["Calculators"] && (
-                                <div style={{ background: "#F9FAFB", paddingBottom: "8px" }}>
-                                    {CALCULATORS.map((l) => (
-                                        <Link key={l.href} href={l.href} onClick={() => setMobileOpen(false)} style={{ padding: "10px 40px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "10px", fontSize: "13px", color: "#4B5563", textDecoration: "none" }}>
-                                            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                                                <l.icon size={14} color={T} />
-                                                {l.label}
-                                            </div>
-                                            {l.badge && (
-                                                <span style={{ fontSize: "8px", fontWeight: 700, padding: "1px 5px", background: "#F1F5F9", color: "#64748B", borderRadius: "3px", textTransform: "uppercase", marginRight: "20px" }}>
-                                                    {l.badge}
-                                                </span>
-                                            )}
-                                        </Link>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-
-                        <Link href="/pricing" onClick={() => setMobileOpen(false)} style={{ padding: "12px 20px", fontSize: "14px", fontWeight: 600, color: "#111827", textDecoration: "none", borderBottom: "1px solid #F3F4F6" }}>Pricing</Link>
-                        <Link href="/batch" onClick={() => setMobileOpen(false)} style={{ padding: "12px 20px", fontSize: "14px", fontWeight: 600, color: "#111827", textDecoration: "none", borderBottom: "1px solid #F3F4F6" }}>Bulk Export</Link>
-                        
-                        {/* Auth Links (Mobile) */}
-                        <div style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "12px" }}>
-                            {user ? (
-                                <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                                    <Link href="/dashboard" onClick={() => setMobileOpen(false)} style={{ width: "100%", padding: "12px", background: "#F0FDFA", color: T, textAlign: "center", borderRadius: "8px", fontSize: "14px", fontWeight: 700, textDecoration: "none" }}>
-                                        My Dashboard
-                                    </Link>
-                                    <button onClick={handleLogout} style={{ width: "100%", padding: "12px", background: "#F3F4F6", color: "#4B5563", border: "none", borderRadius: "8px", fontSize: "14px", fontWeight: 600, cursor: "pointer" }}>
-                                        Logout
+                            {/* 1. Templates */}
+                            <div style={{ borderBottom: "1px solid #F3F4F6" }}>
+                                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingRight: "12px" }}>
+                                    <div style={{ flex: 1, padding: "12px 20px", fontSize: "14px", fontWeight: 600, color: "#111827" }}>
+                                        Templates
+                                    </div>
+                                    <button onClick={(e) => toggleGroup("Templates", e)} style={{ padding: "12px", background: "none", border: "none" }}>
+                                        <ChevronDown size={18} color={T} style={{ transform: expandedGroups["Templates"] ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 200ms" }} />
                                     </button>
                                 </div>
-                            ) : (
-                                <>
-                                    <Link href="/login" onClick={() => setMobileOpen(false)} style={{ width: "100%", padding: "12px", background: "#F3F4F6", color: "#4B5563", textAlign: "center", borderRadius: "8px", fontSize: "14px", fontWeight: 600, textDecoration: "none" }}>
-                                        Sign In
-                                    </Link>
-                                    <Link href="/invoice" onClick={() => setMobileOpen(false)} style={{ width: "100%", padding: "12px", background: T, color: "white", textAlign: "center", borderRadius: "8px", fontSize: "14px", fontWeight: 600, textDecoration: "none" }}>
-                                        Start Free →
-                                    </Link>
-                                </>
-                            )}
+                                {expandedGroups["Templates"] && (
+                                    <div style={{ background: "#F9FAFB", paddingBottom: "12px" }}>
+                                        {TEMPLATE_GROUPS.map((group) => (
+                                            <div key={group.title}>
+                                                <div style={{ padding: "8px 40px", fontSize: "11px", fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase" }}>{group.title}</div>
+                                                {group.items.map((l) => (
+                                                    <Link key={l.href} href={l.href} onClick={() => setMobileOpen(false)} style={{ padding: "8px 50px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "10px", fontSize: "13px", color: "#4B5563", textDecoration: "none" }}>
+                                                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                                            <l.icon size={14} color={T} />
+                                                            {l.label}
+                                                        </div>
+                                                        {l.badge && (
+                                                            <span style={{ fontSize: "8px", fontWeight: 700, padding: "1px 5px", background: "#F1F5F9", color: "#64748B", borderRadius: "3px", textTransform: "uppercase", marginRight: "20px" }}>
+                                                                {l.badge}
+                                                            </span>
+                                                        )}
+                                                    </Link>
+                                                ))}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* 2. Tools */}
+                            <div style={{ borderBottom: "1px solid #F3F4F6" }}>
+                                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingRight: "12px" }}>
+                                    <div style={{ flex: 1, padding: "12px 20px", fontSize: "14px", fontWeight: 600, color: "#111827" }}>Tools</div>
+                                    <button onClick={(e) => toggleGroup("Tools", e)} style={{ padding: "12px", background: "none", border: "none" }}>
+                                        <ChevronDown size={18} color={T} style={{ transform: expandedGroups["Tools"] ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 200ms" }} />
+                                    </button>
+                                </div>
+                                {expandedGroups["Tools"] && (
+                                    <div style={{ background: "#F9FAFB", paddingBottom: "8px" }}>
+                                        {TOOLS.map((l) => (
+                                            <Link key={l.href} href={l.href} onClick={() => setMobileOpen(false)} style={{ padding: "10px 40px", display: "flex", alignItems: "center", gap: "10px", fontSize: "13px", color: "#4B5563", textDecoration: "none" }}>
+                                                <l.icon size={14} color={T} />
+                                                {l.label}
+                                            </Link>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* 3. PDF Tools */}
+                            <div style={{ borderBottom: "1px solid #F3F4F6" }}>
+                                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingRight: "12px" }}>
+                                    <div style={{ flex: 1, padding: "12px 20px", fontSize: "14px", fontWeight: 600, color: "#111827" }}>PDF Tools</div>
+                                    <button onClick={(e) => toggleGroup("PDF Tools", e)} style={{ padding: "12px", background: "none", border: "none" }}>
+                                        <ChevronDown size={18} color={T} style={{ transform: expandedGroups["PDF Tools"] ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 200ms" }} />
+                                    </button>
+                                </div>
+                                {expandedGroups["PDF Tools"] && (
+                                    <div style={{ background: "#F9FAFB", paddingBottom: "8px" }}>
+                                        {PDF_TOOLS.map((l) => (
+                                            <Link key={l.href} href={l.href} onClick={() => setMobileOpen(false)} style={{ padding: "10px 40px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "10px", fontSize: "13px", color: "#4B5563", textDecoration: "none" }}>
+                                                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                                    <l.icon size={14} color={T} />
+                                                    {l.label}
+                                                </div>
+                                                {l.badge && (
+                                                    <span style={{ fontSize: "8px", fontWeight: 700, padding: "1px 5px", background: "#F1F5F9", color: "#64748B", borderRadius: "3px", textTransform: "uppercase", marginRight: "20px" }}>
+                                                        {l.badge}
+                                                    </span>
+                                                )}
+                                            </Link>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* 4. Calculators */}
+                            <div style={{ borderBottom: "1px solid #F3F4F6" }}>
+                                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingRight: "12px" }}>
+                                    <div style={{ flex: 1, padding: "12px 20px", fontSize: "14px", fontWeight: 600, color: "#111827" }}>Calculators</div>
+                                    <button onClick={(e) => toggleGroup("Calculators", e)} style={{ padding: "12px", background: "none", border: "none" }}>
+                                        <ChevronDown size={18} color={T} style={{ transform: expandedGroups["Calculators"] ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 200ms" }} />
+                                    </button>
+                                </div>
+                                {expandedGroups["Calculators"] && (
+                                    <div style={{ background: "#F9FAFB", paddingBottom: "8px" }}>
+                                        {CALCULATORS.map((l) => (
+                                            <Link key={l.href} href={l.href} onClick={() => setMobileOpen(false)} style={{ padding: "10px 40px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "10px", fontSize: "13px", color: "#4B5563", textDecoration: "none" }}>
+                                                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                                    <l.icon size={14} color={T} />
+                                                    {l.label}
+                                                </div>
+                                                {l.badge && (
+                                                    <span style={{ fontSize: "8px", fontWeight: 700, padding: "1px 5px", background: "#F1F5F9", color: "#64748B", borderRadius: "3px", textTransform: "uppercase", marginRight: "20px" }}>
+                                                        {l.badge}
+                                                    </span>
+                                                )}
+                                            </Link>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+
+                            <Link href="/pricing" onClick={() => setMobileOpen(false)} style={{ padding: "12px 20px", fontSize: "14px", fontWeight: 600, color: "#111827", textDecoration: "none", borderBottom: "1px solid #F3F4F6" }}>Pricing</Link>
+                            <Link href="/batch" onClick={() => setMobileOpen(false)} style={{ padding: "12px 20px", fontSize: "14px", fontWeight: 600, color: "#111827", textDecoration: "none", borderBottom: "1px solid #F3F4F6" }}>Bulk Export</Link>
+
+                            {/* Auth Links (Mobile) */}
+                            <div style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "12px" }}>
+                                {user ? (
+                                    <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                                        <Link href="/dashboard" onClick={() => setMobileOpen(false)} style={{ width: "100%", padding: "12px", background: "#F0FDFA", color: T, textAlign: "center", borderRadius: "8px", fontSize: "14px", fontWeight: 700, textDecoration: "none" }}>
+                                            My Dashboard
+                                        </Link>
+                                        <button onClick={handleLogout} style={{ width: "100%", padding: "12px", background: "#F3F4F6", color: "#4B5563", border: "none", borderRadius: "8px", fontSize: "14px", fontWeight: 600, cursor: "pointer" }}>
+                                            Logout
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <Link href="/login" onClick={() => setMobileOpen(false)} style={{ width: "100%", padding: "12px", background: "#F3F4F6", color: "#4B5563", textAlign: "center", borderRadius: "8px", fontSize: "14px", fontWeight: 600, textDecoration: "none" }}>
+                                            Sign In
+                                        </Link>
+                                        <Link href="/invoice" onClick={() => setMobileOpen(false)} style={{ width: "100%", padding: "12px", background: T, color: "white", textAlign: "center", borderRadius: "8px", fontSize: "14px", fontWeight: 600, textDecoration: "none" }}>
+                                            Start Free →
+                                        </Link>
+                                    </>
+                                )}
+                            </div>
                         </div>
-                    </div>
-                </>
-            )}
+                    </>
+                )}
             </nav>
         </>
     );

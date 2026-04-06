@@ -412,12 +412,9 @@ export default function QuotationPage() {
     }
     try {
       const pendingToast = toast.loading("Saving document...");
-            payload.file = await generateBlob("quotation", template, form, `Quotation-${form.quoteNumber}.pdf`);
-            const pendingToast = toast.loading("Saving document...");
-            payload.file = await generateBlob("quotation", template, form, `Quotation-${form.quoteNumber}.pdf`);
-            await documentsApi.save(payload);
-            toast.dismiss(pendingToast);
-            toast.dismiss(pendingToast);
+      payload.file = await generateBlob("quotation", template, form, `Quotation-${form.quoteNumber}.pdf`);
+      await documentsApi.save(payload);
+      toast.dismiss(pendingToast);
       toast.success(isEditMode ? "Document updated successfully!" : "Saved to your dashboard!");
     } catch (err) { if (err.message !== "PLAN_LIMIT_REACHED") toast.error("Save failed"); }
   };

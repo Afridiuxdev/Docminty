@@ -23,28 +23,28 @@ export default function CorporateTemplate({ form }) {
         titleBox: { background: "rgba(255,255,255,0.15)", borderRadius: 4, padding: "4 16", alignSelf: "center" },
         title: { fontFamily: "Space Grotesk", fontWeight: 800, fontSize: 16, color: "#ffffff" },
         period: { fontSize: 10, color: "rgba(255,255,255,0.8)", marginTop: 2 },
-        
+
         main: { padding: "24 24" },
         empGrid: { flexDirection: "row", flexWrap: "wrap", gap: "16 0", padding: 16, backgroundColor: "#F8F9FA", borderRadius: 8, marginBottom: 16 },
         empItem: { width: "33%" },
         label: { fontSize: 8, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 0.6, marginBottom: 2 },
         value: { fontSize: 10, color: "#111827", fontWeight: 600 },
-        
+
         splitSection: { flexDirection: "row", gap: 16, marginBottom: 16 },
         tableBox: { flex: 1 },
-        tableTitle: { fontSize: 10, fontWeight: 700, color: "#ffffff", padding: "6 12", borderRadius: "4 4 0 0" },
+        tableTitle: { fontSize: 10, fontWeight: 700, color: "#ffffff", padding: "6 12", borderTopLeftRadius: 4, borderTopRightRadius: 4 },
         table: { borderWidth: 1, borderColor: "#E5E7EB", borderTopWidth: 0 },
         tr: { flexDirection: "row", justifyContent: "space-between", padding: "8 12", borderBottomWidth: 1, borderBottomColor: "#F3F4F6" },
         tdLabel: { fontSize: 9, color: "#374151" },
         tdValue: { fontSize: 9, fontWeight: 600, color: "#111827" },
-        
+
         netPayBox: { backgroundColor: T, borderRadius: 8, padding: "16 20", flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
         netAmount: { fontFamily: "Space Grotesk", fontWeight: 800, fontSize: 24, color: "#ffffff" },
         words: { fontSize: 10, color: "#ffffff", fontStyle: "italic", maxWidth: 200, textAlign: "right" },
-        
+
         bankSection: { marginTop: 16, padding: "12 16", background: "#F8F9FA", borderRadius: 6 },
         bankGrid: { flexDirection: "row", gap: 24 },
-        
+
         footer: { marginTop: "auto", paddingTop: 12, borderTopWidth: 1, borderTopColor: "#E5E7EB", flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
         footerText: { fontSize: 9, color: "#D1D5DB" },
         signatureBox: { textAlign: "center", minWidth: 120 },

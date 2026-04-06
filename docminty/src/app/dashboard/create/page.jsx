@@ -6,7 +6,7 @@ import {
     Banknote, Briefcase, LogOut, Mail, Award, GraduationCap, QrCode,
     Zap, PlusSquare, Scissors, Minimize, FileInput, FileOutput, Image,
     Calculator, Percent, BadgeIndianRupee, TrendingUp, Coins, BarChart3, Tag,
-    Package, Scroll, Handshake, Book
+    Package, Scroll, Handshake, Book, Mic
 } from "lucide-react";
 
 const T = "#0D9488";
@@ -40,6 +40,7 @@ const DOC_CATEGORIES = [
         category: "PDF & Productivity",
         docs: [
             { label: "Batch Processor", href: "/batch", icon: Zap, desc: "Process thousands of docs at once", badge: "Pro" },
+            { label: "Audio to Text", href: "/tools/audio-to-text", icon: Mic, desc: "Convert speech to accurate text", badge: "New" },
             { label: "QR Generator", href: "/tools/qr-generator", icon: QrCode, desc: "Custom QR codes for any use", badge: "" },
             { label: "Merge PDF", href: "/tools/merge-pdf", icon: PlusSquare, desc: "Combine multiple PDFs into one", badge: "" },
             { label: "Split PDF", href: "/tools/split-pdf", icon: Scissors, desc: "Extract pages from your PDF", badge: "" },
@@ -70,6 +71,7 @@ const BADGE_COLORS = {
     "QR Verified": { bg: "#ECFDF5", color: "#10B981" },
     "HRA Valid": { bg: "#EFF6FF", color: "#3B82F6" },
     "Pro": { bg: "#FFFBEB", color: "#D97706" },
+    "New": { bg: "#F0F9FF", color: "#0369A1" },
 };
 
 export default function DashCreatePage() {

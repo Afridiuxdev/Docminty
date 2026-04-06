@@ -487,10 +487,7 @@ export default function InvoicePage() {
         try {
             const pendingToast = toast.loading("Saving document...");
             payload.file = await generateBlob("invoice", template, form, `Invoice-${form.invoiceNumber}.pdf`);
-            const pendingToast = toast.loading("Saving document...");
-            payload.file = await generateBlob("invoice", template, form, `Invoice-${form.invoiceNumber}.pdf`);
             await documentsApi.save(payload);
-            toast.dismiss(pendingToast);
             toast.dismiss(pendingToast);
             toast.success(isEditMode ? "Document updated successfully!" : "Saved to your dashboard!");
         } catch (err) { if (err.message !== "PLAN_LIMIT_REACHED") toast.error("Save failed"); }

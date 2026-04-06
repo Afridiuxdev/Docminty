@@ -62,6 +62,10 @@ export default function PricingCard({
         ? `Billed annually at ₹${annualTotal}`
         : null;
 
+    const finalHref = ctaHref === "/signup" && isPaidPlan 
+        ? `/signup?plan=${encodeURIComponent(plan)}&billing=${billing}`
+        : ctaHref;
+
     return (
         <div 
             className="pricing-card-container"
@@ -308,7 +312,7 @@ export default function PricingCard({
                         <ArrowRight size={18} />
                     </button>
                 ) : (
-                    <Link href={ctaHref} style={{
+                    <Link href={finalHref} style={{
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
