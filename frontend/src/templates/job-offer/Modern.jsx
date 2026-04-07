@@ -13,179 +13,186 @@ export default function JobOfferModernTemplate({ form }) {
 
   const styles = StyleSheet.create({
     page: { fontFamily: "Inter", fontSize: 10, color: "#111827", padding: 0, flexDirection: "row", backgroundColor: "#ffffff" },
-    sidebar: { width: 140, backgroundColor: T, height: "100%", padding: "40 16", color: "#ffffff" },
-    logo: { width: 45, objectFit: "contain", marginBottom: 24, filter: "brightness(0) invert(1)" },
-    sideTitle: { fontSize: 16, fontFamily: "Space Grotesk", fontWeight: 800, textTransform: "uppercase", letterSpacing: 2, marginBottom: 40 },
-    sideItem: { marginBottom: 24 },
-    sideLabel: { fontSize: 8, color: "rgba(255,255,255,0.6)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 },
-    sideValue: { fontSize: 11, fontWeight: 700, color: "#ffffff", lineHeight: 1.4 },
+    sidebar: { width: 140, backgroundColor: T, height: "100%", padding: "24 16", color: "#ffffff" },
+    sideLogo: { height: 36, objectFit: "contain", filter: "brightness(0) invert(1)", marginBottom: 20 },
     
-    main: { flex: 1, padding: "50 40 40 40" },
-    header: { flexDirection: "row", justifyContent: "space-between", marginBottom: 32 },
-    dateRef: { textAlign: "right" },
-    metaText: { fontSize: 9, color: "#9CA3AF", marginBottom: 4 },
+    sideGroup: { marginBottom: 20 },
+    sideLabel: { fontSize: 9, color: "rgba(255,255,255,0.6)", textTransform: "uppercase", marginBottom: 2 },
+    sideVal: { fontSize: 10, color: "#ffffff" },
+    sideCompName: { fontSize: 12, fontFamily: "Space Grotesk", fontWeight: 700, color: "#ffffff" },
     
-    candidateSection: { marginBottom: 32 },
-    candidateName: { fontSize: 14, fontFamily: "Space Grotesk", fontWeight: 700, color: "#111827" },
-    candidateAddr: { fontSize: 10, color: "#6B7280", marginTop: 4, maxWidth: 300, lineHeight: 1.4 },
+    sideTitle: { fontSize: 14, fontFamily: "Space Grotesk", fontWeight: 800, textTransform: "uppercase", marginTop: "auto", marginBottom: 0 },
     
-    body: { fontSize: 11, color: "#374151", lineHeight: 1.8, textAlign: "justify" },
-    salutation: { fontSize: 12, fontWeight: 700, color: "#111827", marginBottom: 20 },
+    main: { flex: 1, padding: "40 40 40 40" },
+    body: { flex: 1 },
+    candName: { fontSize: 12, fontWeight: 700, color: "#374151", marginBottom: 2 },
+    candAddr: { fontSize: 11, color: "#6B7280", marginBottom: 16 },
+    salutation: { fontSize: 12, color: "#374151", marginBottom: 12 },
+    content: { fontSize: 12, color: "#374151", lineHeight: 1.8, marginBottom: 12 },
     bold: { fontWeight: 700, color: "#111827" },
     accent: { fontWeight: 700, color: T },
     
-    infoGrid: { marginTop: 24, marginBottom: 24, flexDirection: "row", flexWrap: "wrap", borderTopWidth: 1, borderTopColor: "#F3F4F6", paddingTop: 16 },
-    infoItem: { width: "33.33%", marginBottom: 16 },
-    infoLabel: { fontSize: 8, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 },
-    infoVal: { fontSize: 11, fontWeight: 700, color: "#111827" },
+    table: { marginTop: 12, marginBottom: 16 },
+    tableRow: { flexDirection: "row", padding: "6 0" },
+    tableLabel: { width: "40%", fontWeight: 600, color: "#6B7280", fontSize: 11 },
+    tableVal: { width: "60%", color: T, fontWeight: 600, fontSize: 11 },
     
-    ctcBox: { backgroundColor: "#F9FAFB", padding: "20 24", borderRadius: 12, borderLeftWidth: 4, borderLeftColor: T, margin: "24 0" },
-    ctcTitle: { fontSize: 9, color: "#6B7280", textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 },
-    ctcVal: { fontSize: 18, fontFamily: "Space Grotesk", fontWeight: 700, color: T },
+    ctcBox: { marginTop: 16, padding: "12 16", backgroundColor: "#F0FDFA", border: `1px solid ${T}`, borderRadius: 8 },
+    ctcTitle: { fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.8, color: "#9CA3AF", marginBottom: 8, fontFamily: "Space Grotesk" },
+    ctcHead: { flexDirection: "row", justifyContent: "space-between", marginBottom: 8, borderBottom: "1px solid #D1FAF0", paddingBottom: 8 },
+    ctcMainLabel: { fontSize: 12, color: "#6B7280" },
+    ctcMainVal: { fontSize: 14, fontWeight: 700, color: T, fontFamily: "Space Grotesk" },
+    ctcGrid: { flexDirection: "row", justifyContent: "space-between", paddingTop: 8 },
+    ctcItem: { width: "23%" },
+    itemLabel: { fontSize: 10, color: "#9CA3AF", marginBottom: 2 },
+    itemVal: { fontSize: 12, fontWeight: 600, color: "#111827", fontFamily: "Space Grotesk" },
     
-    ctcTable: { flexDirection: "row", justifyContent: "space-between", borderTopWidth: 1, borderTopColor: "#E5E7EB", marginTop: 12, paddingTop: 10 },
-    ctcTableItem: { width: "24%" },
-    ctcTableLabel: { fontSize: 8, color: "#9CA3AF", marginBottom: 2 },
-    ctcTableVal: { fontSize: 10, fontWeight: 700, color: "#374151" },
+    termsTitle: { fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.8, color: "#9CA3AF", marginBottom: 6, marginTop: 12, fontFamily: "Space Grotesk" },
     
-    signatureSection: { marginTop: 40, flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
-    signatureImage: { height: 40, marginBottom: 4, objectFit: "contain" },
-    signatureLine: { borderTopWidth: 2, borderTopColor: "#111827", paddingTop: 8, width: 160 },
-    signatoryName: { fontSize: 11, fontWeight: 700, color: "#111827" },
-    signatoryDetails: { fontSize: 9, color: "#9CA3AF", marginTop: 2 },
+    signatureArea: { marginTop: 32, flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
+    sigBlock: { width: 140 },
+    signatureImage: { maxHeight: 40, maxWidth: 120, marginBottom: 4, objectFit: "contain" },
+    sigLine: { borderTopWidth: 1, borderTopColor: "#374151", paddingTop: 6 },
+    sigName: { fontSize: 12, fontWeight: 700, color: "#111827", fontFamily: "Space Grotesk" },
+    sigDesig: { fontSize: 11, color: "#6B7280", marginTop: 2 },
+    sigComp: { fontSize: 11, color: "#9CA3AF", marginTop: 2, minHeight: 14 },
     
-    footer: { position: "absolute", bottom: 40, left: 40, right: 40, borderTopWidth: 1, borderTopColor: "#F3F4F6", paddingTop: 12 },
-    footerText: { fontSize: 8, color: "#D1D5DB", textAlign: "center" }
+    footer: { marginTop: 24, paddingTop: 12, borderTopWidth: 1, borderTopColor: "#E5E7EB" },
+    footerText: { fontSize: 10, color: "#D1D5DB" }
   });
 
   return (
-    <Document title={`Job-Offer-${form.candidateName}`}>
+    <Document title={`Offer-Letter-${form.candidateName}`}>
       <Page size="A4" style={styles.page}>
         <View style={styles.sidebar}>
-          {form.logo && <Image src={form.logo} style={styles.logo} />}
-          <Text style={styles.sideTitle}>OFFER LETTER</Text>
+          {form.logo && <Image src={form.logo} style={styles.sideLogo} />}
           
-          <View style={styles.sideItem}>
+          <View style={styles.sideGroup}>
             <Text style={styles.sideLabel}>Company</Text>
-            <Text style={styles.sideValue}>{form.companyName || "Organization"}</Text>
-            {form.companyAddress && <Text style={{ fontSize: 9, opacity: 0.8, marginTop: 4 }}>{form.companyAddress}</Text>}
-            {form.companyWebsite && <Text style={{ fontSize: 9, opacity: 0.8, marginTop: 4 }}>{form.companyWebsite}</Text>}
+            <Text style={styles.sideCompName}>{form.companyName || "Company Name"}</Text>
+            {form.companyAddress && <Text style={[styles.sideVal, { fontSize: 9, marginTop: 2, color: "rgba(255,255,255,0.7)" }]}>{form.companyAddress}</Text>}
           </View>
           
-          <View style={styles.sideItem}>
-              <Text style={styles.sideLabel}>Ref No</Text>
-              <Text style={styles.sideValue}>{form.letterNumber}</Text>
+          <View style={styles.sideGroup}>
+            <Text style={styles.sideLabel}>Ref</Text>
+            <Text style={styles.sideVal}>{form.letterNumber}</Text>
           </View>
           
-          <View style={styles.sideItem}>
-              <Text style={styles.sideLabel}>Dated</Text>
-              <Text style={styles.sideValue}>{form.letterDate}</Text>
+          <View style={styles.sideGroup}>
+            <Text style={styles.sideLabel}>Date</Text>
+            <Text style={styles.sideVal}>{form.letterDate}</Text>
+          </View>
+          
+          <View style={{ marginTop: "auto" }}>
+            <Text style={styles.sideTitle}>OFFER</Text>
+            <Text style={styles.sideTitle}>LETTER</Text>
           </View>
         </View>
 
         <View style={styles.main}>
-          <View style={styles.header}>
-            <View style={styles.candidateSection}>
-               <Text style={styles.candidateName}>{form.candidateName || "Candidate Name"}</Text>
-               <Text style={styles.candidateAddr}>{form.candidateAddress}</Text>
-            </View>
-            <View style={styles.dateRef}>
-                <Text style={styles.metaText}>Ref: {form.letterNumber}</Text>
-                <Text style={styles.metaText}>{form.letterDate}</Text>
-            </View>
-          </View>
-
           <View style={styles.body}>
+            <Text style={styles.candName}>{form.candidateName || "Candidate Name"}</Text>
+            {form.candidateAddress && <Text style={styles.candAddr}>{form.candidateAddress}</Text>}
+            
             <Text style={styles.salutation}>Dear {form.candidateName ? form.candidateName.split(" ")[0] : "Candidate"},</Text>
-            <Text>
-                {"We are pleased to offer you the position of "}
-                <Text style={styles.bold}>{form.designation || "[Designation]"}</Text> 
-                {form.department ? ` in the ${form.department} department` : ""}
-                {" at "}
-                <Text style={styles.bold}>{form.companyName || "our organization"}</Text>
-                {". We were impressed by your skills and believe you will be a great addition to our team."}
+            
+            <Text style={styles.content}>
+              {"We are pleased to offer you the position of "}
+              <Text style={styles.bold}>{form.designation || "[Designation]"}</Text>
+              {form.department ? ` in the ${form.department} department` : ""}
+              {form.companyName ? ` at ${form.companyName}` : ""}.
+              {" Your employment type will be "}
+              <Text style={styles.bold}>{form.employmentType}</Text>
+              {form.reportingTo ? ` and you will be reporting to ${form.reportingTo}` : ""}.
             </Text>
 
-            <View style={styles.infoGrid}>
-              <View style={styles.infoItem}>
-                <Text style={styles.infoLabel}>Joining Date</Text>
-                <Text style={[styles.infoVal, { color: T }]}>{form.dateOfJoining || "TBC"}</Text>
+            <View style={styles.table}>
+              <View style={styles.tableRow}>
+                <Text style={styles.tableLabel}>Date of Joining</Text>
+                <Text style={styles.tableVal}>{form.dateOfJoining || "—"}</Text>
               </View>
-              <View style={styles.infoItem}>
-                <Text style={styles.infoLabel}>Employment</Text>
-                <Text style={styles.infoVal}>{form.employmentType}</Text>
+              <View style={styles.tableRow}>
+                <Text style={styles.tableLabel}>Employment Type</Text>
+                <Text style={[styles.tableVal, { color: "#111827" }]}>{form.employmentType}</Text>
               </View>
-              <View style={styles.infoItem}>
-                <Text style={styles.infoLabel}>Probation</Text>
-                <Text style={styles.infoVal}>{form.probationPeriod || "0"} mo</Text>
-              </View>
-              <View style={styles.infoItem}>
-                <Text style={styles.infoLabel}>Work Hours</Text>
-                <Text style={styles.infoVal}>{form.workingHours} hrs/day</Text>
-              </View>
-              <View style={styles.infoItem}>
-                <Text style={styles.infoLabel}>Reporting To</Text>
-                <Text style={styles.infoVal}>{form.reportingTo || "Manager"}</Text>
+              {form.probationPeriod && (
+                <View style={styles.tableRow}>
+                  <Text style={styles.tableLabel}>Probation Period</Text>
+                  <Text style={[styles.tableVal, { color: "#111827" }]}>{form.probationPeriod} months</Text>
+                </View>
+              )}
+              <View style={styles.tableRow}>
+                <Text style={styles.tableLabel}>Working Hours</Text>
+                <Text style={[styles.tableVal, { color: "#111827" }]}>{form.workingHours} hours/day, {form.workingDays} days/week</Text>
               </View>
             </View>
 
             {ctc > 0 && (
-              <View style={styles.ctcBox}>
-                <Text style={styles.ctcTitle}>Total Annual CTC Package</Text>
-                <Text style={styles.ctcVal}>Rs. {ctc.toLocaleString("en-IN")}</Text>
-                <View style={styles.ctcTable}>
-                   <View style={styles.ctcTableItem}>
-                      <Text style={styles.ctcTableLabel}>Basic /mo</Text>
-                      <Text style={styles.ctcTableVal}>Rs. {Math.round(basic).toLocaleString("en-IN")}</Text>
-                   </View>
-                   <View style={styles.ctcTableItem}>
-                      <Text style={styles.ctcTableLabel}>HRA /mo</Text>
-                      <Text style={styles.ctcTableVal}>Rs. {Math.round(hra).toLocaleString("en-IN")}</Text>
-                   </View>
-                   <View style={styles.ctcTableItem}>
-                      <Text style={styles.ctcTableLabel}>Gross /mo</Text>
-                      <Text style={styles.ctcTableVal}>Rs. {Math.round(monthly).toLocaleString("en-IN")}</Text>
-                   </View>
+              <View style={styles.ctcBox} wrap={false}>
+                <Text style={styles.ctcTitle}>Compensation (Annual CTC)</Text>
+                <View style={styles.ctcHead}>
+                  <Text style={styles.ctcMainLabel}>Annual CTC</Text>
+                  <Text style={styles.ctcMainVal}>Rs.{ctc.toLocaleString("en-IN")}</Text>
+                </View>
+                <View style={styles.ctcGrid}>
+                  <View style={styles.ctcItem}>
+                    <Text style={styles.itemLabel}>Basic/mo</Text>
+                    <Text style={styles.itemVal}>Rs.{Math.round(basic).toLocaleString("en-IN")}</Text>
+                  </View>
+                  <View style={styles.ctcItem}>
+                    <Text style={styles.itemLabel}>HRA/mo</Text>
+                    <Text style={styles.itemVal}>Rs.{Math.round(hra).toLocaleString("en-IN")}</Text>
+                  </View>
+                  <View style={styles.ctcItem}>
+                    <Text style={styles.itemLabel}>Other/mo</Text>
+                    <Text style={styles.itemVal}>Rs.{Math.round(other).toLocaleString("en-IN")}</Text>
+                  </View>
+                  <View style={styles.ctcItem}>
+                    <Text style={styles.itemLabel}>Total/mo</Text>
+                    <Text style={styles.itemVal}>Rs.{Math.round(monthly).toLocaleString("en-IN")}</Text>
+                  </View>
                 </View>
               </View>
             )}
 
             {form.additionalTerms && (
-                <View style={{ marginBottom: 12 }}>
-                    <Text style={[styles.infoLabel, { marginBottom: 6 }]}>Special Terms & Conditions</Text>
-                    <Text style={{ fontSize: 10, lineHeight: 1.5 }}>{form.additionalTerms}</Text>
-                </View>
+              <View style={{ marginTop: 12 }}>
+                  <Text style={styles.termsTitle}>Additional Terms</Text>
+                  <Text style={[styles.content, { fontSize: 12, lineHeight: 1.7, margin: 0 }]}>{form.additionalTerms}</Text>
+              </View>
             )}
 
-            <Text style={{ marginTop: 8 }}>
-                {form.acceptanceDeadline ? `Please confirm your acceptance of this offer by ${form.acceptanceDeadline}. ` : "Please confirm your acceptance of this offer at the earliest. "}
-                We look forward to having you on our team.
+            <Text style={[styles.content, { marginTop: 16 }]}>
+              {form.acceptanceDeadline ? `Please confirm your acceptance of this offer by ${form.acceptanceDeadline}. ` : "Please confirm your acceptance of this offer at the earliest. "}
+              We look forward to having you on our team.
             </Text>
-          </View>
 
-          <View style={styles.signatureSection}>
-            <View>
-              {form.signature ? (
-                <Image src={form.signature} style={styles.signatureImage} />
-              ) : (
-                <View style={{ height: 40 }} />
-              )}
-              <View style={styles.signatureLine}>
-                <Text style={styles.signatoryName}>{form.signatoryName || "Authorized Official"}</Text>
-                <Text style={styles.signatoryDetails}>{form.signatoryDesignation || "HR Manager"}</Text>
+            <View style={styles.signatureArea} wrap={false}>
+              <View style={styles.sigBlock}>
+                {form.signature ? (
+                  <Image src={form.signature} style={styles.signatureImage} />
+                ) : (
+                  <View style={{ height: 36 }} />
+                )}
+                <View style={styles.sigLine}>
+                  <Text style={styles.sigName}>{form.signatoryName || "HR Manager"}</Text>
+                  <Text style={styles.sigDesig}>{form.signatoryDesignation || "Designation"}</Text>
+                  <Text style={styles.sigComp}>{form.companyName}</Text>
+                </View>
+              </View>
+              <View style={[styles.sigBlock, { textAlign: "right" }]}>
+                <View style={{ height: 36 }} />
+                <View style={[styles.sigLine, { textAlign: "right" }]}>
+                  <Text style={styles.sigName}>{form.candidateName || "Candidate"}</Text>
+                  <Text style={styles.sigDesig}>Candidate Signature</Text>
+                  <Text style={styles.sigComp}></Text>
+                </View>
               </View>
             </View>
-            <View style={{ alignItems: "flex-end" }}>
-              <View style={{ height: 40 }} />
-              <View style={[styles.signatureLine, { textAlign: "right" }]}>
-                <Text style={styles.signatoryName}>{form.candidateName || "Candidate"}</Text>
-                <Text style={styles.signatoryDetails}>(Digitally Accepted)</Text>
-              </View>
-            </View>
           </View>
 
-          <View style={styles.footer}>
-            <Text style={styles.footerText}>Certified Digital Employment Offer Release — DocMinty.com</Text>
+          <View style={styles.footer} wrap={false}>
+            <Text style={styles.footerText}>Generated by DocMinty.com</Text>
           </View>
         </View>
       </Page>

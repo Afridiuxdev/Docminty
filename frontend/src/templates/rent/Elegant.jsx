@@ -5,126 +5,137 @@ import { INDIAN_STATES } from "@/constants/indianStates";
 
 function numToWords(n) {
   if (!n || n === 0) return "Zero Rupees Only";
-  const ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
-  const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+  var ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
+  var tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
   function convert(num) {
     if (num < 20) return ones[num];
     if (num < 100) return tens[Math.floor(num / 10)] + (num % 10 ? " " + ones[num % 10] : "");
     if (num < 1000) return ones[Math.floor(num / 100)] + " Hundred" + (num % 100 ? " " + convert(num % 100) : "");
     if (num < 100000) return convert(Math.floor(num / 1000)) + " Thousand" + (num % 1000 ? " " + convert(num % 1000) : "");
-    if (num < 10000000) return convert(Math.floor(num / 100000)) + " Lakh" + (num % 100000 ? " " + convert(num % 100000) : "");
-    return convert(Math.floor(num / 10000000)) + " Crore" + (num % 10000000 ? " " + convert(num % 10000000) : "");
+    return convert(Math.floor(num / 100000)) + " Lakh" + (num % 100000 ? " " + convert(num % 100000) : "");
   }
   return "Rupees " + convert(Math.floor(n)) + " Only";
 }
 
 export default function RentElegantTemplate({ form }) {
-  const T = form.templateColor || "#D97706";
+  const T = form.templateColor || "#0D9488";
   const amount = parseFloat(form.rentAmount) || 0;
-  const amtFmt = amount.toLocaleString("en-IN", { 
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  });
+  const amtFmt = amount.toLocaleString("en-IN", { minimumFractionDigits: 2 });
   const lState = INDIAN_STATES.find(s => s.code === form.landlordState)?.name || "";
   const tState = INDIAN_STATES.find(s => s.code === form.tenantState)?.name || "";
 
   const styles = StyleSheet.create({
-    page: { fontFamily: "Inter", fontSize: 9, color: "#111827", padding: "60 80", backgroundColor: "#FFFDFA" },
-    header: { marginBottom: 40, borderBottomWidth: 1, borderBottomColor: "rgba(0,0,0,0.05)", paddingBottom: 24, alignItems: "flex-start" },
-    title: { fontSize: 28, fontFamily: "Space Grotesk", fontWeight: 700, color: T, marginBottom: 8, letterSpacing: 2, textTransform: "uppercase" },
-    subtitle: { fontSize: 11, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 3, fontFamily: "Space Grotesk" },
-    logo: { height: 40, objectFit: "contain", marginTop: 10 },
+    page: { fontFamily: "Inter", fontSize: 10, color: "#111827", padding: "40 50", backgroundColor: "#ffffff" },
+    headerSection: { paddingBottom: 12, marginBottom: 0 },
+    headerTop: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 12 },
+    logo: { height: 36, objectFit: "contain", marginBottom: 6 },
+    compName: { fontSize: 16, fontFamily: "Space Grotesk", fontWeight: 700, color: "#111827" },
+    compDetails: { fontSize: 10, color: "#6B7280" },
     
-    dateLine: { fontSize: 9, color: "#9CA3AF", marginBottom: 32, textAlign: "right", fontFamily: "Inter" },
+    title: { fontSize: 22, fontFamily: "Space Grotesk", fontWeight: 800, color: T },
+    metaText: { fontSize: 11, color: "#6B7280", textAlign: "right" },
+    accentBar: { height: 4, backgroundColor: T, borderRadius: 2, marginBottom: 24 },
     
-    amtBox: { margin: "24 0", padding: "24 0", borderTopWidth: 1, borderTopColor: T, borderBottomWidth: 1, borderBottomColor: T, alignItems: "center" },
-    amtLabel: { fontSize: 9, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1.2, marginBottom: 8 },
-    amtVal: { fontSize: 36, fontWeight: 700, color: T, fontFamily: "Space Grotesk" },
-    amtWords: { fontSize: 10, color: "#374151", marginTop: 16, fontWeight: 700, fontStyle: "italic" },
+    body: { marginTop: 20 },
+    amtBox: { backgroundColor: T + "10", border: `2 solid ${T}`, padding: "16 20", borderRadius: 8, textAlign: "center", marginBottom: 16 },
+    amtLabel: { fontSize: 11, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 4 },
+    amtVal: { fontSize: 28, fontFamily: "Space Grotesk", fontWeight: 800, color: T, marginBottom: 4 },
+    amtWords: { fontSize: 11, color: "#374151", fontStyle: "italic" },
     
-    detailsSection: { marginBottom: 32, padding: "16 0", borderBottomWidth: 1, borderBottomColor: "rgba(0,0,0,0.05)" },
-    row: { flexDirection: "row", marginBottom: 12 },
-    label: { width: 140, fontSize: 8, color: "#9CA3AF", textTransform: "uppercase" },
-    value: { flex: 1, fontSize: 10, fontWeight: 700, color: "#111827" },
+    infoGrid: { flexDirection: "row", gap: 24, marginBottom: 20 },
+    infoCol: { flex: 1 },
+    colLabel: { fontSize: 11, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 0.5, fontWeight: 600, marginBottom: 6 },
+    colName: { fontSize: 13, fontWeight: 700, color: "#111827", marginBottom: 4 },
+    colText: { fontSize: 11, color: "#4B5563", lineHeight: 1.4 },
+    pan: { fontSize: 11, fontWeight: 600, color: "#111827", marginTop: 6 },
     
-    sigArea: { marginTop: 48, flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
-    llBox: { flex: 1 },
-    llName: { fontSize: 11, fontWeight: 700, color: "#111827" },
-    llInfo: { fontSize: 8, color: "#6B7280", marginTop: 4, lineHeight: 1.5, maxWidth: 250 },
+    summaryRow: { flexDirection: "row", gap: 24, padding: "12 0", borderTopWidth: 1, borderTopColor: "#F3F4F6", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", marginBottom: 20 },
+    sumItem: { flex: 1 },
+    sumLabel: { fontSize: 11, color: "#9CA3AF", marginBottom: 2 },
+    sumVal: { fontSize: 13, fontWeight: 600, color: "#111827" },
     
-    signBox: { width: 160, borderTopWidth: 1.5, borderTopColor: T, paddingTop: 8 },
-    signText: { fontSize: 8, color: T, textAlign: "center", textTransform: "uppercase", letterSpacing: 1 },
+    hraNote: { marginTop: 16, padding: "8 12", backgroundColor: T + "08", borderLeft: `3 solid ${T}` },
+    hraText: { fontSize: 10, color: T },
     
-    footer: { position: "absolute", bottom: 40, left: 80, right: 80, borderTopWidth: 1, borderTopColor: "rgba(0,0,0,0.05)", paddingTop: 12 },
-    footerText: { fontSize: 8, color: "#D1D5DB", textAlign: "center", fontStyle: "italic" },
-    sidebarLine: { position: "absolute", left: 40, top: 60, bottom: 60, width: 2, backgroundColor: T }
+    footer: { position: "absolute", bottom: 40, left: 50, right: 50, borderTopWidth: 1, borderTopColor: "#E5E7EB", paddingTop: 10, flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
+    fText: { fontSize: 10, color: "#D1D5DB" },
+    sigArea: { textAlign: "center" },
+    signature: { height: 40, width: 120, objectFit: "contain", marginBottom: 4 },
+    sigLabel: { fontSize: 10, color: "#9CA3AF" }
   });
 
   return (
-    <Document title={`Elegant-RentReceipt-${form.receiptNumber}`}>
+    <Document title={`RentReceipt-${form.receiptNumber}`}>
       <Page size="A4" style={styles.page}>
-        <View style={styles.sidebarLine} />
-        <View style={styles.header}>
-          <Text style={styles.title}>RENT RECEIPT</Text>
-          <Text style={styles.subtitle}>OFFICIAL RESIDENTIAL LEASE ACKNOWLEDGMENT</Text>
-          {form.logo && <Image src={form.logo} style={styles.logo} />}
+        <View style={styles.headerSection}>
+          <View style={styles.headerTop}>
+            <View>
+              {form.logo && <Image src={form.logo} style={styles.logo} />}
+              <Text style={styles.compName}>{form.landlordName || "Owner"}</Text>
+              <Text style={styles.compDetails}>{form.landlordCity || ""}, {lState}</Text>
+            </View>
+            <View style={{ textAlign: "right" }}>
+              <Text style={styles.title}>RENT RECEIPT</Text>
+              <Text style={styles.metaText}>#{form.receiptNumber}</Text>
+            </View>
+          </View>
+          <View style={styles.accentBar} />
         </View>
 
-        <Text style={styles.dateLine}>REF: #{form.receiptNumber}   |   PERIOD: {form.month} {form.year}   |   DATE: {form.receiptDate}</Text>
+        <View style={styles.body}>
+          <View style={styles.amtBox}>
+            <Text style={styles.amtLabel}>Rent Amount</Text>
+            <Text style={styles.amtVal}>Rs. {amtFmt}</Text>
+            <Text style={styles.amtWords}>{numToWords(amount)}</Text>
+          </View>
 
-        <View style={styles.amtBox}>
-          <Text style={styles.amtLabel}>Total Settlement Value</Text>
-          <Text style={styles.amtVal}>₹ {amtFmt}</Text>
-          <Text style={styles.amtWords}>{numToWords(amount)}</Text>
-        </View>
+          <View style={styles.infoGrid}>
+            <View style={styles.infoCol}>
+              <Text style={styles.colLabel}>Received From (Tenant)</Text>
+              <Text style={styles.colName}>{form.tenantName || "—"}</Text>
+              <View style={styles.colText}>
+                <Text>{form.propertyAddress}</Text>
+                <Text>{form.tenantCity ? form.tenantCity + ", " : ""}{tState}</Text>
+              </View>
+            </View>
+            
+            <View style={styles.infoCol}>
+              <Text style={styles.colLabel}>Landlord Details</Text>
+              <Text style={styles.colName}>{form.landlordName || "—"}</Text>
+              <View style={styles.colText}>
+                <Text>{form.landlordAddress}</Text>
+                <Text>{form.landlordCity ? form.landlordCity + ", " : ""}{lState}</Text>
+              </View>
+              {form.landlordPan && <Text style={styles.pan}>PAN: {form.landlordPan}</Text>}
+            </View>
+          </View>
 
-        <View style={styles.detailsSection}>
-          <View style={styles.row}>
-            <Text style={styles.label}>Tenant / Occupier</Text>
-            <Text style={styles.value}>{form.tenantName || "—"}</Text>
+          <View style={styles.summaryRow}>
+            <View style={styles.sumItem}>
+              <Text style={styles.sumLabel}>Rent Period</Text>
+              <Text style={styles.sumVal}>{form.month + " " + form.year}</Text>
+            </View>
+            <View style={styles.sumItem}>
+              <Text style={styles.sumLabel}>Payment Mode</Text>
+              <Text style={styles.sumVal}>{form.paymentMode || "—"}</Text>
+            </View>
           </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Property Address</Text>
-            <Text style={[styles.value, { fontWeight: 400, color: "#6B7280" }]}>
-                {form.propertyAddress}{form.tenantCity ? `, ${form.tenantCity}, ${tState}` : ""}
-            </Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Tenant Contact</Text>
-            <Text style={[styles.value, { fontWeight: 400, color: "#6B7280" }]}>
-                {form.tenantPhone && `Ph: ${form.tenantPhone} `}
-                {form.tenantEmail && ` | ${form.tenantEmail}`}
-            </Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Settlement Mode</Text>
-            <Text style={styles.value}>{form.paymentMode}</Text>
-          </View>
-        </View>
 
-        <View style={styles.sigArea}>
-          <View style={styles.llBox}>
-            <Text style={styles.llName}>{form.landlordName || "Owner"}</Text>
-            {form.landlordPan && <Text style={[styles.llInfo, { fontWeight: 700, color: "#111827" }]}>PAN Reference: {form.landlordPan}</Text>}
-            <Text style={styles.llInfo}>
-                {form.landlordAddress}{form.landlordCity ? `\n${form.landlordCity}, ${lState}` : ""}
-                {form.landlordPhone && `\nPh: ${form.landlordPhone}`}
-                {form.landlordEmail && `\nEm: ${form.landlordEmail}`}
-            </Text>
-            <Text style={[styles.llInfo, { marginTop: 12, fontStyle: "italic", color: "#0D9488" }]}>Valid for statutory HRA claims under Section 10(13A).</Text>
+          <View style={styles.hraNote}>
+            <Text style={styles.hraText}>Valid documentation for HRA exemption claims as per income tax regulations.</Text>
           </View>
-          <View style={styles.signBox}>
-            {form.signature ? (
-                <Image src={form.signature} style={{ height: 40, marginBottom: 4, objectFit: "contain", alignSelf: "center" }} />
-            ) : (
+
+          <View style={styles.footer} wrap={false}>
+            <Text style={styles.fText}>Generated by DocMinty.com</Text>
+            <View style={styles.sigArea}>
+              {form.signature ? (
+                <Image src={form.signature} style={styles.signature} />
+              ) : (
                 <View style={{ height: 40 }} />
-            )}
-            <Text style={styles.signText}>Lessor Acknowledgment</Text>
+              )}
+              <Text style={styles.sigLabel}>Landlord Signature</Text>
+            </View>
           </View>
-        </View>
-
-        <View style={styles.footer} fixed>
-          <Text style={styles.footerText}>Secure Rent Release — Powered by DocMinty.com</Text>
         </View>
       </Page>
     </Document>

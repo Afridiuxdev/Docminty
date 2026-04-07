@@ -19,127 +19,147 @@ function numToWords(n) {
 }
 
 export default function VoucherElegantTemplate({ form }) {
-  const T = form.templateColor || "#D97706";
+  const T = form.templateColor || "#0D9488";
   const amount = parseFloat(form.amount) || 0;
-  const amtFmt = amount.toLocaleString("en-IN", { 
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  });
   const cState = INDIAN_STATES.find(s => s.code === form.companyState)?.name || "";
   const pState = INDIAN_STATES.find(s => s.code === form.paidToState)?.name || "";
 
   const styles = StyleSheet.create({
-    page: { fontFamily: "Inter", fontSize: 9, color: "#111827", padding: "60 80", backgroundColor: "#FFFDFA" },
-    header: { marginBottom: 40, borderBottomWidth: 1, borderBottomColor: "rgba(0,0,0,0.05)", paddingBottom: 24, alignItems: "flex-start" },
-    title: { fontSize: 28, fontFamily: "Space Grotesk", fontWeight: 700, color: T, marginBottom: 8, letterSpacing: 2, textTransform: "uppercase" },
-    subtitle: { fontSize: 11, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 3, fontFamily: "Space Grotesk" },
-    logo: { height: 40, objectFit: "contain", marginTop: 10 },
+    page: { fontFamily: "Inter", fontSize: 10, color: "#111827", padding: "40 50", backgroundColor: "#ffffff" },
+    headerSection: { paddingBottom: 12, marginBottom: 0 },
+    headerTop: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 12 },
+    logo: { height: 36, objectFit: "contain", marginBottom: 6 },
+    compName: { fontSize: 16, fontFamily: "Space Grotesk", fontWeight: 700, color: "#111827" },
+    compDetails: { fontSize: 10, color: "#6B7280" },
     
-    dateLine: { fontSize: 9, color: "#9CA3AF", marginBottom: 32, textAlign: "right", fontFamily: "Inter" },
+    title: { fontSize: 22, fontFamily: "Space Grotesk", fontWeight: 800, color: T },
+    metaText: { fontSize: 11, color: "#6B7280", textAlign: "right" },
+    accentBar: { height: 4, backgroundColor: T, borderRadius: 2, marginBottom: 24 },
     
-    amtBox: { margin: "24 0", padding: "24 0", borderTopWidth: 1, borderTopColor: T, borderBottomWidth: 1, borderBottomColor: T, alignItems: "center" },
-    amtLabel: { fontSize: 9, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1.2, marginBottom: 8 },
-    amtVal: { fontSize: 36, fontWeight: 700, color: T, fontFamily: "Space Grotesk" },
-    amtWords: { fontSize: 10, color: "#374151", marginTop: 16, fontWeight: 700, fontStyle: "italic" },
+    body: { marginTop: 20 },
+    amtBox: { backgroundColor: T + "10", border: `2 solid ${T}`, padding: "16 20", borderRadius: 10, flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 20 },
+    amtLabel: { fontSize: 11, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 2 },
+    amtVal: { fontSize: 28, fontFamily: "Space Grotesk", fontWeight: 800, color: T },
+    modeTag: { backgroundColor: T, color: "#ffffff", padding: "4 12", borderRadius: 20, fontSize: 12, fontWeight: 600 },
     
-    detailsSection: { marginBottom: 32, padding: "16 0", borderBottomWidth: 1, borderBottomColor: "rgba(0,0,0,0.05)" },
-    row: { flexDirection: "row", marginBottom: 12 },
-    label: { width: 140, fontSize: 8, color: "#9CA3AF", textTransform: "uppercase" },
-    value: { flex: 1, fontSize: 10, fontWeight: 700, color: "#111827" },
+    words: { fontSize: 12, color: "#374151", marginBottom: 16 },
     
-    infoGrid: { flexDirection: "row", gap: 40, marginBottom: 32 },
-    infoCol: { flex: 1 },
-    colLabel: { fontSize: 8, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1 },
-    colName: { fontSize: 12, fontWeight: 700, marginBottom: 4 },
-    colAddr: { fontSize: 9, color: "#6B7280", lineHeight: 1.4 },
+    table: { marginBottom: 32 },
+    row: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", padding: "8 0" },
+    label: { width: "35%", fontSize: 11, color: "#6B7280", fontWeight: 600 },
+    value: { flex: 1, fontSize: 11, color: "#111827" },
     
-    signArea: { marginTop: 40, flexDirection: "row", justifyContent: "space-between", gap: 20 },
-    signBox: { flex: 1, borderTopWidth: 1, borderTopColor: T, paddingTop: 8, textAlign: "center" },
-    sigImg: { height: 35, objectFit: "contain", marginBottom: 4, margin: "0 auto" },
-    signName: { fontSize: 10, fontWeight: 700, color: "#111827" },
-    signRole: { fontSize: 7, color: "#9CA3AF", textTransform: "uppercase", marginTop: 2 },
+    signatures: { flexDirection: "row", gap: 16, marginTop: 32 },
+    sigCol: { flex: 1, textAlign: "center" },
+    sigImg: { height: 40, maxWidth: 100, objectFit: "contain", marginBottom: 2, margin: "0 auto" },
+    sigLine: { borderTopWidth: 1, borderTopColor: "#374151", paddingTop: 6 },
+    sigName: { fontSize: 11, fontWeight: 700, color: "#111827", fontFamily: "Space Grotesk" },
+    sigLabel: { fontSize: 10, color: "#9CA3AF" },
     
-    footer: { position: "absolute", bottom: 40, left: 80, right: 80, borderTopWidth: 1, borderTopColor: "rgba(0,0,0,0.05)", paddingTop: 12 },
-    footerText: { fontSize: 8, color: "#D1D5DB", textAlign: "center", fontStyle: "italic" },
-    sidebarLine: { position: "absolute", left: 40, top: 60, bottom: 60, width: 2, backgroundColor: T }
+    footer: { position: "absolute", bottom: 40, left: 50, right: 50, borderTopWidth: 1, borderTopColor: "#E5E7EB", paddingTop: 10 },
+    fText: { fontSize: 10, color: "#D1D5DB" }
   });
 
   return (
-    <Document title={`Elegant-Voucher-${form.voucherNumber}`}>
+    <Document title={`Voucher-${form.voucherNumber}`}>
       <Page size="A4" style={styles.page}>
-        <View style={styles.sidebarLine} />
-        <View style={styles.header}>
-          <Text style={styles.title}>VOUCHER</Text>
-          <Text style={styles.subtitle}>OFFICIAL DISBURSEMENT ACKNOWLEDGMENT</Text>
-          {form.logo && <Image src={form.logo} style={styles.logo} />}
-        </View>
-
-        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 20 }}>
+        <View style={styles.headerSection}>
+          <View style={styles.headerTop}>
             <View>
-                <Text style={styles.colLabel}>Issuing Entity</Text>
-                <Text style={styles.colName}>{form.companyName || "—"}</Text>
-                <Text style={styles.colAddr}>
-                    {form.companyAddress}{form.companyCity ? `, ${form.companyCity}, ${cState}` : ""}
-                    {form.companyPhone && `\nPH: ${form.companyPhone}`}
-                </Text>
+              {form.logo && <Image src={form.logo} style={styles.logo} />}
+              <Text style={styles.compName}>{form.companyName || "Business Name"}</Text>
+              <Text style={styles.compDetails}>{form.companyCity || ""}, {cState}</Text>
             </View>
             <View style={{ textAlign: "right" }}>
-                <Text style={styles.dateLine}>REF: #{form.voucherNumber}</Text>
-                <Text style={styles.dateLine}>DATE: {form.voucherDate}</Text>
+              <Text style={styles.title}>PAYMENT VOUCHER</Text>
+              <Text style={styles.metaText}>#{form.voucherNumber}</Text>
             </View>
+          </View>
+          <View style={styles.accentBar} />
         </View>
 
-        <View style={styles.amtBox}>
-          <Text style={styles.amtLabel}>Total Settlement Value</Text>
-          <Text style={styles.amtVal}>₹ {amtFmt}</Text>
-          <Text style={styles.amtWords}>{numToWords(amount)}</Text>
-        </View>
+        <View style={styles.body}>
+          <View style={styles.amtBox}>
+            <View>
+              <Text style={styles.amtLabel}>Amount Paid</Text>
+              <Text style={styles.amtVal}>₹{amount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</Text>
+            </View>
+            <Text style={styles.modeTag}>{form.paymentMode}</Text>
+          </View>
 
-        <View style={styles.detailsSection}>
-          <View style={styles.row}>
-            <Text style={styles.label}>Beneficiary / Paid To</Text>
-            <Text style={styles.value}>{form.paidTo || "—"}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Transaction Purpose</Text>
-            <Text style={styles.value}>{form.purpose || "—"}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Account Head</Text>
-            <Text style={styles.value}>{form.accountHead || "GENERAL LEDGER"}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Payment Method</Text>
-            <Text style={styles.value}>{form.paymentMode}</Text>
-          </View>
-        </View>
+          <Text style={styles.words}>
+            <Text style={{ fontStyle: "italic" }}>In words: </Text>
+            <Text style={{ fontWeight: 700 }}>{numToWords(amount)}</Text>
+          </Text>
 
-        {form.narration && (
-          <View style={{ marginBottom: 32 }}>
-            <Text style={styles.colLabel}>Transaction Narration</Text>
-            <Text style={{ fontSize: 9, color: "#6B7280", marginTop: 4, lineHeight: 1.5 }}>{form.narration}</Text>
+          <View style={styles.table}>
+            <View style={styles.row}>
+              <Text style={styles.label}>Paid To</Text>
+              <Text style={[styles.value, { fontWeight: 700 }]}>{form.paidTo || "—"}</Text>
+            </View>
+            {(form.paidToAddress || form.paidToCity) && (
+              <View style={styles.row}>
+                <Text style={styles.label}>Address</Text>
+                <Text style={styles.value}>
+                    {form.paidToAddress}{form.paidToCity ? `, ${form.paidToCity}` : ""}{pState ? `, ${pState}` : ""}
+                </Text>
+              </View>
+            )}
+            <View style={styles.row}>
+              <Text style={styles.label}>Purpose</Text>
+              <Text style={styles.value}>{form.purpose || "—"}</Text>
+            </View>
+            {form.accountHead && (
+              <View style={styles.row}>
+                <Text style={styles.label}>Account Head</Text>
+                <Text style={styles.value}>{form.accountHead}</Text>
+              </View>
+            )}
+            <View style={styles.row}>
+              <Text style={styles.label}>Payment Mode</Text>
+              <Text style={styles.value}>{form.paymentMode}</Text>
+            </View>
+            {form.paymentMode === "Cheque" && form.chequeNumber && (
+              <View style={styles.row}>
+                  <Text style={styles.label}>Cheque Details</Text>
+                  <Text style={styles.value}>#{form.chequeNumber} {form.bankName ? `— ${form.bankName}` : ""} {form.chequeDate ? `(${form.chequeDate})` : ""}</Text>
+              </View>
+            )}
+            {form.narration && (
+              <View style={styles.row}>
+                <Text style={styles.label}>Description</Text>
+                <Text style={styles.value}>{form.narration}</Text>
+              </View>
+            )}
           </View>
-        )}
 
-        <View style={styles.signArea}>
-          <View style={styles.signBox}>
-            {form.signaturePrepared && <Image src={form.signaturePrepared} style={styles.sigImg} />}
-            <Text style={styles.signName}>{form.preparedBy || "—"}</Text>
-            <Text style={styles.signRole}>Preparer</Text>
+          <View style={styles.signatures} wrap={false}>
+            <View style={styles.sigCol}>
+              {form.signaturePrepared ? <Image src={form.signaturePrepared} style={styles.sigImg} /> : <View style={{ height: 42 }} />}
+              <View style={styles.sigLine}>
+                <Text style={styles.sigName}>{form.preparedBy || "—"}</Text>
+                <Text style={styles.sigLabel}>Prepared By</Text>
+              </View>
+            </View>
+            <View style={styles.sigCol}>
+              {form.signatureApproved ? <Image src={form.signatureApproved} style={styles.sigImg} /> : <View style={{ height: 42 }} />}
+              <View style={styles.sigLine}>
+                <Text style={styles.sigName}>{form.approvedBy || "—"}</Text>
+                <Text style={styles.sigLabel}>Approved By</Text>
+              </View>
+            </View>
+            <View style={styles.sigCol}>
+              <View style={{ height: 42 }} />
+              <View style={styles.sigLine}>
+                <Text style={styles.sigName}> </Text>
+                <Text style={styles.sigLabel}>Received By</Text>
+              </View>
+            </View>
           </View>
-          <View style={styles.signBox}>
-            {form.signatureApproved && <Image src={form.signatureApproved} style={styles.sigImg} />}
-            <Text style={styles.signName}>{form.approvedBy || "—"}</Text>
-            <Text style={styles.signRole}>Approval</Text>
-          </View>
-          <View style={styles.signBox}>
-            <View style={{ height: form.signaturePrepared || form.signatureApproved ? 35 : 0 }} />
-            <Text style={styles.signRole}>Receiver</Text>
-          </View>
-        </View>
 
-        <View style={styles.footer} fixed>
-          <Text style={styles.footerText}>Secure Voucher Release — Powered by DocMinty.com</Text>
+          <View style={styles.footer} wrap={false}>
+            <Text style={styles.fText}>Generated by DocMinty.com</Text>
+          </View>
         </View>
       </Page>
     </Document>

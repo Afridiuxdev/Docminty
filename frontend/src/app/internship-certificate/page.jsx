@@ -29,11 +29,11 @@ const DEFAULT_FORM = {
   logo: null,
   internName: "", role: "", department: "",
   startDate: "", endDate: "",
-  issueDate: new Date().toISOString().split("T")[0],
+  issueDate: "",
   performance: "excellent", projectName: "",
   signatoryName: "", signatoryDesignation: "",
   signature: null,
-  verificationId: generateVerificationId(),
+  verificationId: "",
   enableQR: true,
   templateColor: "#0D9488",
   qrCodeDataUrl: null,
@@ -102,19 +102,19 @@ export function InternshipPreview({ form, template = "Classic", accent = "#0D948
 
   if (template === "Modern") {
     return (
-      <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: "8px", overflow: "hidden" }}>
+      <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: "8px", overflow: "hidden", width: "100%", aspectRatio: "3508 / 2480", display: "flex", flexDirection: "column" }}>
         <div style={{ background: accent, padding: "12px 20px", display: "flex", alignItems: "center", gap: "12px" }}>
           {form.logo && <img src={form.logo} alt="Logo" style={{ height: "32px", objectFit: "contain", filter: "brightness(0) invert(1)" }} />}
           <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "13px", color: "#fff", margin: 0, textTransform: "uppercase", letterSpacing: "0.1em" }}>Internship Certificate</p>
         </div>
-        <div style={{ padding: "28px 36px", textAlign: "center" }}>{certContent}</div>
+        <div style={{ flex: 1, padding: "28px 36px", textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "center" }}>{certContent}</div>
       </div>
     );
   }
   if (template === "Royal") {
     return (
-      <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: "8px", overflow: "hidden" }}>
-        <div style={{ border: `8px double ${accent}`, margin: "8px", borderRadius: "4px", padding: "28px 36px", textAlign: "center", position: "relative" }}>
+      <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: "8px", overflow: "hidden", width: "100%", aspectRatio: "3508 / 2480", display: "flex" }}>
+        <div style={{ flex: 1, border: `8px double ${accent}`, margin: "8px", borderRadius: "4px", padding: "28px 36px", textAlign: "center", position: "relative", display: "flex", flexDirection: "column", justifyContent: "center" }}>
           <div style={{ position: "absolute", top: "8px", left: "8px", width: "16px", height: "16px", borderTop: `3px solid ${accent}`, borderLeft: `3px solid ${accent}` }} />
           <div style={{ position: "absolute", top: "8px", right: "8px", width: "16px", height: "16px", borderTop: `3px solid ${accent}`, borderRight: `3px solid ${accent}` }} />
           <div style={{ position: "absolute", bottom: "8px", left: "8px", width: "16px", height: "16px", borderBottom: `3px solid ${accent}`, borderLeft: `3px solid ${accent}` }} />
@@ -126,26 +126,24 @@ export function InternshipPreview({ form, template = "Classic", accent = "#0D948
   }
   if (template === "Elegant") {
     return (
-      <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: "8px", overflow: "hidden" }}>
-        <div style={{ display: "flex" }}>
-          <div style={{ width: "8px", background: accent, flexShrink: 0 }} />
-          <div style={{ padding: "28px 36px", textAlign: "center", flex: 1 }}>{certContent}</div>
-          <div style={{ width: "8px", background: accent, flexShrink: 0 }} />
-        </div>
+      <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: "8px", overflow: "hidden", display: "flex", width: "100%", aspectRatio: "3508 / 2480" }}>
+        <div style={{ width: "8px", background: accent, flexShrink: 0 }} />
+        <div style={{ padding: "28px 36px", textAlign: "center", flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>{certContent}</div>
+        <div style={{ width: "8px", background: accent, flexShrink: 0 }} />
       </div>
     );
   }
   if (template === "Minimal") {
     return (
-      <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: "8px", overflow: "hidden" }}>
-        <div style={{ borderTop: `3px solid ${accent}`, padding: "28px 36px", textAlign: "center" }}>{certContent}</div>
+      <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: "8px", overflow: "hidden", width: "100%", aspectRatio: "3508 / 2480", display: "flex" }}>
+        <div style={{ flex: 1, borderTop: `3px solid ${accent}`, padding: "28px 36px", textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "center" }}>{certContent}</div>
       </div>
     );
   }
   // Classic (default)
   return (
-    <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: "8px", overflow: "hidden" }}>
-      <div style={{ border: "6px solid #F0F4F3", outline: `2px solid ${accent}`, outlineOffset: "-10px", margin: "8px", borderRadius: "6px", padding: "28px 36px", background: "linear-gradient(135deg,#F0FDFA 0%,#fff 60%,#F0FDFA 100%)", textAlign: "center", position: "relative" }}>
+    <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: "8px", overflow: "hidden", width: "100%", aspectRatio: "3508 / 2480", display: "flex" }}>
+      <div style={{ flex: 1, border: "6px solid #F0F4F3", outline: `2px solid ${accent}`, outlineOffset: "-10px", margin: "8px", borderRadius: "6px", padding: "28px 36px", background: "linear-gradient(135deg,#F0FDFA 0%,#fff 60%,#F0FDFA 100%)", textAlign: "center", position: "relative", display: "flex", flexDirection: "column", justifyContent: "center" }}>
         {certContent}
       </div>
     </div>
@@ -186,6 +184,16 @@ export default function InternshipCertificatePage() {
     } catch (err) { if (err.message !== "PLAN_LIMIT_REACHED") toast.error("Save failed"); }
   };
   const updateField = useCallback((field, value) => setForm(prev => ({ ...prev, [field]: value })), []);
+
+  useEffect(() => {
+    if (!form.verificationId || !form.issueDate) {
+      setForm(prev => ({
+        ...prev,
+        verificationId: prev.verificationId || generateVerificationId(),
+        issueDate: prev.issueDate || new Date().toISOString().split("T")[0]
+      }));
+    }
+  }, []);
 
   useEffect(() => {
     if (form.enableQR && form.verificationId) {

@@ -23,56 +23,74 @@ export default function MinimalTemplate({ form }) {
     const joining = formatDate(form.dateOfJoining);
     const leaving = formatDate(form.dateOfLeaving);
     const perfText = PERF_TEXT[form.performance] || PERF_TEXT.good;
-    const empInfo = (form.employeeName || "[Employee Name]") + (form.employeeId ? ` (ID: ${form.employeeId})` : "");
 
     const styles = StyleSheet.create({
-        page: { fontFamily: "Inter", fontSize: 10, color: "#111827", padding: "48 60", backgroundColor: "#ffffff" },
-        header: { marginBottom: 40 },
-        logo: { height: 35, objectFit: "contain", marginBottom: 12 },
-        title: { fontSize: 18, fontFamily: "Space Grotesk", fontWeight: 700, color: "#111827", textTransform: "uppercase", letterSpacing: 1 },
-        dateText: { fontSize: 10, color: "#9CA3AF", marginTop: 4 },
-        accentBar: { height: 2, backgroundColor: T, width: 40, marginTop: 12 },
+        page: { fontFamily: "Inter", fontSize: 10, color: "#111827", padding: "40 50", backgroundColor: "#ffffff" },
+        header: { padding: "0 0 16", borderBottomWidth: 1, borderBottomColor: "#E5E7EB", marginBottom: 0 },
+        headerTop: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" },
+        logo: { height: 40, objectFit: "contain", marginBottom: 6 },
+        compName: { fontSize: 15, fontFamily: "Space Grotesk", fontWeight: 700, color: "#111827" },
+        compDetails: { fontSize: 11, color: "#9CA3AF", marginTop: 2, lineHeight: 1.3 },
+        
+        rightTitle: { fontSize: 16, fontFamily: "Space Grotesk", fontWeight: 800, color: "#111827", textAlign: "right" },
+        rightDate: { fontSize: 11, color: "#9CA3AF", marginTop: 4, textAlign: "right" },
+        accentBar: { height: 2, backgroundColor: T, marginTop: 12, borderRadius: 1 },
         
         body: { marginTop: 32 },
-        salutation: { fontSize: 11, fontWeight: 700, color: "#111827", marginBottom: 20 },
-        content: { fontSize: 11, color: "#374151", lineHeight: 1.8, textAlign: "justify", marginBottom: 16 },
+        salutation: { fontSize: 12, color: "#374151", marginBottom: 16 },
+        content: { fontSize: 12, color: "#374151", lineHeight: 1.8, marginBottom: 12 },
         bold: { fontWeight: 700, color: "#111827" },
+        accent: { fontWeight: 700, color: T },
         
-        signatureSection: { marginTop: 48 },
-        signatureImage: { height: 40, marginBottom: 5, objectFit: "contain" },
-        signatureLine: { borderTopWidth: 1, borderTopColor: "#111827", paddingTop: 8, width: 150 },
-        signatoryName: { fontSize: 11, fontWeight: 700, color: "#111827" },
-        signatoryDetails: { fontSize: 9, color: "#9CA3AF", marginTop: 2 },
+        signatureSection: { marginTop: 32 },
+        signatureImage: { maxHeight: 45, maxWidth: 140, marginBottom: 4, objectFit: "contain" },
+        signatureLine: { borderTopWidth: 1, borderTopColor: "#374151", paddingTop: 4, width: 140 },
+        signatoryName: { fontSize: 12, fontWeight: 700, color: "#111827", fontFamily: "Space Grotesk" },
+        signatoryDetails: { fontSize: 11, color: "#6B7280", marginTop: 2, lineHeight: 1.3 },
         
-        footer: { position: "absolute", bottom: 48, left: 60, right: 60, borderTopWidth: 1, borderTopColor: "#F3F4F6", paddingTop: 12 },
-        footerText: { fontSize: 9, color: "#D1D5DB" }
+        footer: { position: "absolute", bottom: 40, left: 50, right: 50, borderTopWidth: 1, borderTopColor: "#E5E7EB", paddingTop: 10 },
+        footerText: { fontSize: 10, color: "#D1D5DB" }
     });
 
     return (
         <Document title={`Experience-Letter-${form.employeeName}`}>
             <Page size="A4" style={styles.page}>
                 <View style={styles.header}>
-                    {form.logo && <Image src={form.logo} style={styles.logo} />}
-                    <Text style={styles.title}>EXPERIENCE CERTIFICATE</Text>
-                    <Text style={styles.dateText}>Issued Date: {form.letterDate}</Text>
+                    <View style={styles.headerTop}>
+                        <View>
+                            {form.logo && <Image src={form.logo} style={styles.logo} />}
+                            <Text style={styles.compName}>{form.companyName || "Company Name"}</Text>
+                            <View style={styles.compDetails}>
+                                <Text>{[form.companyAddress, form.companyCity].filter(Boolean).join(", ")}</Text>
+                                {(form.companyPhone || form.companyEmail) && (
+                                    <Text>{[form.companyPhone && `Ph: ${form.companyPhone}`, form.companyEmail && `Em: ${form.companyEmail}`].filter(Boolean).join(" | ")}</Text>
+                                )}
+                                {form.companyWebsite && <Text>{form.companyWebsite}</Text>}
+                            </View>
+                        </View>
+                        <View>
+                            <Text style={styles.rightTitle}>EXPERIENCE LETTER</Text>
+                            <Text style={styles.rightDate}>{form.letterDate}</Text>
+                        </View>
+                    </View>
                     <View style={styles.accentBar} />
                 </View>
 
                 <View style={styles.body}>
-                    <Text style={styles.salutation}>To Whom It May Concern,</Text>
+                    <Text style={styles.salutation}>To Whomsoever It May Concern,</Text>
 
                     <Text style={styles.content}>
-                        {"This serves to certify that "}
-                        <Text style={styles.bold}>{empInfo}</Text>
-                        {" was an employee of "}
-                        <Text style={styles.bold}>{form.companyName || "the organization"}</Text>
-                        {form.designation ? " serving as " : ""}
-                        <Text style={styles.bold}>{form.designation || ""}</Text>
-                        {form.department ? " within the " + form.department + " department" : ""}
+                        {"This is to certify that "}
+                        <Text style={styles.bold}>{form.employeeName || "[Employee Name]"}</Text>
+                        {form.employeeId ? ` (Employee ID: ${form.employeeId})` : ""}
+                        {" was employed with "}
+                        <Text style={styles.bold}>{form.companyName || "[Company Name]"}</Text>
+                        {form.designation ? " as " + form.designation : ""}
+                        {form.department ? " in the " + form.department + " department" : ""}
                         {" from "}
-                        <Text style={styles.bold}>{joining}</Text>
+                        <Text style={styles.accent}>{joining}</Text>
                         {" to "}
-                        <Text style={styles.bold}>{leaving}</Text>
+                        <Text style={styles.accent}>{leaving}</Text>
                         {"."}
                     </Text>
 
@@ -85,30 +103,26 @@ export default function MinimalTemplate({ form }) {
                     <Text style={styles.content}>
                         {"We wish "}
                         <Text style={styles.bold}>{form.employeeName || "them"}</Text>
-                        {" the very best in their future endeavors."}
+                        {" all the best in their future endeavours."}
                     </Text>
                 </View>
 
-                <View style={styles.signatureSection}>
+                <View style={styles.signatureSection} wrap={false}>
                     {form.signature ? (
                         <Image src={form.signature} style={styles.signatureImage} />
                     ) : (
                         <View style={{ height: 40 }} />
                     )}
                     <View style={styles.signatureLine}>
-                        <Text style={styles.signatoryName}>{form.signatoryName || "Authorized Signatory"}</Text>
-                        <Text style={styles.signatoryDetails}>{form.signatoryDesignation || "Designation"}{form.signatoryDept ? ` | ${form.signatoryDept}` : ""}</Text>
-                        <Text style={[styles.signatoryDetails, { marginTop: 1 }]}>{form.companyName || ""}</Text>
+                        <Text style={styles.signatoryName}>{form.signatoryName || "Authorised Signatory"}</Text>
+                        <Text style={styles.signatoryDetails}>{form.signatoryDesignation || "Designation"}</Text>
+                        {form.signatoryDept && <Text style={styles.signatoryDetails}>{form.signatoryDept}</Text>}
+                        <Text style={styles.signatoryDetails}>{form.companyName}</Text>
                     </View>
                 </View>
 
-                <View style={styles.footer} fixed>
-                    <Text style={styles.footerText}>Certified Digital Release via DocMinty.com</Text>
-                    <View style={{ marginTop: 4 }}>
-                        <Text style={{ fontSize: 8, color: "#F3F4F6" }}>
-                            {form.companyAddress}{form.companyCity ? `, ${form.companyCity}` : ""} {form.companyPhone && `| Ph: ${form.companyPhone}`} {form.companyWebsite && `| ${form.companyWebsite}`}
-                        </Text>
-                    </View>
+                <View style={styles.footer} wrap={false}>
+                    <Text style={styles.footerText}>Generated by DocMinty.com</Text>
                 </View>
             </Page>
         </Document>

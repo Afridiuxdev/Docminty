@@ -5,172 +5,155 @@ import { calculateLineItems, numberToWords } from "@/engine/gstCalc";
 import { INDIAN_STATES } from "@/constants/indianStates";
 
 export default function PurchaseMinimalTemplate({ form }) {
-  const T = form.templateColor || "#111827";
+  const T = form.templateColor || "#0D9488";
   const calc = calculateLineItems(form.items, form.taxType === "igst");
   const fromState = INDIAN_STATES.find(s => s.code === form.fromState);
   const toState = INDIAN_STATES.find(s => s.code === form.toState);
 
   const styles = StyleSheet.create({
-    page: { fontFamily: "Inter", fontSize: 10, color: "#374151", padding: "48 64", backgroundColor: "#ffffff" },
-    top: { borderBottomWidth: 2, borderBottomColor: T, paddingBottom: 16, marginBottom: 32, flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
-    title: { fontSize: 14, fontFamily: "Space Grotesk", fontWeight: 700, color: "#111827", textTransform: "uppercase", letterSpacing: 1 },
-    date: { fontSize: 10, color: "#9CA3AF" },
+    page: { fontFamily: "Inter", fontSize: 10, color: "#374151", padding: "40 50", backgroundColor: "#ffffff" },
+    header: { borderBottomWidth: 2, borderBottomColor: T, paddingBottom: 16, marginBottom: 20, flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
+    logo: { height: 48, objectFit: "contain", marginBottom: 8 },
+    fromName: { fontSize: 16, fontFamily: "Space Grotesk", fontWeight: 700, color: "#111827" },
+    fromDetails: { fontSize: 11, color: "#6B7280", marginTop: 2 },
     
-    headerRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 32 },
-    metaBox: { flex: 1 },
-    metaLabel: { fontSize: 7, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 },
-    metaValue: { fontSize: 11, fontWeight: 700, color: "#111827" },
-    metaSub: { fontSize: 9, color: "#6B7280", marginTop: 2, maxWidth: 180, lineHeight: 1.4 },
+    title: { fontSize: 22, fontFamily: "Space Grotesk", fontWeight: 800, color: T },
+    metaText: { fontSize: 12, color: "#6B7280", marginTop: 4 },
+    dateText: { fontSize: 11, color: "#9CA3AF", marginTop: 4 },
     
-    table: { marginBottom: 32 },
-    tHeader: { flexDirection: "row", borderBottomWidth: 1.5, borderBottomColor: T, padding: "8 0" },
-    tRow: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", padding: "10 0", alignItems: "center" },
-    th: { fontSize: 8, fontWeight: 700, color: "#111827", textTransform: "uppercase" },
-    td: { fontSize: 9, color: "#374151" },
+    addressRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 20, marginTop: 20 },
+    addressBox: { width: "48%" },
+    addressLabel: { fontSize: 10, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 6 },
+    addressName: { fontSize: 13, fontWeight: 700, color: "#111827", marginBottom: 4 },
+    addressDetails: { fontSize: 11, color: "#6B7280", lineHeight: 1.4 },
     
-    summaryFrame: { flexDirection: "row", justifyContent: "space-between", marginTop: 16 },
-    sumCol: { width: "45%" },
+    table: { marginBottom: 20 },
+    tHeader: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#E5E7EB", paddingBottom: 8, marginBottom: 8 },
+    tRow: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", padding: "8 0", alignItems: "center" },
+    th: { fontSize: 10, fontWeight: 700, color: "#6B7280", textTransform: "uppercase" },
+    td: { fontSize: 11, color: "#111827" },
     
-    totRow: { flexDirection: "row", justifyContent: "space-between", padding: "6 0" },
-    totLabel: { fontSize: 9, color: "#6B7280" },
-    totVal: { fontSize: 9, fontWeight: 700, color: "#111827" },
-    grandRow: { flexDirection: "row", justifyContent: "space-between", padding: "12 0", borderTopWidth: 1, borderTopColor: T, marginTop: 8 },
-    grandLabel: { fontSize: 11, fontWeight: 700, color: "#111827" },
-    grandVal: { fontSize: 11, fontWeight: 700, color: T },
+    bottomGrid: { flexDirection: "row", justifyContent: "flex-end", marginTop: 16 },
+    totBox: { width: 220 },
+    totRow: { flexDirection: "row", justifyContent: "space-between", padding: "4 0" },
+    totLabel: { fontSize: 11, color: "#6B7280" },
+    totVal: { fontSize: 11, fontWeight: 700, color: "#111827" },
+    grandBox: { marginTop: 8, padding: "10 12", backgroundColor: T + "10", borderRadius: 6, flexDirection: "row", justifyContent: "space-between" },
+    grandLabel: { fontSize: 12, fontWeight: 700, color: T },
+    grandVal: { fontSize: 12, fontWeight: 800, color: T },
     
-    termsContainer: { padding: "12 16", backgroundColor: "#F9FAFB", borderRadius: 4, marginBottom: 12, borderLeftWidth: 2, borderLeftColor: T },
-    termsLabel: { fontSize: 7, color: "#9CA3AF", textTransform: "uppercase", marginBottom: 4 },
-    termsText: { fontSize: 9, color: "#374151", lineHeight: 1.4 },
+    wordsBox: { marginTop: 16, padding: "10 14", backgroundColor: "#F8F9FA", borderRadius: 6, borderLeftWidth: 3, borderLeftColor: T },
+    wordsLabel: { fontSize: 11, color: "#9CA3AF", textTransform: "uppercase", marginBottom: 2 },
+    wordsText: { fontSize: 12, color: "#374151", fontStyle: "italic" },
     
-    wordsText: { fontSize: 8.5, color: "#9CA3AF", fontStyle: "italic", marginTop: 16, textAlign: "right" },
-    
-    footer: { position: "absolute", bottom: 48, left: 64, right: 64, borderTopWidth: 1, borderTopColor: "#F3F4F6", paddingTop: 10, flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
-    footerText: { fontSize: 8, color: "#D1D5DB" },
-    signatureImage: { height: 40, marginBottom: 4, objectFit: "contain", alignSelf: "center" },
-    sigLine: { borderTopWidth: 1.5, borderTopColor: "#374151", paddingTop: 4, width: 120 },
-    sigText: { fontSize: 9, color: "#9CA3AF", textAlign: "center" }
+    footer: { position: "absolute", bottom: 40, left: 50, right: 50, borderTopWidth: 1, borderTopColor: "#E5E7EB", paddingTop: 12, flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+    footerText: { fontSize: 10, color: "#D1D5DB" },
+    sigBox: { textAlign: "right", minWidth: 120 },
+    signatureImage: { height: 45, maxWidth: 140, objectFit: "contain", marginLeft: "auto", marginBottom: 4 },
+    sigLine: { borderTopWidth: 1, borderTopColor: "#374151", paddingTop: 4 },
+    sigText: { fontSize: 10, color: "#9CA3AF" }
   });
 
   const fromStateName = fromState?.name || "";
   const toStateName = toState?.name || "";
 
   return (
-    <Document title={`PO-Minimal-${form.poNumber}`}>
+    <Document title={`PO-${form.poNumber}`}>
       <Page size="A4" style={styles.page}>
-        <View style={styles.top}>
-          <Text style={styles.title}>Purchase Order</Text>
-          <Text style={styles.date}>{form.poDate}</Text>
+        <View style={styles.header}>
+          <View>
+            {form.logo && <Image src={form.logo} style={styles.logo} />}
+            <Text style={styles.fromName}>{form.fromName || "Your Company"}</Text>
+            <View style={styles.fromDetails}>
+              {form.fromGSTIN && <Text>GSTIN: {form.fromGSTIN}</Text>}
+              <Text>{form.fromAddress || ""}{form.fromCity ? `, ${form.fromCity}` : ""}</Text>
+              {fromStateName && <Text>{fromStateName}</Text>}
+            </View>
+          </View>
+          <View style={{ textAlign: "right" }}>
+            <Text style={styles.title}>PURCHASE ORDER</Text>
+            <Text style={styles.metaText}>#{form.poNumber}</Text>
+            <Text style={styles.dateText}>Date: {form.poDate}</Text>
+          </View>
         </View>
 
-        <View style={styles.headerRow}>
-          <View style={styles.metaBox}>
-            <Text style={styles.metaLabel}>Order From</Text>
-            <Text style={styles.metaValue}>{form.fromName || "Your Company"}</Text>
-            {form.fromGSTIN && <Text style={styles.metaSub}>GSTIN: {form.fromGSTIN}</Text>}
-            <Text style={styles.metaSub}>{form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}</Text>
-            {fromStateName && <Text style={styles.metaSub}>{fromStateName}</Text>}
-            {(form.fromPhone || form.fromEmail) && (
-              <Text style={[styles.metaSub, { marginTop: 4 }]}>
-                {form.fromPhone && `Ph: ${form.fromPhone} `}
-                {form.fromEmail && `Em: ${form.fromEmail}`}
-              </Text>
-            )}
-          </View>
-          <View style={[styles.metaBox, { textAlign: "right", alignItems: "flex-end" }]}>
-            <Text style={styles.metaLabel}>Order Information</Text>
-            <Text style={styles.metaValue}>#{form.poNumber || "PO-001"}</Text>
-            <Text style={[styles.metaSub, { textAlign: "right", fontWeight: 700, color: "#111827" }]}>{form.toName || "Vendor Name"}</Text>
-            {form.toGSTIN && <Text style={[styles.metaSub, { textAlign: "right" }]}>GSTIN: {form.toGSTIN}</Text>}
-            <Text style={[styles.metaSub, { textAlign: "right" }]}>{form.toAddress}{form.toCity ? `, ${form.toCity}` : ""}</Text>
-            {toStateName && <Text style={[styles.metaSub, { textAlign: "right" }]}>{toStateName}</Text>}
-            {form.deliveryDate && <Text style={[styles.metaSub, { textAlign: "right", color: T, fontWeight: 700 }]}>Deliver By: {form.deliveryDate}</Text>}
-          </View>
+        <View style={styles.addressRow}>
+           <View style={styles.addressBox}>
+             <Text style={styles.addressLabel}>Vendor / Supplier</Text>
+             <Text style={styles.addressName}>{form.toName || "Vendor Name"}</Text>
+             <View style={styles.addressDetails}>
+               {form.toGSTIN && <Text>GSTIN: {form.toGSTIN}</Text>}
+               <Text>{form.toAddress}{form.toCity ? `, ${form.toCity}` : ""}</Text>
+               {toStateName && <Text>{toStateName}</Text>}
+             </View>
+           </View>
+           {form.deliveryAddress && (
+             <View style={styles.addressBox}>
+               <Text style={styles.addressLabel}>Delivery Address</Text>
+               <Text style={styles.addressDetails}>{form.deliveryAddress}</Text>
+             </View>
+           )}
         </View>
 
         <View style={styles.table}>
           <View style={styles.tHeader}>
-            <View style={{ flex: 4 }}><Text style={styles.th}>Description</Text></View>
-            <View style={{ flex: 1.5 }}><Text style={[styles.th, { textAlign: "center" }]}>Qty / Unit</Text></View>
-            <View style={{ flex: 1.5 }}><Text style={[styles.th, { textAlign: "right" }]}>Subtotal</Text></View>
+            <View style={{ flex: 0.5 }}><Text style={styles.th}>#</Text></View>
+            <View style={{ flex: 3 }}><Text style={styles.th}>Description</Text></View>
+            {form.showHSN && <View style={{ flex: 1 }}><Text style={styles.th}>HSN</Text></View>}
+            <View style={{ flex: 1 }}><Text style={styles.th}>Qty</Text></View>
+            <View style={{ flex: 1.2 }}><Text style={[styles.th, { textAlign: "right" }]}>Amount</Text></View>
           </View>
           {calc.items.map((item, i) => (
             <View key={i} style={styles.tRow} wrap={false}>
-              <View style={{ flex: 4 }}>
-                <Text style={[styles.td, { fontWeight: 700, color: "#111827" }]}>{item.description || "—"}</Text>
-                <Text style={{ fontSize: 7.5, color: "#9CA3AF", marginTop: 2 }}>
-                  {item.hsn ? `HSN ${item.hsn} | ` : ""}Rate ₹{item.rate}
-                </Text>
-              </View>
-              <View style={{ flex: 1.5 }}>
-                <Text style={[styles.td, { textAlign: "center" }]}>{item.qty} {item.unit || "Nos"}</Text>
-              </View>
-              <View style={{ flex: 1.5 }}><Text style={[styles.td, { textAlign: "right", fontWeight: 700 }]}>₹{item.amount}</Text></View>
+              <View style={{ flex: 0.5 }}><Text style={styles.td}>{i + 1}</Text></View>
+              <View style={{ flex: 3 }}><Text style={styles.td}>{item.description || "—"}</Text></View>
+              {form.showHSN && <View style={{ flex: 1 }}><Text style={styles.td}>{item.hsn || "—"}</Text></View>}
+              <View style={{ flex: 1 }}><Text style={styles.td}>{item.qty} {item.unit}</Text></View>
+              <View style={{ flex: 1.2 }}><Text style={[styles.td, { textAlign: "right", fontWeight: 700 }]}>₹{item.amount}</Text></View>
             </View>
           ))}
         </View>
 
-        <View style={styles.summaryFrame} wrap={false}>
-          <View style={styles.sumCol}>
-            {form.deliveryAddress && (
-              <View style={{ marginBottom: 16 }}>
-                <Text style={styles.metaLabel}>Ship To Location</Text>
-                <Text style={styles.metaSub}>{form.deliveryAddress}</Text>
+        <View style={styles.bottomGrid}>
+          <View style={styles.totBox}>
+            <View style={styles.totRow}>
+              <Text style={styles.totLabel}>Subtotal</Text>
+              <Text style={styles.totVal}>₹{calc.subtotal}</Text>
+            </View>
+            {form.taxType === "cgst_sgst" && (
+              <>
+                <View style={styles.totRow}>
+                  <Text style={styles.totLabel}>CGST</Text>
+                  <Text style={styles.totVal}>₹{calc.totalCGST}</Text>
+                </View>
+                <View style={styles.totRow}>
+                  <Text style={styles.totLabel}>SGST</Text>
+                  <Text style={styles.totVal}>₹{calc.totalSGST}</Text>
+                </View>
+              </>
+            )}
+            {form.taxType === "igst" && (
+              <View style={styles.totRow}>
+                <Text style={styles.totLabel}>IGST</Text>
+                <Text style={styles.totVal}>₹{calc.totalIGST}</Text>
               </View>
             )}
-            <View>
-              <Text style={styles.metaLabel}>Quote Ref</Text>
-              <Text style={{ fontSize: 9, color: "#6B7280", marginTop: 2 }}>PO Request #{form.poNumber}</Text>
-            </View>
-          </View>
-
-          <View style={styles.sumCol}>
-            <View style={styles.totRow}><Text style={styles.totLabel}>Subtotal</Text><Text style={styles.totVal}>₹{calc.subtotal}</Text></View>
-            {form.taxType === "igst" ? (
-              <View style={styles.totRow}><Text style={styles.totLabel}>IGST</Text><Text style={styles.totVal}>₹{calc.totalIGST}</Text></View>
-            ) : form.taxType === "cgst_sgst" ? (
-              <>
-                <View style={styles.totRow}><Text style={styles.totLabel}>CGST</Text><Text style={styles.totVal}>₹{calc.totalCGST}</Text></View>
-                <View style={styles.totRow}><Text style={styles.totLabel}>SGST</Text><Text style={styles.totVal}>₹{calc.totalSGST}</Text></View>
-              </>
-            ) : null}
-            <View style={styles.grandRow}>
-              <Text style={styles.grandLabel}>Total Amount</Text>
+            <View style={styles.grandBox}>
+              <Text style={styles.grandLabel}>Total</Text>
               <Text style={styles.grandVal}>₹{calc.grandTotal}</Text>
             </View>
           </View>
         </View>
 
-        <Text style={styles.wordsText} wrap={false}>{numberToWords(parseFloat(calc.grandTotal))}</Text>
-
-        <View style={{ marginTop: 24 }} wrap={false}>
-          {form.paymentTerms && (
-            <View style={styles.termsContainer}>
-              <Text style={styles.termsLabel}>Payment Stipulation</Text>
-              <Text style={styles.termsText}>{form.paymentTerms}</Text>
-            </View>
-          )}
-          {form.shippingTerms && (
-            <View style={styles.termsContainer}>
-              <Text style={styles.termsLabel}>Dispatch Conditions</Text>
-              <Text style={styles.termsText}>{form.shippingTerms}</Text>
-            </View>
-          )}
-          {form.notes && (
-            <View style={styles.termsContainer}>
-              <Text style={styles.termsLabel}>Notes</Text>
-              <Text style={styles.termsText}>{form.notes}</Text>
-            </View>
-          )}
+        <View style={styles.wordsBox} wrap={false}>
+          <Text style={styles.wordsLabel}>Amount in Words</Text>
+          <Text style={styles.wordsText}>{numberToWords(parseFloat(calc.grandTotal))}</Text>
         </View>
 
         <View style={styles.footer} fixed>
-          <Text style={styles.footerText}>Certified Digital PO Release by DocMinty.com</Text>
+          <Text style={styles.footerText}>Generated by DocMinty.com</Text>
           <View style={styles.sigBox}>
-            {form.signature ? (
-              <Image src={form.signature} style={styles.signatureImage} />
-            ) : (
-              <View style={{ height: 40 }} />
-            )}
+            {form.signature && <Image src={form.signature} style={styles.signatureImage} />}
             <View style={styles.sigLine}>
               <Text style={styles.sigText}>Authorised Signatory</Text>
             </View>

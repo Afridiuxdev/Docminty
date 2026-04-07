@@ -4,155 +4,193 @@ import { Document, Page, Text, View, StyleSheet, Image } from "@react-pdf/render
 
 export default function JobOfferMinimalTemplate({ form }) {
   const T = form.templateColor || "#111827";
-  const ctc = parseFloat(form.ctcAmount) || 0;
   
-  const fmt = (n) => {
-    return Math.round(n).toLocaleString("en-IN", {
-      maximumFractionDigits: 0,
-      useGrouping: true,
-    });
-  };
+  const ctc = parseFloat(form.ctcAmount) || 0;
+  const monthly = ctc / 12;
+  const basic = (monthly * (parseFloat(form.basicPercent) || 40)) / 100;
+  const hra = (monthly * (parseFloat(form.hra) || 20)) / 100;
+  const other = monthly - basic - hra;
 
   const styles = StyleSheet.create({
-    page: { fontFamily: "Inter", fontSize: 10, color: "#374151", padding: "48 64", backgroundColor: "#ffffff" },
-    top: { borderBottomWidth: 1.5, borderBottomColor: T, paddingBottom: 12, marginBottom: 32, flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
-    title: { fontSize: 14, fontFamily: "Space Grotesk", fontWeight: 700, color: "#111827", textTransform: "uppercase", letterSpacing: 1 },
-    date: { fontSize: 10, color: "#9CA3AF" },
+    page: { fontFamily: "Inter", fontSize: 10, color: "#111827", padding: "40 50", backgroundColor: "#ffffff" },
+    header: { padding: "0 0 16", borderBottomWidth: 1, borderBottomColor: "#E5E7EB", marginBottom: 0 },
+    headerTop: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" },
     
-    headerRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 32 },
-    metaBox: { flex: 1 },
-    metaLabel: { fontSize: 7, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 },
-    metaValue: { fontSize: 11, fontWeight: 700, color: "#111827" },
-    metaSub: { fontSize: 9, color: "#6B7280", marginTop: 2, maxWidth: 180, lineHeight: 1.4 },
+    leftHead: { textAlign: "left" },
+    logo: { height: 32, objectFit: "contain", marginBottom: 4 },
+    compName: { fontSize: 14, fontFamily: "Space Grotesk", fontWeight: 700, color: "#111827" },
+    compInfo: { fontSize: 11, color: "#9CA3AF", marginTop: 2, lineHeight: 1.4 },
     
-    salutation: { fontSize: 11, fontWeight: 700, color: "#111827", marginBottom: 16 },
-    bodyText: { fontSize: 10.5, color: "#374151", lineHeight: 1.8, marginBottom: 16, textAlign: "justify" },
+    rightHead: { textAlign: "right" },
+    title: { fontSize: 16, fontFamily: "Space Grotesk", fontWeight: 700, color: "#111827", textTransform: "uppercase" },
+    metaText: { fontSize: 11, color: "#9CA3AF", marginTop: 4 },
+    
+    accentBar: { height: 2, backgroundColor: T, marginTop: 12, borderRadius: 1 },
+    
+    body: { marginTop: 32 },
+    candName: { fontSize: 12, fontWeight: 700, color: "#374151", marginBottom: 2 },
+    candAddr: { fontSize: 11, color: "#6B7280", marginBottom: 16 },
+    salutation: { fontSize: 12, color: "#374151", marginBottom: 12 },
+    content: { fontSize: 12, color: "#374151", lineHeight: 1.8, marginBottom: 12 },
     bold: { fontWeight: 700, color: "#111827" },
+    accent: { fontWeight: 700, color: T },
     
-    infoSection: { margin: "16 0", padding: "16", backgroundColor: "#F9FAFB", borderRadius: 4 },
-    infoLine: { flexDirection: "row", marginBottom: 8 },
-    infoLabel: { fontSize: 9, color: "#6B7280", width: 140 },
-    infoValue: { fontSize: 10, fontWeight: 700, color: "#111827" },
+    table: { marginTop: 12, marginBottom: 16 },
+    tableRow: { flexDirection: "row", padding: "6 0" },
+    tableLabel: { width: "40%", fontWeight: 600, color: "#6B7280", fontSize: 11 },
+    tableVal: { width: "60%", color: "#111827", fontSize: 11 },
     
-    ctcRow: { flexDirection: "row", justifyContent: "space-between", padding: "12 0", borderTopWidth: 1, borderTopColor: "#E5E7EB", marginTop: 8 },
-    ctcLabel: { fontSize: 11, fontWeight: 700, color: "#111827" },
-    ctcVal: { fontSize: 11, fontWeight: 700, color: T },
+    ctcBox: { marginTop: 16, padding: "12 16", backgroundColor: "#F0FDFA", border: `1px solid ${T}`, borderRadius: 8 },
+    ctcTitle: { fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.8, color: "#9CA3AF", marginBottom: 8, fontFamily: "Space Grotesk" },
+    ctcHead: { flexDirection: "row", justifyContent: "space-between", marginBottom: 8, borderBottom: "1px solid #D1FAF0", paddingBottom: 8 },
+    ctcMainLabel: { fontSize: 12, color: "#6B7280" },
+    ctcMainVal: { fontSize: 14, fontWeight: 700, color: T, fontFamily: "Space Grotesk" },
+    ctcGrid: { flexDirection: "row", justifyContent: "space-between", paddingTop: 8 },
+    ctcItem: { width: "23%" },
+    itemLabel: { fontSize: 10, color: "#9CA3AF", marginBottom: 2 },
+    itemVal: { fontSize: 12, fontWeight: 600, color: "#111827", fontFamily: "Space Grotesk" },
     
-    signatureSection: { marginTop: 48, flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
-    sigBox: { width: 180 },
-    signatureImage: { height: 35, marginBottom: 4, objectFit: "contain" },
-    sigLine: { borderTopWidth: 1.5, borderTopColor: "#111827", paddingTop: 8, marginTop: 12 },
-    sigName: { fontSize: 10, fontWeight: 700, color: "#111827" },
-    sigDesig: { fontSize: 8, color: "#9CA3AF", marginTop: 2 },
+    termsTitle: { fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.8, color: "#9CA3AF", marginBottom: 6, marginTop: 12, fontFamily: "Space Grotesk" },
     
-    footer: { position: "absolute", bottom: 40, left: 64, right: 64, borderTopWidth: 1, borderTopColor: "#F3F4F6", paddingTop: 10 },
-    footerText: { fontSize: 8, color: "#D1D5DB", textAlign: "center" }
+    signatureArea: { marginTop: 32, flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
+    sigBlock: { width: 140 },
+    signatureImage: { maxHeight: 40, maxWidth: 120, marginBottom: 4, objectFit: "contain" },
+    sigLine: { borderTopWidth: 1, borderTopColor: "#374151", paddingTop: 6 },
+    sigName: { fontSize: 12, fontWeight: 700, color: "#111827", fontFamily: "Space Grotesk" },
+    sigDesig: { fontSize: 11, color: "#6B7280", marginTop: 2 },
+    sigComp: { fontSize: 11, color: "#9CA3AF", marginTop: 2, minHeight: 14 },
+    
+    footer: { marginTop: 24, paddingTop: 12, borderTopWidth: 1, borderTopColor: "#E5E7EB" },
+    footerText: { fontSize: 10, color: "#D1D5DB" }
   });
 
   return (
-    <Document title={`Job-Offer-Minimal-${form.candidateName}`}>
+    <Document title={`Offer-Letter-${form.candidateName}`}>
       <Page size="A4" style={styles.page}>
-        <View style={styles.top}>
-          <Text style={styles.title}>Letter of Offer</Text>
-          <Text style={styles.date}>{form.letterDate}</Text>
-        </View>
-
-        <View style={styles.headerRow}>
-          <View style={styles.metaBox}>
-            <Text style={styles.metaLabel}>Candidate</Text>
-            <Text style={styles.metaValue}>{form.candidateName || "Candidate Name"}</Text>
-            {form.candidateAddress && <Text style={styles.metaSub}>{form.candidateAddress}</Text>}
-          </View>
-          <View style={[styles.metaBox, { textAlign: "right", alignItems: "flex-end" }]}>
-            <Text style={styles.metaLabel}>Organization</Text>
-            <Text style={styles.metaValue}>{form.companyName || "Organization Name"}</Text>
-            <View style={{ textAlign: "right" }}>
-                <Text style={styles.metaSub}>Ref: {form.letterNumber}</Text>
-                {form.companyAddress && <Text style={styles.metaSub}>{form.companyAddress}</Text>}
+        <View style={styles.header}>
+            <View style={styles.headerTop}>
+                <View style={styles.leftHead}>
+                    {form.logo && <Image src={form.logo} style={styles.logo} />}
+                    <Text style={styles.compName}>{form.companyName || "Company Name"}</Text>
+                    <View style={styles.compInfo}>
+                        <Text>{form.companyAddress}</Text>
+                        {(form.companyPhone || form.companyEmail) && (
+                            <Text>{[form.companyPhone && `Ph: ${form.companyPhone}`, form.companyEmail && `Em: ${form.companyEmail}`].filter(Boolean).join(" | ")}</Text>
+                        )}
+                    </View>
+                </View>
+                <View style={styles.rightHead}>
+                    <Text style={styles.title}>OFFER LETTER</Text>
+                    <Text style={styles.metaText}>Ref: {form.letterNumber}</Text>
+                    <Text style={styles.metaText}>Date: {form.letterDate}</Text>
+                </View>
             </View>
-          </View>
+            <View style={styles.accentBar} />
         </View>
 
-        <View>
+        <View style={styles.body}>
+          <Text style={styles.candName}>{form.candidateName || "Candidate Name"}</Text>
+          {form.candidateAddress && <Text style={styles.candAddr}>{form.candidateAddress}</Text>}
+          
           <Text style={styles.salutation}>Dear {form.candidateName ? form.candidateName.split(" ")[0] : "Candidate"},</Text>
           
-          <Text style={styles.bodyText}>
+          <Text style={styles.content}>
             {"We are pleased to offer you the position of "}
-            <Text style={styles.bold}>{form.designation || "[Designation]"}</Text> 
-            {form.department ? " in the " + form.department + " department" : ""}
-            {" at "}
-            <Text style={styles.bold}>{form.companyName || "[Company]"}</Text>
-            {". Your skills and background are a great match for our current needs."}
+            <Text style={styles.bold}>{form.designation || "[Designation]"}</Text>
+            {form.department ? ` in the ${form.department} department` : ""}
+            {form.companyName ? ` at ${form.companyName}` : ""}.
+            {" Your employment type will be "}
+            <Text style={styles.bold}>{form.employmentType}</Text>
+            {form.reportingTo ? ` and you will be reporting to ${form.reportingTo}` : ""}.
           </Text>
 
-          <View style={styles.infoSection}>
-            <View style={styles.infoLine}>
-              <Text style={styles.infoLabel}>Joining Date</Text>
-              <Text style={[styles.infoValue, { color: T }]}>{form.dateOfJoining || "To be confirmed"}</Text>
+          <View style={styles.table}>
+            <View style={styles.tableRow}>
+              <Text style={styles.tableLabel}>Date of Joining</Text>
+              <Text style={[styles.tableVal, { color: T, fontWeight: 600 }]}>{form.dateOfJoining || "—"}</Text>
             </View>
-            <View style={styles.infoLine}>
-              <Text style={styles.infoLabel}>Employment Type</Text>
-              <Text style={styles.infoValue}>{form.employmentType || "Regular"}</Text>
+            <View style={styles.tableRow}>
+              <Text style={styles.tableLabel}>Employment Type</Text>
+              <Text style={styles.tableVal}>{form.employmentType}</Text>
             </View>
-            <View style={styles.infoLine}>
-              <Text style={styles.infoLabel}>Probation Period</Text>
-              <Text style={styles.infoValue}>{form.probationPeriod || "0"} Months</Text>
-            </View>
-            <View style={styles.infoLine}>
-              <Text style={styles.infoLabel}>Working Schedule</Text>
-              <Text style={styles.infoValue}>{form.workingHours} hrs/day, {form.workingDays} days/week</Text>
-            </View>
-            {form.reportingTo && (
-                <View style={styles.infoLine}>
-                    <Text style={styles.infoLabel}>Reporting To</Text>
-                    <Text style={styles.infoValue}>{form.reportingTo}</Text>
-                </View>
-            )}
-            
-            {ctc > 0 && (
-              <View style={styles.ctcRow}>
-                <Text style={styles.ctcLabel}>Annual CTC</Text>
-                <Text style={styles.ctcVal}>INR {fmt(ctc)}</Text>
+            {form.probationPeriod && (
+              <View style={styles.tableRow}>
+                <Text style={styles.tableLabel}>Probation Period</Text>
+                <Text style={styles.tableVal}>{form.probationPeriod} months</Text>
               </View>
             )}
+            <View style={styles.tableRow}>
+              <Text style={styles.tableLabel}>Working Hours</Text>
+              <Text style={styles.tableVal}>{form.workingHours} hours/day, {form.workingDays} days/week</Text>
+            </View>
           </View>
 
-          {form.additionalTerms && (
-            <View style={{ marginBottom: 12 }}>
-                <Text style={[styles.metaLabel, { color: "#6B7280", marginBottom: 4 }]}>Additional Terms</Text>
-                <Text style={[styles.bodyText, { fontSize: 9.5, marginTop: 0 }]}>{form.additionalTerms}</Text>
+          {ctc > 0 && (
+            <View style={styles.ctcBox} wrap={false}>
+              <Text style={styles.ctcTitle}>Compensation (Annual CTC)</Text>
+              <View style={styles.ctcHead}>
+                <Text style={styles.ctcMainLabel}>Annual CTC</Text>
+                <Text style={styles.ctcMainVal}>Rs.{ctc.toLocaleString("en-IN")}</Text>
+              </View>
+              <View style={styles.ctcGrid}>
+                <View style={styles.ctcItem}>
+                  <Text style={styles.itemLabel}>Basic/mo</Text>
+                  <Text style={styles.itemVal}>Rs.{Math.round(basic).toLocaleString("en-IN")}</Text>
+                </View>
+                <View style={styles.ctcItem}>
+                  <Text style={styles.itemLabel}>HRA/mo</Text>
+                  <Text style={styles.itemVal}>Rs.{Math.round(hra).toLocaleString("en-IN")}</Text>
+                </View>
+                <View style={styles.ctcItem}>
+                  <Text style={styles.itemLabel}>Other/mo</Text>
+                  <Text style={styles.itemVal}>Rs.{Math.round(other).toLocaleString("en-IN")}</Text>
+                </View>
+                <View style={styles.ctcItem}>
+                  <Text style={styles.itemLabel}>Total/mo</Text>
+                  <Text style={styles.itemVal}>Rs.{Math.round(monthly).toLocaleString("en-IN")}</Text>
+                </View>
+              </View>
             </View>
           )}
 
-          <Text style={styles.bodyText}>
-            {form.acceptanceDeadline ? `We would like to have your confirmation by ${form.acceptanceDeadline}. ` : "We would like to have your confirmation at the earliest. "}
-            We look forward to welcome you on board.
+          {form.additionalTerms && (
+            <View style={{ marginTop: 12 }}>
+                <Text style={styles.termsTitle}>Additional Terms</Text>
+                <Text style={[styles.content, { fontSize: 12, lineHeight: 1.7, margin: 0 }]}>{form.additionalTerms}</Text>
+            </View>
+          )}
+
+          <Text style={[styles.content, { marginTop: 16 }]}>
+            {form.acceptanceDeadline ? `Please confirm your acceptance of this offer by ${form.acceptanceDeadline}. ` : "Please confirm your acceptance of this offer at the earliest. "}
+            We look forward to having you on our team.
           </Text>
-        </View>
 
-        <View style={styles.signatureSection}>
-          <View style={styles.sigBox}>
-            {form.signature ? (
-              <Image src={form.signature} style={styles.signatureImage} />
-            ) : (
-              <View style={{ height: 35 }} />
-            )}
-            <View style={styles.sigLine}>
-              <Text style={styles.sigName}>{form.signatoryName || "Authorized Official"}</Text>
-              <Text style={styles.sigDesig}>{form.signatoryDesignation || "HR Manager"}</Text>
+          <View style={styles.signatureArea} wrap={false}>
+            <View style={styles.sigBlock}>
+              {form.signature ? (
+                <Image src={form.signature} style={styles.signatureImage} />
+              ) : (
+                <View style={{ height: 36 }} />
+              )}
+              <View style={styles.sigLine}>
+                <Text style={styles.sigName}>{form.signatoryName || "HR Manager"}</Text>
+                <Text style={styles.sigDesig}>{form.signatoryDesignation || "Designation"}</Text>
+                <Text style={styles.sigComp}>{form.companyName}</Text>
+              </View>
+            </View>
+            <View style={[styles.sigBlock, { textAlign: "right" }]}>
+              <View style={{ height: 36 }} />
+              <View style={[styles.sigLine, { textAlign: "right" }]}>
+                <Text style={styles.sigName}>{form.candidateName || "Candidate"}</Text>
+                <Text style={styles.sigDesig}>Candidate Signature</Text>
+                <Text style={styles.sigComp}></Text>
+              </View>
             </View>
           </View>
-          <View style={styles.sigBox}>
-            <View style={{ height: 35 }} />
-            <View style={styles.sigLine}>
-              <Text style={styles.sigName}>{form.candidateName || "Candidate Name"}</Text>
-              <Text style={styles.sigDesig}>Signature & Date</Text>
-            </View>
-          </View>
         </View>
 
-        <View style={styles.footer} fixed>
-          <Text style={styles.footerText}>Certified Digital Release via DocMinty.com</Text>
+        <View style={styles.footer} wrap={false}>
+          <Text style={styles.footerText}>Generated by DocMinty.com</Text>
         </View>
       </Page>
     </Document>

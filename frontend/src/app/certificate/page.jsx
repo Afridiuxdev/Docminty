@@ -44,13 +44,13 @@ export const DEFAULT_FORM = {
   course: "",
   duration: "",
   grade: "",
-  issueDate: new Date().toISOString().split("T")[0],
+  issueDate: "",
   signatoryName: "",
   signatoryDesignation: "",
   signature: null,
   description: "",
   logo: null,
-  verificationId: generateVerificationId(),
+  verificationId: "",
   enableQR: true,
   templateColor: "#0D9488",
   qrCodeDataUrl: null,
@@ -128,8 +128,8 @@ export function CertificatePreview({ form, template = "Classic", accent = "#0D94
 
   if (template === "Minimal") {
     return (
-      <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: "8px", overflow: "hidden", fontFamily: "Inter, sans-serif" }}>
-        <div style={{ padding: "40px", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", minHeight: "400px", justifyContent: "center" }}>
+      <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: "8px", overflow: "hidden", fontFamily: "Inter, sans-serif", width: "100%", aspectRatio: "3508 / 2480", display: "flex" }}>
+        <div style={{ flex: 1, padding: "40px", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
           <div style={{ width: "40px", height: "3px", background: accent, marginBottom: "24px", borderRadius: "2px" }} />
           {certContent}
           <div style={{ width: "40px", height: "3px", background: accent, marginTop: "24px", borderRadius: "2px" }} />
@@ -140,12 +140,12 @@ export function CertificatePreview({ form, template = "Classic", accent = "#0D94
 
   if (template === "Modern") {
     return (
-      <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: "8px", overflow: "hidden", fontFamily: "Inter, sans-serif" }}>
+      <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: "8px", overflow: "hidden", fontFamily: "Inter, sans-serif", width: "100%", aspectRatio: "3508 / 2480", display: "flex", flexDirection: "column" }}>
         <div style={{ background: accent, padding: "20px 40px", textAlign: "center" }}>
           <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "22px", color: "#fff", margin: 0, letterSpacing: "0.15em", textTransform: "uppercase" }}>Certificate</p>
           <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.8)", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>{form.certType}</p>
         </div>
-        <div style={{ padding: "32px 40px", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <div style={{ flex: 1, padding: "32px 40px", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
           {form.logo && <img src={form.logo} alt="Logo" style={{ height: "44px", objectFit: "contain", marginBottom: "12px" }} />}
           <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: "#111827", margin: "0 0 4px", textTransform: "uppercase", letterSpacing: "0.08em" }}>{form.orgName || "Organisation Name"}</p>
           {(form.orgAddress || form.orgCity || form.orgState) && (
@@ -206,8 +206,8 @@ export function CertificatePreview({ form, template = "Classic", accent = "#0D94
 
   if (template === "Royal") {
     return (
-      <div style={{ background: "#fff", border: `3px solid ${accent}`, borderRadius: "4px", overflow: "hidden", fontFamily: "Inter, sans-serif", padding: "6px" }}>
-        <div style={{ border: `1px solid ${accent}`, borderRadius: "2px", padding: "32px 40px", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", minHeight: "400px", justifyContent: "center", position: "relative" }}>
+      <div style={{ background: "#fff", border: `3px solid ${accent}`, borderRadius: "4px", overflow: "hidden", fontFamily: "Inter, sans-serif", padding: "6px", width: "100%", aspectRatio: "3508 / 2480", display: "flex" }}>
+        <div style={{ flex: 1, border: `1px solid ${accent}`, borderRadius: "2px", padding: "32px 40px", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", position: "relative" }}>
           {["top-left", "top-right", "bottom-left", "bottom-right"].map((pos) => (
             <div key={pos} style={{ position: "absolute", [pos.includes("top") ? "top" : "bottom"]: "12px", [pos.includes("left") ? "left" : "right"]: "12px", width: "20px", height: "20px", borderTop: pos.includes("top") ? `2px solid ${accent}` : "none", borderBottom: pos.includes("bottom") ? `2px solid ${accent}` : "none", borderLeft: pos.includes("left") ? `2px solid ${accent}` : "none", borderRight: pos.includes("right") ? `2px solid ${accent}` : "none" }} />
           ))}
@@ -219,9 +219,9 @@ export function CertificatePreview({ form, template = "Classic", accent = "#0D94
 
   if (template === "Elegant") {
     return (
-      <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: "8px", overflow: "hidden", fontFamily: "Inter, sans-serif", display: "flex" }}>
+      <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: "8px", overflow: "hidden", fontFamily: "Inter, sans-serif", display: "flex", width: "100%", aspectRatio: "3508 / 2480" }}>
         <div style={{ width: "12px", background: accent, flexShrink: 0 }} />
-        <div style={{ flex: 1, padding: "32px 40px", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", minHeight: "400px", justifyContent: "center" }}>
+        <div style={{ flex: 1, padding: "32px 40px", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
           {certContent}
         </div>
         <div style={{ width: "12px", background: accent, flexShrink: 0 }} />
@@ -231,8 +231,8 @@ export function CertificatePreview({ form, template = "Classic", accent = "#0D94
 
   // Classic (default)
   return (
-    <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: "8px", overflow: "hidden", fontFamily: "Inter, sans-serif" }}>
-      <div style={{ border: "8px solid #F0F4F3", outline: `2px solid ${accent}`, outlineOffset: "-12px", margin: "8px", borderRadius: "6px", padding: "32px 40px", background: "linear-gradient(135deg, #F8FFFE 0%, #fff 50%, #F8FFFE 100%)", textAlign: "center", minHeight: "400px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", position: "relative" }}>
+    <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: "8px", overflow: "hidden", fontFamily: "Inter, sans-serif", width: "100%", aspectRatio: "3508 / 2480", display: "flex" }}>
+      <div style={{ flex: 1, border: "8px solid #F0F4F3", outline: `2px solid ${accent}`, outlineOffset: "-12px", margin: "8px", borderRadius: "6px", padding: "32px 40px", background: "linear-gradient(135deg, #F8FFFE 0%, #fff 50%, #F8FFFE 100%)", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", position: "relative" }}>
         {["top-left", "top-right", "bottom-left", "bottom-right"].map((pos) => (
           <div key={pos} style={{ position: "absolute", [pos.includes("top") ? "top" : "bottom"]: "16px", [pos.includes("left") ? "left" : "right"]: "16px", width: "24px", height: "24px", borderTop: pos.includes("top") ? `3px solid ${accent}` : "none", borderBottom: pos.includes("bottom") ? `3px solid ${accent}` : "none", borderLeft: pos.includes("left") ? `3px solid ${accent}` : "none", borderRight: pos.includes("right") ? `3px solid ${accent}` : "none" }} />
         ))}
@@ -300,6 +300,16 @@ export default function CertificatePage() {
   };
   const updateField = useCallback((field, value) =>
     setForm(prev => ({ ...prev, [field]: value })), []);
+
+  useEffect(() => {
+    if (!form.verificationId || !form.issueDate) {
+      setForm(prev => ({
+        ...prev,
+        verificationId: prev.verificationId || generateVerificationId(),
+        issueDate: prev.issueDate || new Date().toISOString().split("T")[0]
+      }));
+    }
+  }, []);
 
   useEffect(() => {
     if (form.enableQR && form.verificationId) {

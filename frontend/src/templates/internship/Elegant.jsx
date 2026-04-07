@@ -33,102 +33,107 @@ export default function InternshipElegantTemplate({ form }) {
     ].filter(Boolean).join(", ");
 
     const styles = StyleSheet.create({
-        page: { padding: 0, fontFamily: "Inter", backgroundColor: "#ffffff", flexDirection: "row" },
-        sideBar: { width: 10, height: "100%", backgroundColor: T },
-        main: { flex: 1, padding: "50 70", alignItems: "center" },
+        page: { padding: 0, fontFamily: "Inter", backgroundColor: "#ffffff" },
+        main: { flexDirection: "row", height: "100%", width: "100%", border: "1px solid #E5E7EB", borderRadius: 8 },
+        sideBar: { width: 8, height: "100%", backgroundColor: T },
+        content: { flex: 1, padding: "28 36", alignItems: "center", justifyContent: "center" },
         
-        logo: { height: 45, marginBottom: 20, objectFit: "contain" },
-        orgName: { fontSize: 18, fontFamily: "Space Grotesk", fontWeight: 700, color: "#111827", textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 5 },
-        orgInfo: { fontSize: 9, color: "#9CA3AF", textAlign: "center", marginBottom: 2 },
+        logo: { height: 44, marginBottom: 10, objectFit: "contain" },
+        orgName: { fontSize: 15, fontFamily: "Space Grotesk", fontWeight: 700, color: "#111827", textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 2, textAlign: "center" },
+        orgInfo: { fontSize: 10, color: "#9CA3AF", textAlign: "center", marginBottom: 2 },
         
-        titleBox: { borderBottomWidth: 1.5, borderBottomColor: T, paddingBottom: 10, margin: "25 0 30" },
-        title: { fontSize: 13, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 3 },
+        badge: { backgroundColor: T, color: "#ffffff", padding: "3 18", borderRadius: 2, marginTop: 12, marginBottom: 12 },
+        badgeText: { fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 2 },
         
-        intro: { fontSize: 10, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 12 },
-        internName: { fontSize: 32, fontFamily: "Space Grotesk", fontWeight: 800, color: "#111827", marginBottom: 20 },
+        intro: { fontSize: 10, color: "#6B7280", marginBottom: 5 },
+        internName: { fontSize: 20, fontFamily: "Space Grotesk", fontWeight: 800, color: "#111827", marginBottom: 8, borderBottomWidth: 2, borderBottomColor: T, paddingBottom: 6, minWidth: 200, textAlign: "center" },
         
-        content: { fontSize: 11, color: "#374151", textAlign: "center", lineHeight: 2, maxWidth: 450 },
+        content: { fontSize: 10, color: "#374151", textAlign: "center", lineHeight: 1.6, maxWidth: 450, marginTop: 6 },
         bold: { fontWeight: 700, color: "#111827" },
         accent: { fontWeight: 700, color: T },
         
-        project: { fontSize: 10, color: "#374151", marginTop: 25 },
-        issue: { fontSize: 9, color: "#9CA3AF", marginTop: 20 },
+        project: { fontSize: 10, color: "#374151", marginTop: 5 },
+        issue: { fontSize: 9, color: "#9CA3AF", marginTop: 6 },
         
-        footer: { width: "100%", marginTop: 45, flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
-        sigBox: { width: 160 },
-        sigImage: { height: 40, marginBottom: 5, objectFit: "contain" },
-        sigLine: { borderTopWidth: 1, borderTopColor: "#111827", paddingTop: 8 },
-        sigName: { fontSize: 11, fontWeight: 700, color: "#111827" },
-        sigDesig: { fontSize: 9, color: "#6B7280" },
+        footer: { width: "100%", marginTop: 18, flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
+        sigBox: { minWidth: 110, textAlign: "left" },
+        sigImage: { height: 35, width: 100, marginBottom: 2, objectFit: "contain" },
+        sigLine: { borderTopWidth: 1, borderTopColor: "#374151", paddingTop: 4 },
+        sigName: { fontSize: 10, fontWeight: 700, color: "#111827" },
+        sigDesig: { fontSize: 9, color: "#9CA3AF" },
         
-        qrBox: { alignItems: "center" },
-        qrImage: { width: 45, height: 45, marginBottom: 5 },
-        qrLabel: { fontSize: 7, color: "#9CA3AF" },
-        verifyId: { fontSize: 7, color: "#D1D5DB", fontFamily: "Courier", marginTop: 10 }
+        qrBox: { width: 40, height: 40, backgroundColor: "#F0FDFA", border: `2px solid ${T}`, borderRadius: 5, alignItems: "center", justifyContent: "center", padding: 2, overflow: "hidden" },
+        qrLabel: { fontSize: 8, color: "#9CA3AF", marginTop: 2 },
+        verifyId: { fontSize: 8, color: "#D1D5DB", fontFamily: "Courier", marginTop: 6 }
     });
 
     return (
         <Document title={`Internship-Certificate-${form.internName}`}>
-            <Page size="A4" style={styles.page}>
-                <View style={styles.sideBar} />
+            <Page size="A4" orientation="landscape" style={styles.page}>
                 <View style={styles.main}>
-                    {form.logo && <Image src={form.logo} style={styles.logo} />}
-                    <Text style={styles.orgName}>{form.orgName || "ORGANISATION"}</Text>
-                    {fullOrgAddr ? <Text style={styles.orgInfo}>{fullOrgAddr}</Text> : null}
-                    {form.orgWebsite ? <Text style={styles.orgInfo}>{form.orgWebsite}</Text> : null}
+                    <View style={styles.sideBar} />
+                    <View style={styles.content}>
+                        {form.logo && <Image src={form.logo} style={styles.logo} />}
+                        <Text style={styles.orgName}>{form.orgName || "Organisation Name"}</Text>
+                        {fullOrgAddr ? <Text style={styles.orgInfo}>{fullOrgAddr}</Text> : null}
+                        {form.orgWebsite ? <Text style={styles.orgInfo}>{form.orgWebsite}</Text> : null}
 
-                    <View style={styles.titleBox}>
-                        <Text style={styles.title}>Certificate of Excellence</Text>
-                    </View>
-
-                    <Text style={styles.intro}>This is to award</Text>
-                    <Text style={styles.internName}>{form.internName || "Intern Name"}</Text>
-
-                    <Text style={styles.content}>
-                        {perfText} as <Text style={styles.bold}>{form.role || "Intern"}</Text>
-                        {form.department ? ` in the ${form.department} department` : ""}
-                        {" from "}
-                        <Text style={styles.accent}>{start}</Text>
-                        {" to "}
-                        <Text style={styles.accent}>{end}</Text>
-                        {"."}
-                    </Text>
-
-                    {form.projectName && (
-                        <Text style={styles.project}>Project Contribution: <Text style={styles.bold}>{form.projectName}</Text></Text>
-                    )}
-
-                    <Text style={styles.issue}>Issue Date: {issueDate}</Text>
-
-                    <View style={styles.footer}>
-                        <View style={styles.sigBox}>
-                            {form.signature ? (
-                                <Image src={form.signature} style={styles.sigImage} />
-                            ) : (
-                                <View style={{ height: 40 }} />
-                            )}
-                            <View style={styles.sigLine}>
-                                <Text style={styles.sigName}>{form.signatoryName || "Authorized Official"}</Text>
-                                <Text style={styles.sigDesig}>{form.signatoryDesignation || "Designation"}</Text>
-                                <Text style={styles.sigDesig}>{form.orgName || ""}</Text>
-                            </View>
+                        <View style={styles.badge}>
+                            <Text style={styles.badgeText}>Internship Certificate</Text>
                         </View>
 
-                        <View style={{ alignItems: "center" }}>
+                        <Text style={styles.intro}>This is to certify that</Text>
+                        <Text style={styles.internName}>{form.internName || "Intern Name"}</Text>
+
+                        <Text style={styles.content}>
+                            {perfText} as <Text style={styles.bold}>{form.role || "Intern"}</Text>
+                            {form.department ? ` in the ${form.department} department` : ""}
+                            {" from "}
+                            <Text style={styles.accent}>{start}</Text>
+                            {" to "}
+                            <Text style={styles.accent}>{end}</Text>
+                            {"."}
+                        </Text>
+
+                        {form.projectName && (
+                            <Text style={styles.project}>Project: <Text style={styles.bold}>{form.projectName}</Text></Text>
+                        )}
+
+                        <Text style={styles.issue}>Date of Issue: {issueDate}</Text>
+
+                        <View style={styles.footer}>
+                            <View style={styles.sigBox}>
+                                {form.signature ? (
+                                    <Image src={form.signature} style={styles.sigImage} />
+                                ) : (
+                                    <View style={{ height: 35 }} />
+                                )}
+                                <View style={styles.sigLine}>
+                                    <Text style={styles.sigName}>{form.signatoryName || "Signatory Name"}</Text>
+                                    <Text style={styles.sigDesig}>{form.signatoryDesignation || "Designation"}</Text>
+                                </View>
+                            </View>
+
                             {form.enableQR && (
-                                <View style={styles.qrBox}>
-                                    {form.qrCodeDataUrl && <Image src={form.qrCodeDataUrl} style={styles.qrImage} />}
-                                    <Text style={styles.qrLabel}>Verify Certificate</Text>
+                                <View style={{ alignItems: "center" }}>
+                                    <View style={styles.qrBox}>
+                                        {form.qrCodeDataUrl ? (
+                                            <Image src={form.qrCodeDataUrl} style={{ width: "100%", height: "100%" }} />
+                                        ) : (
+                                            <View style={{ width: "100%", height: "100%", backgroundColor: "#F3F4F6" }} />
+                                        )}
+                                    </View>
+                                    <Text style={styles.qrLabel}>Scan to Verify</Text>
                                 </View>
                             )}
                         </View>
+                        
+                        {form.enableQR && (
+                            <Text style={styles.verifyId}>ID: {form.verificationId}</Text>
+                        )}
                     </View>
-                    
-                    {form.enableQR && (
-                        <Text style={styles.verifyId}>ID: {form.verificationId}</Text>
-                    )}
+                    <View style={styles.sideBar} />
                 </View>
-                <View style={styles.sideBar} />
             </Page>
         </Document>
     );

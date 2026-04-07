@@ -8,61 +8,61 @@ export default function MinimalTemplate({ form }) {
     const stateName = INDIAN_STATES.find(s => s.code === form.orgState)?.name || "";
 
     const styles = StyleSheet.create({
-        page: { fontFamily: "Inter", fontSize: 10, color: "#111827", padding: "36 48", backgroundColor: "#fff" },
-        header: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", borderBottomWidth: 1.5, borderBottomColor: T, paddingBottom: 10, marginBottom: 32 },
-        logo: { height: 32, objectFit: "contain" },
-        orgName: { fontSize: 13, fontFamily: "Space Grotesk", fontWeight: 700, color: "#111827", textTransform: "uppercase", letterSpacing: 1 },
-        orgAddr: { fontSize: 8, color: "#9CA3AF", marginTop: 2 },
-        typeT: { fontSize: 10, color: T, textTransform: "uppercase", letterSpacing: 2, textAlign: "right", fontFamily: "Space Grotesk", fontWeight: 700 },
+        page: { fontFamily: "Inter", fontSize: 10, color: "#111827", padding: "40 50", backgroundColor: "#fff" },
+        main: { border: "1px solid #E5E7EB", borderRadius: 8, height: "100%", width: "100%", alignItems: "center", justifyContent: "center", position: "relative" },
         
-        body: { alignItems: "center", paddingVertical: 20 },
-        certifyTxt: { fontSize: 11, color: "#9CA3AF", textAlign: "center", marginBottom: 12, letterSpacing: 1.5, textTransform: "uppercase" },
-        recipName: { fontSize: 34, fontFamily: "Space Grotesk", fontWeight: 700, color: "#111827", textAlign: "center", marginBottom: 12 },
-        accentLine: { width: 240, borderBottomWidth: 2, borderBottomColor: T, marginBottom: 20 },
-        descText: { fontSize: 12, color: "#6B7280", textAlign: "center", lineHeight: 1.6, maxWidth: 420, marginBottom: 12 },
-        courseName: { fontSize: 16, fontFamily: "Space Grotesk", fontWeight: 700, color: T, textAlign: "center", marginBottom: 24 },
+        logo: { height: 44, objectFit: "contain", marginBottom: 12 },
+        orgName: { fontSize: 16, fontFamily: "Space Grotesk", fontWeight: 700, color: "#111827", textTransform: "uppercase", letterSpacing: 0.8, textAlign: "center", marginBottom: 4 },
+        orgAddr: { fontSize: 11, color: "#9CA3AF", textAlign: "center", marginBottom: 2 },
+        orgWeb: { fontSize: 11, color: "#9CA3AF", textAlign: "center", marginBottom: 20 },
         
-        metaRow: { flexDirection: "row", gap: 48, marginBottom: 32 },
+        certifyTxt: { fontSize: 13, color: "#6B7280", textAlign: "center", marginBottom: 8 },
+        recipName: { fontSize: 32, fontFamily: "Space Grotesk", fontWeight: 800, color: "#111827", textAlign: "center", borderBottomWidth: 2, borderBottomColor: T, paddingBottom: 8, marginBottom: 12, minWidth: 200 },
+        descText: { fontSize: 13, color: "#374151", textAlign: "center", lineHeight: 1.6, maxWidth: 400, marginBottom: 8 },
+        courseName: { fontSize: 16, fontFamily: "Space Grotesk", fontWeight: 700, color: T, textAlign: "center", marginBottom: 16 },
+        
+        metaRow: { flexDirection: "row", gap: 24, justifyContent: "center", marginBottom: 32 },
         metaItem: { alignItems: "center" },
-        metaLabel: { fontSize: 7, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1.2, marginBottom: 4 },
-        metaValue: { fontSize: 11, fontWeight: 700, color: "#111827" },
+        metaLabel: { fontSize: 10, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1.2, marginBottom: 2 },
+        metaValue: { fontSize: 13, fontWeight: 700, color: "#111827" },
         
-        sigSection: { flexDirection: "row", gap: 60, justifyContent: "center", alignItems: "flex-end" },
-        sigBox: { alignItems: "center", minWidth: 140 },
-        sigLine: { borderTopWidth: 2, borderTopColor: "#111827", width: "100%", paddingTop: 6, marginTop: 4 },
-        sigName: { fontSize: 11, fontWeight: 700, color: "#111827", textAlign: "center" },
-        sigDesig: { fontSize: 9, color: "#9CA3AF", textAlign: "center", marginTop: 2 },
+        sigSection: { flexDirection: "row", gap: 48, justifyContent: "center", alignItems: "flex-end", width: "100%" },
+        sigBox: { alignItems: "center", minWidth: 120 },
+        sigLine: { borderTopWidth: 2, borderTopColor: "#374151", width: "100%", paddingTop: 6, marginTop: 4 },
+        sigName: { fontSize: 12, fontWeight: 600, color: "#111827", textAlign: "center" },
+        sigDesig: { fontSize: 10, color: "#9CA3AF", textAlign: "center", marginTop: 2 },
         
-        qrBox: { width: 56, height: 56, backgroundColor: "#F9FAFB", borderWith: 2, borderColor: T, borderRadius: 4, alignItems: "center", justifyContent: "center", padding: 4, position: "absolute", bottom: 20, right: 0 },
-        verifId: { fontSize: 7, color: "#D1D5DB", textAlign: "center", marginTop: 12, fontFamily: "Inter" }
+        qrBox: { width: 56, height: 56, border: `2px solid ${T}`, borderRadius: 4, alignItems: "center", justifyContent: "center", backgroundColor: "#F8F9FA", overflow: "hidden" },
+        verifId: { fontSize: 9, color: "#D1D5DB", textAlign: "center", marginTop: 16, fontFamily: "Courier" },
+        
+        accentLine: { width: "40pt", height: "3pt", backgroundColor: T, borderRadius: 2 }
     });
 
     const addrParts = [
         form.orgAddress,
-        (form.orgCity || stateName) ? `${form.orgCity ? form.orgCity + ", " : ""}${stateName}` : null,
-        form.orgWebsite
+        (form.orgCity || stateName) ? `${form.orgCity ? form.orgCity + ", " : ""}${stateName}` : null
     ].filter(Boolean).join(", ");
 
     return (
         <Document title={`Certificate-${form.recipientName}`}>
             <Page size="A4" orientation="landscape" style={styles.page}>
-                <View style={styles.header}>
-                    <View>
-                        {form.logo && <Image src={form.logo} style={styles.logo} />}
-                        <Text style={styles.orgName}>{form.orgName || "Organisation Name"}</Text>
-                        <Text style={styles.orgAddr}>{addrParts}</Text>
-                    </View>
-                    <Text style={styles.typeT}>{form.certType || "OFFICIAL CERTIFICATE"}</Text>
-                </View>
+                <View style={styles.main}>
+                    <View style={[styles.accentLine, { marginBottom: 24 }]} />
+                    
+                    {form.logo && <Image src={form.logo} style={styles.logo} />}
+                    <Text style={styles.orgName}>{form.orgName || "Organisation Name"}</Text>
+                    {addrParts ? <Text style={styles.orgAddr}>{addrParts}</Text> : null}
+                    {form.orgWebsite && <Text style={styles.orgWeb}>{form.orgWebsite}</Text>}
 
-                <View style={styles.body}>
-                    <View style={{ width: 40, height: 3, backgroundColor: T, marginBottom: 24, borderRadius: 2 }} />
-                    <Text style={styles.certifyTxt}>THIS IS TO CERTIFY THAT</Text>
+                    <View style={{ background: T, color: "#fff", padding: "6 28", borderRadius: 2, marginBottom: 20 }}>
+                        <Text style={{ fontSize: 13, fontFamily: "Space Grotesk", fontWeight: 700, letterSpacing: 3, textTransform: "uppercase" }}>{form.certType}</Text>
+                    </View>
+
+                    <Text style={styles.certifyTxt}>This is to certify that</Text>
                     <Text style={styles.recipName}>{form.recipientName || "Recipient Name"}</Text>
-                    <View style={styles.accentLine} />
                     
                     <Text style={styles.descText}>
-                        {form.description || "has successfully demonstrated professional excellence and fulfilled all educational requirements for"}
+                        {form.description || "has successfully completed the course in"}
                     </Text>
                     {form.course && <Text style={styles.courseName}>{form.course}</Text>}
                     
@@ -80,7 +80,7 @@ export default function MinimalTemplate({ form }) {
                             </View>
                         )}
                         <View style={styles.metaItem}>
-                            <Text style={styles.metaLabel}>Issued On</Text>
+                            <Text style={styles.metaLabel}>Date</Text>
                             <Text style={styles.metaValue}>{form.issueDate}</Text>
                         </View>
                     </View>
@@ -88,36 +88,38 @@ export default function MinimalTemplate({ form }) {
                     <View style={styles.sigSection}>
                         <View style={styles.sigBox}>
                             {form.signature ? (
-                                <Image src={form.signature} style={{ height: 40, marginBottom: 4, objectFit: "contain" }} />
+                                <Image src={form.signature} style={{ height: 40, width: 120, marginBottom: 4, objectFit: "contain" }} />
                             ) : (
-                                <View style={{ height: 40 }} />
+                                <View style={{ height: 30 }} />
                             )}
                             <View style={styles.sigLine}>
-                                <Text style={styles.sigName}>{form.signatoryName || "Authorized Official"}</Text>
+                                <Text style={styles.sigName}>{form.signatoryName || "Signatory Name"}</Text>
                                 <Text style={styles.sigDesig}>{form.signatoryDesignation || "Designation"}</Text>
                             </View>
                         </View>
-                    </View>
-                    
-                    <View style={{ width: 40, height: 3, backgroundColor: T, marginTop: 24, borderRadius: 2 }} />
-                    
-                    {form.enableQR && (
-                        <View style={styles.qrBox}>
-                            {form.qrCodeDataUrl ? (
-                                <Image src={form.qrCodeDataUrl} style={{ width: "100%", height: "100%" }} />
-                            ) : (
-                                <View style={{ width: "100%", height: "100%", backgroundColor: "#F9FAFB", alignItems: "center", justifyContent: "center" }}>
-                                    <Text style={{ fontSize: 8, color: "#D1D5DB" }}>QR</Text>
+                        
+                        {form.enableQR && (
+                            <View style={{ alignItems: "center" }}>
+                                <View style={styles.qrBox}>
+                                    {form.qrCodeDataUrl ? (
+                                        <Image src={form.qrCodeDataUrl} style={{ width: "100%", height: "100%", padding: 2 }} />
+                                    ) : (
+                                        <View style={{ width: "100%", height: "100%", backgroundColor: "#F3F4F6" }} />
+                                    )}
                                 </View>
-                            )}
-                        </View>
-                    )}
+                                <Text style={{ fontSize: 9, color: "#9CA3AF", marginTop: 4 }}>Scan to Verify</Text>
+                            </View>
+                        )}
+                    </View>
                     
                     {form.enableQR && form.verificationId && (
                         <Text style={styles.verifId}>Verification ID: {form.verificationId}</Text>
                     )}
+                    
+                    <View style={[styles.accentLine, { marginTop: 24 }]} />
+                    
+                    <Text style={{ position: "absolute", bottom: -20, left: 0, fontSize: 8, color: "#D1D5DB" }}>Generated by DocMinty.com</Text>
                 </View>
-                <Text style={{ position: "absolute", bottom: 12, left: 16, fontSize: 8, color: "#D1D5DB" }}>Generated by DocMinty.com</Text>
             </Page>
         </Document>
     );

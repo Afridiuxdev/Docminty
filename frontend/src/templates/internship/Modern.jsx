@@ -34,53 +34,57 @@ export default function InternshipModernTemplate({ form }) {
 
     const styles = StyleSheet.create({
         page: { padding: 0, fontFamily: "Inter", backgroundColor: "#ffffff" },
-        header: { backgroundColor: T, padding: "20 40", flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-        logo: { height: 35, objectFit: "contain", filter: "brightness(0) invert(1)" },
+        header: { backgroundColor: T, padding: "12 20", flexDirection: "row", alignItems: "center", gap: 12 },
+        logoH: { height: 32, objectFit: "contain", filter: "brightness(0) invert(1)" },
         headerTitle: { fontSize: 13, fontFamily: "Space Grotesk", fontWeight: 800, color: "#ffffff", textTransform: "uppercase", letterSpacing: 1.5 },
         
-        main: { padding: "40 60", alignItems: "center" },
-        orgName: { fontSize: 16, fontFamily: "Space Grotesk", fontWeight: 700, color: "#111827", textTransform: "uppercase", letterSpacing: 1, marginBottom: 5 },
-        orgInfo: { fontSize: 9, color: "#9CA3AF", textAlign: "center", marginBottom: 2 },
+        main: { flex: 1, padding: "28 36", alignItems: "center", justifyContent: "center" },
+        logoM: { height: 44, marginBottom: 10, objectFit: "contain" },
+        orgName: { fontSize: 15, fontFamily: "Space Grotesk", fontWeight: 700, color: "#111827", textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 2, textAlign: "center" },
+        orgInfo: { fontSize: 10, color: "#9CA3AF", textAlign: "center", marginBottom: 2 },
         
-        divider: { width: 50, height: 3, backgroundColor: T, margin: "20 0" },
+        badge: { backgroundColor: "#F0FDFA", color: T, padding: "3 18", borderRadius: 2, marginTop: 12, marginBottom: 12, border: `1px solid ${T}` },
+        badgeText: { fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 2 },
         
-        intro: { fontSize: 10, color: "#6B7280", marginBottom: 10 },
-        internName: { fontSize: 28, fontFamily: "Space Grotesk", fontWeight: 800, color: "#111827", marginBottom: 15 },
+        intro: { fontSize: 10, color: "#6B7280", marginBottom: 5 },
+        internName: { fontSize: 20, fontFamily: "Space Grotesk", fontWeight: 800, color: "#111827", marginBottom: 8, borderBottomWidth: 2, borderBottomColor: T, paddingBottom: 6, minWidth: 200, textAlign: "center" },
         
-        content: { fontSize: 11, color: "#374151", textAlign: "center", lineHeight: 1.8, maxWidth: 460 },
+        content: { fontSize: 10, color: "#374151", textAlign: "center", lineHeight: 1.6, maxWidth: 450, marginTop: 6 },
         bold: { fontWeight: 700, color: "#111827" },
         accent: { fontWeight: 700, color: T },
         
-        project: { fontSize: 10, color: "#374151", marginTop: 20 },
-        issue: { fontSize: 9, color: "#9CA3AF", marginTop: 15 },
+        project: { fontSize: 10, color: "#374151", marginTop: 5 },
+        issue: { fontSize: 9, color: "#9CA3AF", marginTop: 6 },
         
-        footer: { width: "100%", marginTop: 40, flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
-        sigBox: { width: 140 },
-        sigImage: { height: 35, marginBottom: 5, objectFit: "contain" },
-        sigLine: { borderTopWidth: 1, borderTopColor: "#111827", paddingTop: 5 },
+        footer: { width: "100%", marginTop: 18, flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
+        sigBox: { minWidth: 110, textAlign: "left" },
+        sigImage: { height: 35, width: 100, marginBottom: 2, objectFit: "contain" },
+        sigLine: { borderTopWidth: 1, borderTopColor: "#374151", paddingTop: 4 },
         sigName: { fontSize: 10, fontWeight: 700, color: "#111827" },
-        sigDesig: { fontSize: 8, color: "#6B7280" },
+        sigDesig: { fontSize: 9, color: "#9CA3AF" },
         
-        qrBox: { alignItems: "center" },
-        qrImage: { width: 40, height: 40, marginBottom: 5 },
-        qrLabel: { fontSize: 7, color: "#9CA3AF" },
-        verifyId: { fontSize: 7, color: "#D1D5DB", fontFamily: "Courier", marginTop: 10 }
+        qrBox: { width: 40, height: 40, backgroundColor: "#F0FDFA", border: `2px solid ${T}`, borderRadius: 5, alignItems: "center", justifyContent: "center", padding: 2, overflow: "hidden" },
+        qrLabel: { fontSize: 8, color: "#9CA3AF", marginTop: 2 },
+        verifyId: { fontSize: 8, color: "#D1D5DB", fontFamily: "Courier", marginTop: 6 }
     });
 
     return (
         <Document title={`Internship-Certificate-${form.internName}`}>
-            <Page size="A4" style={styles.page}>
+            <Page size="A4" orientation="landscape" style={styles.page}>
                 <View style={styles.header}>
-                    {form.logo && <Image src={form.logo} style={styles.logo} />}
+                    {form.logo && <Image src={form.logo} style={styles.logoH} />}
                     <Text style={styles.headerTitle}>Internship Certificate</Text>
                 </View>
 
                 <View style={styles.main}>
-                    <Text style={styles.orgName}>{form.orgName || "ORGANISATION"}</Text>
+                    {form.logo && <Image src={form.logo} style={styles.logoM} />}
+                    <Text style={styles.orgName}>{form.orgName || "Organisation Name"}</Text>
                     {fullOrgAddr ? <Text style={styles.orgInfo}>{fullOrgAddr}</Text> : null}
                     {form.orgWebsite ? <Text style={styles.orgInfo}>{form.orgWebsite}</Text> : null}
 
-                    <View style={styles.divider} />
+                    <View style={styles.badge}>
+                        <Text style={styles.badgeText}>Internship Certificate</Text>
+                    </View>
 
                     <Text style={styles.intro}>This is to certify that</Text>
                     <Text style={styles.internName}>{form.internName || "Intern Name"}</Text>
@@ -99,7 +103,7 @@ export default function InternshipModernTemplate({ form }) {
                         <Text style={styles.project}>Project: <Text style={styles.bold}>{form.projectName}</Text></Text>
                     )}
 
-                    <Text style={styles.issue}>Issued on: {issueDate}</Text>
+                    <Text style={styles.issue}>Date of Issue: {issueDate}</Text>
 
                     <View style={styles.footer}>
                         <View style={styles.sigBox}>
@@ -109,19 +113,23 @@ export default function InternshipModernTemplate({ form }) {
                                 <View style={{ height: 35 }} />
                             )}
                             <View style={styles.sigLine}>
-                                <Text style={styles.sigName}>{form.signatoryName || "Authorized Official"}</Text>
+                                <Text style={styles.sigName}>{form.signatoryName || "Signatory Name"}</Text>
                                 <Text style={styles.sigDesig}>{form.signatoryDesignation || "Designation"}</Text>
                             </View>
                         </View>
 
-                        <View style={{ alignItems: "center" }}>
-                            {form.enableQR && (
+                        {form.enableQR && (
+                            <View style={{ alignItems: "center" }}>
                                 <View style={styles.qrBox}>
-                                    {form.qrCodeDataUrl && <Image src={form.qrCodeDataUrl} style={styles.qrImage} />}
-                                    <Text style={styles.qrLabel}>Verify</Text>
+                                    {form.qrCodeDataUrl ? (
+                                        <Image src={form.qrCodeDataUrl} style={{ width: "100%", height: "100%" }} />
+                                    ) : (
+                                        <View style={{ width: "100%", height: "100%", backgroundColor: "#F3F4F6" }} />
+                                    )}
                                 </View>
-                            )}
-                        </View>
+                                <Text style={styles.qrLabel}>Scan to Verify</Text>
+                            </View>
+                        )}
                     </View>
                     
                     {form.enableQR && (

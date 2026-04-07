@@ -4,102 +4,112 @@ import { Document, Page, Text, View, StyleSheet, Image } from "@react-pdf/render
 import { INDIAN_STATES } from "@/constants/indianStates";
 
 export default function PackingCorporateTemplate({ form }) {
-  const T = form.templateColor || "#1E3A5F";
+  const T = form.templateColor || "#0D9488";
   const fromState = INDIAN_STATES.find(s => s.code === form.fromState)?.name || "";
   const toState = INDIAN_STATES.find(s => s.code === form.toState)?.name || "";
   const totalQty = form.items.reduce((acc, i) => acc + (parseFloat(i.qty) || 0), 0);
 
   const styles = StyleSheet.create({
-    page: { fontFamily: "Inter", fontSize: 9, color: "#111827", padding: "50 70", backgroundColor: "#ffffff" },
-    header: { marginBottom: 32, textAlign: "center", borderBottomWidth: 2, borderBottomColor: T, paddingBottom: 20 },
-    logo: { height: 40, objectFit: "contain", marginBottom: 12, margin: "0 auto" },
-    orgName: { fontSize: 18, fontFamily: "Space Grotesk", fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 2, marginBottom: 4 },
-    docType: { fontSize: 10, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 2, fontFamily: "Space Grotesk" },
+    page: { fontFamily: "Inter", fontSize: 10, color: "#111827", padding: "40 50", backgroundColor: "#ffffff" },
+    header: { textAlign: "center", padding: "20 24 16", borderBottomWidth: 2, borderBottomColor: T, marginBottom: 20 },
+    logo: { height: 36, objectFit: "contain", marginBottom: 8, alignSelf: "center" },
+    orgName: { fontSize: 20, fontFamily: "Space Grotesk", fontWeight: 800, color: T, marginBottom: 2 },
+    orgAddress: { fontSize: 10, color: "#6B7280", marginBottom: 8, alignSelf: "center", maxWidth: 400, textAlign: "center" },
+    metaRow: { flexDirection: "row", justifyContent: "center", gap: 16, fontSize: 10, color: "#9CA3AF", fontWeight: 700, textTransform: "uppercase" },
     
-    dateRow: { marginTop: 24, marginBottom: 32, flexDirection: "row", justifyContent: "space-between", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", paddingBottom: 12 },
-    metaText: { fontSize: 9, color: "#6B7280", fontWeight: 700 },
+    addressSection: { flexDirection: "row", justifyContent: "space-between", marginBottom: 20 },
+    addressBox: { width: "48%" },
+    addressLabel: { fontSize: 10, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 6 },
+    addressName: { fontSize: 13, fontWeight: 700, color: "#111827", marginBottom: 4 },
+    addressDetails: { fontSize: 11, color: "#6B7280", lineHeight: 1.4 },
     
-    addressRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 32 },
-    addressBox: { width: "45%" },
-    addressLabel: { fontSize: 8, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 6 },
-    addressName: { fontSize: 11, fontWeight: 700, color: "#111827", marginBottom: 4 },
-    addressDetails: { fontSize: 9, color: "#6B7280", lineHeight: 1.4 },
-    
-    shipInfoTable: { width: "50%", padding: 12, borderTopWidth: 1, borderTopColor: "#F3F4F6", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", marginBottom: 32 },
-    shipLine: { flexDirection: "row", marginBottom: 6 },
-    shipKey: { width: 100, fontSize: 8, color: "#9CA3AF", textTransform: "uppercase" },
-    shipVal: { flex: 1, fontSize: 9, fontWeight: 700, color: "#111827" },
-    
-    table: { marginBottom: 32 },
-    tHeader: { flexDirection: "row", backgroundColor: T, padding: "8 6" },
-    tRow: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", padding: "10 6" },
-    th: { fontSize: 8, fontWeight: 700, color: "#ffffff", textTransform: "uppercase" },
-    td: { fontSize: 9, color: "#111827" },
+    shipmentInfo: { width: "48%" },
+    shipmentItem: { marginBottom: 4, flexDirection: "row", fontSize: 10 },
+    shipmentLabel: { color: "#9CA3AF" },
+    shipmentValue: { fontWeight: 600, color: "#111827" },
+
+    table: { marginBottom: 20 },
+    tHeader: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#E5E7EB", paddingBottom: 8, marginBottom: 8 },
+    tRow: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", padding: "8 0", alignItems: "center" },
+    th: { fontSize: 10, fontWeight: 700, color: "#6B7280", textTransform: "uppercase" },
+    td: { fontSize: 11, color: "#111827" },
     
     colNo: { width: "8%" },
     colDesc: { width: "42%" },
     colSKU: { width: "15%" },
     colQty: { width: "10%", textAlign: "center" },
-    colWeight: { width: "10%", textAlign: "center" },
+    colWgt: { width: "10%", textAlign: "center" },
     colNotes: { width: "15%" },
     
-    summaryBox: { alignSelf: "flex-end", width: 220, backgroundColor: "#F8FAFD", padding: "12 16", borderRadius: 8, marginTop: 12 },
-    summaryRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 6 },
-    summaryLabel: { fontSize: 9, color: "#6B7280" },
-    summaryValue: { fontSize: 11, fontWeight: 700, color: T },
+    summary: { marginTop: 12, padding: "12 16", backgroundColor: T + "10", borderRadius: 8, flexDirection: "row", justifyContent: "space-between" },
+    sumText: { fontSize: 13, fontWeight: 700, color: T, fontFamily: "Space Grotesk" },
     
-    notesBox: { marginTop: 24 },
-    notesLabel: { fontSize: 8, fontWeight: 700, color: T, textTransform: "uppercase", marginBottom: 8, borderBottomWidth: 1, borderBottomColor: T, paddingBottom: 4 },
-    notesText: { fontSize: 9, color: "#374151", lineHeight: 1.5 },
+    notesArea: { marginTop: 12, padding: "10 14", backgroundColor: "#F8F9FA", borderRadius: 6, borderLeftWidth: 3, borderLeftColor: T },
+    notesLabel: { fontSize: 11, color: "#9CA3AF", textTransform: "uppercase", marginBottom: 2 },
+    notesText: { fontSize: 12, color: "#374151" },
     
-    footer: { position: "absolute", bottom: 40, left: 70, right: 70, borderTopWidth: 1, borderTopColor: "#F3F4F6", paddingTop: 16, flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
-    footerText: { fontSize: 8, color: "#D1D5DB" },
-    sigBox: { textAlign: "right" },
-    signature: { height: 40, objectFit: "contain", marginBottom: 4, marginLeft: "auto" },
-    sigLine: { borderTopWidth: 1.5, borderTopColor: "#111827", paddingTop: 8, width: 140 },
-    sigText: { fontSize: 10, fontWeight: 700, color: "#111827", textAlign: "center" }
+    footer: { position: "absolute", bottom: 40, left: 50, right: 50, borderTopWidth: 1, borderTopColor: "#E5E7EB", paddingTop: 12, flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+    footerText: { fontSize: 10, color: "#D1D5DB" },
+    sigArea: { textAlign: "right", minWidth: 120, marginTop: 24 },
+    signature: { height: 45, maxWidth: 140, objectFit: "contain", marginLeft: "auto", marginBottom: 4 },
+    sigLine: { borderTopWidth: 1, borderTopColor: "#374151", paddingTop: 4 },
+    sigText: { fontSize: 10, color: "#9CA3AF" }
   });
 
   return (
-    <Document title={`Corporate-PackingSlip-${form.slipNumber}`}>
+    <Document title={`PackingSlip-${form.slipNumber}`}>
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
           {form.logo && <Image src={form.logo} style={styles.logo} />}
-          <Text style={styles.orgName}>{form.fromName || "—"}</Text>
-          <Text style={styles.docType}>Official Internal Packing Manifest</Text>
-        </View>
-
-        <View style={styles.dateRow}>
-          <Text style={styles.metaText}>SLIP REF: {form.slipNumber}</Text>
-          <Text style={styles.metaText}>DATE: {form.slipDate}</Text>
-        </View>
-
-        <View style={styles.addressRow}>
-          <View style={styles.addressBox}>
-            <Text style={styles.addressLabel}>Ship To Recipient</Text>
-            <Text style={styles.addressName}>{form.toName || "—"}</Text>
-            <View style={styles.addressDetails}>
-                {form.toAddress}{form.toCity ? `, ${form.toCity}, ${toState}` : ""}
-                {form.toGSTIN && `\nGSTIN: ${form.toGSTIN}`}
-                {form.toPhone && `\nPh: ${form.toPhone}`}
-            </View>
-          </View>
-          <View style={[styles.addressBox, { textAlign: "right" }]}>
-            <Text style={styles.addressLabel}>Inventory Origin</Text>
-            <Text style={styles.addressName}>{form.fromName || "—"}</Text>
-            <Text style={styles.addressDetails}>
-                {form.fromAddress}{form.fromCity ? `, ${form.fromCity}, ${fromState}` : ""}
-                {form.fromGSTIN && `\nGSTIN: ${form.fromGSTIN}`}
-            </Text>
+          <Text style={styles.orgName}>{form.fromName || "Company Name"}</Text>
+          <Text style={styles.orgAddress}>
+            {form.fromAddress} {form.fromCity && `${form.fromCity}, `} {fromState}
+          </Text>
+          <View style={styles.metaRow}>
+            <Text>SLIP: #{form.slipNumber}</Text>
+            <Text>|</Text>
+            <Text>ORDER: #{form.orderNumber}</Text>
+            <Text>|</Text>
+            <Text>DATE: {form.slipDate}</Text>
           </View>
         </View>
 
-        <View style={styles.shipInfoTable}>
-          <View style={styles.shipLine}><Text style={styles.shipKey}>Order #:</Text><Text style={styles.shipVal}>{form.orderNumber || "—"}</Text></View>
-          <View style={styles.shipLine}><Text style={styles.shipKey}>Carrier:</Text><Text style={styles.shipVal}>{form.courierName === "Other" ? form.customCourier : form.courierName || "—"}</Text></View>
-          <View style={styles.shipLine}><Text style={styles.shipKey}>Tracking #:</Text><Text style={[styles.shipVal, { color: T }]}>{form.trackingNumber || "—"}</Text></View>
-          <View style={styles.shipLine}><Text style={styles.shipKey}>Method:</Text><Text style={styles.shipVal}>{form.shippingMethod || "—"}</Text></View>
-          {form.deliveryDate && <View style={styles.shipLine}><Text style={styles.shipKey}>Expected:</Text><Text style={styles.shipVal}>{form.deliveryDate}</Text></View>}
+        <View style={styles.addressSection}>
+           <View style={styles.addressBox}>
+             <Text style={styles.addressLabel}>Ship To</Text>
+             <Text style={styles.addressName}>{form.toName || "Recipient"}</Text>
+             {form.toGSTIN && <Text style={styles.addressDetails}>GSTIN: {form.toGSTIN}</Text>}
+             <Text style={styles.addressDetails}>
+               {form.toAddress}{form.toCity ? `, ${form.toCity}` : ""}{toState ? `, ${toState}` : ""}
+             </Text>
+           </View>
+           <View style={styles.shipmentInfo}>
+             <Text style={styles.addressLabel}>Shipment Info</Text>
+             {form.orderNumber && (
+               <View style={styles.shipmentItem}>
+                 <Text style={styles.shipmentLabel}>Order #: </Text>
+                 <Text style={styles.shipmentValue}>{form.orderNumber}</Text>
+               </View>
+             )}
+             {form.shippingMethod && (
+               <View style={styles.shipmentItem}>
+                 <Text style={styles.shipmentLabel}>Method: </Text>
+                 <Text style={styles.shipmentValue}>{form.shippingMethod}</Text>
+               </View>
+             )}
+             {(form.courierName || form.customCourier) && (
+               <View style={styles.shipmentItem}>
+                 <Text style={styles.shipmentLabel}>Courier: </Text>
+                 <Text style={styles.shipmentValue}>{form.courierName === "Other" ? form.customCourier : form.courierName}</Text>
+               </View>
+             )}
+             {form.trackingNumber && (
+               <View style={styles.shipmentItem}>
+                 <Text style={styles.shipmentLabel}>Tracking #: </Text>
+                 <Text style={[styles.shipmentValue, { color: T }]}>{form.trackingNumber}</Text>
+               </View>
+             )}
+           </View>
         </View>
 
         <View style={styles.table}>
@@ -108,44 +118,42 @@ export default function PackingCorporateTemplate({ form }) {
             <Text style={[styles.th, styles.colDesc]}>Description</Text>
             <Text style={[styles.th, styles.colSKU]}>SKU</Text>
             <Text style={[styles.th, styles.colQty]}>Qty</Text>
-            <Text style={[styles.th, styles.colWeight]}>Wgt</Text>
+            <Text style={[styles.th, styles.colWgt]}>Weight</Text>
             <Text style={[styles.th, styles.colNotes]}>Notes</Text>
           </View>
           {form.items.map((item, i) => (
-            <View key={i} style={styles.tRow}>
+            <View key={i} style={styles.tRow} wrap={false}>
               <Text style={[styles.td, styles.colNo]}>{i + 1}</Text>
               <Text style={[styles.td, styles.colDesc, { fontWeight: 700 }]}>{item.description || "—"}</Text>
               <Text style={[styles.td, styles.colSKU]}>{item.sku || "—"}</Text>
               <Text style={[styles.td, styles.colQty, { fontWeight: 700 }]}>{item.qty}</Text>
-              <Text style={[styles.td, styles.colWeight]}>{item.weight || "—"}</Text>
+              <Text style={[styles.td, styles.colWgt]}>{item.weight || "—"}</Text>
               <Text style={[styles.td, styles.colNotes]}>{item.notes || "—"}</Text>
             </View>
           ))}
         </View>
 
-        <View style={styles.summaryBox}>
-          <View style={styles.summaryRow}><Text style={styles.summaryLabel}>Unique Line Items:</Text><Text style={styles.summaryValue}>{form.items.length}</Text></View>
-          <View style={[styles.summaryRow, { borderTopWidth: 1, borderTopColor: "#E5E7EB", paddingTop: 6, marginTop: 4 }]}>
-            <Text style={[styles.summaryLabel, { fontWeight: 700 }]}>Total Logistics Units:</Text>
-            <Text style={[styles.summaryValue, { fontSize: 13 }]}>{totalQty}</Text>
-          </View>
+        <View style={styles.summary} wrap={false}>
+          <Text style={styles.sumText}>Total Items: {form.items.length}</Text>
+          <Text style={styles.sumText}>Total Qty: {totalQty}</Text>
         </View>
 
         {form.packagingNotes && (
-          <View style={styles.notesBox}>
-            <Text style={styles.notesLabel}>Compliance & Handling Notes</Text>
+          <View style={styles.notesArea} wrap={false}>
+            <Text style={styles.notesLabel}>Packaging Notes</Text>
             <Text style={styles.notesText}>{form.packagingNotes}</Text>
           </View>
         )}
 
-        <View style={styles.footer} fixed>
-          <Text style={styles.footerText}>Certified Packing Manifest — DocMinty Pro</Text>
-          <View style={styles.sigBox}>
+        <View style={styles.sigArea} wrap={false}>
             {form.signature && <Image src={form.signature} style={styles.signature} />}
             <View style={styles.sigLine}>
-              <Text style={styles.sigText}>Dispatcher Verification</Text>
+              <Text style={styles.sigText}>Authorised Signatory</Text>
             </View>
-          </View>
+        </View>
+
+        <View style={styles.footer} fixed>
+          <Text style={styles.footerText}>Generated by DocMinty.com</Text>
         </View>
       </Page>
     </Document>

@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Document, Page, Text, View, StyleSheet, Image, Font } from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet, Image } from "@react-pdf/renderer";
 import { INDIAN_STATES } from "@/constants/indianStates";
 
 const PERF_MAP = {
@@ -33,48 +33,46 @@ export default function InternshipClassicTemplate({ form }) {
     ].filter(Boolean).join(", ");
 
     const styles = StyleSheet.create({
-        page: { padding: 40, fontFamily: "Inter" },
-        border: { border: "5 solid #F0F4F3", padding: 10, height: "100%", borderRadius: 6, position: "relative" },
-        outline: { border: `2 solid ${T}`, padding: 40, height: "100%", borderRadius: 4, alignItems: "center", backgroundColor: "#ffffff" },
-        background: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, opacity: 0.03 },
+        page: { padding: 8, fontFamily: "Inter", backgroundColor: "#fff" },
+        border: { border: "6pt solid #F0F4F3", outline: `2pt solid ${T}`, outlineOffset: -10, padding: 8, height: "100%", borderRadius: 6, position: "relative" },
+        inner: { padding: "32 40", height: "100%", borderRadius: 4, alignItems: "center", justifyContent: "center", backgroundColor: "#ffffff" },
         
-        logo: { height: 50, marginBottom: 15, objectFit: "contain" },
-        orgName: { fontSize: 18, fontFamily: "Space Grotesk", fontWeight: 700, color: "#111827", textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 5, textAlign: "center" },
-        orgInfo: { fontSize: 9, color: "#6B7280", textAlign: "center", marginBottom: 2 },
+        logo: { height: 44, marginBottom: 10, objectFit: "contain" },
+        orgName: { fontSize: 15, fontFamily: "Space Grotesk", fontWeight: 700, color: "#111827", textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 2, textAlign: "center" },
+        orgInfo: { fontSize: 10, color: "#9CA3AF", textAlign: "center", marginBottom: 2 },
         
-        badge: { backgroundColor: T, color: "#ffffff", padding: "4 24", borderRadius: 2, marginTop: 20, marginBottom: 25 },
-        badgeText: { fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: 2 },
+        badge: { backgroundColor: T, color: "#ffffff", padding: "3 18", borderRadius: 2, marginTop: 12, marginBottom: 12 },
+        badgeText: { fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 2 },
         
-        intro: { fontSize: 11, color: "#6B7280", marginBottom: 10 },
-        internName: { fontSize: 26, fontFamily: "Space Grotesk", fontWeight: 800, color: "#111827", marginBottom: 10, borderBottomWidth: 2, borderBottomColor: T, paddingBottom: 5 },
+        intro: { fontSize: 10, color: "#6B7280", marginBottom: 5 },
+        internName: { fontSize: 20, fontFamily: "Space Grotesk", fontWeight: 800, color: "#111827", marginBottom: 8, borderBottomWidth: 2, borderBottomColor: T, paddingBottom: 6, minWidth: 200, textAlign: "center" },
         
-        content: { fontSize: 11, color: "#374151", textAlign: "center", lineHeight: 1.8, maxWidth: 450, marginTop: 10 },
+        content: { fontSize: 10, color: "#374151", textAlign: "center", lineHeight: 1.6, maxWidth: 450, marginTop: 6 },
         bold: { fontWeight: 700, color: "#111827" },
         accent: { fontWeight: 700, color: T },
         
-        project: { fontSize: 10, color: "#374151", marginTop: 15 },
-        issue: { fontSize: 9, color: "#9CA3AF", marginTop: 15 },
+        project: { fontSize: 10, color: "#374151", marginTop: 5 },
+        issue: { fontSize: 9, color: "#9CA3AF", marginTop: 6 },
         
-        footer: { width: "100%", marginTop: 40, flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
-        sigBox: { width: 140, textAlign: "left" },
-        sigImage: { height: 35, marginBottom: 5, objectFit: "contain" },
-        sigLine: { borderTopWidth: 1, borderTopColor: "#111827", paddingTop: 5 },
+        footer: { width: "100%", marginTop: 18, flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
+        sigBox: { minWidth: 110, textAlign: "left" },
+        sigImage: { height: 35, width: 100, marginBottom: 2, objectFit: "contain" },
+        sigLine: { borderTopWidth: 1, borderTopColor: "#374151", paddingTop: 4 },
         sigName: { fontSize: 10, fontWeight: 700, color: "#111827" },
-        sigDesig: { fontSize: 8, color: "#6B7280" },
+        sigDesig: { fontSize: 9, color: "#9CA3AF" },
         
-        qrBox: { alignItems: "center" },
-        qrImage: { width: 45, height: 45, marginBottom: 5 },
-        qrLabel: { fontSize: 7, color: "#9CA3AF", textTransform: "uppercase" },
-        verifyId: { fontSize: 7, color: "#D1D5DB", fontFamily: "Courier", marginTop: 10 }
+        qrBox: { width: 40, height: 40, backgroundColor: "#F0FDFA", border: `2px solid ${T}`, borderRadius: 5, alignItems: "center", justifyContent: "center", padding: 2, overflow: "hidden" },
+        qrLabel: { fontSize: 8, color: "#9CA3AF", marginTop: 2 },
+        verifyId: { fontSize: 8, color: "#D1D5DB", fontFamily: "Courier", marginTop: 6 }
     });
 
     return (
         <Document title={`Internship-Certificate-${form.internName}`}>
-            <Page size="A4" style={styles.page}>
+            <Page size="A4" orientation="landscape" style={styles.page}>
                 <View style={styles.border}>
-                    <View style={styles.outline}>
+                    <View style={styles.inner}>
                         {form.logo && <Image src={form.logo} style={styles.logo} />}
-                        <Text style={styles.orgName}>{form.orgName || "ORGANISATION NAME"}</Text>
+                        <Text style={styles.orgName}>{form.orgName || "Organisation Name"}</Text>
                         {fullOrgAddr ? <Text style={styles.orgInfo}>{fullOrgAddr}</Text> : null}
                         {form.orgWebsite ? <Text style={styles.orgInfo}>{form.orgWebsite}</Text> : null}
 
@@ -109,20 +107,23 @@ export default function InternshipClassicTemplate({ form }) {
                                     <View style={{ height: 35 }} />
                                 )}
                                 <View style={styles.sigLine}>
-                                    <Text style={styles.sigName}>{form.signatoryName || "Authorized Official"}</Text>
+                                    <Text style={styles.sigName}>{form.signatoryName || "Signatory Name"}</Text>
                                     <Text style={styles.sigDesig}>{form.signatoryDesignation || "Designation"}</Text>
-                                    <Text style={styles.sigDesig}>{form.orgName || ""}</Text>
                                 </View>
                             </View>
 
-                            <View style={{ alignItems: "center" }}>
-                                {form.enableQR && (
+                            {form.enableQR && (
+                                <View style={{ alignItems: "center" }}>
                                     <View style={styles.qrBox}>
-                                        {form.qrCodeDataUrl && <Image src={form.qrCodeDataUrl} style={styles.qrImage} />}
-                                        <Text style={styles.qrLabel}>Verify Certificate</Text>
+                                        {form.qrCodeDataUrl ? (
+                                            <Image src={form.qrCodeDataUrl} style={{ width: "100%", height: "100%" }} />
+                                        ) : (
+                                            <View style={{ width: "100%", height: "100%", backgroundColor: "#F3F4F6" }} />
+                                        )}
                                     </View>
-                                )}
-                            </View>
+                                    <Text style={styles.qrLabel}>Scan to Verify</Text>
+                                </View>
+                            )}
                         </View>
                         
                         {form.enableQR && (

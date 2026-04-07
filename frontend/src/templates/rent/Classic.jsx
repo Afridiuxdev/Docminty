@@ -5,8 +5,8 @@ import { INDIAN_STATES } from "@/constants/indianStates";
 
 function numToWords(n) {
   if (!n || n === 0) return "Zero Rupees Only";
-  const ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
-  const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+  var ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
+  var tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
   function convert(num) {
     if (num < 20) return ones[num];
     if (num < 100) return tens[Math.floor(num / 10)] + (num % 10 ? " " + ones[num % 10] : "");
@@ -20,112 +20,120 @@ function numToWords(n) {
 export default function RentClassicTemplate({ form }) {
   const T = form.templateColor || "#0D9488";
   const amount = parseFloat(form.rentAmount) || 0;
+  const amtFmt = amount.toLocaleString("en-IN", { minimumFractionDigits: 2 });
   const lState = INDIAN_STATES.find(s => s.code === form.landlordState)?.name || "";
   const tState = INDIAN_STATES.find(s => s.code === form.tenantState)?.name || "";
 
   const styles = StyleSheet.create({
-    page: { fontFamily: "Inter", fontSize: 10, color: "#374151", padding: "40 60", backgroundColor: "#ffffff" },
-    header: { flexDirection: "row", justifyContent: "space-between", marginBottom: 30, borderBottomWidth: 1, borderBottomColor: "#E5E7EB", paddingBottom: 15 },
-    logo: { height: 48, objectFit: "contain", marginBottom: 5 },
-    docType: { fontSize: 18, fontFamily: "Space Grotesk", fontWeight: 700, color: T },
-    receiptNo: { fontSize: 9, color: "#9CA3AF" },
+    page: { fontFamily: "Inter", fontSize: 10, color: "#374151", padding: "0 0 40", backgroundColor: "#ffffff" },
+    banner: { backgroundColor: T, padding: "18 24", flexDirection: "row", justifyContent: "space-between", alignItems: "center", color: "#ffffff" },
+    bannerLeft: { flex: 1 },
+    landlordHeader: { fontSize: 16, fontFamily: "Space Grotesk", fontWeight: 700, color: "#ffffff" },
+    landlordSub: { fontSize: 10, color: "#ffffff", opacity: 0.8, marginTop: 2 },
     
-    rightHead: { textAlign: "right" },
-    period: { fontSize: 14, fontWeight: 700, color: "#111827", fontFamily: "Space Grotesk" },
-    date: { fontSize: 10, color: "#9CA3AF", marginTop: 4 },
+    bannerRight: { textAlign: "right" },
+    docType: { fontSize: 20, fontFamily: "Space Grotesk", fontWeight: 800, color: "#ffffff" },
+    receiptNum: { fontSize: 11, color: "#ffffff", opacity: 0.8, marginTop: 2 },
     
-    amountBox: { backgroundColor: "#F0FDFA", border: `2 solid ${T}`, padding: "20 30", borderRadius: 8, textAlign: "center", marginBottom: 24 },
-    amtLabel: { fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 },
-    amtVal: { fontSize: 32, fontFamily: "Space Grotesk", fontWeight: 800, color: T },
-    amtWords: { fontSize: 11, color: "#374151", fontStyle: "italic", marginTop: 8 },
+    body: { padding: "24 24" },
+    amtBox: { backgroundColor: T + "10", border: `2 solid ${T}`, padding: "16 20", borderRadius: 8, textAlign: "center", marginBottom: 16 },
+    amtLabel: { fontSize: 11, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 4 },
+    amtVal: { fontSize: 28, fontFamily: "Space Grotesk", fontWeight: 800, color: T, marginBottom: 4 },
+    amtWords: { fontSize: 11, color: "#374151", fontStyle: "italic" },
     
-    contacts: { flexDirection: "row", gap: 30, marginBottom: 24 },
-    contactBox: { flex: 1 },
-    label: { fontSize: 8, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 6, fontWeight: 700 },
-    name: { fontSize: 12, fontWeight: 700, color: "#111827", marginBottom: 4 },
-    addr: { fontSize: 9, color: "#4B5563", lineHeight: 1.4 },
-    pan: { fontSize: 10, fontWeight: 700, color: "#111827", marginTop: 8 },
+    infoGrid: { flexDirection: "row", gap: 24, marginBottom: 20 },
+    infoCol: { flex: 1 },
+    colLabel: { fontSize: 11, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 0.5, fontWeight: 600, marginBottom: 6 },
+    colName: { fontSize: 13, fontWeight: 700, color: "#111827", marginBottom: 4 },
+    colText: { fontSize: 11, color: "#4B5563", lineHeight: 1.4 },
+    pan: { fontSize: 11, fontWeight: 600, color: "#111827", marginTop: 6 },
     
-    summary: { flexDirection: "row", padding: "12 0", borderTopWidth: 1, borderTopColor: "#F3F4F6", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", marginBottom: 20 },
+    summaryRow: { flexDirection: "row", gap: 24, padding: "12 0", borderTopWidth: 1, borderTopColor: "#F3F4F6", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", marginBottom: 20 },
     sumItem: { flex: 1 },
-    sumLabel: { fontSize: 9, color: "#9CA3AF", marginBottom: 2 },
-    sumVal: { fontSize: 11, fontWeight: 600, color: "#111827" },
+    sumLabel: { fontSize: 11, color: "#9CA3AF", marginBottom: 2 },
+    sumVal: { fontSize: 13, fontWeight: 600, color: "#111827" },
     
-    hraNote: { padding: "8 12", backgroundColor: "#F0FDFA", borderLeft: `3 solid ${T}`, marginBottom: 24 },
-    hraText: { fontSize: 9, color: "#065F46" },
+    hraNote: { marginTop: 16, padding: "8 12", backgroundColor: T + "08", borderLeft: `3 solid ${T}` },
+    hraText: { fontSize: 10, color: T },
     
-    footer: { marginTop: "auto", borderTopWidth: 1, borderTopColor: "#F3F4F6", paddingTop: 15, flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
-    fText: { fontSize: 8, color: "#D1D5DB" },
+    footer: { marginTop: 24, paddingTop: 12, borderTopWidth: 1, borderTopColor: "#E5E7EB", flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
+    fText: { fontSize: 10, color: "#D1D5DB" },
     sigArea: { textAlign: "center" },
     signature: { height: 40, width: 120, objectFit: "contain", marginBottom: 4 },
-    sigLabel: { fontSize: 9, color: "#9CA3AF" }
+    sigLabel: { fontSize: 10, color: "#9CA3AF" }
   });
 
   return (
-    <Document title={`Rent-Receipt-${form.month}-${form.year}`}>
+    <Document title={`RentReceipt-${form.month}-${form.year}`}>
       <Page size="A4" style={styles.page}>
-        <View style={styles.header}>
-          <View>
-            {form.logo && <Image src={form.logo} style={styles.logo} />}
+        <View style={styles.banner}>
+          <View style={styles.bannerLeft}>
+            <Text style={styles.landlordHeader}>{form.landlordName || "Landlord"}</Text>
+            <Text style={styles.landlordSub}>{form.landlordCity}, {lState}</Text>
+          </View>
+          <View style={styles.bannerRight}>
             <Text style={styles.docType}>RENT RECEIPT</Text>
-            <Text style={styles.receiptNo}>#{form.receiptNumber}</Text>
-          </View>
-          <View style={styles.rightHead}>
-            <Text style={styles.period}>{form.month} {form.year}</Text>
-            <Text style={styles.date}>Date: {form.receiptDate}</Text>
+            <Text style={styles.receiptNum}>#{form.receiptNumber}</Text>
           </View>
         </View>
 
-        <View style={styles.amountBox}>
-          <Text style={styles.amtLabel}>Confirmed Rent Payment</Text>
-          <Text style={styles.amtVal}>Rs. {amount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</Text>
-          <Text style={styles.amtWords}>{numToWords(amount)}</Text>
-        </View>
-
-        <View style={styles.contacts}>
-          <View style={styles.contactBox}>
-            <Text style={styles.label}>Received From (Tenant)</Text>
-            <Text style={styles.name}>{form.tenantName || "—"}</Text>
-            <Text style={styles.addr}>
-              {form.propertyAddress}{form.tenantCity ? `\n${form.tenantCity}, ${tState}` : ""}
-              {(form.tenantPhone || form.tenantEmail) && `\n\n${form.tenantPhone ? "Ph: " + form.tenantPhone : ""}${form.tenantEmail ? "\nEm: " + form.tenantEmail : ""}`}
-            </Text>
+        <View style={styles.body}>
+          <View style={styles.amtBox}>
+            <Text style={styles.amtLabel}>Rent Amount</Text>
+            <Text style={styles.amtVal}>Rs. {amtFmt}</Text>
+            <Text style={styles.amtWords}>{numToWords(amount)}</Text>
           </View>
-          <View style={styles.contactBox}>
-            <Text style={styles.label}>Landlord Details</Text>
-            <Text style={styles.name}>{form.landlordName || "—"}</Text>
-            <Text style={styles.addr}>
-              {form.landlordAddress}{form.landlordCity ? `\n${form.landlordCity}, ${lState}` : ""}
-              {(form.landlordPhone || form.landlordEmail) && `\n\n${form.landlordPhone ? "Ph: " + form.landlordPhone : ""}${form.landlordEmail ? "\nEm: " + form.landlordEmail : ""}`}
-            </Text>
-            {form.landlordPan && <Text style={styles.pan}>PAN: {form.landlordPan}</Text>}
-          </View>
-        </View>
 
-        <View style={styles.summary}>
-          <View style={styles.sumItem}>
-            <Text style={styles.sumLabel}>Period</Text>
-            <Text style={styles.sumVal}>{form.month} {form.year}</Text>
+          <View style={styles.infoGrid}>
+            <View style={styles.infoCol}>
+              <Text style={styles.colLabel}>Received From (Tenant)</Text>
+              <Text style={styles.colName}>{form.tenantName || "—"}</Text>
+              <View style={styles.colText}>
+                <Text>{form.propertyAddress}</Text>
+                <Text>{form.tenantCity ? form.tenantCity + ", " : ""}{tState}</Text>
+                {form.tenantPhone && <Text>Ph: {form.tenantPhone}</Text>}
+                {form.tenantEmail && <Text>Em: {form.tenantEmail}</Text>}
+              </View>
+            </View>
+            
+            <View style={styles.infoCol}>
+              <Text style={styles.colLabel}>Landlord Details</Text>
+              <Text style={styles.colName}>{form.landlordName || "—"}</Text>
+              <View style={styles.colText}>
+                <Text>{form.landlordAddress}</Text>
+                <Text>{form.landlordCity ? form.landlordCity + ", " : ""}{lState}</Text>
+                {form.landlordPhone && <Text>Ph: {form.landlordPhone}</Text>}
+                {form.landlordEmail && <Text>Em: {form.landlordEmail}</Text>}
+              </View>
+              {form.landlordPan && <Text style={styles.pan}>PAN: {form.landlordPan}</Text>}
+            </View>
           </View>
-          <View style={styles.sumItem}>
-            <Text style={styles.sumLabel}>Payment Mode</Text>
-            <Text style={styles.sumVal}>{form.paymentMode}</Text>
+
+          <View style={styles.summaryRow}>
+            <View style={styles.sumItem}>
+              <Text style={styles.sumLabel}>Rent Period</Text>
+              <Text style={styles.sumVal}>{form.month + " " + form.year}</Text>
+            </View>
+            <View style={styles.sumItem}>
+              <Text style={styles.sumLabel}>Payment Mode</Text>
+              <Text style={styles.sumVal}>{form.paymentMode || "—"}</Text>
+            </View>
           </View>
-        </View>
 
-        <View style={styles.hraNote}>
-          <Text style={styles.hraText}>This receipt is valid for HRA exemption claim under Section 10(13A) of Income Tax Act.</Text>
-        </View>
+          <View style={styles.hraNote}>
+            <Text style={styles.hraText}>Valid for HRA exemption claim under Section 10(13A) of Income Tax Act.</Text>
+          </View>
 
-        <View style={styles.footer}>
-          <Text style={styles.fText}>Generated by DocMinty.com</Text>
-          <View style={styles.sigArea}>
-            {form.signature ? (
-              <Image src={form.signature} style={styles.signature} />
-            ) : (
-              <View style={{ height: 40 }} />
-            )}
-            <Text style={styles.sigLabel}>Landlord Signature</Text>
+          <View style={styles.footer} wrap={false}>
+            <Text style={styles.fText}>Generated by DocMinty.com</Text>
+            <View style={styles.sigArea}>
+              {form.signature ? (
+                <Image src={form.signature} style={styles.signature} />
+              ) : (
+                <View style={{ height: 40 }} />
+              )}
+              <Text style={styles.sigLabel}>Landlord Signature</Text>
+            </View>
           </View>
         </View>
       </Page>

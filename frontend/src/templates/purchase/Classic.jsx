@@ -12,14 +12,14 @@ export default function PurchaseClassicTemplate({ form }) {
 
   const styles = StyleSheet.create({
     page: { fontFamily: "Inter", fontSize: 9, color: "#111827", padding: "40 50", backgroundColor: "#ffffff" },
-    header: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", borderBottomWidth: 2, borderBottomColor: T, paddingBottom: 16, marginBottom: 32 },
-    logo: { height: 40, objectFit: "contain", marginBottom: 8 },
-    fromName: { fontSize: 14, fontFamily: "Space Grotesk", fontWeight: 700, color: "#111827" },
-    fromDetails: { fontSize: 9, color: "#6B7280", marginTop: 2, lineHeight: 1.4 },
+    header: { backgroundColor: T, padding: "20 24", flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 32 },
+    logo: { height: 36, objectFit: "contain", marginBottom: 4 },
+    fromName: { fontSize: 13, fontFamily: "Space Grotesk", fontWeight: 700, color: "#ffffff" },
+    fromDetails: { fontSize: 9, color: "#ffffff", opacity: 0.8, marginTop: 2, lineHeight: 1.4 },
     
     titleSection: { textAlign: "right" },
-    title: { fontSize: 22, fontFamily: "Space Grotesk", fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 1.5 },
-    num: { fontSize: 11, fontWeight: 700, color: "#374151", marginTop: 4 },
+    title: { fontSize: 18, fontFamily: "Space Grotesk", fontWeight: 700, color: "#ffffff", textTransform: "uppercase" },
+    num: { fontSize: 10, color: "#ffffff", opacity: 0.8, marginTop: 2 },
     meta: { fontSize: 9, color: "#9CA3AF", marginTop: 2 },
     
     addressSection: { flexDirection: "row", justifyContent: "space-between", marginBottom: 32 },
