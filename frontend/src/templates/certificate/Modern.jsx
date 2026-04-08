@@ -24,14 +24,14 @@ export default function ModernTemplate({ form }) {
         descText: { fontSize: 13, color: "#374151", textAlign: "center", lineHeight: 1.6, maxWidth: 400, marginBottom: 8 },
         courseName: { fontSize: 16, fontFamily: "Space Grotesk", fontWeight: 700, color: T, textAlign: "center", marginBottom: 16 },
         
-        metaRow: { flexDirection: "row", gap: 24, justifyContent: "center", marginBottom: 32 },
-        metaItem: { alignItems: "center" },
+        metaRow: { flexDirection: "row", justifyContent: "center", marginBottom: 32 },
+        metaItem: { alignItems: "center", marginHorizontal: 12 },
         metaLabel: { fontSize: 10, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 2 },
         metaValue: { fontSize: 13, fontWeight: 700, color: "#111827" },
         
-        sigSection: { flexDirection: "row", gap: 48, justifyContent: "center", alignItems: "flex-end", width: "100%" },
-        sigBox: { alignItems: "center", minWidth: 140 },
-        sigLine: { borderTopWidth: 2, borderTopColor: "#374151", width: "100%", paddingTop: 6, marginTop: 4 },
+        sigSection: { flexDirection: "row", justifyContent: "center", alignItems: "flex-end", width: "100%" },
+        sigBox: { alignItems: "center", width: 140, marginRight: 48 },
+        sigLine: { borderTopWidth: 2, borderTopColor: "#374151", width: "100%", paddingTop: 6, marginTop: 4, alignItems: "center" },
         sigName: { fontSize: 12, fontWeight: 600, color: "#111827", textAlign: "center" },
         sigDesig: { fontSize: 10, color: "#9CA3AF", textAlign: "center", marginTop: 2 },
         

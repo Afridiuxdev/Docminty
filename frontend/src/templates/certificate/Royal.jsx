@@ -5,13 +5,12 @@ import { INDIAN_STATES } from "@/constants/indianStates";
 
 export default function RoyalTemplate({ form }) {
     const T = form.templateColor || "#D97706";
-    const BG = "#FFFDF5";
     const stateName = INDIAN_STATES.find(s => s.code === form.orgState)?.name || "";
 
     const styles = StyleSheet.create({
         page: { fontFamily: "Inter", fontSize: 10, color: "#111827", padding: 6, backgroundColor: "#fff" },
-        outer: { border: `3px solid ${T}`, borderRadius: 4, height: "100%", padding: 6 },
-        inner: { border: `1px solid ${T}`, borderRadius: 2, height: "100%", padding: "32 40", alignItems: "center", justifyContent: "center", position: "relative" },
+        outer: { border: `3px solid ${T}`, borderRadius: 4, flex: 1, padding: 6 },
+        inner: { border: `1px solid ${T}`, borderRadius: 2, flex: 1, padding: "32 40", alignItems: "center", justifyContent: "center", position: "relative" },
         
         corner: { position: "absolute", width: 20, height: 20 },
         cornerTopLeft: { top: 12, left: 12, borderTop: `2px solid ${T}`, borderLeft: `2px solid ${T}` },
@@ -32,14 +31,14 @@ export default function RoyalTemplate({ form }) {
         descText: { fontSize: 13, color: "#374151", textAlign: "center", lineHeight: 1.6, maxWidth: 400, marginBottom: 10 },
         courseName: { fontSize: 16, fontFamily: "Space Grotesk", fontWeight: 700, color: T, textAlign: "center", marginBottom: 16 },
         
-        metaRow: { flexDirection: "row", gap: 24, justifyContent: "center", marginBottom: 24 },
-        metaItem: { alignItems: "center" },
+        metaRow: { flexDirection: "row", justifyContent: "center", marginBottom: 24 },
+        metaItem: { alignItems: "center", marginHorizontal: 12 },
         metaLabel: { fontSize: 10, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1.2, marginBottom: 2 },
         metaValue: { fontSize: 13, fontWeight: 700, color: "#111827" },
         
-        sigSection: { flexDirection: "row", gap: 60, justifyContent: "center", alignItems: "flex-end", width: "100%" },
-        sigBox: { alignItems: "center", minWidth: 140 },
-        sigLine: { borderTopWidth: 2, borderTopColor: T, width: "100%", paddingTop: 6, marginTop: 4 },
+        sigSection: { flexDirection: "row", justifyContent: "center", alignItems: "flex-end", width: "100%" },
+        sigBox: { alignItems: "center", width: 140, marginRight: 60 },
+        sigLine: { borderTopWidth: 2, borderTopColor: T, width: "100%", paddingTop: 6, marginTop: 4, alignItems: "center" },
         sigName: { fontSize: 12, fontWeight: 700, color: "#111827", textAlign: "center" },
         sigDesig: { fontSize: 10, color: "#9CA3AF", textAlign: "center", marginTop: 2 },
         

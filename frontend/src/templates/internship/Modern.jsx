@@ -34,38 +34,38 @@ export default function InternshipModernTemplate({ form }) {
 
     const styles = StyleSheet.create({
         page: { padding: 0, fontFamily: "Inter", backgroundColor: "#ffffff" },
-        header: { backgroundColor: T, padding: "12 20", flexDirection: "row", alignItems: "center", gap: 12 },
-        logoH: { height: 32, objectFit: "contain", filter: "brightness(0) invert(1)" },
+        header: { backgroundColor: T, padding: "12 20", flexDirection: "row", alignItems: "center" },
+        logoH: { height: 32, objectFit: "contain", filter: "brightness(0) invert(1)", marginRight: 12 },
         headerTitle: { fontSize: 13, fontFamily: "Space Grotesk", fontWeight: 800, color: "#ffffff", textTransform: "uppercase", letterSpacing: 1.5 },
         
-        main: { flex: 1, padding: "28 36", alignItems: "center", justifyContent: "center" },
-        logoM: { height: 44, marginBottom: 10, objectFit: "contain" },
+        main: { flex: 1, padding: "28 36", justifyContent: "center" },
+        logoM: { height: 44, marginBottom: 10, objectFit: "contain", alignSelf: "center" },
         orgName: { fontSize: 15, fontFamily: "Space Grotesk", fontWeight: 700, color: "#111827", textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 2, textAlign: "center" },
         orgInfo: { fontSize: 10, color: "#9CA3AF", textAlign: "center", marginBottom: 2 },
         
-        badge: { backgroundColor: "#F0FDFA", color: T, padding: "3 18", borderRadius: 2, marginTop: 12, marginBottom: 12, border: `1px solid ${T}` },
-        badgeText: { fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 2 },
+        badge: { backgroundColor: "#F0FDFA", padding: "3 18", borderRadius: 2, marginTop: 12, marginBottom: 12, border: `1px solid ${T}`, textAlign: "center" },
+        badgeText: { color: T, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 2, textAlign: "center" },
         
-        intro: { fontSize: 10, color: "#6B7280", marginBottom: 5 },
-        internName: { fontSize: 20, fontFamily: "Space Grotesk", fontWeight: 800, color: "#111827", marginBottom: 8, borderBottomWidth: 2, borderBottomColor: T, paddingBottom: 6, minWidth: 200, textAlign: "center" },
+        intro: { fontSize: 10, color: "#6B7280", marginBottom: 5, textAlign: "center" },
+        internName: { fontSize: 20, fontFamily: "Space Grotesk", fontWeight: 800, color: "#111827", marginBottom: 8, borderBottomWidth: 2, borderBottomColor: T, paddingBottom: 6, textAlign: "center" },
         
-        content: { fontSize: 10, color: "#374151", textAlign: "center", lineHeight: 1.6, maxWidth: 450, marginTop: 6 },
+        content: { fontSize: 10, color: "#374151", textAlign: "center", lineHeight: 1.6, marginTop: 6 },
         bold: { fontWeight: 700, color: "#111827" },
         accent: { fontWeight: 700, color: T },
         
-        project: { fontSize: 10, color: "#374151", marginTop: 5 },
-        issue: { fontSize: 9, color: "#9CA3AF", marginTop: 6 },
+        project: { fontSize: 10, color: "#374151", marginTop: 5, textAlign: "center" },
+        issue: { fontSize: 9, color: "#9CA3AF", marginTop: 6, textAlign: "center" },
         
         footer: { width: "100%", marginTop: 18, flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
         sigBox: { minWidth: 110, textAlign: "left" },
-        sigImage: { height: 35, width: 100, marginBottom: 2, objectFit: "contain" },
+        sigImage: { height: 35, width: 100, marginBottom: 2, objectFit: "contain", alignSelf: "flex-start" },
         sigLine: { borderTopWidth: 1, borderTopColor: "#374151", paddingTop: 4 },
         sigName: { fontSize: 10, fontWeight: 700, color: "#111827" },
         sigDesig: { fontSize: 9, color: "#9CA3AF" },
         
         qrBox: { width: 40, height: 40, backgroundColor: "#F0FDFA", border: `2px solid ${T}`, borderRadius: 5, alignItems: "center", justifyContent: "center", padding: 2, overflow: "hidden" },
-        qrLabel: { fontSize: 8, color: "#9CA3AF", marginTop: 2 },
-        verifyId: { fontSize: 8, color: "#D1D5DB", fontFamily: "Courier", marginTop: 6 }
+        qrLabel: { fontSize: 8, color: "#9CA3AF", marginTop: 2, textAlign: "center" },
+        verifyId: { fontSize: 8, color: "#D1D5DB", fontFamily: "Courier", marginTop: 6, textAlign: "center" }
     });
 
     return (
