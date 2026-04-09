@@ -116,7 +116,7 @@ export default function ProformaElegantTemplate({ form }) {
           <View style={[styles.billBox, { textAlign: "right" }]}>
             <Text style={styles.billLabel}>Quotation Scope</Text>
             <Text style={styles.billName}>{form.taxType === "igst" ? "Inter-state IGST" : "Intra-state Tax"}</Text>
-            {form.validUntil && <Text style={{ fontSize: 9, color: "#9CA3AF", marginTop: 4 }}>Quote Valid Unit: {form.validUntil}</Text>}
+            {form.validUntil && <Text style={{ fontSize: 9, color: "#9CA3AF", marginTop: 4 }}>Quote Valid Until: {form.validUntil}</Text>}
           </View>
         </View>
 

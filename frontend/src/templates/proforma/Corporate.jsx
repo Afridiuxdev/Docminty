@@ -90,6 +90,7 @@ export default function ProformaCorporateTemplate({ form }) {
         <View style={styles.dateRow}>
           <Text style={styles.metaText}>QUOTATION REF: {form.proformaNumber}</Text>
           <Text style={styles.metaText}>DATE: {form.proformaDate}</Text>
+          {form.validUntil && <Text style={styles.metaText}>VALID UNTIL: {form.validUntil}</Text>}
         </View>
 
         <View style={styles.billingRow}>

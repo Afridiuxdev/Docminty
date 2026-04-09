@@ -383,6 +383,7 @@ export function ProformaPreview({ form, template = "Classic", accent = "#0D9488"
           <div style={{ display: "flex", justifyContent: "center", gap: "16px", fontSize: "10px", color: "#9CA3AF", fontWeight: 700 }}>
             <span>PROFORMA: #{form.proformaNumber}</span>
             <span>DATE: {form.proformaDate}</span>
+            {form.validUntil && <span>VALID UNTIL: {form.validUntil}</span>}
           </div>
         </div>
         {sharedBody}
@@ -407,7 +408,9 @@ export function ProformaPreview({ form, template = "Classic", accent = "#0D9488"
             </div>
             <div style={{ textAlign: "right" }}>
               <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "22px", color: accent, margin: 0 }}>PROFORMA</p>
-              <p style={{ fontSize: "11px", color: "#6B7280" }}>#{form.proformaNumber}</p>
+              <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0" }}>#{form.proformaNumber}</p>
+              <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "2px 0 0" }}>Date: {form.proformaDate}</p>
+              {form.validUntil && <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "2px 0 0" }}>Valid Until: {form.validUntil}</p>}
             </div>
           </div>
           <div style={{ height: "4px", background: accent, borderRadius: "2px" }} />
@@ -424,7 +427,7 @@ export function ProformaPreview({ form, template = "Classic", accent = "#0D9488"
         <div style={{ background: accent, padding: "18px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", color: "#fff" }}>
           <div>
             <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", margin: 0 }}>{form.fromName || "Business Name"}</p>
-            <p style={{ fontSize: "10px", opacity: 0.8, margin: "2px 0 0" }}>{form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}</p>
+            <p style={{ fontSize: "10px", opacity: 0.8, margin: "2px 0 0" }}>{form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}{fromState?.name ? `, ${fromState.name}` : ""}</p>
             {form.fromGSTIN && <p style={{ fontSize: "10px", opacity: 0.8, margin: "2px 0 0" }}>GSTIN: {form.fromGSTIN}</p>}
             {(form.fromPhone || form.fromEmail) && (
               <p style={{ fontSize: "10px", opacity: 0.8, margin: "2px 0 0" }}>
@@ -434,7 +437,9 @@ export function ProformaPreview({ form, template = "Classic", accent = "#0D9488"
           </div>
           <div style={{ textAlign: "right" }}>
             <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "20px", margin: 0 }}>PROFORMA</p>
-            <p style={{ fontSize: "11px", opacity: 0.8 }}>#{form.proformaNumber}</p>
+            <p style={{ fontSize: "11px", opacity: 0.8, margin: "2px 0 0" }}>#{form.proformaNumber}</p>
+            <p style={{ fontSize: "10px", opacity: 0.8, margin: "2px 0 0" }}>Date: {form.proformaDate}</p>
+            {form.validUntil && <p style={{ fontSize: "10px", opacity: 0.8, margin: "2px 0 0" }}>Valid Until: {form.validUntil}</p>}
           </div>
         </div>
         {sharedBody}
@@ -520,6 +525,14 @@ export function ProformaPreview({ form, template = "Classic", accent = "#0D9488"
           }}>
             Date: {form.proformaDate}
           </p>
+          {form.validUntil && (
+            <p style={{
+              fontSize: "11px", color: "#9CA3AF",
+              margin: "2px 0 0", fontFamily: "Inter, sans-serif"
+            }}>
+              Valid Until: {form.validUntil}
+            </p>
+          )}
         </div>
       </div>
       {sharedBody}
