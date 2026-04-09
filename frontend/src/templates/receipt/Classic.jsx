@@ -102,6 +102,10 @@ export default function ReceiptClassicTemplate({ form }) {
               <Text style={styles.tableLabel}>Purpose</Text>
               <Text style={styles.tableVal}>{form.purpose || "—"}</Text>
             </View>
+            <View style={styles.tableRow}>
+              <Text style={styles.tableLabel}>Date</Text>
+              <Text style={styles.tableVal}>{form.receiptDate}</Text>
+            </View>
           </View>
 
           {form.notes && (

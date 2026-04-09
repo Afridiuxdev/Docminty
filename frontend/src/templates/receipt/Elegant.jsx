@@ -107,6 +107,10 @@ export default function ReceiptElegantTemplate({ form }) {
             <Text style={styles.detailLabel}>Transaction Purpose</Text>
             <Text style={styles.detailValue}>{form.purpose || "—"}</Text>
           </View>
+          <View style={styles.detailLine}>
+            <Text style={styles.detailLabel}>Transaction Date</Text>
+            <Text style={styles.detailValue}>{form.receiptDate}</Text>
+          </View>
         </View>
 
         {form.notes && (
