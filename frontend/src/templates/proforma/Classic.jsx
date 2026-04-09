@@ -14,7 +14,7 @@ export default function ProformaClassicTemplate({ form }) {
   const styles = StyleSheet.create({
     page: { fontFamily: "Inter", fontSize: 10, color: "#374151", padding: "40 50", backgroundColor: "#ffffff" },
     badge: { backgroundColor: "#FEF9C3", borderBottomWidth: 2, borderBottomColor: "#F59E0B", padding: "6 0", margin: "-40 -50 30 -50", textAlign: "center" },
-    badgeText: { fontSize: 10, fontWeight: 700, color: "#92400E", textTransform: "uppercase", letterSpacing: 1 },
+    badgeText: { fontSize: 10, fontWeight: 700, color: "#92400E", textTransform: "uppercase", letterSpacing: 1, fontFamily: "Space Grotesk" },
     
     header: { flexDirection: "row", justifyContent: "space-between", marginBottom: 30, borderBottomWidth: 1, borderBottomColor: "#E5E7EB", paddingBottom: 15 },
     logo: { height: 48, objectFit: "contain", marginBottom: 8 },
@@ -27,14 +27,14 @@ export default function ProformaClassicTemplate({ form }) {
     
     grid: { flexDirection: "row", gap: 30, marginBottom: 20 },
     gridCol: { flex: 1 },
-    label: { fontSize: 8, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 6 },
+    label: { fontSize: 8, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 6, fontFamily: "Space Grotesk" },
     name: { fontSize: 12, fontWeight: 700, color: "#111827", marginBottom: 4 },
     addrText: { fontSize: 9, color: "#6B7280", lineHeight: 1.4 },
     
     table: { marginTop: 20 },
-    tableHeader: { flexDirection: "row", backgroundColor: "#F9FAFB", borderBottomWidth: 1, borderBottomColor: "#E5E7EB", padding: "8 4" },
-    tableRow: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", padding: "8 4" },
-    th: { fontSize: 8, fontWeight: 700, color: "#6B7280", textTransform: "uppercase" },
+    tableHeader: { flexDirection: "row", backgroundColor: "#F9FAFB", borderBottomWidth: 1, borderBottomColor: "#E5E7EB", padding: "8 12" },
+    tableRow: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", padding: "8 12" },
+    th: { fontSize: 8, fontWeight: 700, color: "#6B7280", textTransform: "uppercase", fontFamily: "Space Grotesk" },
     td: { fontSize: 9, color: "#374151" },
     
     colNo: { width: "5%" },
@@ -54,7 +54,7 @@ export default function ProformaClassicTemplate({ form }) {
     advItem: { flex: 1, padding: "12 16", borderRadius: 8 },
     advYellow: { backgroundColor: "#FEF9C3", borderAround: "1 solid #F59E0B" },
     advGreen: { backgroundColor: "#F0FDFA", borderAround: `1 solid ${T}` },
-    advLabel: { fontSize: 8, fontWeight: 700, color: "#92400E", textTransform: "uppercase", marginBottom: 4 },
+    advLabel: { fontSize: 8, fontWeight: 700, color: "#92400E", textTransform: "uppercase", marginBottom: 4, fontFamily: "Space Grotesk" },
     advVal: { fontSize: 18, fontWeight: 800, color: "#92400E", fontFamily: "Space Grotesk" },
     
     infoBox: { marginTop: 20, padding: "10 14", backgroundColor: "#F8F9FA", borderLeftWidth: 3, borderLeftColor: T },
@@ -162,6 +162,7 @@ export default function ProformaClassicTemplate({ form }) {
                 <View style={[styles.advItem, styles.advGreen]}>
                     <Text style={[styles.advLabel, { color: "#065F46" }]}>Bank Details</Text>
                     <Text style={{ fontSize: 9, fontWeight: 700, color: "#111827" }}>{form.bankName} - {form.accountNumber}</Text>
+                    {form.accountName && <Text style={{ fontSize: 9, color: "#4B5563" }}>{form.accountName}</Text>}
                     <Text style={{ fontSize: 8, color: "#6B7280" }}>IFSC: {form.ifscCode} | {form.accountName}</Text>
                 </View>
             )}

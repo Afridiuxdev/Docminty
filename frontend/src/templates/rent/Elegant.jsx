@@ -30,7 +30,7 @@ export default function RentElegantTemplate({ form }) {
     headerTop: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 12 },
     logo: { height: 36, objectFit: "contain", marginBottom: 6 },
     compName: { fontSize: 16, fontFamily: "Space Grotesk", fontWeight: 700, color: "#111827" },
-    compDetails: { fontSize: 10, color: "#6B7280" },
+    compDetails: { fontSize: 10, color: "#6B7280", lineHeight: 1.4 },
     
     title: { fontSize: 22, fontFamily: "Space Grotesk", fontWeight: 800, color: T },
     metaText: { fontSize: 11, color: "#6B7280", textAlign: "right" },
@@ -38,21 +38,21 @@ export default function RentElegantTemplate({ form }) {
     
     body: { marginTop: 20 },
     amtBox: { backgroundColor: T + "10", border: `2 solid ${T}`, padding: "16 20", borderRadius: 8, textAlign: "center", marginBottom: 16 },
-    amtLabel: { fontSize: 11, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 4 },
+    amtLabel: { fontSize: 11, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 4, fontFamily: "Space Grotesk" },
     amtVal: { fontSize: 28, fontFamily: "Space Grotesk", fontWeight: 800, color: T, marginBottom: 4 },
     amtWords: { fontSize: 11, color: "#374151", fontStyle: "italic" },
     
     infoGrid: { flexDirection: "row", gap: 24, marginBottom: 20 },
     infoCol: { flex: 1 },
-    colLabel: { fontSize: 11, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 0.5, fontWeight: 600, marginBottom: 6 },
+    colLabel: { fontSize: 11, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 0.5, fontWeight: 700, marginBottom: 6, fontFamily: "Space Grotesk" },
     colName: { fontSize: 13, fontWeight: 700, color: "#111827", marginBottom: 4 },
     colText: { fontSize: 11, color: "#4B5563", lineHeight: 1.4 },
     pan: { fontSize: 11, fontWeight: 600, color: "#111827", marginTop: 6 },
     
     summaryRow: { flexDirection: "row", gap: 24, padding: "12 0", borderTopWidth: 1, borderTopColor: "#F3F4F6", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", marginBottom: 20 },
     sumItem: { flex: 1 },
-    sumLabel: { fontSize: 11, color: "#9CA3AF", marginBottom: 2 },
-    sumVal: { fontSize: 13, fontWeight: 600, color: "#111827" },
+    sumLabel: { fontSize: 11, color: "#9CA3AF", marginBottom: 2, fontFamily: "Space Grotesk" },
+    sumVal: { fontSize: 13, fontWeight: 700, color: "#111827", fontFamily: "Space Grotesk" },
     
     hraNote: { marginTop: 16, padding: "8 12", backgroundColor: T + "08", borderLeft: `3 solid ${T}` },
     hraText: { fontSize: 10, color: T },
@@ -72,7 +72,10 @@ export default function RentElegantTemplate({ form }) {
             <View>
               {form.logo && <Image src={form.logo} style={styles.logo} />}
               <Text style={styles.compName}>{form.landlordName || "Owner"}</Text>
-              <Text style={styles.compDetails}>{form.landlordCity || ""}, {lState}</Text>
+              <Text style={styles.compDetails}>
+                {form.landlordAddress}{form.landlordCity ? `, ${form.landlordCity}` : ""}, {lState}
+                {(form.landlordPhone || form.landlordEmail) && `\n${form.landlordPhone ? `Ph: ${form.landlordPhone}` : ""} ${form.landlordPhone && form.landlordEmail ? "|" : ""} ${form.landlordEmail ? `Em: ${form.landlordEmail}` : ""}`}
+              </Text>
             </View>
             <View style={{ textAlign: "right" }}>
               <Text style={styles.title}>RENT RECEIPT</Text>
@@ -105,6 +108,8 @@ export default function RentElegantTemplate({ form }) {
               <View style={styles.colText}>
                 <Text>{form.landlordAddress}</Text>
                 <Text>{form.landlordCity ? form.landlordCity + ", " : ""}{lState}</Text>
+                {form.landlordPhone && <Text>Ph: {form.landlordPhone}</Text>}
+                {form.landlordEmail && <Text>Em: {form.landlordEmail}</Text>}
               </View>
               {form.landlordPan && <Text style={styles.pan}>PAN: {form.landlordPan}</Text>}
             </View>

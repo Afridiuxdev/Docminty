@@ -29,7 +29,7 @@ export default function VoucherMinimalTemplate({ form }) {
     header: { borderBottomWidth: 2, borderBottomColor: T, paddingBottom: 16, marginBottom: 20, flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
     logo: { height: 48, objectFit: "contain", marginBottom: 8 },
     fromName: { fontSize: 16, fontFamily: "Space Grotesk", fontWeight: 700, color: "#111827" },
-    fromDetails: { fontSize: 11, color: "#6B7280", marginTop: 2 },
+    fromDetails: { fontSize: 11, color: "#6B7280", marginTop: 2, lineHeight: 1.4 },
     
     title: { fontSize: 22, fontFamily: "Space Grotesk", fontWeight: 800, color: T },
     metaText: { fontSize: 12, color: "#6B7280", marginTop: 4 },
@@ -37,16 +37,16 @@ export default function VoucherMinimalTemplate({ form }) {
     
     body: { marginTop: 20 },
     amtBox: { backgroundColor: T + "10", border: `2 solid ${T}`, padding: "16 20", borderRadius: 10, flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 20 },
-    amtLabel: { fontSize: 11, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 2 },
+    amtLabel: { fontSize: 11, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 2, fontFamily: "Space Grotesk" },
     amtVal: { fontSize: 28, fontFamily: "Space Grotesk", fontWeight: 800, color: T },
-    modeTag: { backgroundColor: T, color: "#ffffff", padding: "4 12", borderRadius: 20, fontSize: 12, fontWeight: 600 },
+    modeTag: { backgroundColor: T, color: "#ffffff", padding: "4 12", borderRadius: 20, fontSize: 12, fontWeight: 700, fontFamily: "Space Grotesk" },
     
     words: { fontSize: 12, color: "#374151", marginBottom: 16 },
     
     table: { marginBottom: 32 },
     row: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", padding: "8 0" },
-    label: { width: "35%", fontSize: 11, color: "#6B7280", fontWeight: 600 },
-    value: { flex: 1, fontSize: 11, color: "#111827" },
+    label: { width: "35%", fontSize: 11, color: "#6B7280", fontWeight: 700, fontFamily: "Space Grotesk" },
+    value: { flex: 1, fontSize: 11, color: "#111827", lineHeight: 1.4 },
     
     signatures: { flexDirection: "row", gap: 16, marginTop: 32 },
     sigCol: { flex: 1, textAlign: "center" },
@@ -69,6 +69,12 @@ export default function VoucherMinimalTemplate({ form }) {
             <View style={styles.fromDetails}>
               <Text>{form.companyAddress}{form.companyCity ? `, ${form.companyCity}` : ""}</Text>
               {cStateName && <Text>{cStateName}</Text>}
+              {(form.companyPhone || form.companyEmail) && (
+                <Text style={{ marginTop: 2 }}>
+                  {form.companyPhone && `Ph: ${form.companyPhone} `}
+                  {form.companyEmail && `Em: ${form.companyEmail}`}
+                </Text>
+              )}
             </View>
           </View>
           <View style={{ textAlign: "right" }}>

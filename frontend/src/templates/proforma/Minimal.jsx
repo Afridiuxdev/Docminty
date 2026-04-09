@@ -19,7 +19,7 @@ export default function ProformaMinimalTemplate({ form }) {
   const styles = StyleSheet.create({
     page: { fontFamily: "Inter", fontSize: 10, color: "#374151", padding: "48 64", backgroundColor: "#ffffff" },
     badge: { backgroundColor: "#FEF9C3", borderBottomWidth: 1, borderBottomColor: "#F59E0B", padding: "4 0", margin: "-48 -64 32 -64", textAlign: "center" },
-    badgeText: { fontSize: 9, fontWeight: 700, color: "#92400E", textTransform: "uppercase", letterSpacing: 0.5 },
+    badgeText: { fontSize: 9, fontWeight: 700, color: "#92400E", textTransform: "uppercase", letterSpacing: 0.5, fontFamily: "Space Grotesk" },
     
     top: { borderBottomWidth: 1.5, borderBottomColor: T, paddingBottom: 12, marginBottom: 32, flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
     title: { fontSize: 14, fontFamily: "Space Grotesk", fontWeight: 700, color: "#111827", textTransform: "uppercase", letterSpacing: 1 },
@@ -27,14 +27,14 @@ export default function ProformaMinimalTemplate({ form }) {
     
     headerRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 32 },
     metaBox: { flex: 1 },
-    metaLabel: { fontSize: 7, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 },
+    metaLabel: { fontSize: 7, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4, fontFamily: "Space Grotesk", fontWeight: 700 },
     metaValue: { fontSize: 11, fontWeight: 700, color: "#111827" },
     metaSub: { fontSize: 9, color: "#6B7280", marginTop: 2, maxWidth: 200, lineHeight: 1.4 },
     
     table: { marginBottom: 32 },
-    tHeader: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: T, padding: "8 0" },
-    tRow: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", padding: "10 0" },
-    th: { fontSize: 8, fontWeight: 700, color: "#111827", textTransform: "uppercase" },
+    tHeader: { flexDirection: "row", backgroundColor: "#F9FAFB", padding: "8 12", borderBottomWidth: 1, borderBottomColor: T, borderRadius: 4 },
+    tRow: { flexDirection: "row", padding: "8 12", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", alignItems: "center" },
+    th: { fontSize: 8, fontWeight: 700, color: "#111827", textTransform: "uppercase", fontFamily: "Space Grotesk" },
     td: { fontSize: 9, color: "#374151" },
     
     colNo: { width: "5%" },
@@ -85,7 +85,7 @@ export default function ProformaMinimalTemplate({ form }) {
             <Text style={styles.metaSub}>
                 {form.fromAddress}{form.fromCity ? `, ${form.fromCity}, ${fromState}` : ""}
                 {form.fromGSTIN && `\nGSTIN: ${form.fromGSTIN}`}
-                {form.fromPhone && `\nPH: ${form.fromPhone}`}
+                {(form.fromPhone || form.fromEmail) && `\n${form.fromPhone ? "Ph: " + form.fromPhone : ""}${form.fromPhone && form.fromEmail ? " | " : ""}${form.fromEmail ? "Em: " + form.fromEmail : ""}`}
             </Text>
           </View>
           <View style={[styles.metaBox, { textAlign: "right", alignItems: "flex-end" }]}>
@@ -134,6 +134,7 @@ export default function ProformaMinimalTemplate({ form }) {
               <View style={{ paddingLeft: 4 }}>
                 <Text style={styles.metaLabel}>Settlement Routing</Text>
                 <Text style={{ fontSize: 9, color: "#111827", fontWeight: 700 }}>{form.bankName} | {form.accountNumber}</Text>
+                {form.accountName && <Text style={{ fontSize: 9, color: "#4B5563" }}>{form.accountName}</Text>}
                 <Text style={{ fontSize: 8, color: "#6B7280" }}>IFSC: {form.ifscCode} | {form.accountName}</Text>
               </View>
             )}

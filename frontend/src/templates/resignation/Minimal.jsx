@@ -30,8 +30,8 @@ export default function ResignationMinimalTemplate({ form }) {
     accentBar: { height: 2, backgroundColor: T, marginTop: 12, borderRadius: 1 },
     
     body: { marginTop: 32 },
-    mgrName: { fontSize: 12, fontWeight: 700, color: "#374151", marginBottom: 2 },
-    mgrDetails: { fontSize: 12, color: "#6B7280", marginBottom: 16 },
+    mgrName: { fontSize: 12, fontWeight: 700, color: "#374151", marginBottom: 2, fontFamily: "Space Grotesk" },
+    mgrDetails: { fontSize: 12, color: "#6B7280", marginBottom: 16, lineHeight: 1.4 },
     salutation: { fontSize: 12, color: "#374151", marginBottom: 12 },
     content: { fontSize: 12, color: "#374151", lineHeight: 1.8, marginBottom: 12 },
     bold: { fontWeight: 700, color: "#111827" },

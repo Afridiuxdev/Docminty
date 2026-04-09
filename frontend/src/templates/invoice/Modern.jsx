@@ -38,9 +38,9 @@ export default function ModernTemplate({ form }) {
         clientName: { fontSize: 12, fontWeight: 700, color: "#111827", fontFamily: "Space Grotesk" },
         clientDetails: { fontSize: 10, color: "#6B7280", marginTop: 2, lineHeight: 1.4 },
         
-        tableHeader: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#E5E7EB", paddingBottom: 8, marginBottom: 8 },
-        thText: { fontSize: 9, fontWeight: 700, color: "#6B7280", textTransform: "uppercase" },
-        tableRow: { flexDirection: "row", paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: "#F3F4F6", alignItems: "center" },
+        tableHeader: { flexDirection: "row", backgroundColor: "#F9FAFB", padding: "8 12", borderBottomWidth: 1, borderBottomColor: "#E5E7EB", borderRadius: 4, marginBottom: 8 },
+        thText: { fontSize: 9, fontWeight: 700, color: "#6B7280", textTransform: "uppercase", fontFamily: "Space Grotesk" },
+        tableRow: { flexDirection: "row", padding: "8 12", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", alignItems: "center" },
         tdText: { fontSize: 9, color: "#374151" },
         
         totalsWrapper: { flexDirection: "row", justifyContent: "flex-end", marginTop: 16 },
@@ -52,7 +52,7 @@ export default function ModernTemplate({ form }) {
         grandTotalLabel: { fontSize: 12, fontWeight: 700, color: T },
         
         wordsBox: { marginTop: 16, padding: "10 14", backgroundColor: "#F8F9FA", borderRadius: 6, borderLeftWidth: 3, borderLeftColor: T },
-        wordsLabel: { fontSize: 9, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 2 },
+        wordsLabel: { fontSize: 9, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 2, fontFamily: "Space Grotesk", fontWeight: 700 },
         wordsText: { fontSize: 10, color: "#374151", fontStyle: "italic" },
         
         notesSection: { flexDirection: "row", gap: 16, marginTop: 20 },

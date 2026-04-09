@@ -32,8 +32,8 @@ export default function ModernTemplate({ form }) {
         sideRef: { fontSize: 10, color: "rgba(255,255,255,0.7)", marginBottom: 20 },
         
         sideGroup: { marginBottom: 20 },
-        sideLabel: { fontSize: 9, color: "rgba(255,255,255,0.6)", textTransform: "uppercase", marginBottom: 2 },
-        sideVal: { fontSize: 11, color: "#ffffff" },
+        sideLabel: { fontSize: 9, color: "rgba(255,255,255,0.6)", textTransform: "uppercase", marginBottom: 2, fontFamily: "Space Grotesk" },
+        sideVal: { fontSize: 11, color: "#ffffff", fontFamily: "Space Grotesk" },
         sideCompName: { fontSize: 12, fontFamily: "Space Grotesk", fontWeight: 700, color: "#ffffff", marginBottom: 4 },
         sideCompAddr: { fontSize: 9, color: "rgba(255,255,255,0.7)", lineHeight: 1.3 },
         

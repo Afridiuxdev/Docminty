@@ -36,9 +36,9 @@ export default function ModernTemplate({ form }) {
         logo: { height: 36, objectFit: "contain", marginBottom: 8 },
         headerMeta: { fontSize: 10, color: "#9CA3AF", marginBottom: 2 },
         
-        tableHeader: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#E5E7EB", paddingBottom: 8, marginBottom: 8 },
-        thText: { fontSize: 9, fontWeight: 700, color: "#6B7280", textTransform: "uppercase" },
-        tableRow: { flexDirection: "row", paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: "#F3F4F6", alignItems: "center" },
+        tableHeader: { flexDirection: "row", backgroundColor: "#F9FAFB", padding: "8 12", borderBottomWidth: 1, borderBottomColor: "#E5E7EB", borderRadius: 4, marginBottom: 8 },
+        thText: { fontSize: 9, fontWeight: 700, color: "#6B7280", textTransform: "uppercase", fontFamily: "Space Grotesk" },
+        tableRow: { flexDirection: "row", padding: "8 12", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", alignItems: "center" },
         tdText: { fontSize: 9, color: "#374151" },
         
         totalsWrapper: { flexDirection: "row", justifyContent: "flex-end", marginTop: 16 },

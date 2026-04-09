@@ -29,16 +29,16 @@ export default function MinimalTemplate({ form }) {
         main: { padding: "24 24" },
         empGrid: { flexDirection: "row", flexWrap: "wrap", gap: "16 0", padding: 16, backgroundColor: "#F8F9FA", borderRadius: 8, marginBottom: 16 },
         empItem: { width: "33%" },
-        label: { fontSize: 8, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 0.6, marginBottom: 2 },
-        value: { fontSize: 10, color: "#111827", fontWeight: 600 },
+        label: { fontSize: 8, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 0.6, marginBottom: 2, fontFamily: "Space Grotesk" },
+        value: { fontSize: 10, color: "#111827", fontWeight: 700, fontFamily: "Space Grotesk" },
         
         splitSection: { flexDirection: "row", gap: 16, marginBottom: 16 },
         tableBox: { flex: 1 },
-        tableTitle: { fontSize: 10, fontWeight: 700, color: "#ffffff", padding: "6 12", borderTopLeftRadius: 4, borderTopRightRadius: 4 },
+        tableTitle: { fontSize: 10, fontWeight: 700, color: "#ffffff", padding: "6 12", borderTopLeftRadius: 4, borderTopRightRadius: 4, fontFamily: "Space Grotesk" },
         table: { borderWidth: 1, borderColor: "#E5E7EB", borderTopWidth: 0 },
         tr: { flexDirection: "row", justifyContent: "space-between", padding: "8 12", borderBottomWidth: 1, borderBottomColor: "#F3F4F6" },
-        tdLabel: { fontSize: 9, color: "#374151" },
-        tdValue: { fontSize: 9, fontWeight: 600, color: "#111827" },
+        tdLabel: { fontSize: 9, color: "#374151", fontFamily: "Space Grotesk" },
+        tdValue: { fontSize: 9, fontWeight: 700, color: "#111827", fontFamily: "Space Grotesk" },
         
         netPayBox: { backgroundColor: T, borderRadius: 8, padding: "16 20", flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
         netAmount: { fontFamily: "Space Grotesk", fontWeight: 800, fontSize: 24, color: "#ffffff" },
@@ -51,8 +51,8 @@ export default function MinimalTemplate({ form }) {
         footerText: { fontSize: 9, color: "#D1D5DB" },
         signatureBox: { textAlign: "center", minWidth: 120 },
         signatureImage: { height: 36, marginBottom: 4, alignSelf: "center" },
-        mgrName: { fontSize: 10, fontWeight: 700 },
-        mgrLabel: { fontSize: 8, color: "#9CA3AF" }
+        mgrName: { fontSize: 10, fontWeight: 700, fontFamily: "Space Grotesk" },
+        mgrLabel: { fontSize: 8, color: "#9CA3AF", fontFamily: "Space Grotesk" }
     });
 
     return (

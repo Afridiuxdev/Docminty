@@ -14,8 +14,8 @@ export default function PackingModernTemplate({ form }) {
     sidebar: { width: 140, backgroundColor: T, height: "100%", padding: "24 14", color: "#ffffff" },
     sideTitle: { fontSize: 15, fontFamily: "Space Grotesk", fontWeight: 800, textTransform: "uppercase", marginBottom: 4 },
     sideSub: { fontSize: 10, opacity: 0.75, marginBottom: 24 },
-    sideLabel: { fontSize: 8, fontWeight: 700, opacity: 0.6, textTransform: "uppercase", marginBottom: 3 },
-    sideValue: { fontSize: 10, fontWeight: 600, color: "#ffffff", marginBottom: 4 },
+    sideLabel: { fontSize: 8, fontWeight: 700, opacity: 0.6, textTransform: "uppercase", marginBottom: 3, fontFamily: "Space Grotesk" },
+    sideValue: { fontSize: 10, fontWeight: 700, color: "#ffffff", marginBottom: 4 },
     sideText: { fontSize: 9, opacity: 0.8, marginBottom: 16, lineHeight: 1.4 },
     
     main: { flex: 1, backgroundColor: "#ffffff" },
@@ -26,28 +26,27 @@ export default function PackingModernTemplate({ form }) {
     mainContent: { padding: "20 24" },
     grid: { flexDirection: "row", gap: 24, marginBottom: 20 },
     gridCol: { flex: 1 },
-    label: { fontSize: 10, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 6 },
+    label: { fontSize: 10, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 6, fontFamily: "Space Grotesk" },
     name: { fontSize: 13, fontWeight: 700, color: "#111827", marginBottom: 4 },
     addrText: { fontSize: 11, color: "#6B7280", lineHeight: 1.4 },
     
     table: { marginBottom: 20 },
-    tHeader: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#E5E7EB", paddingBottom: 8, marginBottom: 8 },
-    tRow: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", padding: "8 0", alignItems: "center" },
-    th: { fontSize: 10, fontWeight: 700, color: "#6B7280", textTransform: "uppercase" },
+    tHeader: { flexDirection: "row", backgroundColor: "#F9FAFB", borderBottomWidth: 1, borderBottomColor: "#E5E7EB", padding: "8 12", borderRadius: 4 },
+    tRow: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", padding: "8 12", alignItems: "center" },
+    th: { fontSize: 10, fontWeight: 700, color: "#6B7280", textTransform: "uppercase", fontFamily: "Space Grotesk" },
     td: { fontSize: 11, color: "#111827" },
     
     colNo: { width: "8%" },
-    colDesc: { width: "42%" },
-    colSKU: { width: "15%" },
-    colQty: { width: "10%", textAlign: "center" },
-    colWeight: { width: "10%", textAlign: "center" },
-    colNotes: { width: "15%" },
+    colDesc: { width: "52%" },
+    colSKU: { width: "17%" },
+    colQty: { width: "12%", textAlign: "center" },
+    colWeight: { width: "11%", textAlign: "center" },
     
     summary: { marginTop: 12, padding: "12 16", backgroundColor: T + "10", borderRadius: 8, flexDirection: "row", justifyContent: "space-between" },
     sumText: { fontSize: 13, fontWeight: 700, color: T, fontFamily: "Space Grotesk" },
     
     notesArea: { marginTop: 12, padding: "10 14", backgroundColor: "#F8F9FA", borderRadius: 6, borderLeftWidth: 3, borderLeftColor: T },
-    notesLabel: { fontSize: 11, color: "#9CA3AF", textTransform: "uppercase", marginBottom: 2 },
+    notesLabel: { fontSize: 11, color: "#9CA3AF", textTransform: "uppercase", marginBottom: 2, fontFamily: "Space Grotesk" },
     notesText: { fontSize: 12, color: "#374151" },
     
     footer: { position: "absolute", bottom: 20, left: 24, right: 24, borderTopWidth: 1, borderTopColor: "#F3F4F6", paddingTop: 10, flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
@@ -71,6 +70,9 @@ export default function PackingModernTemplate({ form }) {
             <View style={styles.sideText}>
                 <Text>{form.fromAddress}</Text>
                 <Text>{form.fromCity || ""}, {fromState}</Text>
+                {form.fromGSTIN && <Text>GSTIN: {form.fromGSTIN}</Text>}
+                {form.fromPhone && <Text>Ph: {form.fromPhone}</Text>}
+                {form.fromEmail && <Text>Em: {form.fromEmail}</Text>}
             </View>
           </View>
           
@@ -125,7 +127,6 @@ export default function PackingModernTemplate({ form }) {
                 <Text style={[styles.th, styles.colSKU]}>SKU</Text>
                 <Text style={[styles.th, styles.colQty]}>Qty</Text>
                 <Text style={[styles.th, styles.colWeight]}>Weight</Text>
-                <Text style={[styles.th, styles.colNotes]}>Notes</Text>
               </View>
               {form.items.map((item, i) => (
                 <View key={i} style={styles.tRow} wrap={false}>
@@ -134,7 +135,6 @@ export default function PackingModernTemplate({ form }) {
                   <Text style={[styles.td, styles.colSKU]}>{item.sku || "—"}</Text>
                   <Text style={[styles.td, styles.colQty, { fontWeight: 700 }]}>{item.qty}</Text>
                   <Text style={[styles.td, styles.colWeight]}>{item.weight || "—"}</Text>
-                  <Text style={[styles.td, styles.colNotes]}>{item.notes || "—"}</Text>
                 </View>
               ))}
             </View>

@@ -37,18 +37,18 @@ export default function JobOfferElegantTemplate({ form }) {
     
     table: { marginTop: 12, marginBottom: 16 },
     tableRow: { flexDirection: "row", padding: "6 0" },
-    tableLabel: { width: "40%", fontWeight: 600, color: "#6B7280", fontSize: 11 },
+    tableLabel: { width: "40%", fontWeight: 700, color: "#6B7280", fontSize: 11, fontFamily: "Space Grotesk" },
     tableVal: { width: "60%", color: T, fontWeight: 600, fontSize: 11 },
     
     ctcBox: { marginTop: 16, padding: "12 16", backgroundColor: "#F0FDFA", border: `1px solid ${T}`, borderRadius: 8 },
     ctcTitle: { fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.8, color: "#9CA3AF", marginBottom: 8, fontFamily: "Space Grotesk" },
     ctcHead: { flexDirection: "row", justifyContent: "space-between", marginBottom: 8, borderBottom: "1px solid #D1FAF0", paddingBottom: 8 },
-    ctcMainLabel: { fontSize: 12, color: "#6B7280" },
+    ctcMainLabel: { fontSize: 12, color: "#6B7280", fontFamily: "Space Grotesk" },
     ctcMainVal: { fontSize: 14, fontWeight: 700, color: T, fontFamily: "Space Grotesk" },
     ctcGrid: { flexDirection: "row", justifyContent: "space-between", paddingTop: 8 },
     ctcItem: { width: "23%" },
-    itemLabel: { fontSize: 10, color: "#9CA3AF", marginBottom: 2 },
-    itemVal: { fontSize: 12, fontWeight: 600, color: "#111827", fontFamily: "Space Grotesk" },
+    itemLabel: { fontSize: 10, color: "#9CA3AF", marginBottom: 2, fontFamily: "Space Grotesk" },
+    itemVal: { fontSize: 12, fontWeight: 700, color: "#111827", fontFamily: "Space Grotesk" },
     
     termsTitle: { fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.8, color: "#9CA3AF", marginBottom: 6, marginTop: 12, fontFamily: "Space Grotesk" },
     

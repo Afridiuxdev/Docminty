@@ -124,9 +124,14 @@ export function RentPreview({ form, template = "Classic", accent = "#0D9488" }) 
           <p style={{ fontSize: "10px", opacity: 0.75, margin: "0 0 24px" }}>#{form.receiptNumber}</p>
           <p style={{ fontSize: "8px", fontWeight: 700, opacity: 0.6, textTransform: "uppercase", margin: "0 0 3px" }}>Landlord</p>
           <p style={{ fontSize: "10px", fontWeight: 600, margin: "0 0 4px" }}>{form.landlordName || "—"}</p>
-          <p style={{ fontSize: "9px", opacity: 0.8, margin: "0 0 16px", lineHeight: 1.4 }}>
-            {form.landlordCity}, {landlordState?.name}
+          <p style={{ fontSize: "9px", opacity: 0.8, margin: "0 0 4px", lineHeight: 1.4 }}>
+            {form.landlordAddress} {form.landlordCity && `${form.landlordCity}, `} {landlordState?.name}
           </p>
+          {(form.landlordPhone || form.landlordEmail) && (
+            <p style={{ fontSize: "9px", opacity: 0.8, margin: "0 0 16px", lineHeight: 1.4 }}>
+              {form.landlordPhone && `Ph: ${form.landlordPhone}`}{form.landlordPhone && form.landlordEmail ? " | " : ""}{form.landlordEmail && `Em: ${form.landlordEmail}`}
+            </p>
+          )}
           <p style={{ fontSize: "8px", fontWeight: 700, opacity: 0.6, textTransform: "uppercase", margin: "0 0 3px" }}>Tenant</p>
           <p style={{ fontSize: "10px", fontWeight: 600, margin: "0 0 16px" }}>{form.tenantName || "Recipient"}</p>
           <div style={{ marginTop: "auto" }}>
@@ -173,8 +178,11 @@ export function RentPreview({ form, template = "Classic", accent = "#0D9488" }) 
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", paddingBottom: "12px" }}>
             <div>
               {form.logo && <img src={form.logo} alt="Logo" style={{ height: "36px", marginBottom: "6px" }} />}
-              <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: "#111827", margin: 0 }}>{form.landlordName}</p>
-              <p style={{ fontSize: "10px", color: "#6B7280" }}>{form.landlordCity}, {landlordState?.name}</p>
+              <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: "#111827", margin: 0 }}>{form.landlordName || "Landlord"}</p>
+              <p style={{ fontSize: "10px", color: "#6B7280", margin: "2px 0 0" }}>{form.landlordAddress}{form.landlordCity ? `, ${form.landlordCity}` : ""}{landlordState?.name ? `, ${landlordState.name}` : ""}</p>
+              {(form.landlordPhone || form.landlordEmail) && (
+                <p style={{ fontSize: "10px", color: "#6B7280", margin: "2px 0 0" }}>{form.landlordPhone && `Ph: ${form.landlordPhone}`}{form.landlordPhone && form.landlordEmail ? "  |  " : ""}{form.landlordEmail && `Em: ${form.landlordEmail}`}</p>
+              )}
             </div>
             <div style={{ textAlign: "right" }}>
               <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "22px", color: accent, margin: 0 }}>RENT RECEIPT</p>
@@ -195,7 +203,12 @@ export function RentPreview({ form, template = "Classic", accent = "#0D9488" }) 
         <div style={{ background: accent, padding: "18px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", color: "#fff" }}>
           <div>
             <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", margin: 0 }}>{form.landlordName || "Landlord"}</p>
-            <p style={{ fontSize: "10px", opacity: 0.8 }}>{form.landlordCity}, {landlordState?.name}</p>
+            <p style={{ fontSize: "10px", opacity: 0.8, margin: "2px 0 0" }}>{form.landlordAddress}{form.landlordCity ? `, ${form.landlordCity}` : ""}</p>
+            {(form.landlordPhone || form.landlordEmail) && (
+              <p style={{ fontSize: "10px", opacity: 0.8, margin: "2px 0 0" }}>
+                {form.landlordPhone && `Ph: ${form.landlordPhone}`}{form.landlordPhone && form.landlordEmail ? "  |  " : ""}{form.landlordEmail && `Em: ${form.landlordEmail}`}
+              </p>
+            )}
           </div>
           <div style={{ textAlign: "right" }}>
             <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "20px", margin: 0 }}>RENT RECEIPT</p>

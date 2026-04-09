@@ -3,7 +3,7 @@
 import TemplatePicker from "@/components/TemplatePicker";
 import TemplateColorPicker from "@/components/TemplateColorPicker";
 import { useDownloadPDF } from "@/hooks/useDownloadPDF";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AdSense from "@/components/AdSense";
@@ -411,6 +411,7 @@ export function InvoicePreview({ form, template = "Classic", accent = "#0D9488" 
 export default function InvoicePage() {
     const { user } = useAuth();
     const { download, generateBlob, downloading } = useDownloadPDF();
+    const previewRef = useRef(null);
     const router = useRouter();
     const [template, setTemplate] = useState("Classic");
     const [form, setForm] = useState(DEFAULT_FORM);
@@ -1050,7 +1051,7 @@ export default function InvoicePage() {
                             <Eye size={14} color="#9CA3AF" />
                             <span style={{ fontSize: "12px", color: "#9CA3AF", fontFamily: "Inter, sans-serif", fontWeight: 600 }}>LIVE PREVIEW</span>
                         </div>
-                        <div style={{ position: "relative" }}>
+                        <div ref={previewRef} style={{ position: "relative" }}>
                             {showWatermark && <WatermarkOverlay />}
                             <InvoicePreview form={form} template={template} accent={form.templateColor || templateMeta.accent} />
                         </div>

@@ -30,10 +30,10 @@ export default function ElegantTemplate({ form }) {
         headerTop: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 12 },
         logo: { height: 36, objectFit: "contain", marginBottom: 6 },
         compName: { fontSize: 16, fontFamily: "Space Grotesk", fontWeight: 700, color: "#111827" },
-        compDetails: { fontSize: 10, color: "#6B7280" },
+        compDetails: { fontSize: 10, color: "#6B7280", lineHeight: 1.4 },
         
         title: { fontSize: 22, fontFamily: "Space Grotesk", fontWeight: 800, color: T },
-        metaText: { fontSize: 11, color: "#6B7280", textAlign: "right" },
+        metaText: { fontSize: 11, color: "#6B7280", textAlign: "right", fontFamily: "Space Grotesk" },
         accentBar: { height: 4, backgroundColor: T, borderRadius: 2, marginBottom: 24 },
         
         body: { marginTop: 20 },

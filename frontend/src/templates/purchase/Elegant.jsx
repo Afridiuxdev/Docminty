@@ -16,7 +16,7 @@ export default function PurchaseElegantTemplate({ form }) {
     headerTop: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 12 },
     logo: { height: 36, objectFit: "contain", marginBottom: 6 },
     fromName: { fontSize: 16, fontFamily: "Space Grotesk", fontWeight: 700, color: "#111827" },
-    fromDetails: { fontSize: 10, color: "#6B7280" },
+    fromDetails: { fontSize: 10, color: "#6B7280", lineHeight: 1.4 },
     
     title: { fontSize: 22, fontFamily: "Space Grotesk", fontWeight: 800, color: T },
     metaText: { fontSize: 11, color: "#6B7280", textAlign: "right" },
@@ -24,14 +24,14 @@ export default function PurchaseElegantTemplate({ form }) {
     
     addressSection: { flexDirection: "row", justifyContent: "space-between", marginBottom: 20 },
     addressBox: { width: "48%" },
-    addressLabel: { fontSize: 10, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 6 },
+    addressLabel: { fontSize: 10, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 6, fontFamily: "Space Grotesk" },
     addressName: { fontSize: 13, fontWeight: 700, color: "#111827", marginBottom: 4 },
     addressDetails: { fontSize: 11, color: "#6B7280", lineHeight: 1.4 },
     
     table: { marginBottom: 20 },
-    tHeader: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#E5E7EB", paddingBottom: 8, marginBottom: 8 },
-    tRow: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", padding: "8 0", alignItems: "center" },
-    th: { fontSize: 10, fontWeight: 700, color: "#6B7280", textTransform: "uppercase" },
+    tHeader: { flexDirection: "row", backgroundColor: "#F9FAFB", borderBottomWidth: 1, borderBottomColor: "#E5E7EB", padding: "8 12", borderRadius: 4 },
+    tRow: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", padding: "8 12", alignItems: "center" },
+    th: { fontSize: 10, fontWeight: 700, color: "#6B7280", textTransform: "uppercase", fontFamily: "Space Grotesk" },
     td: { fontSize: 11, color: "#111827" },
     
     bottomGrid: { flexDirection: "row", justifyContent: "flex-end", marginTop: 16 },
@@ -40,8 +40,8 @@ export default function PurchaseElegantTemplate({ form }) {
     totLabel: { fontSize: 11, color: "#6B7280" },
     totVal: { fontSize: 11, fontWeight: 700, color: "#111827" },
     grandBox: { marginTop: 8, padding: "10 12", backgroundColor: T + "10", borderRadius: 6, flexDirection: "row", justifyContent: "space-between" },
-    grandLabel: { fontSize: 12, fontWeight: 700, color: T },
-    grandVal: { fontSize: 12, fontWeight: 800, color: T },
+    grandLabel: { fontSize: 12, fontWeight: 700, color: T, fontFamily: "Space Grotesk" },
+    grandVal: { fontSize: 12, fontWeight: 800, color: T, fontFamily: "Space Grotesk" },
     
     wordsBox: { marginTop: 16, padding: "10 14", backgroundColor: "#F8F9FA", borderRadius: 6, borderLeftWidth: 3, borderLeftColor: T },
     wordsLabel: { fontSize: 11, color: "#9CA3AF", textTransform: "uppercase", marginBottom: 2 },
@@ -66,11 +66,16 @@ export default function PurchaseElegantTemplate({ form }) {
             <View>
               {form.logo && <Image src={form.logo} style={styles.logo} />}
               <Text style={styles.fromName}>{form.fromName || "Business Name"}</Text>
-              <Text style={styles.fromDetails}>{form.fromCity || ""}, {fromStateName}</Text>
+              <Text style={styles.fromDetails}>
+                {form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}, {fromStateName}
+                {form.fromGSTIN && `\nGSTIN: ${form.fromGSTIN}`}
+                {(form.fromPhone || form.fromEmail) && `\n${form.fromPhone || ""} | ${form.fromEmail || ""}`}
+              </Text>
             </View>
             <View style={{ textAlign: "right" }}>
               <Text style={styles.title}>PURCHASE ORDER</Text>
               <Text style={styles.metaText}>#{form.poNumber}</Text>
+              {form.deliveryDate && <Text style={styles.metaText}>Delivery: {form.deliveryDate}</Text>}
             </View>
           </View>
           <View style={styles.accentBar} />
@@ -143,6 +148,17 @@ export default function PurchaseElegantTemplate({ form }) {
             </View>
           </View>
         </View>
+
+        {(form.paymentTerms || form.shippingTerms || form.notes) && (
+          <View style={{ marginBottom: 20, marginTop: 10 }} wrap={false}>
+            <Text style={styles.addressLabel}>Order Provisions</Text>
+            <Text style={{ fontSize: 9, color: "#6B7280", lineHeight: 1.5, marginTop: 4 }}>
+              {form.paymentTerms && `Financial: ${form.paymentTerms}\n`}
+              {form.shippingTerms && `Shipping: ${form.shippingTerms}\n`}
+              {form.notes}
+            </Text>
+          </View>
+        )}
 
         <View style={styles.wordsBox} wrap={false}>
           <Text style={styles.wordsLabel}>Amount in Words</Text>

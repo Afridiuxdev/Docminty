@@ -15,7 +15,7 @@ export default function PurchaseMinimalTemplate({ form }) {
     header: { borderBottomWidth: 2, borderBottomColor: T, paddingBottom: 16, marginBottom: 20, flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
     logo: { height: 48, objectFit: "contain", marginBottom: 8 },
     fromName: { fontSize: 16, fontFamily: "Space Grotesk", fontWeight: 700, color: "#111827" },
-    fromDetails: { fontSize: 11, color: "#6B7280", marginTop: 2 },
+    fromDetails: { fontSize: 10, color: "#6B7280", marginTop: 2, lineHeight: 1.4 },
     
     title: { fontSize: 22, fontFamily: "Space Grotesk", fontWeight: 800, color: T },
     metaText: { fontSize: 12, color: "#6B7280", marginTop: 4 },
@@ -23,14 +23,14 @@ export default function PurchaseMinimalTemplate({ form }) {
     
     addressRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 20, marginTop: 20 },
     addressBox: { width: "48%" },
-    addressLabel: { fontSize: 10, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 6 },
+    addressLabel: { fontSize: 10, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 6, fontFamily: "Space Grotesk" },
     addressName: { fontSize: 13, fontWeight: 700, color: "#111827", marginBottom: 4 },
     addressDetails: { fontSize: 11, color: "#6B7280", lineHeight: 1.4 },
     
     table: { marginBottom: 20 },
-    tHeader: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#E5E7EB", paddingBottom: 8, marginBottom: 8 },
-    tRow: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", padding: "8 0", alignItems: "center" },
-    th: { fontSize: 10, fontWeight: 700, color: "#6B7280", textTransform: "uppercase" },
+    tHeader: { flexDirection: "row", backgroundColor: "#F9FAFB", borderBottomWidth: 1, borderBottomColor: "#E5E7EB", padding: "8 12", borderRadius: 4 },
+    tRow: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", padding: "8 12", alignItems: "center" },
+    th: { fontSize: 10, fontWeight: 700, color: "#6B7280", textTransform: "uppercase", fontFamily: "Space Grotesk" },
     td: { fontSize: 11, color: "#111827" },
     
     bottomGrid: { flexDirection: "row", justifyContent: "flex-end", marginTop: 16 },
@@ -39,8 +39,8 @@ export default function PurchaseMinimalTemplate({ form }) {
     totLabel: { fontSize: 11, color: "#6B7280" },
     totVal: { fontSize: 11, fontWeight: 700, color: "#111827" },
     grandBox: { marginTop: 8, padding: "10 12", backgroundColor: T + "10", borderRadius: 6, flexDirection: "row", justifyContent: "space-between" },
-    grandLabel: { fontSize: 12, fontWeight: 700, color: T },
-    grandVal: { fontSize: 12, fontWeight: 800, color: T },
+    grandLabel: { fontSize: 12, fontWeight: 700, color: T, fontFamily: "Space Grotesk" },
+    grandVal: { fontSize: 12, fontWeight: 800, color: T, fontFamily: "Space Grotesk" },
     
     wordsBox: { marginTop: 16, padding: "10 14", backgroundColor: "#F8F9FA", borderRadius: 6, borderLeftWidth: 3, borderLeftColor: T },
     wordsLabel: { fontSize: 11, color: "#9CA3AF", textTransform: "uppercase", marginBottom: 2 },
@@ -68,12 +68,19 @@ export default function PurchaseMinimalTemplate({ form }) {
               {form.fromGSTIN && <Text>GSTIN: {form.fromGSTIN}</Text>}
               <Text>{form.fromAddress || ""}{form.fromCity ? `, ${form.fromCity}` : ""}</Text>
               {fromStateName && <Text>{fromStateName}</Text>}
+              {(form.fromPhone || form.fromEmail) && (
+                <Text style={{ marginTop: 2 }}>
+                  {form.fromPhone && `Ph: ${form.fromPhone} `}
+                  {form.fromEmail && `Em: ${form.fromEmail}`}
+                </Text>
+              )}
             </View>
           </View>
           <View style={{ textAlign: "right" }}>
             <Text style={styles.title}>PURCHASE ORDER</Text>
             <Text style={styles.metaText}>#{form.poNumber}</Text>
             <Text style={styles.dateText}>Date: {form.poDate}</Text>
+            {form.deliveryDate && <Text style={styles.dateText}>Deliv: {form.deliveryDate}</Text>}
           </View>
         </View>
 
@@ -144,6 +151,29 @@ export default function PurchaseMinimalTemplate({ form }) {
             </View>
           </View>
         </View>
+
+        {(form.paymentTerms || form.shippingTerms || form.notes) && (
+          <View style={{ marginTop: 20, flexDirection: "row", gap: 20 }} wrap={false}>
+            {form.paymentTerms && (
+              <View style={{ flex: 1 }}>
+                <Text style={styles.addressLabel}>Payment Terms</Text>
+                <Text style={{ fontSize: 10, color: "#6B7280" }}>{form.paymentTerms}</Text>
+              </View>
+            )}
+            {form.shippingTerms && (
+              <View style={{ flex: 1 }}>
+                <Text style={styles.addressLabel}>Shipping Terms</Text>
+                <Text style={{ fontSize: 10, color: "#6B7280" }}>{form.shippingTerms}</Text>
+              </View>
+            )}
+            {form.notes && (
+              <View style={{ flex: 1 }}>
+                <Text style={styles.addressLabel}>Notes</Text>
+                <Text style={{ fontSize: 10, color: "#6B7280" }}>{form.notes}</Text>
+              </View>
+            )}
+          </View>
+        )}
 
         <View style={styles.wordsBox} wrap={false}>
           <Text style={styles.wordsLabel}>Amount in Words</Text>

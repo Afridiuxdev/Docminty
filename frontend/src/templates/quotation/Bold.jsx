@@ -17,12 +17,12 @@ const styles = StyleSheet.create({
     
     billSec: { flexDirection: "row", justifyContent: "space-between", marginBottom: 14, borderBottomWidth: 1, borderBottomColor: "#F3F4F6", paddingBottom: 10 },
     billCol: { flex: 1 },
-    billL: { fontSize: 8, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 },
-    billN: { fontSize: 11, fontWeight: 700, color: "#111827" },
+    billL: { fontSize: 8, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4, fontFamily: "Space Grotesk" },
+    billN: { fontSize: 11, fontWeight: 700, color: "#111827", fontFamily: "Space Grotesk" },
     
-    tHeader: { flexDirection: "row", backgroundColor: "#FEF2F2", padding: "6 8", borderBottomWidth: 1, borderBottomColor: "#E5E7EB" },
-    tRow: { flexDirection: "row", padding: "6 8", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", alignItems: "center" },
-    thT: { fontSize: 8, fontWeight: 700, color: "#6B7280", textTransform: "uppercase" },
+    tHeader: { flexDirection: "row", backgroundColor: "#F9FAFB", padding: "8 12", borderBottomWidth: 1, borderBottomColor: "#E5E7EB", borderRadius: 4 },
+    tRow: { flexDirection: "row", padding: "8 12", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", alignItems: "center" },
+    thT: { fontSize: 8, fontWeight: 700, color: "#6B7280", textTransform: "uppercase", fontFamily: "Space Grotesk" },
     tdT: { fontSize: 9, color: "#374151" },
     
     totBox: { alignSelf: "flex-end", width: 200, marginTop: 12 },
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     totFT: { fontSize: 12, fontWeight: 800, color: T },
     
     wordsBox: { backgroundColor: "#F8F9FA", padding: "10 14", borderLeftWidth: 4, borderLeftColor: T, marginTop: 16 },
-    wordsL: { fontSize: 8, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 2 },
+    wordsL: { fontSize: 8, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 2, fontFamily: "Space Grotesk", fontWeight: 700 },
     wordsT: { fontSize: 10, color: "#374151", fontStyle: "italic" },
     
     notesGrid: { flexDirection: "row", gap: 20, marginTop: 20 },

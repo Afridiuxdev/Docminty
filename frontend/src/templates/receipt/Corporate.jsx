@@ -32,25 +32,25 @@ export default function ReceiptCorporateTemplate({ form }) {
     header: { marginBottom: 32, textAlign: "center", borderBottomWidth: 2, borderBottomColor: T, paddingBottom: 20 },
     logo: { height: 40, objectFit: "contain", marginBottom: 12, margin: "0 auto" },
     orgName: { fontSize: 18, fontFamily: "Space Grotesk", fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 2, marginBottom: 4 },
-    docType: { fontSize: 10, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 2, fontFamily: "Space Grotesk" },
+    docType: { fontSize: 10, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 2, fontFamily: "Space Grotesk", fontWeight: 700 },
     
     dateRow: { marginTop: 24, marginBottom: 32, flexDirection: "row", justifyContent: "space-between", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", paddingBottom: 12 },
-    metaText: { fontSize: 9, color: "#6B7280", fontWeight: 700 },
+    metaText: { fontSize: 9, color: "#6B7280", fontWeight: 700, fontFamily: "Space Grotesk" },
     
     recipient: { marginBottom: 32 },
-    label: { fontSize: 8, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 },
+    label: { fontSize: 8, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4, fontFamily: "Space Grotesk", fontWeight: 700 },
     recipName: { fontSize: 13, fontWeight: 700, color: "#111827" },
     recipSub: { fontSize: 9, color: "#6B7280", marginTop: 2, lineHeight: 1.4, maxWidth: 300 },
     
     amountBox: { backgroundColor: "#F8FAFD", padding: "24 32", borderRadius: 8, margin: "24 0", borderLeftWidth: 4, borderLeftColor: T },
     amountRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 16 },
-    amountLabel: { fontSize: 10, fontWeight: 700, color: "#111827", textTransform: "uppercase" },
+    amountLabel: { fontSize: 10, fontWeight: 700, color: "#111827", textTransform: "uppercase", fontFamily: "Space Grotesk" },
     amountVal: { fontSize: 24, fontFamily: "Space Grotesk", fontWeight: 700, color: T },
     amountWords: { fontSize: 10, color: "#374151", borderTopWidth: 1, borderTopColor: "#E5E7EB", paddingTop: 12, fontWeight: 700, fontStyle: "italic" },
     
     detailsTable: { marginBottom: 32, padding: "16 0", borderBottomWidth: 1, borderBottomColor: "#F3F4F6" },
     detailLine: { flexDirection: "row", marginBottom: 10 },
-    detailLabel: { width: 140, fontSize: 9, color: "#6B7280", textTransform: "uppercase" },
+    detailLabel: { width: 140, fontSize: 9, color: "#6B7280", textTransform: "uppercase", fontFamily: "Space Grotesk", fontWeight: 700 },
     detailValue: { flex: 1, fontSize: 10, fontWeight: 700, color: "#111827" },
     
     signatureArea: { marginTop: 48, flexDirection: "row", justifyContent: "flex-end" },

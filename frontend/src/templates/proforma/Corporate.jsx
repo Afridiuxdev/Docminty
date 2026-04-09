@@ -19,7 +19,7 @@ export default function ProformaCorporateTemplate({ form }) {
   const styles = StyleSheet.create({
     page: { fontFamily: "Inter", fontSize: 9, color: "#111827", padding: "50 70", backgroundColor: "#ffffff" },
     badge: { backgroundColor: "#FEF9C3", borderBottomWidth: 1.5, borderBottomColor: "#F59E0B", padding: "4 0", margin: "-50 -70 32 -70", textAlign: "center" },
-    badgeText: { fontSize: 9, fontWeight: 700, color: "#92400E", textTransform: "uppercase", letterSpacing: 0.5 },
+    badgeText: { fontSize: 9, fontWeight: 700, color: "#92400E", textTransform: "uppercase", letterSpacing: 0.5, fontFamily: "Space Grotesk" },
     
     header: { marginBottom: 32, textAlign: "center", borderBottomWidth: 2, borderBottomColor: T, paddingBottom: 20 },
     logo: { height: 40, objectFit: "contain", marginBottom: 12, margin: "0 auto" },
@@ -27,18 +27,18 @@ export default function ProformaCorporateTemplate({ form }) {
     docType: { fontSize: 10, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 2, fontFamily: "Space Grotesk" },
     
     dateRow: { marginTop: 24, marginBottom: 32, flexDirection: "row", justifyContent: "space-between", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", paddingBottom: 12 },
-    metaText: { fontSize: 9, color: "#6B7280", fontWeight: 700 },
+    metaText: { fontSize: 9, color: "#6B7280", fontWeight: 700, fontFamily: "Space Grotesk" },
     
     billingRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 32 },
     billBox: { width: "45%" },
-    billLabel: { fontSize: 8, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 6 },
+    billLabel: { fontSize: 8, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 6, fontFamily: "Space Grotesk", fontWeight: 700 },
     billName: { fontSize: 11, fontWeight: 700, color: "#111827", marginBottom: 4 },
     billAddr: { fontSize: 9, color: "#6B7280", lineHeight: 1.4 },
     
     table: { marginBottom: 32 },
     tHeader: { flexDirection: "row", backgroundColor: T, padding: "8 6" },
     tRow: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", padding: "10 6" },
-    th: { fontSize: 8, fontWeight: 700, color: "#ffffff", textTransform: "uppercase" },
+    th: { fontSize: 8, fontWeight: 700, color: "#ffffff", textTransform: "uppercase", fontFamily: "Space Grotesk" },
     td: { fontSize: 9, color: "#111827" },
     
     colNo: { width: "5%" },
@@ -60,7 +60,7 @@ export default function ProformaCorporateTemplate({ form }) {
     
     infoSection: { marginTop: 32, flexDirection: "row", gap: 32 },
     infoCol: { flex: 1 },
-    infoTitle: { fontSize: 8, fontWeight: 700, color: T, textTransform: "uppercase", marginBottom: 8, borderBottomWidth: 1, borderBottomColor: T, paddingBottom: 4 },
+    infoTitle: { fontSize: 8, fontWeight: 700, color: T, textTransform: "uppercase", marginBottom: 8, borderBottomWidth: 1, borderBottomColor: T, paddingBottom: 4, fontFamily: "Space Grotesk" },
     infoText: { fontSize: 9, color: "#374151", lineHeight: 1.5 },
     
     bankGrid: { marginTop: 8 },
@@ -108,6 +108,7 @@ export default function ProformaCorporateTemplate({ form }) {
             <Text style={styles.billAddr}>
                 {form.fromAddress}{form.fromCity ? `, ${form.fromCity}, ${fromState}` : ""}
                 {form.fromGSTIN && `\nGSTIN: ${form.fromGSTIN}`}
+                {(form.fromPhone || form.fromEmail) && `\n${form.fromPhone ? "Ph: " + form.fromPhone : ""}${form.fromPhone && form.fromEmail ? " | " : ""}${form.fromEmail ? "Em: " + form.fromEmail : ""}`}
             </Text>
           </View>
         </View>
@@ -178,6 +179,7 @@ export default function ProformaCorporateTemplate({ form }) {
             {form.bankName && (
               <View style={styles.bankGrid}>
                 <View style={styles.bankLine}><Text style={styles.bankKey}>Bank:</Text><Text style={styles.bankVal}>{form.fromName.split(' ')[0]}</Text></View>
+                {form.accountName && <View style={styles.bankLine}><Text style={styles.bankKey}>Name:</Text><Text style={styles.bankVal}>{form.accountName}</Text></View>}
                 <View style={styles.bankLine}><Text style={styles.bankKey}>Account:</Text><Text style={styles.bankVal}>{form.accountNumber}</Text></View>
                 <View style={styles.bankLine}><Text style={styles.bankKey}>IFSC:</Text><Text style={styles.bankVal}>{form.ifscCode}</Text></View>
               </View>

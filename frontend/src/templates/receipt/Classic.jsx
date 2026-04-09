@@ -36,13 +36,13 @@ export default function ReceiptClassicTemplate({ form }) {
     
     body: { padding: "0 10" },
     amountBox: { backgroundColor: "#F0FDFA", border: `2 solid ${T}`, padding: "20 30", borderRadius: 8, textAlign: "center", marginBottom: 30 },
-    amountLabel: { fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 1, marginBottom: 5 },
+    amountLabel: { fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 1, marginBottom: 5, fontFamily: "Space Grotesk", fontWeight: 700 },
     amountVal: { fontSize: 32, fontFamily: "Space Grotesk", fontWeight: 800, color: T },
     amountWords: { fontSize: 11, color: "#374151", marginTop: 8, fontStyle: "italic" },
     
     table: { marginTop: 10 },
     tableRow: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", padding: "10 0" },
-    tableLabel: { width: "35%", fontWeight: 700, color: "#6B7280" },
+    tableLabel: { width: "35%", fontWeight: 700, color: "#6B7280", fontFamily: "Space Grotesk" },
     tableVal: { width: "65%", color: "#111827" },
     modeTag: { backgroundColor: "#F0FDFA", color: T, padding: "2 8", borderRadius: 4, fontWeight: 700 },
     

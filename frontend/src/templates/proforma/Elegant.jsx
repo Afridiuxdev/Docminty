@@ -19,25 +19,25 @@ export default function ProformaElegantTemplate({ form }) {
   const styles = StyleSheet.create({
     page: { fontFamily: "Inter", fontSize: 9, color: "#111827", padding: "60 80", backgroundColor: "#FFFDFA" },
     badge: { backgroundColor: "#FEF9C3", borderBottomWidth: 1, borderBottomColor: "#F59E0B", padding: "4 0", margin: "-60 -80 32 -80", textAlign: "center" },
-    badgeText: { fontSize: 9, fontWeight: 700, color: "#92400E", textTransform: "uppercase", letterSpacing: 0.5 },
+    badgeText: { fontSize: 9, fontWeight: 700, color: "#92400E", textTransform: "uppercase", letterSpacing: 0.5, fontFamily: "Space Grotesk" },
     
     header: { marginBottom: 40, borderBottomWidth: 1, borderBottomColor: "rgba(0,0,0,0.05)", paddingBottom: 24, alignItems: "flex-start" },
     title: { fontSize: 28, fontFamily: "Space Grotesk", fontWeight: 700, color: T, marginBottom: 8, letterSpacing: 2, textTransform: "uppercase" },
-    subtitle: { fontSize: 11, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 3, fontFamily: "Space Grotesk" },
+    subtitle: { fontSize: 11, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 3, fontFamily: "Space Grotesk", fontWeight: 700 },
     logo: { height: 40, objectFit: "contain", marginTop: 10 },
     
     dateLine: { fontSize: 9, color: "#9CA3AF", marginBottom: 32, textAlign: "right", fontFamily: "Inter" },
     
     billingSection: { flexDirection: "row", justifyContent: "space-between", marginBottom: 32 },
     billBox: { width: "45%" },
-    billLabel: { fontSize: 8, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 6 },
+    billLabel: { fontSize: 8, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 6, fontFamily: "Space Grotesk", fontWeight: 700 },
     billName: { fontSize: 11, fontWeight: 700, color: "#111827" },
     billAddr: { fontSize: 9, color: "#6B7280", marginTop: 2, lineHeight: 1.4 },
     
     table: { marginBottom: 32, borderTopWidth: 1, borderTopColor: T },
     tHeader: { flexDirection: "row", backgroundColor: T + "05", padding: "10 8", borderBottomWidth: 1, borderBottomColor: T },
     tRow: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "rgba(0,0,0,0.03)", padding: "12 8" },
-    th: { fontSize: 8, fontWeight: 700, color: T, textTransform: "uppercase" },
+    th: { fontSize: 8, fontWeight: 700, color: T, textTransform: "uppercase", fontFamily: "Space Grotesk" },
     td: { fontSize: 9, color: "#111827" },
     
     colNo: { width: "5%" },
@@ -56,11 +56,11 @@ export default function ProformaElegantTemplate({ form }) {
     totLabel: { fontSize: 8, color: "#9CA3AF" },
     totVal: { fontSize: 9, fontWeight: 700, color: "#374151" },
     grandBox: { marginTop: 12, padding: "12 0", borderTopWidth: 2, borderTopColor: T, borderBottomWidth: 2, borderBottomColor: T, alignItems: "center" },
-    grandLabel: { fontSize: 8, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 },
+    grandLabel: { fontSize: 8, fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 1, marginBottom: 4, fontFamily: "Space Grotesk" },
     grandVal: { fontSize: 20, fontWeight: 700, color: T, fontFamily: "Space Grotesk" },
     
     advBox: { backgroundColor: "#FEF9C3", padding: "12 16", borderRadius: 8, marginBottom: 20, borderLeftWidth: 4, borderLeftColor: "#F59E0B" },
-    advLabel: { fontSize: 7, fontWeight: 700, color: "#92400E", textTransform: "uppercase", marginBottom: 4 },
+    advLabel: { fontSize: 7, fontWeight: 700, color: "#92400E", textTransform: "uppercase", marginBottom: 4, fontFamily: "Space Grotesk" },
     advValue: { fontSize: 16, fontWeight: 700, color: "#92400E", fontFamily: "Space Grotesk" },
     
     bankBox: { backgroundColor: "rgba(0,0,0,0.02)", padding: 12, borderRadius: 8 },
@@ -95,6 +95,7 @@ export default function ProformaElegantTemplate({ form }) {
                 <Text style={styles.billAddr}>
                     {form.fromAddress}{form.fromCity ? `, ${form.fromCity}, ${fromState}` : ""}
                     {form.fromGSTIN && `\nGSTIN: ${form.fromGSTIN}`}
+                    {(form.fromPhone || form.fromEmail) && `\n${form.fromPhone ? "Ph: " + form.fromPhone : ""}${form.fromPhone && form.fromEmail ? " | " : ""}${form.fromEmail ? "Em: " + form.fromEmail : ""}`}
                 </Text>
             </View>
             <View style={{ textAlign: "right" }}>
@@ -154,6 +155,7 @@ export default function ProformaElegantTemplate({ form }) {
               <View style={styles.bankBox}>
                 <Text style={styles.bankLabel}>Remittance Details</Text>
                 <Text style={styles.bankValue}>{form.bankName} | {form.accountNumber}</Text>
+                {form.accountName && <Text style={styles.bankValue}>{form.accountName}</Text>}
                 <Text style={{ fontSize: 8, color: "#9CA3AF" }}>IFSC: {form.ifscCode} | {form.accountName}</Text>
               </View>
             )}

@@ -36,26 +36,26 @@ export default function RentMinimalTemplate({ form }) {
     
     body: { marginTop: 20 },
     amtBox: { backgroundColor: T + "10", border: `2 solid ${T}`, padding: "16 20", borderRadius: 8, textAlign: "center", marginBottom: 16 },
-    amtLabel: { fontSize: 11, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 4 },
+    amtLabel: { fontSize: 11, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 4, fontFamily: "Space Grotesk" },
     amtVal: { fontSize: 28, fontFamily: "Space Grotesk", fontWeight: 800, color: T, marginBottom: 4 },
     amtWords: { fontSize: 11, color: "#374151", fontStyle: "italic" },
     
     infoGrid: { flexDirection: "row", gap: 24, marginBottom: 20 },
     infoCol: { flex: 1 },
-    colLabel: { fontSize: 11, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 0.5, fontWeight: 600, marginBottom: 6 },
+    colLabel: { fontSize: 11, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 0.5, fontWeight: 700, marginBottom: 6, fontFamily: "Space Grotesk" },
     colName: { fontSize: 13, fontWeight: 700, color: "#111827", marginBottom: 4 },
     colText: { fontSize: 11, color: "#4B5563", lineHeight: 1.4 },
     pan: { fontSize: 11, fontWeight: 600, color: "#111827", marginTop: 6 },
     
     summaryRow: { flexDirection: "row", gap: 24, padding: "12 0", borderTopWidth: 1, borderTopColor: "#F3F4F6", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", marginBottom: 20 },
     sumItem: { flex: 1 },
-    sumLabel: { fontSize: 11, color: "#9CA3AF", marginBottom: 2 },
-    sumVal: { fontSize: 13, fontWeight: 600, color: "#111827" },
+    sumLabel: { fontSize: 11, color: "#9CA3AF", marginBottom: 2, fontFamily: "Space Grotesk" },
+    sumVal: { fontSize: 13, fontWeight: 700, color: "#111827", fontFamily: "Space Grotesk" },
     
     hraNote: { marginTop: 16, padding: "8 12", backgroundColor: T + "08", borderLeft: `3 solid ${T}` },
     hraText: { fontSize: 10, color: T },
     
-    footer: { position: "absolute", bottom: 40, left: 50, right: 50, borderTopWidth: 1, borderTopColor: "#E5E7EB", paddingTop: 10, flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
+    footer: { marginTop: 24, paddingTop: 12, borderTopWidth: 1, borderTopColor: "#E5E7EB", flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
     fText: { fontSize: 10, color: "#D1D5DB" },
     sigArea: { textAlign: "center" },
     signature: { height: 40, width: 120, objectFit: "contain", marginBottom: 4 },

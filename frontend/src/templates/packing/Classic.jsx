@@ -14,7 +14,7 @@ export default function PackingClassicTemplate({ form }) {
     banner: { backgroundColor: T, padding: "18 24", flexDirection: "row", justifyContent: "space-between", alignItems: "center", color: "#ffffff" },
     bannerLeft: { flex: 1 },
     compName: { fontSize: 16, fontFamily: "Space Grotesk", fontWeight: 700, color: "#ffffff" },
-    compAddr: { fontSize: 10, color: "#ffffff", opacity: 0.8, marginTop: 2 },
+    compAddr: { fontSize: 10, color: "#ffffff", opacity: 0.8, marginTop: 2, lineHeight: 1.4 },
     
     bannerRight: { textAlign: "right" },
     docType: { fontSize: 20, fontFamily: "Space Grotesk", fontWeight: 800, color: "#ffffff" },
@@ -23,28 +23,27 @@ export default function PackingClassicTemplate({ form }) {
     body: { padding: "24 24" },
     grid: { flexDirection: "row", gap: 24, marginBottom: 20 },
     gridCol: { flex: 1 },
-    label: { fontSize: 10, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 6 },
+    label: { fontSize: 10, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 6, fontFamily: "Space Grotesk" },
     name: { fontSize: 13, fontWeight: 700, color: "#111827", marginBottom: 4 },
     addrText: { fontSize: 11, color: "#6B7280", lineHeight: 1.4 },
     
     table: { marginTop: 20 },
-    tableHeader: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#E5E7EB", paddingBottom: 8, marginBottom: 8 },
-    tableRow: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", padding: "8 0" },
-    th: { fontSize: 10, fontWeight: 700, color: "#6B7280", textTransform: "uppercase" },
+    tableHeader: { flexDirection: "row", backgroundColor: "#F9FAFB", borderBottomWidth: 1, borderBottomColor: "#E5E7EB", padding: "8 12", borderRadius: 4 },
+    tableRow: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", padding: "8 12", alignItems: "center" },
+    th: { fontSize: 10, fontWeight: 700, color: "#6B7280", textTransform: "uppercase", fontFamily: "Space Grotesk" },
     td: { fontSize: 11, color: "#374151" },
     
     colNo: { width: "8%" },
-    colDesc: { width: "42%" },
-    colSKU: { width: "15%" },
-    colQty: { width: "10%", textAlign: "center" },
-    colWeight: { width: "10%", textAlign: "center" },
-    colNotes: { width: "15%" },
+    colDesc: { width: "52%" },
+    colSKU: { width: "17%" },
+    colQty: { width: "12%", textAlign: "center" },
+    colWeight: { width: "11%", textAlign: "center" },
     
     summary: { marginTop: 12, padding: "12 16", backgroundColor: T + "10", borderRadius: 8, flexDirection: "row", justifyContent: "space-between" },
     sumText: { fontSize: 13, fontWeight: 700, color: T, fontFamily: "Space Grotesk" },
     
     notesArea: { marginTop: 12, padding: "10 14", backgroundColor: "#F8F9FA", borderRadius: 6, borderLeftWidth: 3, borderLeftColor: T },
-    notesLabel: { fontSize: 11, color: "#9CA3AF", textTransform: "uppercase", marginBottom: 2 },
+    notesLabel: { fontSize: 11, color: "#9CA3AF", textTransform: "uppercase", marginBottom: 2, fontFamily: "Space Grotesk" },
     notesText: { fontSize: 12, color: "#374151" },
     
     footer: { marginTop: 24, paddingTop: 12, borderTopWidth: 1, borderTopColor: "#E5E7EB", flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
@@ -61,7 +60,11 @@ export default function PackingClassicTemplate({ form }) {
         <View style={styles.banner}>
           <View style={styles.bannerLeft}>
             <Text style={styles.compName}>{form.fromName || "Business Name"}</Text>
-            <Text style={styles.compAddr}>{form.fromAddress}</Text>
+            <Text style={styles.compAddr}>{form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}</Text>
+            {form.fromGSTIN && <Text style={styles.compAddr}>GSTIN: {form.fromGSTIN}</Text>}
+            {(form.fromPhone || form.fromEmail) && (
+              <Text style={styles.compAddr}>{form.fromPhone && `Ph: ${form.fromPhone}`}{form.fromPhone && form.fromEmail ? "  |  " : ""}{form.fromEmail && `Em: ${form.fromEmail}`}</Text>
+            )}
           </View>
           <View style={styles.bannerRight}>
             <Text style={styles.docType}>PACKING SLIP</Text>
@@ -101,7 +104,6 @@ export default function PackingClassicTemplate({ form }) {
               <Text style={[styles.th, styles.colSKU]}>SKU</Text>
               <Text style={[styles.th, styles.colQty]}>Qty</Text>
               <Text style={[styles.th, styles.colWeight]}>Weight</Text>
-              <Text style={[styles.th, styles.colNotes]}>Notes</Text>
             </View>
             {form.items.map((item, i) => (
               <View key={i} style={styles.tableRow} wrap={false}>
@@ -110,7 +112,6 @@ export default function PackingClassicTemplate({ form }) {
                 <Text style={[styles.td, styles.colSKU]}>{item.sku || "—"}</Text>
                 <Text style={[styles.td, styles.colQty, { fontWeight: 700 }]}>{item.qty}</Text>
                 <Text style={[styles.td, styles.colWeight]}>{item.weight || "—"}</Text>
-                <Text style={[styles.td, styles.colNotes]}>{item.notes || "—"}</Text>
               </View>
             ))}
           </View>

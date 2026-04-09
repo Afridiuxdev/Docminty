@@ -15,19 +15,19 @@ export default function PurchaseCorporateTemplate({ form }) {
     header: { textAlign: "center", padding: "20 24 16", borderBottomWidth: 2, borderBottomColor: T, marginBottom: 20 },
     logo: { height: 36, objectFit: "contain", marginBottom: 8, alignSelf: "center" },
     orgName: { fontSize: 20, fontFamily: "Space Grotesk", fontWeight: 800, color: T, marginBottom: 2 },
-    orgAddress: { fontSize: 10, color: "#6B7280", marginBottom: 8, alignSelf: "center", maxWidth: 400, textAlign: "center" },
-    metaRow: { flexDirection: "row", justifyContent: "center", gap: 16, fontSize: 10, color: "#9CA3AF", fontWeight: 700, textTransform: "uppercase" },
+    orgAddress: { fontSize: 10, color: "#6B7280", marginBottom: 8, alignSelf: "center", maxWidth: 400, textAlign: "center", lineHeight: 1.4 },
+    metaRow: { flexDirection: "row", justifyContent: "center", gap: 16, fontSize: 10, color: "#9CA3AF", fontWeight: 700, textTransform: "uppercase", fontFamily: "Space Grotesk" },
     
     addressSection: { flexDirection: "row", justifyContent: "space-between", marginBottom: 20 },
     addressBox: { width: "48%" },
-    addressLabel: { fontSize: 10, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 6 },
+    addressLabel: { fontSize: 10, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 6, fontFamily: "Space Grotesk" },
     addressName: { fontSize: 13, fontWeight: 700, color: "#111827", marginBottom: 4 },
     addressDetails: { fontSize: 11, color: "#6B7280", lineHeight: 1.4 },
     
     table: { marginBottom: 20 },
-    tHeader: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#E5E7EB", paddingBottom: 8, marginBottom: 8 },
-    tRow: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", padding: "8 0", alignItems: "center" },
-    th: { fontSize: 10, fontWeight: 700, color: "#6B7280", textTransform: "uppercase" },
+    tHeader: { flexDirection: "row", backgroundColor: "#F9FAFB", borderBottomWidth: 1, borderBottomColor: "#E5E7EB", padding: "8 12", borderRadius: 4 },
+    tRow: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", padding: "8 12", alignItems: "center" },
+    th: { fontSize: 10, fontWeight: 700, color: "#6B7280", textTransform: "uppercase", fontFamily: "Space Grotesk" },
     td: { fontSize: 11, color: "#111827" },
     
     bottomGrid: { flexDirection: "row", justifyContent: "flex-end", marginTop: 16 },
@@ -62,11 +62,19 @@ export default function PurchaseCorporateTemplate({ form }) {
           <Text style={styles.orgName}>{form.fromName || "Company Name"}</Text>
           <Text style={styles.orgAddress}>
             {form.fromAddress} {form.fromCity && `${form.fromCity}, `} {fromStateName}
+            {form.fromGSTIN && `\nGSTIN: ${form.fromGSTIN}`}
+            {(form.fromPhone || form.fromEmail) && `\nPH: ${form.fromPhone || "—"} | EM: ${form.fromEmail || "—"}`}
           </Text>
           <View style={styles.metaRow}>
             <Text>PO: #{form.poNumber}</Text>
             <Text>|</Text>
             <Text>DATE: {form.poDate}</Text>
+            {form.deliveryDate && (
+              <>
+                <Text>|</Text>
+                <Text>DELIVERY: {form.deliveryDate}</Text>
+              </>
+            )}
           </View>
         </View>
 
@@ -137,6 +145,17 @@ export default function PurchaseCorporateTemplate({ form }) {
             </View>
           </View>
         </View>
+
+        {(form.paymentTerms || form.shippingTerms || form.notes) && (
+          <View style={{ marginBottom: 20 }} wrap={false}>
+            <Text style={[styles.addressLabel, { borderBottomWidth: 1, borderBottomColor: "#F3F4F6", paddingBottom: 4, marginBottom: 8 }]}>Purchase Provisions & Terms</Text>
+            <Text style={{ fontSize: 9, color: "#6B7280", lineHeight: 1.5 }}>
+              {form.paymentTerms && `Financial Terms: ${form.paymentTerms}\n`}
+              {form.shippingTerms && `Logistics: ${form.shippingTerms}\n`}
+              {form.notes}
+            </Text>
+          </View>
+        )}
 
         <View style={styles.wordsBox} wrap={false}>
           <Text style={styles.wordsLabel}>Amount in Words</Text>

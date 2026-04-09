@@ -14,7 +14,7 @@ export default function ProformaModernTemplate({ form }) {
   const styles = StyleSheet.create({
     page: { fontFamily: "Inter", fontSize: 10, color: "#111827", padding: 0, backgroundColor: "#ffffff" },
     badge: { backgroundColor: "#FEF9C3", borderBottomWidth: 2, borderBottomColor: "#F59E0B", padding: "6 0", textAlign: "center" },
-    badgeText: { fontSize: 10, fontWeight: 700, color: "#92400E", textTransform: "uppercase", letterSpacing: 1 },
+    badgeText: { fontSize: 10, fontWeight: 700, color: "#92400E", textTransform: "uppercase", letterSpacing: 1, fontFamily: "Space Grotesk" },
     
     header: { backgroundColor: T, padding: "30 50", flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
     docType: { fontSize: 24, fontFamily: "Space Grotesk", fontWeight: 800, color: "#ffffff", letterSpacing: 1 },
@@ -22,19 +22,19 @@ export default function ProformaModernTemplate({ form }) {
     
     main: { padding: "40 50" },
     topMeta: { flexDirection: "row", justifyContent: "space-between", marginBottom: 30, borderBottomWidth: 1, borderBottomColor: "#F3F4F6", paddingBottom: 15 },
-    metaLabel: { fontSize: 9, color: "#6B7280", textTransform: "uppercase" },
+    metaLabel: { fontSize: 9, color: "#6B7280", textTransform: "uppercase", fontFamily: "Space Grotesk", fontWeight: 700 },
     metaValue: { fontSize: 11, fontWeight: 700, color: "#111827" },
     
     infoGrid: { flexDirection: "row", gap: 40, marginBottom: 32 },
     infoCol: { flex: 1 },
-    colLabel: { fontSize: 8, color: T, textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 8, fontWeight: 700 },
+    colLabel: { fontSize: 8, color: T, textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 8, fontWeight: 700, fontFamily: "Space Grotesk" },
     colName: { fontSize: 13, fontWeight: 700, color: "#111827", marginBottom: 5 },
     colAddr: { fontSize: 9, color: "#4B5563", lineHeight: 1.5 },
     
     table: { marginTop: 10 },
-    tableHeader: { flexDirection: "row", borderBottomWidth: 2, borderBottomColor: T, padding: "8 0", marginBottom: 5 },
-    tableRow: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#F9FAFB", padding: "10 0" },
-    th: { fontSize: 8, fontWeight: 700, color: "#6B7280", textTransform: "uppercase" },
+    tableHeader: { flexDirection: "row", backgroundColor: "#F9FAFB", borderBottomWidth: 2, borderBottomColor: T, padding: "8 12", marginBottom: 5, borderRadius: 4 },
+    tableRow: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#F9FAFB", padding: "8 12", alignItems: "center" },
+    th: { fontSize: 8, fontWeight: 700, color: "#6B7280", textTransform: "uppercase", fontFamily: "Space Grotesk" },
     td: { fontSize: 9, color: "#111827" },
     
     colNo: { width: "5%" },
@@ -55,7 +55,7 @@ export default function ProformaModernTemplate({ form }) {
     advCard: { flex: 1, padding: "12 20", borderRadius: 12 },
     advYellow: { backgroundColor: "#FEF9C3", borderAround: "1 solid #F59E0B" },
     advAqua: { backgroundColor: "#F0FDFA", borderAround: `1 solid ${T}` },
-    advL: { fontSize: 8, fontWeight: 700, color: "#92400E", textTransform: "uppercase", marginBottom: 4 },
+    advL: { fontSize: 8, fontWeight: 700, color: "#92400E", textTransform: "uppercase", marginBottom: 4, fontFamily: "Space Grotesk" },
     advV: { fontSize: 20, fontWeight: 800, color: "#92400E", fontFamily: "Space Grotesk" },
     
     fNote: { marginTop: 20, padding: "10 14", background: "#F8FAFC", borderRadius: 8, borderLeftWidth: 4, borderLeftColor: T },
@@ -183,6 +183,7 @@ export default function ProformaModernTemplate({ form }) {
                 <View style={[styles.advCard, styles.advAqua]}>
                     <Text style={[styles.advL, { color: "#0D9488" }]}>Settlement Routing</Text>
                     <Text style={{ fontSize: 10, fontWeight: 700, color: "#111827" }}>{form.bankName} | {form.accountNumber}</Text>
+                    {form.accountName && <Text style={{ fontSize: 10, color: "#4B5563" }}>{form.accountName}</Text>}
                     <Text style={{ fontSize: 8, color: "#64748B" }}>IFSC: {form.ifscCode} | {form.accountName}</Text>
                 </View>
               )}

@@ -16,8 +16,8 @@ export default function PurchaseModernTemplate({ form }) {
     logo: { height: 32, objectFit: "contain", marginBottom: 24, filter: "brightness(0) invert(1)" },
     sideTitle: { fontSize: 15, fontFamily: "Space Grotesk", fontWeight: 800, textTransform: "uppercase", marginBottom: 4 },
     sideSub: { fontSize: 10, opacity: 0.75, marginBottom: 24 },
-    sideLabel: { fontSize: 8, fontWeight: 700, opacity: 0.6, textTransform: "uppercase", marginBottom: 3 },
-    sideValue: { fontSize: 10, fontWeight: 600, color: "#ffffff", marginBottom: 4 },
+    sideLabel: { fontSize: 8, fontWeight: 700, opacity: 0.6, textTransform: "uppercase", marginBottom: 3, fontFamily: "Space Grotesk" },
+    sideValue: { fontSize: 10, fontWeight: 700, color: "#ffffff", marginBottom: 4 },
     sideText: { fontSize: 9, opacity: 0.8, marginBottom: 16, lineHeight: 1.4 },
     
     main: { flex: 1, backgroundColor: "#ffffff" },
@@ -27,14 +27,14 @@ export default function PurchaseModernTemplate({ form }) {
     mainContent: { padding: "20 24" },
     addressRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 24 },
     addressBox: { width: "48%" },
-    addressLabel: { fontSize: 10, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 6 },
+    addressLabel: { fontSize: 10, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 6, fontFamily: "Space Grotesk" },
     addressName: { fontSize: 13, fontWeight: 700, color: "#111827", marginBottom: 4 },
     addressDetails: { fontSize: 11, color: "#6B7280", lineHeight: 1.4 },
     
     table: { marginBottom: 20 },
-    tHeader: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", paddingBottom: 8 },
-    tRow: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", padding: "10 0", alignItems: "center" },
-    th: { fontSize: 10, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase" },
+    tHeader: { flexDirection: "row", backgroundColor: "#F9FAFB", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", padding: "8 12", borderRadius: 4 },
+    tRow: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", padding: "8 12", alignItems: "center" },
+    th: { fontSize: 10, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", fontFamily: "Space Grotesk" },
     td: { fontSize: 10, color: "#111827" },
     
     bottomGrid: { flexDirection: "row", justifyContent: "flex-end", marginTop: 16 },
@@ -73,6 +73,8 @@ export default function PurchaseModernTemplate({ form }) {
             <Text style={styles.sideValue}>{form.fromName || "Your Company"}</Text>
             <Text style={styles.sideText}>
               {form.fromAddress} {form.fromCity && `${form.fromCity}, `} {fromStateName}
+              {form.fromGSTIN && `\nGSTIN: ${form.fromGSTIN}`}
+              {(form.fromPhone || form.fromEmail) && `\n${form.fromPhone || ""} ${form.fromEmail || ""}`}
             </Text>
           </View>
           
@@ -167,6 +169,17 @@ export default function PurchaseModernTemplate({ form }) {
                   </View>
                 </View>
             </View>
+
+            {(form.paymentTerms || form.shippingTerms || form.notes) && (
+              <View style={{ marginTop: 20, marginBottom: 10 }}>
+                <Text style={styles.addressLabel}>Purchase Terms</Text>
+                <Text style={{ fontSize: 9, color: "#6B7280", lineHeight: 1.4, marginTop: 4 }}>
+                  {form.paymentTerms && `Payment: ${form.paymentTerms}\n`}
+                  {form.shippingTerms && `Shipping: ${form.shippingTerms}\n`}
+                  {form.notes}
+                </Text>
+              </View>
+            )}
 
             <View style={styles.wordsBox} wrap={false}>
               <Text style={styles.wordsLabel}>Amount in Words</Text>

@@ -324,9 +324,15 @@ export function POPreview({ form, template = "Classic", accent = "#0D9488" }) {
           <p style={{ fontSize: "10px", opacity: 0.75, margin: "0 0 24px" }}>#{form.poNumber}</p>
           <p style={{ fontSize: "8px", fontWeight: 700, opacity: 0.6, textTransform: "uppercase", margin: "0 0 3px" }}>From</p>
           <p style={{ fontSize: "10px", fontWeight: 600, margin: "0 0 4px" }}>{form.fromName || "Your Company"}</p>
-          <p style={{ fontSize: "9px", opacity: 0.8, margin: "0 0 16px", lineHeight: 1.4 }}>
+          <p style={{ fontSize: "9px", opacity: 0.8, margin: "0 0 4px", lineHeight: 1.4 }}>
             {form.fromAddress} {form.fromCity && `${form.fromCity}, `} {fromState?.name}
           </p>
+          {form.fromGSTIN && <p style={{ fontSize: "9px", opacity: 0.8, margin: "0 0 4px" }}>GSTIN: {form.fromGSTIN}</p>}
+          {(form.fromPhone || form.fromEmail) && (
+            <p style={{ fontSize: "9px", opacity: 0.8, margin: "0 0 16px", lineHeight: 1.4 }}>
+              {form.fromPhone && `Ph: ${form.fromPhone}`}{form.fromPhone && form.fromEmail ? " | " : ""}{form.fromEmail && `Em: ${form.fromEmail}`}
+            </p>
+          )}
           <p style={{ fontSize: "8px", fontWeight: 700, opacity: 0.6, textTransform: "uppercase", margin: "0 0 3px" }}>Vendor</p>
           <p style={{ fontSize: "10px", fontWeight: 600, margin: "0 0 16px" }}>{form.toName || "Vendor Name"}</p>
           <div style={{ marginTop: "auto" }}>
@@ -355,7 +361,13 @@ export function POPreview({ form, template = "Classic", accent = "#0D9488" }) {
         <div style={{ textAlign: "center", padding: "20px 24px 16px", borderBottom: `2px solid ${accent}` }}>
           {form.logo && <img src={form.logo} alt="Logo" style={{ height: "36px", margin: "0 auto 8px", display: "block" }} />}
           <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "20px", color: accent, margin: "0 0 2px" }}>{form.fromName || "Company Name"}</p>
-          <p style={{ fontSize: "10px", color: "#6B7280", margin: "0 auto 8px", maxWidth: "400px" }}>{form.fromAddress} {form.fromCity && `${form.fromCity}, `} {fromState?.name}</p>
+          <p style={{ fontSize: "10px", color: "#6B7280", margin: "0 auto 4px", maxWidth: "400px" }}>{form.fromAddress} {form.fromCity && `${form.fromCity}, `} {fromState?.name}</p>
+          {form.fromGSTIN && <p style={{ fontSize: "10px", color: "#6B7280", margin: "0 auto 4px" }}>GSTIN: {form.fromGSTIN}</p>}
+          {(form.fromPhone || form.fromEmail) && (
+            <p style={{ fontSize: "10px", color: "#6B7280", margin: "0 auto 8px" }}>
+              {form.fromPhone && `Ph: ${form.fromPhone}`}{form.fromPhone && form.fromEmail ? "  |  " : ""}{form.fromEmail && `Em: ${form.fromEmail}`}
+            </p>
+          )}
           <div style={{ display: "flex", justifyContent: "center", gap: "16px", fontSize: "10px", color: "#9CA3AF", fontWeight: 700 }}>
             <span>PO: #{form.poNumber}</span>
             <span>DATE: {form.poDate}</span>
@@ -375,7 +387,11 @@ export function POPreview({ form, template = "Classic", accent = "#0D9488" }) {
             <div>
               {form.logo && <img src={form.logo} alt="Logo" style={{ height: "36px", marginBottom: "6px" }} />}
               <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: "#111827", margin: 0 }}>{form.fromName || "Business Name"}</p>
-              <p style={{ fontSize: "10px", color: "#6B7280" }}>{form.fromCity}, {fromState?.name}</p>
+              <p style={{ fontSize: "10px", color: "#6B7280", margin: "2px 0 0" }}>{form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}{fromState?.name ? `, ${fromState.name}` : ""}</p>
+              {form.fromGSTIN && <p style={{ fontSize: "10px", color: "#6B7280", margin: "2px 0 0" }}>GSTIN: {form.fromGSTIN}</p>}
+              {(form.fromPhone || form.fromEmail) && (
+                <p style={{ fontSize: "10px", color: "#6B7280", margin: "2px 0 0" }}>{form.fromPhone && `Ph: ${form.fromPhone}`}{form.fromPhone && form.fromEmail ? "  |  " : ""}{form.fromEmail && `Em: ${form.fromEmail}`}</p>
+              )}
             </div>
             <div style={{ textAlign: "right" }}>
               <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "22px", color: accent, margin: 0 }}>PURCHASE ORDER</p>
@@ -396,7 +412,13 @@ export function POPreview({ form, template = "Classic", accent = "#0D9488" }) {
         <div style={{ background: accent, padding: "18px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", color: "#fff" }}>
           <div>
             <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", margin: 0 }}>{form.fromName || "Business Name"}</p>
-            <p style={{ fontSize: "10px", opacity: 0.8 }}>{form.fromAddress}</p>
+            <p style={{ fontSize: "10px", opacity: 0.8, margin: "2px 0 0" }}>{form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}</p>
+            {form.fromGSTIN && <p style={{ fontSize: "10px", opacity: 0.8, margin: "2px 0 0" }}>GSTIN: {form.fromGSTIN}</p>}
+            {(form.fromPhone || form.fromEmail) && (
+              <p style={{ fontSize: "10px", opacity: 0.8, margin: "2px 0 0" }}>
+                {form.fromPhone && `Ph: ${form.fromPhone}`}{form.fromPhone && form.fromEmail ? "  |  " : ""}{form.fromEmail && `Em: ${form.fromEmail}`}
+              </p>
+            )}
           </div>
           <div style={{ textAlign: "right" }}>
             <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "20px", margin: 0 }}>PURCHASE ORDER</p>
@@ -432,6 +454,11 @@ export function POPreview({ form, template = "Classic", accent = "#0D9488" }) {
             {form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}
           </p>}
           {fromState && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{fromState.name}</p>}
+          {(form.fromPhone || form.fromEmail) && (
+            <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>
+              {form.fromPhone && `Ph: ${form.fromPhone}`}{form.fromPhone && form.fromEmail ? "  |  " : ""}{form.fromEmail && `Em: ${form.fromEmail}`}
+            </p>
+          )}
         </div>
         <div style={{ textAlign: "right" }}>
           <p style={{

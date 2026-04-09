@@ -29,11 +29,11 @@ export default function CorporateTemplate({ form }) {
         header: { backgroundColor: T, padding: "24 24", textAlign: "center", color: "#ffffff" },
         logo: { height: 40, objectFit: "contain", marginBottom: 8, alignSelf: "center", filter: "brightness(0) invert(1)" },
         compName: { fontSize: 15, fontFamily: "Space Grotesk", fontWeight: 700, color: "#ffffff", marginBottom: 2 },
-        compDetails: { fontSize: 11, color: "rgba(255,255,255,0.75)", marginBottom: 2 },
+        compDetails: { fontSize: 11, color: "rgba(255,255,255,0.75)", marginBottom: 2, lineHeight: 1.4 },
         
         titleBox: { marginTop: 12, backgroundColor: "rgba(255,255,255,0.15)", borderRadius: 4, padding: "4 16", alignSelf: "center" },
         titleText: { fontSize: 16, fontFamily: "Space Grotesk", fontWeight: 800, color: "#ffffff" },
-        metaText: { fontSize: 11, color: "rgba(255,255,255,0.8)", marginTop: 2 },
+        metaText: { fontSize: 11, color: "rgba(255,255,255,0.8)", marginTop: 2, fontFamily: "Space Grotesk" },
         
         bodyWrap: { padding: "30 50" },
         salutation: { fontSize: 12, color: "#374151", marginBottom: 16 },

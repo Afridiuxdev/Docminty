@@ -29,18 +29,18 @@ export default function ReceiptModernTemplate({ form }) {
     logo: { width: 45, objectFit: "contain", marginBottom: 24, filter: "brightness(0) invert(1)" },
     sideTitle: { fontSize: 18, fontFamily: "Space Grotesk", fontWeight: 800, textTransform: "uppercase", letterSpacing: 2, marginBottom: 40 },
     sideItem: { marginBottom: 24 },
-    sideLabel: { fontSize: 8, color: "rgba(255,255,255,0.6)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 },
+    sideLabel: { fontSize: 8, color: "rgba(255,255,255,0.6)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4, fontFamily: "Space Grotesk", fontWeight: 700 },
     sideValue: { fontSize: 11, fontWeight: 700, color: "#ffffff", lineHeight: 1.4 },
     
     main: { flex: 1, padding: "40 40 40 40" },
     amountBox: { backgroundColor: "#F0FDFA", borderAround: `2 solid ${T}`, padding: "24 30", borderRadius: 12, textAlign: "center", marginBottom: 30 },
-    amountLabel: { fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 },
+    amountLabel: { fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 1, marginBottom: 8, fontFamily: "Space Grotesk", fontWeight: 700 },
     amountVal: { fontSize: 36, fontFamily: "Space Grotesk", fontWeight: 800, color: T },
     amountWords: { fontSize: 12, color: "#374151", marginTop: 8, fontStyle: "italic" },
     
     table: { marginTop: 10 },
     tableRow: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", padding: "12 0" },
-    tableLabel: { width: "35%", fontWeight: 700, color: "#6B7280" },
+    tableLabel: { width: "35%", fontWeight: 700, color: "#6B7280", fontFamily: "Space Grotesk" },
     tableVal: { width: "65%", color: "#111827" },
     modeTag: { backgroundColor: "#F0FDFA", color: T, padding: "2 8", borderRadius: 4, fontWeight: 700 },
     

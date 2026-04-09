@@ -28,8 +28,8 @@ export default function RentModernTemplate({ form }) {
     sidebar: { width: 140, backgroundColor: T, height: "100%", padding: "24 14", color: "#ffffff" },
     sideTitle: { fontSize: 15, fontFamily: "Space Grotesk", fontWeight: 800, textTransform: "uppercase", marginBottom: 4 },
     sideSub: { fontSize: 10, opacity: 0.75, marginBottom: 24 },
-    sideLabel: { fontSize: 8, fontWeight: 700, opacity: 0.6, textTransform: "uppercase", marginBottom: 3 },
-    sideValue: { fontSize: 10, fontWeight: 600, color: "#ffffff", marginBottom: 4 },
+    sideLabel: { fontSize: 8, fontWeight: 700, opacity: 0.6, textTransform: "uppercase", marginBottom: 3, fontFamily: "Space Grotesk" },
+    sideValue: { fontSize: 10, fontWeight: 700, color: "#ffffff", marginBottom: 4 },
     sideText: { fontSize: 9, opacity: 0.8, marginBottom: 16, lineHeight: 1.4 },
     
     main: { flex: 1, backgroundColor: "#ffffff" },
@@ -39,21 +39,21 @@ export default function RentModernTemplate({ form }) {
     
     mainBody: { padding: "20 24" },
     amtBox: { backgroundColor: T + "10", border: `2 solid ${T}`, padding: "16 20", borderRadius: 8, textAlign: "center", marginBottom: 16 },
-    amtLabel: { fontSize: 11, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 4 },
+    amtLabel: { fontSize: 11, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 4, fontFamily: "Space Grotesk" },
     amtVal: { fontSize: 28, fontFamily: "Space Grotesk", fontWeight: 800, color: T, marginBottom: 4 },
     amtWords: { fontSize: 11, color: "#374151", fontStyle: "italic" },
     
     infoGrid: { flexDirection: "row", gap: 24, marginBottom: 20 },
     infoCol: { flex: 1 },
-    colLabel: { fontSize: 11, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 0.5, fontWeight: 600, marginBottom: 6 },
+    colLabel: { fontSize: 11, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 0.5, fontWeight: 700, marginBottom: 6, fontFamily: "Space Grotesk" },
     colName: { fontSize: 13, fontWeight: 700, color: "#111827", marginBottom: 4 },
     colText: { fontSize: 11, color: "#4B5563", lineHeight: 1.4 },
     pan: { fontSize: 11, fontWeight: 600, color: "#111827", marginTop: 6 },
     
     summaryRow: { flexDirection: "row", gap: 24, padding: "12 0", borderTopWidth: 1, borderTopColor: "#F3F4F6", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", marginBottom: 20 },
     sumItem: { flex: 1 },
-    sumLabel: { fontSize: 11, color: "#9CA3AF", marginBottom: 2 },
-    sumVal: { fontSize: 13, fontWeight: 600, color: "#111827" },
+    sumLabel: { fontSize: 11, color: "#9CA3AF", marginBottom: 2, fontFamily: "Space Grotesk" },
+    sumVal: { fontSize: 13, fontWeight: 700, color: "#111827", fontFamily: "Space Grotesk" },
     
     hraNote: { marginTop: 16, padding: "8 12", backgroundColor: T + "08", borderLeft: `3 solid ${T}` },
     hraText: { fontSize: 10, color: T },
@@ -76,8 +76,11 @@ export default function RentModernTemplate({ form }) {
             <Text style={styles.sideLabel}>Landlord</Text>
             <Text style={styles.sideValue}>{form.landlordName || "—"}</Text>
             <View style={styles.sideText}>
-                <Text>{form.landlordCity}</Text>
-                <Text>{lState}</Text>
+                <Text>{form.landlordAddress}</Text>
+                <Text>{form.landlordCity || ""}, {lState}</Text>
+                {(form.landlordPhone || form.landlordEmail) && (
+                  <Text style={{ marginTop: 2 }}>{form.landlordPhone || ""} {form.landlordEmail || ""}</Text>
+                )}
             </View>
           </View>
           
@@ -114,6 +117,8 @@ export default function RentModernTemplate({ form }) {
                 <View style={styles.colText}>
                   <Text>{form.propertyAddress}</Text>
                   <Text>{form.tenantCity ? form.tenantCity + ", " : ""}{tState}</Text>
+                  {form.tenantPhone && <Text>Ph: {form.tenantPhone}</Text>}
+                  {form.tenantEmail && <Text>Em: {form.tenantEmail}</Text>}
                 </View>
               </View>
               

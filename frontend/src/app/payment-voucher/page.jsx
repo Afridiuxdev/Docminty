@@ -218,9 +218,14 @@ export function VoucherPreview({ form, template = "Classic", accent = "#0D9488" 
           <p style={{ fontSize: "10px", opacity: 0.75, margin: "0 0 24px" }}>#{form.voucherNumber}</p>
           <p style={{ fontSize: "8px", fontWeight: 700, opacity: 0.6, textTransform: "uppercase", margin: "0 0 3px" }}>Issuer</p>
           <p style={{ fontSize: "10px", fontWeight: 600, margin: "0 0 4px" }}>{form.companyName || "Your Company"}</p>
-          <p style={{ fontSize: "9px", opacity: 0.8, margin: "0 0 16px", lineHeight: 1.4 }}>
+          <p style={{ fontSize: "9px", opacity: 0.8, margin: "0 0 4px", lineHeight: 1.4 }}>
             {form.companyAddress} {form.companyCity && `${form.companyCity}, `} {companyState?.name}
           </p>
+          {(form.companyPhone || form.companyEmail) && (
+            <p style={{ fontSize: "9px", opacity: 0.8, margin: "0 0 16px", lineHeight: 1.4 }}>
+              {form.companyPhone && `Ph: ${form.companyPhone}`}{form.companyPhone && form.companyEmail ? " | " : ""}{form.companyEmail && `Em: ${form.companyEmail}`}
+            </p>
+          )}
           <p style={{ fontSize: "8px", fontWeight: 700, opacity: 0.6, textTransform: "uppercase", margin: "0 0 3px" }}>Paid To</p>
           <p style={{ fontSize: "10px", fontWeight: 600, margin: "0 0 16px" }}>{form.paidTo || "Recipient"}</p>
           <div style={{ marginTop: "auto" }}>
@@ -248,7 +253,12 @@ export function VoucherPreview({ form, template = "Classic", accent = "#0D9488" 
         <div style={{ textAlign: "center", padding: "20px 24px 16px", borderBottom: `2px solid ${accent}` }}>
           {form.logo && <img src={form.logo} alt="Logo" style={{ height: "36px", margin: "0 auto 8px", display: "block" }} />}
           <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "20px", color: accent, margin: "0 0 2px" }}>{form.companyName || "Company Name"}</p>
-          <p style={{ fontSize: "10px", color: "#6B7280", margin: "0 auto 8px", maxWidth: "400px" }}>{form.companyAddress} {form.companyCity && `${form.companyCity}, `} {companyState?.name}</p>
+          <p style={{ fontSize: "10px", color: "#6B7280", margin: "0 auto 4px", maxWidth: "400px" }}>{form.companyAddress} {form.companyCity && `${form.companyCity}, `} {companyState?.name}</p>
+          {(form.companyPhone || form.companyEmail) && (
+            <p style={{ fontSize: "10px", color: "#6B7280", margin: "0 auto 8px" }}>
+              {form.companyPhone && `Ph: ${form.companyPhone}`}{form.companyPhone && form.companyEmail ? "  |  " : ""}{form.companyEmail && `Em: ${form.companyEmail}`}
+            </p>
+          )}
           <div style={{ display: "flex", justifyContent: "center", gap: "16px", fontSize: "10px", color: "#9CA3AF", fontWeight: 700 }}>
             <span>VOUCHER: #{form.voucherNumber}</span>
             <span>DATE: {form.voucherDate}</span>
@@ -268,7 +278,10 @@ export function VoucherPreview({ form, template = "Classic", accent = "#0D9488" 
             <div>
               {form.logo && <img src={form.logo} alt="Logo" style={{ height: "36px", marginBottom: "6px" }} />}
               <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: "#111827", margin: 0 }}>{form.companyName || "Business Name"}</p>
-              <p style={{ fontSize: "10px", color: "#6B7280" }}>{form.companyCity}, {companyState?.name}</p>
+              <p style={{ fontSize: "10px", color: "#6B7280", margin: "2px 0 0" }}>{form.companyCity}, {companyState?.name}</p>
+              {(form.companyPhone || form.companyEmail) && (
+                <p style={{ fontSize: "10px", color: "#6B7280", margin: "2px 0 0" }}>{form.companyPhone && `Ph: ${form.companyPhone}`}{form.companyPhone && form.companyEmail ? "  |  " : ""}{form.companyEmail && `Em: ${form.companyEmail}`}</p>
+              )}
             </div>
             <div style={{ textAlign: "right" }}>
               <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "22px", color: accent, margin: 0 }}>PAYMENT VOUCHER</p>
@@ -289,7 +302,12 @@ export function VoucherPreview({ form, template = "Classic", accent = "#0D9488" 
         <div style={{ background: accent, padding: "18px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", color: "#fff" }}>
           <div>
             <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", margin: 0 }}>{form.companyName || "Business Name"}</p>
-            <p style={{ fontSize: "10px", opacity: 0.8 }}>{form.companyAddress}</p>
+            <p style={{ fontSize: "10px", opacity: 0.8, margin: "2px 0 0" }}>{form.companyAddress}</p>
+            {(form.companyPhone || form.companyEmail) && (
+              <p style={{ fontSize: "10px", opacity: 0.8, margin: "2px 0 0" }}>
+                {form.companyPhone && `Ph: ${form.companyPhone}`}{form.companyPhone && form.companyEmail ? "  |  " : ""}{form.companyEmail && `Em: ${form.companyEmail}`}
+              </p>
+            )}
           </div>
           <div style={{ textAlign: "right" }}>
             <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "20px", margin: 0 }}>PAYMENT VOUCHER</p>
@@ -330,6 +348,11 @@ export function VoucherPreview({ form, template = "Classic", accent = "#0D9488" 
           {companyState && (
             <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>
               {companyState.name}
+            </p>
+          )}
+          {(form.companyPhone || form.companyEmail) && (
+            <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>
+              {form.companyPhone && `Ph: ${form.companyPhone}`}{form.companyPhone && form.companyEmail ? "  |  " : ""}{form.companyEmail && `Em: ${form.companyEmail}`}
             </p>
           )}
         </div>

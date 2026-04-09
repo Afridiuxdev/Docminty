@@ -24,14 +24,14 @@ export default function PurchaseClassicTemplate({ form }) {
     
     addressSection: { flexDirection: "row", justifyContent: "space-between", marginBottom: 32 },
     addressBox: { width: "45%" },
-    addressLabel: { fontSize: 8, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 6 },
+    addressLabel: { fontSize: 8, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 6, fontFamily: "Space Grotesk" },
     addressName: { fontSize: 11, fontWeight: 700, color: "#111827", marginBottom: 4 },
     addressDetails: { fontSize: 9, color: "#6B7280", lineHeight: 1.4 },
     
     table: { marginBottom: 24 },
-    tHeader: { flexDirection: "row", backgroundColor: "#F9FAFB", borderBottomWidth: 1, borderBottomColor: "#E5E7EB", padding: "8 4" },
-    tRow: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", padding: "8 4", alignItems: "center" },
-    th: { fontSize: 8, fontWeight: 700, color: "#6B7280", textTransform: "uppercase" },
+    tHeader: { flexDirection: "row", backgroundColor: "#F9FAFB", borderBottomWidth: 1, borderBottomColor: "#E5E7EB", padding: "8 12" },
+    tRow: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", padding: "8 12", alignItems: "center" },
+    th: { fontSize: 8, fontWeight: 700, color: "#6B7280", textTransform: "uppercase", fontFamily: "Space Grotesk" },
     td: { fontSize: 9, color: "#111827" },
     
     summarySection: { flexDirection: "row", justifyContent: "flex-end", marginTop: 8 },
@@ -40,8 +40,8 @@ export default function PurchaseClassicTemplate({ form }) {
     totLabel: { fontSize: 9, color: "#6B7280" },
     totVal: { fontSize: 9, fontWeight: 700, color: "#111827" },
     grandRow: { flexDirection: "row", justifyContent: "space-between", backgroundColor: T + "08", padding: "10 12", borderRadius: 6, marginTop: 8 },
-    grandLabel: { fontSize: 11, fontWeight: 700, color: T },
-    grandVal: { fontSize: 11, fontWeight: 700, color: T },
+    grandLabel: { fontSize: 11, fontWeight: 700, color: T, fontFamily: "Space Grotesk" },
+    grandVal: { fontSize: 11, fontWeight: 700, color: T, fontFamily: "Space Grotesk" },
     
     wordsBox: { marginTop: 24, padding: "10 16", backgroundColor: "#F9FAFB", borderRadius: 6, borderLeftWidth: 3, borderLeftColor: T },
     wordsLabel: { fontSize: 7, color: "#9CA3AF", textTransform: "uppercase", marginBottom: 4 },
@@ -49,7 +49,7 @@ export default function PurchaseClassicTemplate({ form }) {
     
     termsGrid: { flexDirection: "row", flexWrap: "wrap", gap: 16, marginTop: 32 },
     termBox: { width: "30%", minWidth: 150 },
-    termL: { fontSize: 8, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", marginBottom: 4 },
+    termL: { fontSize: 8, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", marginBottom: 4, fontFamily: "Space Grotesk" },
     termT: { fontSize: 9, color: "#6B7280", lineHeight: 1.5 },
     
     footer: { position: "absolute", bottom: 40, left: 50, right: 50, flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", borderTopWidth: 1, borderTopColor: "#F3F4F6", paddingTop: 16 },

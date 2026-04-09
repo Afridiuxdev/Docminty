@@ -11,7 +11,7 @@ export function useDownloadPDF() {
   const { user } = useAuth();
 
   const plan = user?.plan?.toUpperCase() || "FREE";
-  const isUserPro = plan === "PRO" || plan === "ENTERPRISE";
+  const isUserPro = plan === "PRO" || plan === "ENTERPRISE" || plan === "BUSINESS PRO";
 
   const download = async (docType, variant, form, filename) => {
     // 1. Load Registry Meta

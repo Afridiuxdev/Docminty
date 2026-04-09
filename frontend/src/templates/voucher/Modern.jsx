@@ -29,8 +29,8 @@ export default function VoucherModernTemplate({ form }) {
     sidebar: { width: 140, backgroundColor: T, height: "100%", padding: "24 14", color: "#ffffff" },
     sideTitle: { fontSize: 15, fontFamily: "Space Grotesk", fontWeight: 800, textTransform: "uppercase", marginBottom: 4 },
     sideSub: { fontSize: 10, opacity: 0.75, marginBottom: 24 },
-    sideLabel: { fontSize: 8, fontWeight: 700, opacity: 0.6, textTransform: "uppercase", marginBottom: 3 },
-    sideValue: { fontSize: 10, fontWeight: 600, color: "#ffffff", marginBottom: 4 },
+    sideLabel: { fontSize: 8, fontWeight: 700, opacity: 0.6, textTransform: "uppercase", marginBottom: 3, fontFamily: "Space Grotesk" },
+    sideValue: { fontSize: 10, fontWeight: 700, color: "#ffffff", marginBottom: 4 },
     sideText: { fontSize: 9, opacity: 0.8, marginBottom: 16, lineHeight: 1.4 },
     
     main: { flex: 1, backgroundColor: "#ffffff" },
@@ -40,16 +40,16 @@ export default function VoucherModernTemplate({ form }) {
     
     mainBody: { padding: "20 24" },
     amtBox: { backgroundColor: T + "10", border: `2 solid ${T}`, padding: "16 20", borderRadius: 10, flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 20 },
-    amtLabel: { fontSize: 11, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 2 },
+    amtLabel: { fontSize: 11, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 2, fontFamily: "Space Grotesk" },
     amtVal: { fontSize: 28, fontFamily: "Space Grotesk", fontWeight: 800, color: T },
-    modeTag: { backgroundColor: T, color: "#ffffff", padding: "4 12", borderRadius: 20, fontSize: 12, fontWeight: 600 },
+    modeTag: { backgroundColor: T, color: "#ffffff", padding: "4 12", borderRadius: 20, fontSize: 12, fontWeight: 700, fontFamily: "Space Grotesk" },
     
     words: { fontSize: 12, color: "#374151", marginBottom: 16 },
     
     table: { marginBottom: 32 },
     row: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", padding: "8 0" },
-    label: { width: "35%", fontSize: 11, color: "#6B7280", fontWeight: 600 },
-    value: { flex: 1, fontSize: 11, color: "#111827" },
+    label: { width: "35%", fontSize: 11, color: "#6B7280", fontWeight: 700, fontFamily: "Space Grotesk" },
+    value: { flex: 1, fontSize: 11, color: "#111827", lineHeight: 1.4 },
     
     signatures: { flexDirection: "row", gap: 16, marginTop: 32 },
     sigCol: { flex: 1, textAlign: "center" },
@@ -75,6 +75,9 @@ export default function VoucherModernTemplate({ form }) {
             <View style={styles.sideText}>
                 <Text>{form.companyAddress}</Text>
                 <Text>{form.companyCity || ""}, {cState}</Text>
+                {(form.companyPhone || form.companyEmail) && (
+                  <Text style={{ marginTop: 2 }}>{form.companyPhone || ""} {form.companyEmail || ""}</Text>
+                )}
             </View>
           </View>
           

@@ -29,7 +29,7 @@ export default function RentClassicTemplate({ form }) {
     banner: { backgroundColor: T, padding: "18 24", flexDirection: "row", justifyContent: "space-between", alignItems: "center", color: "#ffffff" },
     bannerLeft: { flex: 1 },
     landlordHeader: { fontSize: 16, fontFamily: "Space Grotesk", fontWeight: 700, color: "#ffffff" },
-    landlordSub: { fontSize: 10, color: "#ffffff", opacity: 0.8, marginTop: 2 },
+    landlordSub: { fontSize: 10, color: "#ffffff", opacity: 0.8, marginTop: 2, lineHeight: 1.4 },
     
     bannerRight: { textAlign: "right" },
     docType: { fontSize: 20, fontFamily: "Space Grotesk", fontWeight: 800, color: "#ffffff" },
@@ -37,21 +37,21 @@ export default function RentClassicTemplate({ form }) {
     
     body: { padding: "24 24" },
     amtBox: { backgroundColor: T + "10", border: `2 solid ${T}`, padding: "16 20", borderRadius: 8, textAlign: "center", marginBottom: 16 },
-    amtLabel: { fontSize: 11, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 4 },
+    amtLabel: { fontSize: 11, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 4, fontFamily: "Space Grotesk" },
     amtVal: { fontSize: 28, fontFamily: "Space Grotesk", fontWeight: 800, color: T, marginBottom: 4 },
     amtWords: { fontSize: 11, color: "#374151", fontStyle: "italic" },
     
     infoGrid: { flexDirection: "row", gap: 24, marginBottom: 20 },
     infoCol: { flex: 1 },
-    colLabel: { fontSize: 11, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 0.5, fontWeight: 600, marginBottom: 6 },
+    colLabel: { fontSize: 11, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 0.5, fontWeight: 700, marginBottom: 6, fontFamily: "Space Grotesk" },
     colName: { fontSize: 13, fontWeight: 700, color: "#111827", marginBottom: 4 },
     colText: { fontSize: 11, color: "#4B5563", lineHeight: 1.4 },
     pan: { fontSize: 11, fontWeight: 600, color: "#111827", marginTop: 6 },
     
     summaryRow: { flexDirection: "row", gap: 24, padding: "12 0", borderTopWidth: 1, borderTopColor: "#F3F4F6", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", marginBottom: 20 },
     sumItem: { flex: 1 },
-    sumLabel: { fontSize: 11, color: "#9CA3AF", marginBottom: 2 },
-    sumVal: { fontSize: 13, fontWeight: 600, color: "#111827" },
+    sumLabel: { fontSize: 11, color: "#9CA3AF", marginBottom: 2, fontFamily: "Space Grotesk" },
+    sumVal: { fontSize: 13, fontWeight: 700, color: "#111827", fontFamily: "Space Grotesk" },
     
     hraNote: { marginTop: 16, padding: "8 12", backgroundColor: T + "08", borderLeft: `3 solid ${T}` },
     hraText: { fontSize: 10, color: T },
@@ -69,7 +69,10 @@ export default function RentClassicTemplate({ form }) {
         <View style={styles.banner}>
           <View style={styles.bannerLeft}>
             <Text style={styles.landlordHeader}>{form.landlordName || "Landlord"}</Text>
-            <Text style={styles.landlordSub}>{form.landlordCity}, {lState}</Text>
+            <Text style={styles.landlordSub}>
+              {form.landlordAddress} {form.landlordCity && `${form.landlordCity}, `} {lState}
+              {(form.landlordPhone || form.landlordEmail) && `\nPH: ${form.landlordPhone || "—"} | EM: ${form.landlordEmail || "—"}`}
+            </Text>
           </View>
           <View style={styles.bannerRight}>
             <Text style={styles.docType}>RENT RECEIPT</Text>

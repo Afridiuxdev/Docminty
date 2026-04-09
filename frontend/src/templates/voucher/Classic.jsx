@@ -29,7 +29,7 @@ export default function VoucherClassicTemplate({ form }) {
     banner: { backgroundColor: T, padding: "18 24", flexDirection: "row", justifyContent: "space-between", alignItems: "center", color: "#ffffff" },
     bannerLeft: { flex: 1 },
     compName: { fontSize: 16, fontFamily: "Space Grotesk", fontWeight: 700, color: "#ffffff" },
-    compAddr: { fontSize: 10, color: "#ffffff", opacity: 0.8, marginTop: 2 },
+    compAddr: { fontSize: 10, color: "#ffffff", opacity: 0.8, marginTop: 2, lineHeight: 1.4 },
     
     bannerRight: { textAlign: "right" },
     docType: { fontSize: 20, fontFamily: "Space Grotesk", fontWeight: 800, color: "#ffffff" },
@@ -37,16 +37,16 @@ export default function VoucherClassicTemplate({ form }) {
     
     body: { padding: "24 24" },
     amtBox: { backgroundColor: T + "10", border: `2 solid ${T}`, padding: "16 20", borderRadius: 10, flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 20 },
-    amtLabel: { fontSize: 11, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 2 },
+    amtLabel: { fontSize: 11, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 2, fontFamily: "Space Grotesk" },
     amtVal: { fontSize: 28, fontFamily: "Space Grotesk", fontWeight: 800, color: T },
-    modeTag: { backgroundColor: T, color: "#ffffff", padding: "4 12", borderRadius: 20, fontSize: 12, fontWeight: 600 },
+    modeTag: { backgroundColor: T, color: "#ffffff", padding: "4 12", borderRadius: 20, fontSize: 12, fontWeight: 700, fontFamily: "Space Grotesk" },
     
     words: { fontSize: 12, color: "#374151", marginBottom: 16 },
     
     table: { marginBottom: 32 },
     row: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", padding: "8 0" },
-    label: { width: "35%", fontSize: 11, color: "#6B7280", fontWeight: 600 },
-    value: { flex: 1, fontSize: 11, color: "#111827" },
+    label: { width: "35%", fontSize: 11, color: "#6B7280", fontWeight: 700, fontFamily: "Space Grotesk" },
+    value: { flex: 1, fontSize: 11, color: "#111827", lineHeight: 1.4 },
     
     signatures: { flexDirection: "row", gap: 16, marginTop: 32 },
     sigCol: { flex: 1, textAlign: "center" },
@@ -65,7 +65,10 @@ export default function VoucherClassicTemplate({ form }) {
         <View style={styles.banner}>
           <View style={styles.bannerLeft}>
             <Text style={styles.compName}>{form.companyName || "Business Name"}</Text>
-            <Text style={styles.compAddr}>{form.companyAddress}</Text>
+            <Text style={styles.compAddr}>
+              {form.companyAddress} {form.companyCity && `${form.companyCity}`}
+              {(form.companyPhone || form.companyEmail) && `\nPH: ${form.companyPhone || "—"} | EM: ${form.companyEmail || "—"}`}
+            </Text>
           </View>
           <View style={styles.bannerRight}>
             <Text style={styles.docType}>PAYMENT VOUCHER</Text>

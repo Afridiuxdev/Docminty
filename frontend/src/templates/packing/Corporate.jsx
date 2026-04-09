@@ -35,11 +35,10 @@ export default function PackingCorporateTemplate({ form }) {
     td: { fontSize: 11, color: "#111827" },
     
     colNo: { width: "8%" },
-    colDesc: { width: "42%" },
-    colSKU: { width: "15%" },
-    colQty: { width: "10%", textAlign: "center" },
-    colWgt: { width: "10%", textAlign: "center" },
-    colNotes: { width: "15%" },
+    colDesc: { width: "52%" },
+    colSKU: { width: "17%" },
+    colQty: { width: "12%", textAlign: "center" },
+    colWgt: { width: "11%", textAlign: "center" },
     
     summary: { marginTop: 12, padding: "12 16", backgroundColor: T + "10", borderRadius: 8, flexDirection: "row", justifyContent: "space-between" },
     sumText: { fontSize: 13, fontWeight: 700, color: T, fontFamily: "Space Grotesk" },
@@ -65,6 +64,12 @@ export default function PackingCorporateTemplate({ form }) {
           <Text style={styles.orgAddress}>
             {form.fromAddress} {form.fromCity && `${form.fromCity}, `} {fromState}
           </Text>
+          {form.fromGSTIN && <Text style={[styles.orgAddress, { marginTop: 2 }]}>GSTIN: {form.fromGSTIN}</Text>}
+          {(form.fromPhone || form.fromEmail) && (
+            <Text style={[styles.orgAddress, { marginTop: 2 }]}>
+              {form.fromPhone && `Ph: ${form.fromPhone}`}{form.fromPhone && form.fromEmail ? "  |  " : ""}{form.fromEmail && `Em: ${form.fromEmail}`}
+            </Text>
+          )}          
           <View style={styles.metaRow}>
             <Text>SLIP: #{form.slipNumber}</Text>
             <Text>|</Text>
@@ -119,7 +124,6 @@ export default function PackingCorporateTemplate({ form }) {
             <Text style={[styles.th, styles.colSKU]}>SKU</Text>
             <Text style={[styles.th, styles.colQty]}>Qty</Text>
             <Text style={[styles.th, styles.colWgt]}>Weight</Text>
-            <Text style={[styles.th, styles.colNotes]}>Notes</Text>
           </View>
           {form.items.map((item, i) => (
             <View key={i} style={styles.tRow} wrap={false}>
@@ -128,7 +132,6 @@ export default function PackingCorporateTemplate({ form }) {
               <Text style={[styles.td, styles.colSKU]}>{item.sku || "—"}</Text>
               <Text style={[styles.td, styles.colQty, { fontWeight: 700 }]}>{item.qty}</Text>
               <Text style={[styles.td, styles.colWgt]}>{item.weight || "—"}</Text>
-              <Text style={[styles.td, styles.colNotes]}>{item.notes || "—"}</Text>
             </View>
           ))}
         </View>

@@ -35,18 +35,18 @@ export default function ReceiptMinimalTemplate({ form }) {
     
     headerRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 32 },
     metaBox: { flex: 1 },
-    metaLabel: { fontSize: 7, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 },
+    metaLabel: { fontSize: 7, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4, fontFamily: "Space Grotesk", fontWeight: 700 },
     metaValue: { fontSize: 11, fontWeight: 700, color: "#111827" },
     metaSub: { fontSize: 9, color: "#6B7280", marginTop: 2, maxWidth: 180, lineHeight: 1.4 },
     
     amountHighlight: { margin: "16 0 32 0", borderTopWidth: 1, borderTopColor: "#F3F4F6", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", padding: "24 0", alignItems: "center" },
-    amountLabel: { fontSize: 9, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 },
+    amountLabel: { fontSize: 9, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 8, fontFamily: "Space Grotesk", fontWeight: 700 },
     amountValue: { fontSize: 32, fontFamily: "Space Grotesk", fontWeight: 700, color: T },
     amountWords: { fontSize: 9, color: "#111827", marginTop: 12, fontWeight: 700, fontStyle: "italic" },
     
     detailsSection: { marginBottom: 32 },
     detailLine: { flexDirection: "row", marginBottom: 12 },
-    detailLabel: { width: 140, fontSize: 9, color: "#9CA3AF", textTransform: "uppercase" },
+    detailLabel: { width: 140, fontSize: 9, color: "#9CA3AF", textTransform: "uppercase", fontFamily: "Space Grotesk", fontWeight: 700 },
     detailValue: { flex: 1, fontSize: 10.5, fontWeight: 700, color: "#111827" },
     
     signatureArea: { marginTop: 40, flexDirection: "row", justifyContent: "flex-end" },

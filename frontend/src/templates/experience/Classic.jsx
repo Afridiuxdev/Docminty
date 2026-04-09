@@ -32,7 +32,7 @@ export default function ExperienceLetterTemplate({ form }) {
         companyDetails: { fontSize: 10, color: "#6B7280", marginTop: 2, lineHeight: 1.4 },
         
         title: { fontSize: 18, fontFamily: "Space Grotesk", fontWeight: 800, color: T, marginBottom: 0 },
-        metaText: { fontSize: 11, color: "#9CA3AF", marginTop: 4 },
+        metaText: { fontSize: 11, color: "#9CA3AF", marginTop: 4, fontFamily: "Space Grotesk" },
         
         body: { marginTop: 32 },
         salutation: { fontSize: 12, color: "#374151", marginBottom: 16 },

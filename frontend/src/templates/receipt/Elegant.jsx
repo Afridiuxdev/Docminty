@@ -31,23 +31,23 @@ export default function ReceiptElegantTemplate({ form }) {
     page: { fontFamily: "Inter", fontSize: 10, color: "#111827", padding: "60 80", backgroundColor: "#FFFDFA" },
     header: { marginBottom: 40, borderBottomWidth: 1, borderBottomColor: "rgba(0,0,0,0.05)", paddingBottom: 24, alignItems: "flex-start" },
     title: { fontSize: 28, fontFamily: "Space Grotesk", fontWeight: 700, color: T, marginBottom: 8, letterSpacing: 2, textTransform: "uppercase" },
-    subtitle: { fontSize: 11, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 3, fontFamily: "Space Grotesk" },
+    subtitle: { fontSize: 11, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 3, fontFamily: "Space Grotesk", fontWeight: 700 },
     
     dateLine: { fontSize: 9, color: "#9CA3AF", marginBottom: 32, textAlign: "right", fontFamily: "Inter" },
     
     recipient: { marginBottom: 32 },
-    recipLabel: { fontSize: 8, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 },
+    recipLabel: { fontSize: 8, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4, fontFamily: "Space Grotesk", fontWeight: 700 },
     recipName: { fontSize: 13, fontWeight: 700, color: "#111827" },
     recipSub: { fontSize: 9, color: "#6B7280", marginTop: 2, lineHeight: 1.4 },
     
     amountBox: { margin: "24 0", padding: "24 0", borderTopWidth: 1, borderTopColor: T, borderBottomWidth: 1, borderBottomColor: T, alignItems: "center" },
-    amountLabel: { fontSize: 9, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1.2, marginBottom: 8 },
+    amountLabel: { fontSize: 9, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1.2, marginBottom: 8, fontFamily: "Space Grotesk", fontWeight: 700 },
     amountVal: { fontSize: 36, fontWeight: 700, color: T, fontFamily: "Space Grotesk" },
     amountWords: { fontSize: 10, color: "#374151", marginTop: 16, fontWeight: 700, fontStyle: "italic" },
     
     detailsSection: { marginBottom: 32, padding: "16 0", borderBottomWidth: 1, borderBottomColor: "rgba(0,0,0,0.05)" },
     detailLine: { flexDirection: "row", marginBottom: 10 },
-    detailLabel: { width: 140, fontSize: 8, color: "#9CA3AF", textTransform: "uppercase" },
+    detailLabel: { width: 140, fontSize: 8, color: "#9CA3AF", textTransform: "uppercase", fontFamily: "Space Grotesk", fontWeight: 700 },
     detailValue: { flex: 1, fontSize: 10, fontWeight: 700, color: "#111827" },
     
     signatureSection: { marginTop: 48, flexDirection: "row", justifyContent: "flex-end" },

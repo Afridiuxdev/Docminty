@@ -30,20 +30,20 @@ export default function VoucherCorporateTemplate({ form }) {
     logo: { height: 36, objectFit: "contain", marginBottom: 8, alignSelf: "center" },
     compName: { fontSize: 20, fontFamily: "Space Grotesk", fontWeight: 800, color: T, marginBottom: 2 },
     compAddress: { fontSize: 10, color: "#6B7280", marginBottom: 8, alignSelf: "center", maxWidth: 400, textAlign: "center" },
-    metaRow: { flexDirection: "row", justifyContent: "center", gap: 16, fontSize: 10, color: "#9CA3AF", fontWeight: 700, textTransform: "uppercase" },
+    metaRow: { flexDirection: "row", justifyContent: "center", gap: 16, fontSize: 10, color: "#9CA3AF", fontWeight: 700, textTransform: "uppercase", fontFamily: "Space Grotesk" },
     
     body: { marginTop: 20 },
     amtBox: { backgroundColor: T + "10", border: `2 solid ${T}`, padding: "16 20", borderRadius: 10, flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 20 },
-    amtLabel: { fontSize: 11, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 2 },
+    amtLabel: { fontSize: 11, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 2, fontFamily: "Space Grotesk" },
     amtVal: { fontSize: 28, fontFamily: "Space Grotesk", fontWeight: 800, color: T },
-    modeTag: { backgroundColor: T, color: "#ffffff", padding: "4 12", borderRadius: 20, fontSize: 12, fontWeight: 600 },
+    modeTag: { backgroundColor: T, color: "#ffffff", padding: "4 12", borderRadius: 20, fontSize: 12, fontWeight: 700, fontFamily: "Space Grotesk" },
     
     words: { fontSize: 12, color: "#374151", marginBottom: 16 },
     
     table: { marginBottom: 32 },
     row: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", padding: "8 0" },
-    label: { width: "35%", fontSize: 11, color: "#6B7280", fontWeight: 600 },
-    value: { flex: 1, fontSize: 11, color: "#111827" },
+    label: { width: "35%", fontSize: 11, color: "#6B7280", fontWeight: 700, fontFamily: "Space Grotesk" },
+    value: { flex: 1, fontSize: 11, color: "#111827", lineHeight: 1.4 },
     
     signatures: { flexDirection: "row", gap: 16, marginTop: 32 },
     sigCol: { flex: 1, textAlign: "center" },
@@ -64,6 +64,7 @@ export default function VoucherCorporateTemplate({ form }) {
           <Text style={styles.compName}>{form.companyName || "Company Name"}</Text>
           <Text style={styles.compAddress}>
             {form.companyAddress} {form.companyCity && `${form.companyCity}, `} {cState}
+            {(form.companyPhone || form.companyEmail) && `\nPH: ${form.companyPhone || ""} | EM: ${form.companyEmail || ""}`}
           </Text>
           <View style={styles.metaRow}>
             <Text>VOUCHER: #{form.voucherNumber}</Text>

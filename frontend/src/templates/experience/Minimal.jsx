@@ -33,7 +33,7 @@ export default function MinimalTemplate({ form }) {
         compDetails: { fontSize: 11, color: "#9CA3AF", marginTop: 2, lineHeight: 1.3 },
         
         rightTitle: { fontSize: 16, fontFamily: "Space Grotesk", fontWeight: 800, color: "#111827", textAlign: "right" },
-        rightDate: { fontSize: 11, color: "#9CA3AF", marginTop: 4, textAlign: "right" },
+        rightDate: { fontSize: 11, color: "#9CA3AF", marginTop: 4, textAlign: "right", fontFamily: "Space Grotesk" },
         accentBar: { height: 2, backgroundColor: T, marginTop: 12, borderRadius: 1 },
         
         body: { marginTop: 32 },
