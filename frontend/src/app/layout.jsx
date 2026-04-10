@@ -88,6 +88,9 @@ export const metadata = {
   },
   verification: {
     google: "your-google-verification-code",
+    other: {
+      "msvalidate.01": "your-bing-verification-code",
+    },
   },
 };
 
