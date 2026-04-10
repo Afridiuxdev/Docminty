@@ -2,7 +2,7 @@
 import TemplatePicker from "@/components/TemplatePicker";
 import TemplateColorPicker from "@/components/TemplateColorPicker";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import Navbar from "@/components/Navbar";
 import QRCode from "qrcode";
 import Footer from "@/components/Footer";
@@ -23,6 +23,41 @@ import { INDIAN_STATES } from "@/constants/indianStates";
 import { useProfileSync } from "@/hooks/useProfileSync";
 
 const T = "#0D9488";
+
+const PreviewScaler = ({ children, aspectRatio = 3508 / 2480 }) => {
+  const [scale, setScale] = useState(1);
+  const containerRef = useRef();
+  const baseWidth = 800; // Reference width for scaling
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (containerRef.current) {
+        const width = containerRef.current.offsetWidth;
+        setScale(width / baseWidth);
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  return (
+    <div ref={containerRef} style={{ width: "100%", overflow: "hidden", height: `${baseWidth * (1 / aspectRatio) * scale}px`, position: "relative", background: "#F3F4F6", borderRadius: "8px" }}>
+      <div style={{ 
+        width: `${baseWidth}px`, 
+        transform: `scale(${scale})`, 
+        transformOrigin: "top left", 
+        position: "absolute", 
+        top: 0, 
+        left: 0,
+        display: "flex",
+        flexDirection: "column"
+      }}>
+        {children}
+      </div>
+    </div>
+  );
+};
 
 const CERT_TYPES = [
   "Completion Certificate",
@@ -611,7 +646,9 @@ export default function CertificatePage() {
             </div>
             <div style={{ position: "relative" }}>
               {showWatermark && <WatermarkOverlay />}
-              <CertificatePreview form={form} template={template} accent={form.templateColor || templateMeta.accent} />
+              <PreviewScaler aspectRatio={3508 / 2480}>
+                <CertificatePreview form={form} template={template} accent={form.templateColor || templateMeta.accent} />
+              </PreviewScaler>
             </div>
           </div>
         </div>
