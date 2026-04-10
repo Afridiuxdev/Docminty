@@ -201,6 +201,41 @@ function AnimatedNumber({ end, suffix, decimals = 0, duration = 2000 }) {
     );
 }
 
+const PreviewScaler = ({ children, aspectRatio = 3508 / 2480 }) => {
+    const [scale, setScale] = useState(1);
+    const containerRef = useRef();
+    const baseWidth = 800; // Reference width for scaling
+
+    useEffect(() => {
+        const handleResize = () => {
+            if (containerRef.current) {
+                const width = containerRef.current.offsetWidth;
+                setScale(width / baseWidth);
+            }
+        };
+        handleResize();
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    return (
+        <div ref={containerRef} style={{ width: "100%", overflow: "hidden", height: `${baseWidth * (1 / aspectRatio) * scale}px`, position: "relative", background: "#F3F4F6", borderRadius: "8px" }}>
+            <div style={{
+                width: `${baseWidth}px`,
+                transform: `scale(${scale})`,
+                transformOrigin: "top left",
+                position: "absolute",
+                top: 0,
+                left: 0,
+                display: "flex",
+                flexDirection: "column"
+            }}>
+                {children}
+            </div>
+        </div>
+    );
+};
+
 function FAQItem({ q, a }) {
     const [open, setOpen] = useState(false);
     return (
@@ -740,7 +775,13 @@ function LivePreview({ docType, tmpl }) {
     return (
         <div style={{ position: "relative", width: "100%", boxShadow: "0 20px 40px rgba(0,0,0,0.12)", borderRadius: "12px", overflow: "hidden" }}>
             {tmpl.pro && <WatermarkOverlay />}
-            <Component form={form} template={tmpl.name} accent={tmpl.accent} />
+            {docType === 'certificate' ? (
+                <PreviewScaler>
+                    <Component form={form} template={tmpl.name} accent={tmpl.accent} />
+                </PreviewScaler>
+            ) : (
+                <Component form={form} template={tmpl.name} accent={tmpl.accent} />
+            )}
         </div>
     );
 }
