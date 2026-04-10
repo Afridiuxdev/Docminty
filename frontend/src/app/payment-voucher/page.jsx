@@ -278,7 +278,7 @@ export function VoucherPreview({ form, template = "Classic", accent = "#0D9488" 
             <div>
               {form.logo && <img src={form.logo} alt="Logo" style={{ height: "36px", marginBottom: "6px" }} />}
               <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: "#111827", margin: 0 }}>{form.companyName || "Business Name"}</p>
-              <p style={{ fontSize: "10px", color: "#6B7280", margin: "2px 0 0" }}>{form.companyCity}, {companyState?.name}</p>
+              <p style={{ fontSize: "10px", color: "#6B7280", margin: "2px 0 0" }}>{form.companyAddress}{form.companyCity ? `, ${form.companyCity}` : ""}{companyState?.name ? `, ${companyState.name}` : ""}</p>
               {(form.companyPhone || form.companyEmail) && (
                 <p style={{ fontSize: "10px", color: "#6B7280", margin: "2px 0 0" }}>{form.companyPhone && `Ph: ${form.companyPhone}`}{form.companyPhone && form.companyEmail ? "  |  " : ""}{form.companyEmail && `Em: ${form.companyEmail}`}</p>
               )}
@@ -295,31 +295,7 @@ export function VoucherPreview({ form, template = "Classic", accent = "#0D9488" 
     );
   }
 
-  // Classic — Colored Banner
-  if (template === "Classic") {
-    return (
-      <div className="pdf-preview">
-        <div style={{ background: accent, padding: "18px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", color: "#fff" }}>
-          <div>
-            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", margin: 0 }}>{form.companyName || "Business Name"}</p>
-            <p style={{ fontSize: "10px", opacity: 0.8, margin: "2px 0 0" }}>{form.companyAddress}</p>
-            {(form.companyPhone || form.companyEmail) && (
-              <p style={{ fontSize: "10px", opacity: 0.8, margin: "2px 0 0" }}>
-                {form.companyPhone && `Ph: ${form.companyPhone}`}{form.companyPhone && form.companyEmail ? "  |  " : ""}{form.companyEmail && `Em: ${form.companyEmail}`}
-              </p>
-            )}
-          </div>
-          <div style={{ textAlign: "right" }}>
-            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "20px", margin: 0 }}>PAYMENT VOUCHER</p>
-            <p style={{ fontSize: "11px", opacity: 0.8 }}>#{form.voucherNumber}</p>
-          </div>
-        </div>
-        {sharedBody}
-      </div>
-    );
-  }
-
-  // Minimal (Default)
+  // Classic/Minimal (Default)
   return (
     <div className="pdf-preview">
       <div className="pdf-header" style={{ borderBottom: `2px solid ${accent}` }}>
@@ -498,20 +474,6 @@ export default function PaymentVoucherPage() {
             {activeTab === "company" && (
               <div>
                 <p className="form-label">Company Details</p>
-                <div style={{ marginBottom: "16px" }}>
-                  <p style={{
-                    fontSize: "11px", fontWeight: 600, color: "#6B7280",
-                    margin: "0 0 6px", fontFamily: "Inter, sans-serif"
-                  }}>Logo</p>
-                  {isUserPro ? (
-                    <LogoUpload value={form.logo} onChange={v => updateField("logo", v)} />
-                  ) : (
-                    <div onClick={() => router.push("/#pricing")} style={{ padding: "14px 16px", border: "1px dashed #D1D5DB", borderRadius: "8px", background: "#F9FAFB", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer" }}>
-                      <span style={{ fontSize: "12px", color: "#9CA3AF", fontFamily: "Inter, sans-serif" }}>Logo upload — <strong style={{ color: "#6366F1" }}>Pro feature</strong></span>
-                      <span style={{ fontSize: "11px", background: "#EDE9FE", color: "#6366F1", padding: "3px 10px", borderRadius: "20px", fontWeight: 600 }}>Upgrade</span>
-                    </div>
-                  )}
-                </div>
                 <div className="form-field"><label className="field-label">Company Name *</label>
                   <input className="doc-input" placeholder="Company Pvt. Ltd."
                     value={form.companyName}

@@ -25,7 +25,7 @@ export default function QuotationTemplate({ form }) {
         header: { backgroundColor: T, padding: "18 24", flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
         headerLeft: { maxWidth: "60%" },
         headerRight: { textAlign: "right", maxWidth: "35%" },
-        logo: { height: 36, objectFit: "contain", marginBottom: 6 },
+        logo: { height: 36, objectFit: "contain", marginBottom: 6, alignSelf: "flex-start" },
         fromName: { fontFamily: "Space Grotesk", fontWeight: 700, fontSize: 16, color: "#ffffff" },
         fromDetails: { fontSize: 9, color: "rgba(255,255,255,0.85)", marginTop: 4, lineHeight: 1.4 },
         title: { fontFamily: "Space Grotesk", fontWeight: 700, fontSize: 24, color: "#ffffff" },

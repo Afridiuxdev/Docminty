@@ -99,8 +99,8 @@ export default function ModernTemplate({ form }) {
                 </View>
 
                 <View style={styles.main}>
-                    <View style={{ marginBottom: 20, alignItems: "flex-end" }}>
-                        {form.logo && <Image src={form.logo} style={{ height: 36, objectFit: "contain", marginBottom: 6 }} />}
+                    <View style={{ marginBottom: 20, alignItems: "flex-start" }}>
+                        {form.logo && <Image src={form.logo} style={{ height: 36, objectFit: "contain", marginBottom: 6, alignSelf: "flex-start" }} />}
                         {form.fromGSTIN && <Text style={{ fontSize: 10, color: "#9CA3AF", marginBottom: 1 }}>GSTIN: {form.fromGSTIN}</Text>}
                         <Text style={{ fontSize: 11, color: "#9CA3AF" }}>Date: {form.invoiceDate}</Text>
                     </View>

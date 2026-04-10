@@ -24,7 +24,7 @@ export default function InvoiceTemplate({ form }) {
         header: { backgroundColor: T, padding: "18 24", flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
         headerLeft: { maxWidth: "60%" },
         headerRight: { textAlign: "right", maxWidth: "40%" },
-        logo: { height: 36, objectFit: "contain", marginBottom: 6 },
+        logo: { height: 36, objectFit: "contain", marginBottom: 6, alignSelf: "flex-start" },
         fromName: { fontFamily: "Space Grotesk", fontSize: 16, fontWeight: 700, color: "#ffffff" },
         fromDetails: { fontSize: 9, color: "rgba(255,255,255,0.85)", marginTop: 4, lineHeight: 1.4 },
         title: { fontFamily: "Space Grotesk", fontSize: 24, fontWeight: 700, color: "#ffffff", letterSpacing: 0.5 },

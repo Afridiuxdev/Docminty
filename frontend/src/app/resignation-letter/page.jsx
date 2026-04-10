@@ -78,91 +78,17 @@ export function ResignationPreview({ form, template = "Classic", accent = "#0D94
     </div>
   );
 
-  if (template === "Modern") {
-    return (
-      <div className="pdf-preview" style={{ display: "flex", gap: 0, padding: 0, overflow: "hidden" }}>
-        <div style={{ width: "140px", minWidth: "140px", background: accent, padding: "24px 16px", display: "flex", flexDirection: "column", gap: "20px" }}>
-          <div>
-            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "13px", color: "#fff", margin: "0 0 4px", textTransform: "uppercase", letterSpacing: "0.05em" }}>Resignation</p>
-            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "13px", color: "#fff", margin: 0, textTransform: "uppercase", letterSpacing: "0.05em" }}>Letter</p>
-          </div>
-          <div>
-            <p style={{ fontSize: "9px", color: "rgba(255,255,255,0.6)", margin: "0 0 2px", fontFamily: "Inter, sans-serif", textTransform: "uppercase" }}>Date</p>
-            <p style={{ fontSize: "10px", color: "#fff", margin: 0, fontFamily: "Inter, sans-serif" }}>{form.letterDate}</p>
-          </div>
-          <div>
-            <p style={{ fontSize: "9px", color: "rgba(255,255,255,0.6)", margin: "0 0 2px", fontFamily: "Inter, sans-serif", textTransform: "uppercase" }}>From</p>
-            <p style={{ fontSize: "10px", color: "#fff", margin: 0, fontFamily: "Space Grotesk, sans-serif", fontWeight: 600 }}>{form.employeeName || "—"}</p>
-          </div>
-          <div>
-            <p style={{ fontSize: "9px", color: "rgba(255,255,255,0.6)", margin: "0 0 2px", fontFamily: "Inter, sans-serif", textTransform: "uppercase" }}>Last Day</p>
-            <p style={{ fontSize: "10px", color: "#fff", margin: 0, fontFamily: "Inter, sans-serif" }}>{form.lastWorkingDate || "—"}</p>
-          </div>
-        </div>
-        <div style={{ flex: 1, overflow: "hidden" }}>{letterBody}</div>
-      </div>
-    );
-  }
-  if (template === "Corporate") {
-    return (
-      <div className="pdf-preview">
-        <div style={{ background: accent, padding: "20px 24px", textAlign: "center" }}>
-          <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "20px", color: "#fff", margin: 0 }}>RESIGNATION LETTER</p>
-          <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.8)", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>{form.employeeName || "Employee Name"} · {form.letterDate}</p>
-        </div>
-        {letterBody}
-      </div>
-    );
-  }
-  if (template === "Elegant") {
-    return (
-      <div className="pdf-preview" style={{ borderBottom: `4px solid ${accent}` }}>
-        <div style={{ padding: "20px 24px 16px", borderBottom: "1px solid #E5E7EB", display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
-          <div>
-            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "18px", color: accent, margin: "0 0 4px" }}>RESIGNATION LETTER</p>
-            <p style={{ fontSize: "11px", color: "#9CA3AF", margin: 0, fontFamily: "Inter, sans-serif" }}>Date: {form.letterDate}</p>
-          </div>
-          <div style={{ textAlign: "right" }}>
-            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "15px", color: "#111827", margin: 0 }}>{form.employeeName || "Employee Name"}</p>
-            {(form.designation || form.department) && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{[form.designation, form.department].filter(Boolean).join(" - ")}</p>}
-          </div>
-        </div>
-        {letterBody}
-      </div>
-    );
-  }
-  if (template === "Classic") {
-    return (
-      <div className="pdf-preview">
-        <div className="pdf-header" style={{ borderBottom: `2px solid ${accent}` }}>
-          <div>
-            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: accent, margin: 0 }}>RESIGNATION LETTER</p>
-            <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>Date: {form.letterDate}</p>
-          </div>
-          <div style={{ textAlign: "right" }}>
-            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "15px", color: "#111827", margin: 0 }}>{form.employeeName || "Employee Name"}</p>
-            {(form.designation || form.department) && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{[form.designation, form.department].filter(Boolean).join(" - ")}</p>}
-          </div>
-        </div>
-        {letterBody}
-      </div>
-    );
-  }
-  // Minimal (default)
   return (
     <div className="pdf-preview">
-      <div style={{ padding: "20px 24px 16px", borderBottom: "1px solid #E5E7EB" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-          <div>
-            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: "#111827", margin: "0 0 4px" }}>RESIGNATION LETTER</p>
-            <p style={{ fontSize: "11px", color: "#9CA3AF", margin: 0, fontFamily: "Inter, sans-serif" }}>Date: {form.letterDate}</p>
-          </div>
-          <div style={{ textAlign: "right" }}>
-            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "15px", color: "#111827", margin: 0 }}>{form.employeeName || "Employee Name"}</p>
-            {(form.designation || form.department) && <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{[form.designation, form.department].filter(Boolean).join(" - ")}</p>}
-          </div>
+      <div className="pdf-header" style={{ borderBottom: `2px solid ${accent}` }}>
+        <div>
+          <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: accent, margin: 0 }}>RESIGNATION LETTER</p>
+          <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>Date: {form.letterDate}</p>
         </div>
-        <div style={{ height: "2px", background: accent, marginTop: "12px", borderRadius: "1px" }} />
+        <div style={{ textAlign: "right" }}>
+          <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "15px", color: "#111827", margin: 0 }}>{form.employeeName || "Employee Name"}</p>
+          {(form.designation || form.department) && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{[form.designation, form.department].filter(Boolean).join(" - ")}</p>}
+        </div>
       </div>
       {letterBody}
     </div>
@@ -208,7 +134,6 @@ export default function ResignationLetterPage() {
     { id: "manager", label: "Manager" },
     { id: "details", label: "Details" },
     { id: "content", label: "Content" },
-    { id: "templates", label: "Templates" },
   ];
 
   return (
@@ -330,29 +255,6 @@ export default function ResignationLetterPage() {
               </div>
             )}
 
-            {activeTab === "templates" && (
-              <div>
-                <p className="form-label">Template Design</p>
-                <TemplatePicker 
-                  docType="resignation" 
-                  selected={template} 
-                  onChange={(val) => {
-                    setTemplate(val);
-                    updateField("templateColor", TEMPLATE_REGISTRY.resignation[val]?.accent || "#0D9488");
-                  }} 
-                  isPro={isUserPro} 
-                />
-                <div style={{ borderTop: "1px solid #F3F4F6", margin: "16px 0" }} />
-                <TemplateColorPicker 
-                  selectedColor={form.templateColor} 
-                  onChange={(color) => updateField("templateColor", color)} 
-                />
-                <div style={{ borderTop: "1px solid #F3F4F6", margin: "20px 0" }} />
-                <button onClick={handleDownload} disabled={downloading} className="download-pdf-btn" style={{ width: "100%", justifyContent: "center" }}>
-                  <Download size={15} /> Download PDF
-                </button>
-              </div>
-            )}
 
             {TABS[TABS.length - 1].id !== activeTab && (
               <div style={{ marginTop: "24px", paddingTop: "16px", borderTop: "1px solid #F3F4F6", display: "flex", justifyContent: "flex-end" }}>

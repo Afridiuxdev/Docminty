@@ -37,7 +37,6 @@ const DEFAULT_FORM = {
     discount: "0", gstRate: "18", amount: "0.00"
   }],
   advancePercent: "50",
-  bankName: "", accountNumber: "", ifscCode: "", accountName: "",
   notes: "This is a Proforma Invoice. Actual invoice will be issued after payment.",
   terms: "50% advance payment required to confirm order.",
   signature: null,
@@ -121,11 +120,40 @@ export function ProformaPreview({ form, template = "Classic", accent = "#0D9488"
 
   const sharedBody = (
     <div className="pdf-body">
-      {/* Bill To */}
-      <div style={{
-        display: "grid", gridTemplateColumns: "1fr 1fr",
-        gap: "24px", marginBottom: "20px"
-      }}>
+      {/* Bill From + Bill To */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px", marginBottom: "20px" }}>
+        <div>
+          <p style={{
+            fontSize: "10px", fontWeight: 700, color: "#9CA3AF",
+            textTransform: "uppercase", letterSpacing: "0.08em",
+            margin: "0 0 6px", fontFamily: "Space Grotesk, sans-serif"
+          }}>Bill From</p>
+          <p style={{
+            fontFamily: "Space Grotesk, sans-serif", fontWeight: 700,
+            fontSize: "13px", color: "#111827", margin: 0
+          }}>{form.fromName || "Your Business Name"}</p>
+          {form.fromGSTIN && (
+            <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>
+              GSTIN: {form.fromGSTIN}
+            </p>
+          )}
+          {form.fromAddress && (
+            <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>
+              {form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}
+            </p>
+          )}
+          {fromState && (
+            <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>
+              {fromState.name}
+            </p>
+          )}
+          {(form.fromPhone || form.fromEmail) && (
+            <p style={{ fontSize: "11px", color: "#6B7280", margin: "4px 0 0", fontFamily: "Inter, sans-serif", lineHeight: 1.4 }}>
+              {form.fromPhone && <span style={{ display: "block" }}>Ph: {form.fromPhone}</span>}
+              {form.fromEmail && <span style={{ display: "block", wordBreak: "break-all" }}>Em: {form.fromEmail}</span>}
+            </p>
+          )}
+        </div>
         <div>
           <p style={{
             fontSize: "10px", fontWeight: 700, color: "#9CA3AF",
@@ -139,18 +167,12 @@ export function ProformaPreview({ form, template = "Classic", accent = "#0D9488"
             {form.toName || "Client Name"}
           </p>
           {form.toGSTIN && (
-            <p style={{
-              fontSize: "11px", color: "#6B7280",
-              margin: "2px 0 0", fontFamily: "Inter, sans-serif"
-            }}>
+            <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>
               GSTIN: {form.toGSTIN}
             </p>
           )}
           {form.toAddress && (
-            <p style={{
-              fontSize: "11px", color: "#6B7280",
-              margin: "2px 0 0", fontFamily: "Inter, sans-serif"
-            }}>
+            <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>
               {form.toAddress}{form.toCity ? `, ${form.toCity}` : ""}
             </p>
           )}
@@ -165,20 +187,6 @@ export function ProformaPreview({ form, template = "Classic", accent = "#0D9488"
               {form.toEmail && <span style={{ display: "block", wordBreak: "break-all" }}>Em: {form.toEmail}</span>}
             </p>
           )}
-        </div>
-        <div>
-          <p style={{
-            fontSize: "10px", fontWeight: 700, color: "#9CA3AF",
-            textTransform: "uppercase", letterSpacing: "0.08em",
-            margin: "0 0 6px", fontFamily: "Space Grotesk, sans-serif"
-          }}>Tax Type</p>
-          <p style={{
-            fontSize: "12px", color: "#374151",
-            fontFamily: "Inter, sans-serif"
-          }}>
-            {form.taxType === "cgst_sgst" ? "CGST + SGST (Intrastate)" :
-              form.taxType === "igst" ? "IGST (Interstate)" : "No Tax"}
-          </p>
         </div>
       </div>
 
@@ -248,7 +256,7 @@ export function ProformaPreview({ form, template = "Classic", accent = "#0D9488"
       </div>
 
       {/* Advance payment box */}
-      {(parseFloat(form.advancePercent) > 0 || form.bankName || form.notes || form.terms) && (
+      {(parseFloat(form.advancePercent) > 0 || form.notes || form.terms) && (
         <div style={{
           marginTop: "16px",
           display: "grid", gridTemplateColumns: "1fr 1fr",
@@ -277,19 +285,6 @@ export function ProformaPreview({ form, template = "Classic", accent = "#0D9488"
                 }}>
                   ₹{advanceAmt}
                 </p>
-              </div>
-            )}
-            {form.bankName && (
-              <div style={{
-                padding: "10px 14px",
-                background: "#f3f4f6",
-                borderRadius: "8px",
-              }}>
-                <p style={{ fontSize: "10px", color: "#9ca3af", fontWeight: 700, textTransform: "uppercase", marginBottom: "4px" }}>Bank Details</p>
-                <p style={{ fontSize: "11px", color: "#374151", margin: "0 0 2px" }}><strong>{form.bankName}</strong></p>
-                {form.accountName && <p style={{ fontSize: "11px", color: "#4B5563", margin: "0 0 2px" }}>{form.accountName}</p>}
-                <p style={{ fontSize: "11px", color: "#6B7280", margin: "0 0 2px" }}>Acc: {form.accountNumber}</p>
-                <p style={{ fontSize: "11px", color: "#6B7280", margin: 0 }}>IFSC: {form.ifscCode}</p>
               </div>
             )}
           </div>
@@ -420,34 +415,7 @@ export function ProformaPreview({ form, template = "Classic", accent = "#0D9488"
     );
   }
 
-  // Classic — Colored Banner
-  if (template === "Classic") {
-    return (
-      <div className="pdf-preview">
-        <div style={{ background: accent, padding: "18px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", color: "#fff" }}>
-          <div>
-            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", margin: 0 }}>{form.fromName || "Business Name"}</p>
-            <p style={{ fontSize: "10px", opacity: 0.8, margin: "2px 0 0" }}>{form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}{fromState?.name ? `, ${fromState.name}` : ""}</p>
-            {form.fromGSTIN && <p style={{ fontSize: "10px", opacity: 0.8, margin: "2px 0 0" }}>GSTIN: {form.fromGSTIN}</p>}
-            {(form.fromPhone || form.fromEmail) && (
-              <p style={{ fontSize: "10px", opacity: 0.8, margin: "2px 0 0" }}>
-                {form.fromPhone && `Ph: ${form.fromPhone}`}{form.fromPhone && form.fromEmail ? "  |  " : ""}{form.fromEmail && `Em: ${form.fromEmail}`}
-              </p>
-            )}
-          </div>
-          <div style={{ textAlign: "right" }}>
-            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "20px", margin: 0 }}>PROFORMA</p>
-            <p style={{ fontSize: "11px", opacity: 0.8, margin: "2px 0 0" }}>#{form.proformaNumber}</p>
-            <p style={{ fontSize: "10px", opacity: 0.8, margin: "2px 0 0" }}>Date: {form.proformaDate}</p>
-            {form.validUntil && <p style={{ fontSize: "10px", opacity: 0.8, margin: "2px 0 0" }}>Valid Until: {form.validUntil}</p>}
-          </div>
-        </div>
-        {sharedBody}
-      </div>
-    );
-  }
-
-  // Minimal (Default)
+  // Classic/Minimal (Default)
   return (
     <div className="pdf-preview">
       {/* Proforma badge */}
@@ -470,42 +438,7 @@ export function ProformaPreview({ form, template = "Classic", accent = "#0D9488"
         <div>
           {form.logo && (
             <img src={form.logo} alt="Logo"
-              style={{
-                height: "48px", objectFit: "contain",
-                marginBottom: "8px", display: "block"
-              }} />
-          )}
-          <p style={{
-            fontFamily: "Space Grotesk, sans-serif", fontWeight: 700,
-            fontSize: "16px", color: "#111827", margin: 0
-          }}>
-            {form.fromName || "Your Business Name"}
-          </p>
-          {form.fromGSTIN && (
-            <p style={{
-              fontSize: "11px", color: "#6B7280",
-              margin: "2px 0 0", fontFamily: "Inter, sans-serif"
-            }}>
-              GSTIN: {form.fromGSTIN}
-            </p>
-          )}
-          {form.fromAddress && (
-            <p style={{
-              fontSize: "11px", color: "#6B7280",
-              margin: "2px 0 0", fontFamily: "Inter, sans-serif"
-            }}>
-              {form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}
-            </p>
-          )}
-          {fromState && (
-            <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>
-              {fromState.name}
-            </p>
-          )}
-          {(form.fromPhone || form.fromEmail) && (
-            <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>
-              {form.fromPhone && `Ph: ${form.fromPhone}`}{form.fromPhone && form.fromEmail ? "  |  " : ""}{form.fromEmail && `Em: ${form.fromEmail}`}
-            </p>
+              style={{ height: "48px", objectFit: "contain", display: "block" }} />
           )}
         </div>
         <div style={{ textAlign: "right" }}>
@@ -599,7 +532,6 @@ export default function ProformaInvoicePage() {
     { id: "from", label: "Your Details" },
     { id: "to", label: "Client" },
     { id: "items", label: "Items" },
-    { id: "advance", label: "Advance" },
     { id: "extra", label: "Settings" },
     { id: "templates", label: "Templates" },
   ];
@@ -900,21 +832,17 @@ export default function ProformaInvoicePage() {
               </div>
             )}
 
-            {/* ADVANCE */}
-            {activeTab === "advance" && (
+            {/* SETTINGS */}
+            {activeTab === "extra" && (
               <div>
                 <p className="form-label">Advance Payment</p>
                 <div className="form-field">
                   <label className="field-label">Advance Required (%)</label>
-                  <div style={{
-                    display: "flex", gap: "6px",
-                    flexWrap: "wrap", marginBottom: "8px"
-                  }}>
+                  <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginBottom: "8px" }}>
                     {["25", "30", "50", "100"].map(p => (
                       <button key={p}
                         onClick={() => updateField("advancePercent", p)}
-                        className={`toggle-btn ${form.advancePercent === p
-                          ? "active" : ""}`}>
+                        className={`toggle-btn ${form.advancePercent === p ? "active" : ""}`}>
                         {p}%
                       </button>
                     ))}
@@ -927,48 +855,11 @@ export default function ProformaInvoicePage() {
                       if (val !== "" && Number(val) > 100) val = "100";
                       updateField("advancePercent", val);
                     }}
-                    style={{
-                      fontSize: "16px", fontWeight: 700,
-                      color: "#92400E", fontFamily: "Space Grotesk, sans-serif"
-                    }}
+                    style={{ fontSize: "16px", fontWeight: 700, color: "#92400E", fontFamily: "Space Grotesk, sans-serif" }}
                   />
                 </div>
 
                 <div style={{ borderTop: "1px solid #F3F4F6", margin: "16px 0" }} />
-                <p className="form-label">Bank Details (for payment)</p>
-                <div className="form-field">
-                  <label className="field-label">Account Holder Name</label>
-                  <input className="doc-input" placeholder="Your Name / Company"
-                    value={form.accountName}
-                    onChange={e => updateField("accountName", e.target.value)} />
-                </div>
-                <div className="form-field">
-                  <label className="field-label">Bank Name</label>
-                  <input className="doc-input" placeholder="HDFC Bank"
-                    value={form.bankName}
-                    onChange={e => updateField("bankName", e.target.value)} />
-                </div>
-                <div className="form-field">
-                  <label className="field-label">Account Number</label>
-                  <input className="doc-input" placeholder="XXXXXXXXXXXX"
-                    value={form.accountNumber}
-                    onChange={e => updateField("accountNumber", e.target.value)}
-                    style={{ fontFamily: "monospace" }} />
-                </div>
-                <div className="form-field">
-                  <label className="field-label">IFSC Code</label>
-                  <input className="doc-input" placeholder="HDFC0001234"
-                    value={form.ifscCode}
-                    onChange={e => updateField("ifscCode",
-                      e.target.value.toUpperCase())}
-                    style={{ fontFamily: "monospace" }} />
-                </div>
-              </div>
-            )}
-
-            {/* SETTINGS */}
-            {activeTab === "extra" && (
-              <div>
                 <p className="form-label">Notes & Terms</p>
                 <div className="form-field">
                   <label className="field-label">Notes</label>

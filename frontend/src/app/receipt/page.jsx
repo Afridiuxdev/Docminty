@@ -100,6 +100,7 @@ export function ReceiptPreview({ form, template = "Classic", accent = "#0D9488" 
     return (
       <div className="pdf-preview" style={{ display: "flex", padding: 0, overflow: "hidden" }}>
         <div style={{ width: "135px", background: accent, padding: "24px 14px", flexShrink: 0, color: "#fff", display: "flex", flexDirection: "column", wordBreak: "break-word" }}>
+          {form.logo && <img src={form.logo} alt="Logo" style={{ height: "36px", objectFit: "contain", marginBottom: "12px", display: "block" }} />}
           <p style={{ fontSize: "15px", fontWeight: 800, margin: "0 0 4px", fontFamily: "Space Grotesk, sans-serif" }}>RECEIPT</p>
           <p style={{ fontSize: "10px", opacity: 0.75, margin: "0 0 20px" }}>#{form.receiptNumber}</p>
           <p style={{ fontSize: "8px", fontWeight: 700, opacity: 0.6, textTransform: "uppercase", letterSpacing: "0.06em", margin: "0 0 3px" }}>From</p>
@@ -132,12 +133,6 @@ export function ReceiptPreview({ form, template = "Classic", accent = "#0D9488" 
             <span>RECEIPT #{form.receiptNumber}</span>
             <span>Date: {form.receiptDate}</span>
           </div>
-          {form.signature && (
-            <div style={{ marginTop: "12px", display: "flex", flexDirection: "column", alignItems: "center" }}>
-              <img src={form.signature} alt="Signature" style={{ maxHeight: "40px", maxWidth: "120px", display: "block" }} />
-              <p style={{ fontSize: "8px", color: "#9CA3AF", margin: "2px 0 0" }}>Authorised Signatory</p>
-            </div>
-          )}
         </div>
         {receiptBody}
       </div>

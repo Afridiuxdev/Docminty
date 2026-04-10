@@ -26,32 +26,27 @@ export default function InternshipMinimalTemplate({ form }) {
     const issueDate = formatDate(form.issueDate);
     const perfText = PERF_MAP[form.performance] || PERF_MAP.excellent;
 
-    const stateName = INDIAN_STATES.find(s => s.code === form.orgState)?.name || "";
-    const fullOrgAddr = [
-        form.orgAddress,
-        (form.orgCity || stateName) ? `${form.orgCity ? form.orgCity + ", " : ""}${stateName}` : null
-    ].filter(Boolean).join(", ");
-
     const styles = StyleSheet.create({
-        page: { padding: 40, fontFamily: "Inter", backgroundColor: "#ffffff" },
-        main: { flex: 1, border: "1px solid #E5E7EB", borderRadius: 8, width: "100%", justifyContent: "center", position: "relative" },
-        borderTop: { borderTop: `3pt solid ${T}`, width: "100%", flex: 1, padding: "28 36", justifyContent: "center" },
+        page: { padding: 12, fontFamily: "Inter", backgroundColor: "#ffffff" },
+        container: { flex: 1, border: "1px solid #E5E7EB", borderRadius: 8, alignItems: "center", justifyContent: "center" },
+        inner: { flex: 1, padding: "28 36", alignItems: "center", justifyContent: "center", width: "100%", border: "1px solid #F3F4F6", borderRadius: 4, margin: 12 },
+        accentBar: { width: 30, height: 3, backgroundColor: T, borderRadius: 2 },
         
         logo: { height: 44, marginBottom: 10, objectFit: "contain", alignSelf: "center" },
         orgName: { fontSize: 15, fontFamily: "Space Grotesk", fontWeight: 700, color: "#111827", textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 2, textAlign: "center" },
         orgInfo: { fontSize: 10, color: "#9CA3AF", textAlign: "center", marginBottom: 2 },
         
-        badge: { backgroundColor: T, color: "#ffffff", padding: "3 18", borderRadius: 2, marginTop: 12, marginBottom: 12, textAlign: "center" },
-        badgeText: { color: "#ffffff", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 2, textAlign: "center" },
+        badge: { backgroundColor: T, padding: "3 18", borderRadius: 2, marginTop: 10, marginBottom: 12, textAlign: "center", alignSelf: "center" },
+        badgeText: { color: "#ffffff", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.5, textAlign: "center" },
         
         intro: { fontSize: 10, color: "#6B7280", marginBottom: 5, textAlign: "center" },
-        internName: { fontSize: 20, fontFamily: "Space Grotesk", fontWeight: 800, color: "#111827", marginBottom: 8, borderBottomWidth: 2, borderBottomColor: T, paddingBottom: 6, textAlign: "center" },
+        internName: { fontSize: 20, fontFamily: "Space Grotesk", fontWeight: 800, color: "#111827", marginBottom: 8, borderBottomWidth: 2, borderBottomColor: T, paddingBottom: 6, textAlign: "center", width: "100%" },
         
-        content: { fontSize: 10, color: "#374151", textAlign: "center", lineHeight: 1.6, marginTop: 6 },
+        content: { fontSize: 10, color: "#374151", textAlign: "center", lineHeight: 1.6, marginTop: 6, marginBottom: 6 },
         bold: { fontWeight: 700, color: "#111827" },
         accent: { fontWeight: 700, color: T },
         
-        project: { fontSize: 10, color: "#374151", marginTop: 5, textAlign: "center" },
+        project: { fontSize: 10, color: "#374151", marginTop: 5, marginBottom: 5, textAlign: "center" },
         issue: { fontSize: 9, color: "#9CA3AF", marginTop: 6, textAlign: "center" },
         
         footer: { width: "100%", marginTop: 18, flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
@@ -69,12 +64,11 @@ export default function InternshipMinimalTemplate({ form }) {
     return (
         <Document title={`Internship-Certificate-${form.internName}`}>
             <Page size="A4" orientation="landscape" style={styles.page}>
-                <View style={styles.main}>
-                    <View style={styles.borderTop}>
-                        {form.logo && <Image src={form.logo} style={styles.logo} />}
+                <View style={styles.container}>
+                    <View style={styles.inner}>
+                        <View style={styles.accentBar} />
+                        {form.logo && <Image src={form.logo} style={[styles.logo, { marginTop: 16 }]} />}
                         <Text style={styles.orgName}>{form.orgName || "Organisation Name"}</Text>
-                        {fullOrgAddr ? <Text style={styles.orgInfo}>{fullOrgAddr}</Text> : null}
-                        {form.orgWebsite ? <Text style={styles.orgInfo}>{form.orgWebsite}</Text> : null}
 
                         <View style={styles.badge}>
                             <Text style={styles.badgeText}>Internship Certificate</Text>
@@ -129,6 +123,7 @@ export default function InternshipMinimalTemplate({ form }) {
                         {form.enableQR && (
                             <Text style={styles.verifyId}>ID: {form.verificationId}</Text>
                         )}
+                        <View style={[styles.accentBar, { marginTop: 16 }]} />
                     </View>
                 </View>
             </Page>

@@ -26,7 +26,7 @@ export default function MinimalTemplate({ form }) {
         header: { padding: "24 24", borderBottomWidth: 1, borderBottomColor: "#E5E7EB", flexDirection: "row", justifyContent: "space-between" },
         headerLeft: { maxWidth: "60%" },
         headerRight: { textAlign: "right" },
-        logo: { height: 48, objectFit: "contain", marginBottom: 8 },
+        logo: { height: 48, objectFit: "contain", marginBottom: 8, alignSelf: "flex-start" },
         fromName: { fontFamily: "Space Grotesk", fontWeight: 700, fontSize: 16, color: "#111827" },
         fromDetails: { fontSize: 11, color: "#6B7280", marginTop: 4, lineHeight: 1.4 },
         title: { fontFamily: "Space Grotesk", fontWeight: 800, fontSize: 22, color: "#111827" },
@@ -50,7 +50,7 @@ export default function MinimalTemplate({ form }) {
         totalRow: { flexDirection: "row", justifyContent: "space-between", paddingVertical: 4 },
         totalLabel: { fontSize: 10, color: "#6B7280" },
         totalValue: { fontSize: 10, color: "#374151", fontWeight: 600 },
-        grandTotalRow: { flexDirection: "row", justifyContent: "space-between", padding: "8 12", borderTopWidth: 2, borderTopColor: "#E5E7EB", marginTop: 6 },
+        grandTotalRow: { flexDirection: "row", justifyContent: "space-between", padding: "8 12", backgroundColor: T + "18", borderRadius: 6, marginTop: 6 },
         grandTotalLabel: { fontSize: 12, fontWeight: 700, color: T },
         
         wordsBox: { marginTop: 16, padding: "10 14", backgroundColor: "#F8F9FA", borderRadius: 6, borderLeftWidth: 3, borderLeftColor: T },

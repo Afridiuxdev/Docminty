@@ -14,10 +14,8 @@ export default function ElegantTemplate({ form }) {
         sideBar: { width: 12, backgroundColor: T, height: "100%" },
         content: { flex: 1, padding: "32 40", alignItems: "center", justifyContent: "center" },
         
-        logo: { height: 48, objectFit: "contain", marginBottom: 12 },
-        orgName: { fontSize: 16, fontFamily: "Space Grotesk", fontWeight: 700, color: "#111827", textTransform: "uppercase", letterSpacing: 1.2, textAlign: "center", marginBottom: 4 },
-        orgAddr: { fontSize: 11, color: "#9CA3AF", textAlign: "center", marginBottom: 2 },
-        orgWeb: { fontSize: 11, color: "#9CA3AF", textAlign: "center", marginBottom: 20 },
+        logo: { height: 48, objectFit: "contain", marginBottom: 16 },
+        orgName: { fontSize: 16, fontFamily: "Space Grotesk", fontWeight: 700, color: "#111827", textTransform: "uppercase", letterSpacing: 1.2, textAlign: "center", marginBottom: 24 },
         
         typeBadge: { backgroundColor: T, padding: "6 28", borderRadius: 2, marginBottom: 20 },
         typeText: { fontSize: 13, fontFamily: "Space Grotesk", fontWeight: 700, color: "#ffffff", textTransform: "uppercase", letterSpacing: 3, textAlign: "center" },
@@ -42,11 +40,6 @@ export default function ElegantTemplate({ form }) {
         verifId: { fontSize: 9, color: "#D1D5DB", textAlign: "center", marginTop: 16, fontFamily: "Courier" }
     });
 
-    const addrParts = [
-        form.orgAddress,
-        (form.orgCity || stateName) ? `${form.orgCity ? form.orgCity + ", " : ""}${stateName}` : null
-    ].filter(Boolean).join(", ");
-
     return (
         <Document title={`Certificate-${form.recipientName}`}>
             <Page size="A4" orientation="landscape" style={styles.page}>
@@ -55,8 +48,6 @@ export default function ElegantTemplate({ form }) {
                     <View style={styles.content}>
                         {form.logo && <Image src={form.logo} style={styles.logo} />}
                         <Text style={styles.orgName}>{form.orgName || "Organisation Name"}</Text>
-                        {addrParts ? <Text style={styles.orgAddr}>{addrParts}</Text> : null}
-                        {form.orgWebsite && <Text style={styles.orgWeb}>{form.orgWebsite}</Text>}
                         
                         <View style={styles.typeBadge}>
                             <Text style={styles.typeText}>{form.certType}</Text>

@@ -79,7 +79,7 @@ export default function ProformaElegantTemplate({ form }) {
     <Document title={`Elegant-Proforma-${form.proformaNumber}`}>
       <Page size="A4" style={styles.page}>
         <View style={styles.badge}>
-            <Text style={styles.badgeText}>⚠ PROFORMA INVOICE — NOT A TAX INVOICE</Text>
+            <Text style={styles.badgeText}>PROFORMA INVOICE — NOT A TAX INVOICE</Text>
         </View>
         <View style={styles.sidebarLine} />
         <View style={styles.header}>
@@ -148,7 +148,7 @@ export default function ProformaElegantTemplate({ form }) {
             {parseFloat(form.advancePercent) > 0 && (
               <View style={styles.advBox}>
                 <Text style={styles.advLabel}>Payable Advance ({form.advancePercent}%)</Text>
-                <Text style={styles.advValue}>₹{advFmt}</Text>
+                <Text style={styles.advValue}>Rs.{advFmt}</Text>
               </View>
             )}
             {form.bankName && (
@@ -166,18 +166,18 @@ export default function ProformaElegantTemplate({ form }) {
           </View>
 
           <View style={styles.rightCol}>
-            <View style={styles.totRow}><Text style={styles.totLabel}>Subtotal</Text><Text style={styles.totVal}>₹{calc.subtotal}</Text></View>
+            <View style={styles.totRow}><Text style={styles.totLabel}>Subtotal</Text><Text style={styles.totVal}>Rs.{calc.subtotal}</Text></View>
             {form.taxType === "igst" ? (
-              <View style={styles.totRow}><Text style={styles.totLabel}>IGST Total</Text><Text style={styles.totVal}>₹{calc.totalIGST}</Text></View>
+              <View style={styles.totRow}><Text style={styles.totLabel}>IGST Total</Text><Text style={styles.totVal}>Rs.{calc.totalIGST}</Text></View>
             ) : (
               <>
-                <View style={styles.totRow}><Text style={styles.totLabel}>CGST Total</Text><Text style={styles.totVal}>₹{calc.totalCGST}</Text></View>
-                <View style={styles.totRow}><Text style={styles.totLabel}>SGST Total</Text><Text style={styles.totVal}>₹{calc.totalSGST}</Text></View>
+                <View style={styles.totRow}><Text style={styles.totLabel}>CGST Total</Text><Text style={styles.totVal}>Rs.{calc.totalCGST}</Text></View>
+                <View style={styles.totRow}><Text style={styles.totLabel}>SGST Total</Text><Text style={styles.totVal}>Rs.{calc.totalSGST}</Text></View>
               </>
             )}
             <View style={styles.grandBox}>
               <Text style={styles.grandLabel}>Total Estimation</Text>
-              <Text style={styles.grandVal}>₹{calc.grandTotal}</Text>
+              <Text style={styles.grandVal}>Rs.{calc.grandTotal}</Text>
             </View>
           </View>
         </View>

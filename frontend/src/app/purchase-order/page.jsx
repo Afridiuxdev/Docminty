@@ -119,9 +119,31 @@ export function POPreview({ form, template = "Classic", accent = "#0D9488" }) {
   const sharedBody = (
     <div className="pdf-body">
       <div style={{
-        display: "grid", gridTemplateColumns: "1fr 1fr",
-        gap: "24px", marginBottom: "20px"
+        display: "grid", gridTemplateColumns: "1fr 1fr 1fr",
+        gap: "20px", marginBottom: "20px"
       }}>
+        <div>
+          <p style={{
+            fontSize: "10px", fontWeight: 700, color: "#9CA3AF",
+            textTransform: "uppercase", letterSpacing: "0.08em",
+            margin: "0 0 6px", fontFamily: "Space Grotesk, sans-serif"
+          }}>Bill From</p>
+          <p style={{
+            fontFamily: "Space Grotesk, sans-serif", fontWeight: 700,
+            fontSize: "13px", color: "#111827", margin: 0
+          }}>{form.fromName || "Your Company"}</p>
+          {form.fromGSTIN && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>GSTIN: {form.fromGSTIN}</p>}
+          {form.fromAddress && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>
+            {form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}
+          </p>}
+          {fromState && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{fromState.name}</p>}
+          {(form.fromPhone || form.fromEmail) && (
+            <p style={{ fontSize: "11px", color: "#6B7280", margin: "4px 0 0", fontFamily: "Inter, sans-serif", lineHeight: 1.4 }}>
+              {form.fromPhone && <span style={{ display: "block" }}>Ph: {form.fromPhone}</span>}
+              {form.fromEmail && <span style={{ display: "block", wordBreak: "break-all" }}>Em: {form.fromEmail}</span>}
+            </p>
+          )}
+        </div>
         <div>
           <p style={{
             fontSize: "10px", fontWeight: 700, color: "#9CA3AF",
@@ -134,14 +156,8 @@ export function POPreview({ form, template = "Classic", accent = "#0D9488" }) {
           }}>
             {form.toName || "Vendor Name"}
           </p>
-          {form.toGSTIN && <p style={{
-            fontSize: "11px", color: "#6B7280",
-            margin: "2px 0 0", fontFamily: "Inter, sans-serif"
-          }}>GSTIN: {form.toGSTIN}</p>}
-          {form.toAddress && <p style={{
-            fontSize: "11px", color: "#6B7280",
-            margin: "2px 0 0", fontFamily: "Inter, sans-serif"
-          }}>
+          {form.toGSTIN && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>GSTIN: {form.toGSTIN}</p>}
+          {form.toAddress && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>
             {form.toAddress}{form.toCity ? `, ${form.toCity}` : ""}
           </p>}
           {toState && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{toState.name}</p>}
@@ -152,21 +168,19 @@ export function POPreview({ form, template = "Classic", accent = "#0D9488" }) {
             </p>
           )}
         </div>
-        {form.deliveryAddress && (
-          <div>
-            <p style={{
-              fontSize: "10px", fontWeight: 700, color: "#9CA3AF",
-              textTransform: "uppercase", letterSpacing: "0.08em",
-              margin: "0 0 6px", fontFamily: "Space Grotesk, sans-serif"
-            }}>Delivery Address</p>
-            <p style={{
-              fontSize: "12px", color: "#374151",
-              fontFamily: "Inter, sans-serif", lineHeight: 1.5
-            }}>
-              {form.deliveryAddress}
-            </p>
-          </div>
-        )}
+        <div>
+          <p style={{
+            fontSize: "10px", fontWeight: 700, color: "#9CA3AF",
+            textTransform: "uppercase", letterSpacing: "0.08em",
+            margin: "0 0 6px", fontFamily: "Space Grotesk, sans-serif"
+          }}>Delivery Address</p>
+          <p style={{
+            fontSize: "12px", color: "#374151",
+            fontFamily: "Inter, sans-serif", lineHeight: 1.5
+          }}>
+            {form.deliveryAddress || "—"}
+          </p>
+        </div>
       </div>
 
       <table className="pdf-table">
@@ -371,6 +385,7 @@ export function POPreview({ form, template = "Classic", accent = "#0D9488" }) {
           <div style={{ display: "flex", justifyContent: "center", gap: "16px", fontSize: "10px", color: "#9CA3AF", fontWeight: 700 }}>
             <span>PO: #{form.poNumber}</span>
             <span>DATE: {form.poDate}</span>
+            {form.deliveryDate && <span>DELIV: {form.deliveryDate}</span>}
           </div>
         </div>
         {sharedBody}
@@ -395,7 +410,9 @@ export function POPreview({ form, template = "Classic", accent = "#0D9488" }) {
             </div>
             <div style={{ textAlign: "right" }}>
               <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "22px", color: accent, margin: 0 }}>PURCHASE ORDER</p>
-              <p style={{ fontSize: "11px", color: "#6B7280" }}>#{form.poNumber}</p>
+              <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0" }}>#{form.poNumber}</p>
+              <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "2px 0 0" }}>Date: {form.poDate}</p>
+              {form.deliveryDate && <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "2px 0 0" }}>Deliv: {form.deliveryDate}</p>}
             </div>
           </div>
           <div style={{ height: "4px", background: accent, borderRadius: "2px" }} />
@@ -405,59 +422,14 @@ export function POPreview({ form, template = "Classic", accent = "#0D9488" }) {
     );
   }
 
-  // Classic — Colored Banner
-  if (template === "Classic") {
-    return (
-      <div className="pdf-preview">
-        <div style={{ background: accent, padding: "18px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", color: "#fff" }}>
-          <div>
-            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", margin: 0 }}>{form.fromName || "Business Name"}</p>
-            <p style={{ fontSize: "10px", opacity: 0.8, margin: "2px 0 0" }}>{form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}</p>
-            {form.fromGSTIN && <p style={{ fontSize: "10px", opacity: 0.8, margin: "2px 0 0" }}>GSTIN: {form.fromGSTIN}</p>}
-            {(form.fromPhone || form.fromEmail) && (
-              <p style={{ fontSize: "10px", opacity: 0.8, margin: "2px 0 0" }}>
-                {form.fromPhone && `Ph: ${form.fromPhone}`}{form.fromPhone && form.fromEmail ? "  |  " : ""}{form.fromEmail && `Em: ${form.fromEmail}`}
-              </p>
-            )}
-          </div>
-          <div style={{ textAlign: "right" }}>
-            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "20px", margin: 0 }}>PURCHASE ORDER</p>
-            <p style={{ fontSize: "11px", opacity: 0.8 }}>#{form.poNumber}</p>
-          </div>
-        </div>
-        {sharedBody}
-      </div>
-    );
-  }
-
-  // Minimal (Default)
+  // Classic/Minimal (Default)
   return (
     <div className="pdf-preview">
       <div className="pdf-header" style={{ borderBottom: `2px solid ${accent}` }}>
         <div>
-          {form.logo && <img src={form.logo} alt="Logo"
-            style={{ height: "48px", objectFit: "contain", marginBottom: "8px", display: "block" }} />}
-          <p style={{
-            fontFamily: "Space Grotesk, sans-serif", fontWeight: 700,
-            fontSize: "16px", color: "#111827", margin: 0
-          }}>
-            {form.fromName || "Your Company"}
-          </p>
-          {form.fromGSTIN && <p style={{
-            fontSize: "11px", color: "#6B7280",
-            margin: "2px 0 0", fontFamily: "Inter, sans-serif"
-          }}>GSTIN: {form.fromGSTIN}</p>}
-          {form.fromAddress && <p style={{
-            fontSize: "11px", color: "#6B7280",
-            margin: "2px 0 0", fontFamily: "Inter, sans-serif"
-          }}>
-            {form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}
-          </p>}
-          {fromState && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{fromState.name}</p>}
-          {(form.fromPhone || form.fromEmail) && (
-            <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>
-              {form.fromPhone && `Ph: ${form.fromPhone}`}{form.fromPhone && form.fromEmail ? "  |  " : ""}{form.fromEmail && `Em: ${form.fromEmail}`}
-            </p>
+          {form.logo && (
+            <img src={form.logo} alt="Logo"
+              style={{ height: "48px", objectFit: "contain", display: "block" }} />
           )}
         </div>
         <div style={{ textAlign: "right" }}>
@@ -473,6 +445,10 @@ export function POPreview({ form, template = "Classic", accent = "#0D9488" }) {
             fontSize: "11px", color: "#9CA3AF", margin: "4px 0 0",
             fontFamily: "Inter, sans-serif"
           }}>Date: {form.poDate}</p>
+          {form.deliveryDate && <p style={{
+            fontSize: "11px", color: "#9CA3AF", margin: "4px 0 0",
+            fontFamily: "Inter, sans-serif"
+          }}>Deliv: {form.deliveryDate}</p>}
         </div>
       </div>
       {sharedBody}

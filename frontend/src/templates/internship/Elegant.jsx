@@ -26,33 +26,27 @@ export default function InternshipElegantTemplate({ form }) {
     const issueDate = formatDate(form.issueDate);
     const perfText = PERF_MAP[form.performance] || PERF_MAP.excellent;
 
-    const stateName = INDIAN_STATES.find(s => s.code === form.orgState)?.name || "";
-    const fullOrgAddr = [
-        form.orgAddress,
-        (form.orgCity || stateName) ? `${form.orgCity ? form.orgCity + ", " : ""}${stateName}` : null
-    ].filter(Boolean).join(", ");
-
     const styles = StyleSheet.create({
         page: { padding: 0, fontFamily: "Inter", backgroundColor: "#ffffff" },
         main: { flexDirection: "row", height: "100%", width: "100%" },
-        sideBar: { width: 12, backgroundColor: T, height: "100%" },
-        content: { flex: 1, padding: "28 36", justifyContent: "center" },
+        sideBar: { width: 30, backgroundColor: T, height: "100%" },
+        content: { flex: 1, padding: "28 36", justifyContent: "center", textAlign: "center" },
         
         logo: { height: 44, marginBottom: 10, objectFit: "contain", alignSelf: "center" },
         orgName: { fontSize: 15, fontFamily: "Space Grotesk", fontWeight: 700, color: "#111827", textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 2, textAlign: "center" },
         orgInfo: { fontSize: 10, color: "#9CA3AF", textAlign: "center", marginBottom: 2 },
         
-        badge: { backgroundColor: T, padding: "3 18", borderRadius: 2, marginTop: 12, marginBottom: 12, textAlign: "center" },
-        badgeText: { color: "#ffffff", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 2, textAlign: "center" },
+        badge: { backgroundColor: T, padding: "3 18", borderRadius: 2, marginTop: 10, marginBottom: 12, textAlign: "center", alignSelf: "center" },
+        badgeText: { color: "#ffffff", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.5, textAlign: "center" },
         
         intro: { fontSize: 10, color: "#6B7280", marginBottom: 5, textAlign: "center" },
-        internName: { fontSize: 20, fontFamily: "Space Grotesk", fontWeight: 800, color: "#111827", marginBottom: 8, borderBottomWidth: 2, borderBottomColor: T, paddingBottom: 6, textAlign: "center" },
+        internName: { fontSize: 20, fontFamily: "Space Grotesk", fontWeight: 800, color: "#111827", marginBottom: 8, borderBottomWidth: 2, borderBottomColor: T, paddingBottom: 6, textAlign: "center", width: "100%" },
         
-        contentStyle: { fontSize: 10, color: "#374151", textAlign: "center", lineHeight: 1.6, marginTop: 6 },
+        contentStyle: { fontSize: 10, color: "#374151", textAlign: "center", lineHeight: 1.6, marginTop: 6, marginBottom: 6 },
         bold: { fontWeight: 700, color: "#111827" },
         accent: { fontWeight: 700, color: T },
         
-        project: { fontSize: 10, color: "#374151", marginTop: 5, textAlign: "center" },
+        project: { fontSize: 10, color: "#374151", marginTop: 5, marginBottom: 5, textAlign: "center" },
         issue: { fontSize: 9, color: "#9CA3AF", marginTop: 6, textAlign: "center" },
         
         footer: { width: "100%", marginTop: 18, flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
@@ -75,8 +69,6 @@ export default function InternshipElegantTemplate({ form }) {
                     <View style={styles.content}>
                         {form.logo && <Image src={form.logo} style={styles.logo} />}
                         <Text style={styles.orgName}>{form.orgName || "Organisation Name"}</Text>
-                        {fullOrgAddr ? <Text style={styles.orgInfo}>{fullOrgAddr}</Text> : null}
-                        {form.orgWebsite ? <Text style={styles.orgInfo}>{form.orgWebsite}</Text> : null}
 
                         <View style={styles.badge}>
                             <Text style={styles.badgeText}>Internship Certificate</Text>

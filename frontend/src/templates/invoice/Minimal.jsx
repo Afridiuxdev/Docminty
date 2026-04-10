@@ -25,7 +25,7 @@ export default function MinimalTemplate({ form }) {
         header: { paddingBottom: 16, borderBottomWidth: 2, borderBottomColor: T, flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" },
         headerLeft: { maxWidth: "60%" },
         headerRight: { textAlign: "right" },
-        logo: { height: 40, objectFit: "contain", marginBottom: 8 },
+        logo: { height: 48, objectFit: "contain", marginBottom: 8, alignSelf: "flex-start" },
         fromName: { fontFamily: "Space Grotesk", fontWeight: 700, fontSize: 16, color: "#111827", margin: 0 },
         fromDetails: { fontSize: 9, color: "#6B7280", marginTop: 4, lineHeight: 1.5 },
         title: { fontFamily: "Space Grotesk", fontWeight: 700, fontSize: 22, color: "#111827", margin: 0 },

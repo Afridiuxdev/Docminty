@@ -85,7 +85,7 @@ export default function PurchaseModernTemplate({ form }) {
 
           <View style={{ marginTop: "auto" }}>
             <Text style={styles.sideLabel}>Total Amount</Text>
-            <Text style={{ fontSize: 12, fontWeight: 700 }}>₹{calc.grandTotal}</Text>
+            <Text style={{ fontSize: 12, fontWeight: 700 }}>Rs.{calc.grandTotal}</Text>
           </View>
         </View>
 
@@ -129,12 +129,12 @@ export default function PurchaseModernTemplate({ form }) {
                   <View style={{ flex: 3 }}>
                     <Text style={[styles.td, { fontWeight: 700 }]}>{item.description || "—"}</Text>
                     <Text style={{ fontSize: 8, color: "#9CA3AF", marginTop: 2 }}>
-                       Rate: ₹{item.rate}
+                       Rate: Rs.{item.rate}
                     </Text>
                   </View>
                   {form.showHSN && <View style={{ flex: 1 }}><Text style={styles.td}>{item.hsn || "—"}</Text></View>}
                   <View style={{ flex: 1 }}><Text style={styles.td}>{item.qty} {item.unit}</Text></View>
-                  <View style={{ flex: 1.2 }}><Text style={[styles.td, { textAlign: "right", fontWeight: 700 }]}>₹{item.amount}</Text></View>
+                  <View style={{ flex: 1.2 }}><Text style={[styles.td, { textAlign: "right", fontWeight: 700 }]}>Rs.{item.amount}</Text></View>
                 </View>
               ))}
             </View>
@@ -143,29 +143,29 @@ export default function PurchaseModernTemplate({ form }) {
                 <View style={styles.totBox}>
                   <View style={styles.totRow}>
                     <Text style={styles.totLabel}>Subtotal</Text>
-                    <Text style={styles.totVal}>₹{calc.subtotal}</Text>
+                    <Text style={styles.totVal}>Rs.{calc.subtotal}</Text>
                   </View>
                   {form.taxType === "cgst_sgst" && (
                     <>
                       <View style={styles.totRow}>
                         <Text style={styles.totLabel}>CGST</Text>
-                        <Text style={styles.totVal}>₹{calc.totalCGST}</Text>
+                        <Text style={styles.totVal}>Rs.{calc.totalCGST}</Text>
                       </View>
                       <View style={styles.totRow}>
                         <Text style={styles.totLabel}>SGST</Text>
-                        <Text style={styles.totVal}>₹{calc.totalSGST}</Text>
+                        <Text style={styles.totVal}>Rs.{calc.totalSGST}</Text>
                       </View>
                     </>
                   )}
                   {form.taxType === "igst" && (
                     <View style={styles.totRow}>
                       <Text style={styles.totLabel}>IGST</Text>
-                      <Text style={styles.totVal}>₹{calc.totalIGST}</Text>
+                      <Text style={styles.totVal}>Rs.{calc.totalIGST}</Text>
                     </View>
                   )}
                   <View style={styles.grandBox}>
                     <Text style={styles.grandLabel}>Total</Text>
-                    <Text style={styles.grandVal}>₹{calc.grandTotal}</Text>
+                    <Text style={styles.grandVal}>Rs.{calc.grandTotal}</Text>
                   </View>
                 </View>
             </View>

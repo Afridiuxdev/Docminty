@@ -88,7 +88,7 @@ export default function VoucherModernTemplate({ form }) {
 
           <View style={{ marginTop: "auto" }}>
             <Text style={styles.sideLabel}>Total Amount</Text>
-            <Text style={{ fontSize: 12, fontWeight: 700 }}>₹{amount.toLocaleString("en-IN")}</Text>
+            <Text style={{ fontSize: 12, fontWeight: 700 }}>Rs.{amount.toLocaleString("en-IN")}</Text>
           </View>
         </View>
 
@@ -104,7 +104,7 @@ export default function VoucherModernTemplate({ form }) {
             <View style={styles.amtBox}>
               <View>
                 <Text style={styles.amtLabel}>Amount Paid</Text>
-                <Text style={styles.amtVal}>₹{amount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</Text>
+                <Text style={styles.amtVal}>Rs.{amount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</Text>
               </View>
               <Text style={styles.modeTag}>{form.paymentMode}</Text>
             </View>

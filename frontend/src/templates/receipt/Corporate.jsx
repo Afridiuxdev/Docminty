@@ -21,45 +21,39 @@ function numToWords(n) {
 export default function ReceiptCorporateTemplate({ form }) {
   const T = form.templateColor || "#1E3A5F";
   const amount = parseFloat(form.amount) || 0;
-  const amtFmt = amount.toLocaleString("en-IN", { 
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  });
+  const amtFmt = amount.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const fromState = INDIAN_STATES.find(s => s.code === form.fromState)?.name || "";
 
   const styles = StyleSheet.create({
-    page: { fontFamily: "Inter", fontSize: 10, color: "#111827", padding: "50 70", backgroundColor: "#ffffff" },
-    header: { marginBottom: 32, textAlign: "center", borderBottomWidth: 2, borderBottomColor: T, paddingBottom: 20 },
-    logo: { height: 40, objectFit: "contain", marginBottom: 12, margin: "0 auto" },
+    page: { fontFamily: "Inter", fontSize: 10, color: "#111827", padding: "40 50", backgroundColor: "#ffffff" },
+
+    header: { textAlign: "center", borderBottomWidth: 2, borderBottomColor: T, paddingBottom: 16, marginBottom: 20 },
+    logo: { height: 40, objectFit: "contain", marginBottom: 10, alignSelf: "center" },
     orgName: { fontSize: 18, fontFamily: "Space Grotesk", fontWeight: 700, color: T, textTransform: "uppercase", letterSpacing: 2, marginBottom: 4 },
-    docType: { fontSize: 10, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 2, fontFamily: "Space Grotesk", fontWeight: 700 },
-    
-    dateRow: { marginTop: 24, marginBottom: 32, flexDirection: "row", justifyContent: "space-between", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", paddingBottom: 12 },
-    metaText: { fontSize: 9, color: "#6B7280", fontWeight: 700, fontFamily: "Space Grotesk" },
-    
-    recipient: { marginBottom: 32 },
-    label: { fontSize: 8, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4, fontFamily: "Space Grotesk", fontWeight: 700 },
-    recipName: { fontSize: 13, fontWeight: 700, color: "#111827" },
-    recipSub: { fontSize: 9, color: "#6B7280", marginTop: 2, lineHeight: 1.4, maxWidth: 300 },
-    
-    amountBox: { backgroundColor: "#F8FAFD", padding: "24 32", borderRadius: 8, margin: "24 0", borderLeftWidth: 4, borderLeftColor: T },
-    amountRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 16 },
-    amountLabel: { fontSize: 10, fontWeight: 700, color: "#111827", textTransform: "uppercase", fontFamily: "Space Grotesk" },
-    amountVal: { fontSize: 24, fontFamily: "Space Grotesk", fontWeight: 700, color: T },
-    amountWords: { fontSize: 10, color: "#374151", borderTopWidth: 1, borderTopColor: "#E5E7EB", paddingTop: 12, fontWeight: 700, fontStyle: "italic" },
-    
-    detailsTable: { marginBottom: 32, padding: "16 0", borderBottomWidth: 1, borderBottomColor: "#F3F4F6" },
-    detailLine: { flexDirection: "row", marginBottom: 10 },
-    detailLabel: { width: 140, fontSize: 9, color: "#6B7280", textTransform: "uppercase", fontFamily: "Space Grotesk", fontWeight: 700 },
-    detailValue: { flex: 1, fontSize: 10, fontWeight: 700, color: "#111827" },
-    
-    signatureArea: { marginTop: 48, flexDirection: "row", justifyContent: "flex-end" },
-    sigLine: { borderTopWidth: 1.5, borderTopColor: "#111827", paddingTop: 8, width: 160 },
-    sigName: { fontSize: 11, fontWeight: 700, color: "#111827", textAlign: "center" },
-    sigLabel: { fontSize: 8, color: "#9CA3AF", textAlign: "center", marginTop: 2 },
-    
-    footer: { position: "absolute", bottom: 40, left: 70, right: 70, borderTopWidth: 1, borderTopColor: "#F3F4F6", paddingTop: 12 },
-    footerText: { fontSize: 8, color: "#D1D5DB", textAlign: "center" }
+    orgAddress: { fontSize: 10, color: "#6B7280", lineHeight: 1.5, marginBottom: 6 },
+    metaRow: { flexDirection: "row", justifyContent: "center", gap: 16, fontSize: 9, color: "#9CA3AF", textTransform: "uppercase", fontWeight: 700, letterSpacing: 1, marginTop: 4 },
+    docType: { fontSize: 9, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 2, fontFamily: "Space Grotesk", fontWeight: 700, marginTop: 6 },
+
+    amtBox: { backgroundColor: "#F0FDFA", borderWidth: 2, borderColor: T, borderRadius: 10, padding: "20 24", textAlign: "center", marginBottom: 20 },
+    amtLabel: { fontSize: 11, color: "#6B7280", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 },
+    amtVal: { fontFamily: "Space Grotesk", fontWeight: 800, fontSize: 36, color: T },
+    amtWords: { fontSize: 12, color: "#374151", marginTop: 8, fontStyle: "italic" },
+
+    table: { marginBottom: 16 },
+    tableRow: { flexDirection: "row", padding: "8 0", borderBottomWidth: 1, borderBottomColor: "#F3F4F6" },
+    tableLabel: { width: "40%", fontWeight: 700, color: "#6B7280" },
+    tableVal: { flex: 1, color: "#111827" },
+    modeTag: { backgroundColor: "#F0FDFA", color: T, paddingTop: 2, paddingBottom: 2, paddingLeft: 8, paddingRight: 8, borderRadius: 4, fontWeight: 700, fontSize: 11 },
+
+    notes: { marginTop: 16, padding: "10 14", backgroundColor: "#F8F9FA", borderRadius: 6, borderLeftWidth: 3, borderLeftColor: T },
+    notesLabel: { fontSize: 9, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 2 },
+
+    footer: { marginTop: 24, paddingTop: 12, borderTopWidth: 1, borderTopColor: "#E5E7EB", flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
+    fText: { fontSize: 9, color: "#D1D5DB" },
+    sigArea: { textAlign: "right", minWidth: 120 },
+    signature: { height: 45, width: 140, objectFit: "contain", marginBottom: 4, marginLeft: "auto" },
+    sigLine: { borderTopWidth: 1, borderTopColor: "#374151", paddingTop: 4 },
+    sigLabel: { fontSize: 9, color: "#9CA3AF" }
   });
 
   return (
@@ -68,76 +62,67 @@ export default function ReceiptCorporateTemplate({ form }) {
         <View style={styles.header}>
           {form.logo && <Image src={form.logo} style={styles.logo} />}
           <Text style={styles.orgName}>{form.fromName || "Organization Name"}</Text>
+          <Text style={styles.orgAddress}>
+            {form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}{fromState ? `, ${fromState}` : ""}
+            {(form.fromPhone || form.fromEmail) && `\n${form.fromPhone ? "Ph: " + form.fromPhone : ""}${form.fromEmail ? " | Em: " + form.fromEmail : ""}`}
+          </Text>
+          <View style={styles.metaRow}>
+            <Text>RECEIPT: #{form.receiptNumber}</Text>
+            <Text>DATE: {form.receiptDate}</Text>
+          </View>
           <Text style={styles.docType}>Official Payment Acknowledgement</Text>
         </View>
 
-        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 20 }}>
-            <View>
-                <Text style={{ fontSize: 9, color: "#6B7280", maxWidth: 250 }}>
-                    {form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}{fromState ? `, ${fromState}` : ""}
-                </Text>
-                <Text style={{ fontSize: 9, color: "#9CA3AF", marginTop: 4 }}>
-                    {form.fromPhone && `Ph: ${form.fromPhone} `}
-                    {form.fromEmail && ` | ${form.fromEmail}`}
-                </Text>
+        <View style={styles.amtBox}>
+          <Text style={styles.amtLabel}>Amount Received</Text>
+          <Text style={styles.amtVal}>Rs.{amtFmt}</Text>
+          <Text style={styles.amtWords}>{numToWords(amount)}</Text>
+        </View>
+
+        <View style={styles.table}>
+          <View style={styles.tableRow}>
+            <Text style={styles.tableLabel}>Received From</Text>
+            <Text style={styles.tableVal}>{form.receivedFrom || "—"}</Text>
+          </View>
+          {form.receivedFromAddress && (
+            <View style={styles.tableRow}>
+              <Text style={styles.tableLabel}>Address</Text>
+              <Text style={styles.tableVal}>{form.receivedFromAddress}</Text>
             </View>
-            <View style={{ textAlign: "right" }}>
-                <Text style={styles.metaText}>REF: #{form.receiptNumber}</Text>
-                <Text style={styles.metaText}>DATE: {form.receiptDate}</Text>
-            </View>
-        </View>
-
-        <View style={styles.recipient}>
-          <Text style={styles.label}>Received From</Text>
-          <Text style={styles.recipName}>{form.receivedFrom || "—"}</Text>
-          {form.receivedFromAddress && <Text style={styles.recipSub}>{form.receivedFromAddress}</Text>}
-        </View>
-
-        <View style={styles.amountBox}>
-          <View style={styles.amountRow}>
-            <Text style={styles.amountLabel}>Total Amount Received</Text>
-            <Text style={styles.amountVal}>₹ {amtFmt}</Text>
+          )}
+          <View style={styles.tableRow}>
+            <Text style={styles.tableLabel}>Payment Mode</Text>
+            <Text style={styles.tableVal}><Text style={styles.modeTag}>{form.paymentMode}</Text></Text>
           </View>
-          <Text style={styles.amountWords}>{numToWords(amount)}</Text>
-        </View>
-
-        <View style={styles.detailsTable}>
-          <View style={styles.detailLine}>
-            <Text style={styles.detailLabel}>Payment Mode</Text>
-            <Text style={styles.detailValue}>{form.paymentMode}</Text>
+          <View style={styles.tableRow}>
+            <Text style={styles.tableLabel}>Purpose</Text>
+            <Text style={styles.tableVal}>{form.purpose || "—"}</Text>
           </View>
-          <View style={styles.detailLine}>
-            <Text style={styles.detailLabel}>Transaction Purpose</Text>
-            <Text style={styles.detailValue}>{form.purpose || "—"}</Text>
-          </View>
-          <View style={styles.detailLine}>
-            <Text style={styles.detailLabel}>Transaction Date</Text>
-            <Text style={styles.detailValue}>{form.receiptDate}</Text>
+          <View style={styles.tableRow}>
+            <Text style={styles.tableLabel}>Date</Text>
+            <Text style={styles.tableVal}>{form.receiptDate}</Text>
           </View>
         </View>
 
         {form.notes && (
-          <View style={{ marginBottom: 32 }}>
-            <Text style={styles.label}>Compliance Notes</Text>
-            <Text style={{ fontSize: 9, color: "#6B7280", marginTop: 4, lineHeight: 1.5 }}>{form.notes}</Text>
+          <View style={styles.notes}>
+            <Text style={styles.notesLabel}>Notes</Text>
+            <Text>{form.notes}</Text>
           </View>
         )}
 
-        <View style={styles.signatureArea}>
-          <View>
+        <View style={styles.footer} wrap={false}>
+          <Text style={styles.fText}>Generated by DocMinty.com</Text>
+          <View style={styles.sigArea}>
             {form.signature ? (
-                <Image src={form.signature} style={{ height: 40, marginBottom: 4, objectFit: "contain", alignSelf: "center" }} />
+              <Image src={form.signature} style={styles.signature} />
             ) : (
-                <View style={{ height: 40 }} />
+              <View style={{ height: 45 }} />
             )}
             <View style={styles.sigLine}>
-              <Text style={styles.sigLabel}>Authorised Seal & Signature</Text>
+              <Text style={styles.sigLabel}>Authorised Signatory</Text>
             </View>
           </View>
-        </View>
-
-        <View style={styles.footer} fixed>
-          <Text style={styles.footerText}>Certified Digital Release via DocMinty Pro</Text>
         </View>
       </Page>
     </Document>

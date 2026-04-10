@@ -91,7 +91,7 @@ export default function RentModernTemplate({ form }) {
 
           <View style={{ marginTop: "auto" }}>
             <Text style={styles.sideLabel}>Rent Amount</Text>
-            <Text style={{ fontSize: 12, fontWeight: 700 }}>₹{amount.toLocaleString("en-IN")}</Text>
+            <Text style={{ fontSize: 12, fontWeight: 700 }}>Rs.{amount.toLocaleString("en-IN")}</Text>
           </View>
         </View>
 

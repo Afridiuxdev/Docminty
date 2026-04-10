@@ -168,7 +168,7 @@ export function QuotationPreview({ form, template = "Classic", accent = "#0D9488
             <div className="pdf-total-row"><span style={{ color: "#6B7280" }}>SGST</span><span>Rs.{calc.totalSGST}</span></div>
           </>}
           {form.taxType === "igst" && <div className="pdf-total-row"><span style={{ color: "#6B7280" }}>IGST</span><span>Rs.{calc.totalIGST}</span></div>}
-          <div style={{ display: "flex", justifyContent: "space-between", fontWeight: 700, borderTop: "2px solid #E5E7EB", paddingTop: "6px", marginTop: "4px" }}><span>Total</span><span style={{ color: accent }}>Rs.{calc.grandTotal}</span></div>
+          <div style={{ display: "flex", justifyContent: "space-between", fontWeight: 700, backgroundColor: accent + "18", padding: "8px 12px", borderRadius: "6px", marginTop: "6px" }}><span>Total</span><span style={{ color: accent }}>Rs.{calc.grandTotal}</span></div>
         </div>
       </div>
       <div style={{ marginTop: "16px", padding: "10px 14px", background: "#F8F9FA", borderRadius: "6px", borderLeft: `3px solid ${accent}` }}>
@@ -234,13 +234,7 @@ export function QuotationPreview({ form, template = "Classic", accent = "#0D9488
           <div style={{ padding: "16px 20px 12px", borderBottom: "1px solid #F3F4F6" }}>
             {form.logo && <img src={form.logo} alt="Logo" style={{ height: "36px", objectFit: "contain", marginBottom: "6px", display: "block" }} />}
             {form.fromGSTIN && <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "0 0 1px", fontFamily: "Inter, sans-serif" }}>GSTIN: {form.fromGSTIN}</p>}
-            <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "0 0 12px", fontFamily: "Inter, sans-serif" }}>Date: {form.quoteDate}</p>
-            {form.signature && (
-              <div style={{ borderTop: "1px solid #F3F4F6", paddingTop: "8px" }}>
-                <img src={form.signature} alt="Signature" style={{ maxHeight: "36px", maxWidth: "100px", display: "block" }} />
-                <p style={{ fontSize: "8px", color: "#9CA3AF", margin: "2px 0 0" }}>Authorised Signatory</p>
-              </div>
-            )}
+            <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "0", fontFamily: "Inter, sans-serif" }}>Date: {form.quoteDate}</p>
           </div>
           {sharedBody}
         </div>
@@ -266,12 +260,6 @@ export function QuotationPreview({ form, template = "Classic", accent = "#0D9488
           {form.validUntil && (
             <div style={{ display: "flex", justifyContent: "center", gap: "16px", fontSize: "9px", color: "#9CA3AF", marginTop: "4px" }}>
               <span>VALID UNTIL: {form.validUntil}</span>
-            </div>
-          )}
-          {form.signature && (
-            <div style={{ marginTop: "12px", display: "flex", flexDirection: "column", alignItems: "center" }}>
-              <img src={form.signature} alt="Signature" style={{ maxHeight: "40px", maxWidth: "120px", display: "block" }} />
-              <p style={{ fontSize: "8px", color: "#9CA3AF", margin: "2px 0 0" }}>Authorised Signatory</p>
             </div>
           )}
         </div>

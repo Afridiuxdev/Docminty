@@ -121,6 +121,12 @@ export default function PackingMinimalTemplate({ form }) {
                  <Text style={[styles.shipmentValue, { color: T }]}>{form.trackingNumber}</Text>
                </View>
              )}
+             {form.deliveryDate && (
+               <View style={styles.shipmentItem}>
+                 <Text style={styles.shipmentLabel}>Exp. Delivery: </Text>
+                 <Text style={styles.shipmentValue}>{form.deliveryDate}</Text>
+               </View>
+             )}
            </View>
         </View>
 

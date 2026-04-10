@@ -34,12 +34,6 @@ const styles = StyleSheet.create({
     netLabel: { fontSize: 9, color: "#99F6E4", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4, fontFamily: "Space Grotesk" },
     netAmt: { fontSize: 22, fontWeight: 800, color: "#ffffff" },
     netWords: { fontSize: 9, color: "#99F6E4", fontStyle: "italic", maxWidth: 200, textAlign: "right" },
-    bankBox: { backgroundColor: "#F8F9FA", padding: "10 14", borderRadius: 6, marginTop: 12 },
-    bankLabel: { fontSize: 8, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 6, fontFamily: "Space Grotesk" },
-    bankGrid: { flexDirection: "row" },
-    bankItem: { flex: 1 },
-    bankKey: { fontSize: 8, color: "#9CA3AF", marginBottom: 2, fontFamily: "Space Grotesk" },
-    bankVal: { fontSize: 9, fontWeight: 700, color: "#111827", fontFamily: "Space Grotesk" },
     footer: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", marginTop: "auto", padding: "0 40 20", borderTopWidth: 1, borderTopColor: "#E5E7EB", paddingTop: 10 },
     footerG: { fontSize: 8, color: "#D1D5DB" },
     signBox: { width: 140, textAlign: "center" },
@@ -152,31 +146,6 @@ export default function SalaryBoldTemplate({ form }) {
                         </Text>
                     </View>
 
-                    {(form.bankName || form.accountNumber) && (
-                        <View style={styles.bankBox}>
-                            <Text style={styles.bankLabel}>Bank Details</Text>
-                            <View style={styles.bankGrid}>
-                                {form.bankName && (
-                                    <View style={styles.bankItem}>
-                                        <Text style={styles.bankKey}>Bank</Text>
-                                        <Text style={styles.bankVal}>{form.bankName}</Text>
-                                    </View>
-                                )}
-                                {form.accountNumber && (
-                                    <View style={styles.bankItem}>
-                                        <Text style={styles.bankKey}>Account</Text>
-                                        <Text style={styles.bankVal}>{"XXXX" + form.accountNumber.slice(-4)}</Text>
-                                    </View>
-                                )}
-                                {form.ifscCode && (
-                                    <View style={styles.bankItem}>
-                                        <Text style={styles.bankKey}>IFSC</Text>
-                                        <Text style={styles.bankVal}>{form.ifscCode}</Text>
-                                    </View>
-                                )}
-                            </View>
-                        </View>
-                    )}
                 </View>
 
                 <View style={styles.footer} fixed>

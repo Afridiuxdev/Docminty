@@ -31,13 +31,13 @@ export default function ReceiptMinimalTemplate({ form }) {
     page: { fontFamily: "Inter", fontSize: 10, color: "#374151", backgroundColor: "#ffffff" },
     topStripe: { height: 6, backgroundColor: T },
     header: { padding: "18 50 14", flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", borderBottomWidth: 1, borderBottomColor: "#E5E7EB" },
-    logo: { height: 32, objectFit: "contain", marginBottom: 6 },
-    compName: { fontFamily: "Space Grotesk", fontSize: 22, fontWeight: 700, color: "#111827" },
-    compDetails: { fontSize: 9, color: "#9CA3AF", marginTop: 5, lineHeight: 1.6 },
-    
+    logo: { height: 32, objectFit: "contain", marginBottom: 6, alignSelf: "flex-start" },
+    compName: { fontFamily: "Space Grotesk", fontSize: 22, fontWeight: 400, color: "#111827" },
+    compDetails: { fontSize: 9, color: "#BDBDBD", marginTop: 5, lineHeight: 1.6, letterSpacing: 0.4 },
+
     headerRight: { textAlign: "right", paddingTop: 4 },
     docType: { fontSize: 9, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1 },
-    receiptNum: { fontFamily: "Space Grotesk", fontWeight: 700, fontSize: 13, color: T, marginTop: 4 },
+    receiptNum: { fontFamily: "Space Grotesk", fontWeight: 600, fontSize: 13, color: "#9CA3AF", marginTop: 4 },
     receiptDate: { fontSize: 9, color: "#9CA3AF", marginTop: 3 },
     
     body: { padding: "24 50 40" },
@@ -50,7 +50,7 @@ export default function ReceiptMinimalTemplate({ form }) {
     tableRow: { flexDirection: "row", padding: "8 0" },
     tableLabel: { width: "40%", fontWeight: 700, color: "#6B7280" },
     tableVal: { flex: 1, color: "#111827" },
-    modeTag: { backgroundColor: "#F0FDFA", color: T, padding: "2 8", borderRadius: 4, fontWeight: 700, fontSize: 11 },
+    modeTag: { backgroundColor: "#F0FDFA", color: T, paddingTop: 2, paddingBottom: 2, paddingLeft: 8, paddingRight: 8, borderRadius: 4, fontWeight: 700, fontSize: 11 },
     
     notes: { marginTop: 16, padding: "10 14", backgroundColor: "#F8F9FA", borderRadius: 6, borderLeft: `3 solid ${T}` },
     notesLabel: { fontSize: 11, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 2 },

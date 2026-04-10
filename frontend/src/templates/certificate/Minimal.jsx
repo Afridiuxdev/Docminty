@@ -8,8 +8,8 @@ export default function MinimalTemplate({ form }) {
     const stateName = INDIAN_STATES.find(s => s.code === form.orgState)?.name || "";
 
     const styles = StyleSheet.create({
-        page: { fontFamily: "Inter", fontSize: 10, color: "#111827", padding: 40, backgroundColor: "#ffffff" },
-        container: { flex: 1, border: "1px solid #E5E7EB", borderRadius: 8, padding: 40, alignItems: "center", justifyContent: "center" },
+        page: { fontFamily: "Inter", fontSize: 10, color: "#111827", padding: 12, backgroundColor: "#ffffff" },
+        container: { flex: 1, border: "1px solid #E5E7EB", borderRadius: 8, padding: "16 32", alignItems: "center", justifyContent: "center" },
         
         accentTop: { width: 40, height: 3, backgroundColor: T, marginBottom: 24, borderRadius: 2 },
         accentBottom: { width: 40, height: 3, backgroundColor: T, marginTop: 24, borderRadius: 2 },
@@ -43,21 +43,17 @@ export default function MinimalTemplate({ form }) {
         verifId: { fontSize: 9, color: "#D1D5DB", textAlign: "center", marginTop: 12, fontFamily: "Courier", letterSpacing: 0.5 }
     });
 
-    const addrParts = [
-        form.orgAddress,
-        (form.orgCity || stateName) ? `${form.orgCity ? form.orgCity + ", " : ""}${stateName}` : null
-    ].filter(Boolean).join(", ");
-
     return (
         <Document title={`Certificate-${form.recipientName}`}>
             <Page size="A4" orientation="landscape" style={styles.page}>
                 <View style={styles.container}>
                     <View style={styles.accentTop} />
                     
-                    {form.logo && <Image src={form.logo} style={styles.logo} />}
-                    <Text style={styles.orgName}>{form.orgName || "Organisation Name"}</Text>
-                    {addrParts ? <Text style={styles.orgAddr}>{addrParts}</Text> : null}
-                    {form.orgWebsite && <Text style={styles.orgWeb}>{form.orgWebsite}</Text>}
+                    {/* Header: Logo & Org Info */}
+                    <View style={styles.header}>
+                        {form.logo && <Image src={form.logo} style={styles.logo} />}
+                        <Text style={styles.orgName}>{form.orgName || "Organisation Name"}</Text>
+                    </View>
                     
                     <View style={styles.typeBadge}>
                         <Text style={styles.typeText}>{form.certType}</Text>

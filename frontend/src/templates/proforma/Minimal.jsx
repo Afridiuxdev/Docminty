@@ -78,7 +78,7 @@ export default function ProformaMinimalTemplate({ form }) {
       <Page size="A4" style={styles.page}>
 
         <View style={styles.badge}>
-            <Text style={styles.badgeText}>⚠ PROFORMA INVOICE — NOT A TAX INVOICE</Text>
+            <Text style={styles.badgeText}>PROFORMA INVOICE — NOT A TAX INVOICE</Text>
         </View>
 
         <View style={styles.header}>
@@ -134,26 +134,26 @@ export default function ProformaMinimalTemplate({ form }) {
                 <Text style={[styles.td, styles.colDesc]}>{item.description || "—"}</Text>
                 {form.showHSN && <Text style={[styles.td, styles.colHSN]}>{item.hsn || "—"}</Text>}
                 <Text style={[styles.td, styles.colQty]}>{item.qty}</Text>
-                <Text style={[styles.td, styles.colRate]}>₹{item.rate}</Text>
+                <Text style={[styles.td, styles.colRate]}>Rs.{item.rate}</Text>
                 <Text style={[styles.td, styles.colGST]}>{item.gstRate}%</Text>
-                <Text style={[styles.td, styles.colAmt, { fontWeight: 700 }]}>₹{item.amount}</Text>
+                <Text style={[styles.td, styles.colAmt, { fontWeight: 700 }]}>Rs.{item.amount}</Text>
               </View>
             ))}
           </View>
 
           <View style={styles.totalsArea}>
             <View style={styles.totalsTable}>
-              <View style={styles.totalRow}><Text style={{ color: "#6B7280" }}>Subtotal</Text><Text>₹{calc.subtotal}</Text></View>
+              <View style={styles.totalRow}><Text style={{ color: "#6B7280" }}>Subtotal</Text><Text>Rs.{calc.subtotal}</Text></View>
               {form.taxType === "cgst_sgst" && (
                   <>
-                  <View style={styles.totalRow}><Text style={{ color: "#6B7280" }}>CGST</Text><Text>₹{calc.totalCGST}</Text></View>
-                  <View style={styles.totalRow}><Text style={{ color: "#6B7280" }}>SGST</Text><Text>₹{calc.totalSGST}</Text></View>
+                  <View style={styles.totalRow}><Text style={{ color: "#6B7280" }}>CGST</Text><Text>Rs.{calc.totalCGST}</Text></View>
+                  <View style={styles.totalRow}><Text style={{ color: "#6B7280" }}>SGST</Text><Text>Rs.{calc.totalSGST}</Text></View>
                   </>
               )}
-              {form.taxType === "igst" && <View style={styles.totalRow}><Text style={{ color: "#6B7280" }}>IGST</Text><Text>₹{calc.totalIGST}</Text></View>}
+              {form.taxType === "igst" && <View style={styles.totalRow}><Text style={{ color: "#6B7280" }}>IGST</Text><Text>Rs.{calc.totalIGST}</Text></View>}
               <View style={styles.totalFinal}>
                   <Text style={{ fontSize: 11, fontWeight: 700 }}>Grand Total</Text>
-                  <Text style={{ fontSize: 13, fontWeight: 800 }}>₹{calc.grandTotal}</Text>
+                  <Text style={{ fontSize: 13, fontWeight: 800 }}>Rs.{calc.grandTotal}</Text>
               </View>
             </View>
           </View>
@@ -168,7 +168,7 @@ export default function ProformaMinimalTemplate({ form }) {
               {parseFloat(form.advancePercent) > 0 && (
                 <View style={styles.advBox}>
                     <Text style={styles.advLabel}>Advance Details ({form.advancePercent}%)</Text>
-                    <Text style={styles.advVal}>₹{parseFloat(advanceAmt).toLocaleString("en-IN", { minimumFractionDigits: 2 })}</Text>
+                    <Text style={styles.advVal}>Rs.{parseFloat(advanceAmt).toLocaleString("en-IN", { minimumFractionDigits: 2 })}</Text>
                 </View>
               )}
               {form.bankName && (

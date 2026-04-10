@@ -85,7 +85,7 @@ export default function VoucherElegantTemplate({ form }) {
           <View style={styles.amtBox}>
             <View>
               <Text style={styles.amtLabel}>Amount Paid</Text>
-              <Text style={styles.amtVal}>₹{amount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</Text>
+              <Text style={styles.amtVal}>Rs.{amount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</Text>
             </View>
             <Text style={styles.modeTag}>{form.paymentMode}</Text>
           </View>

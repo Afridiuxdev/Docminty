@@ -26,7 +26,7 @@ export default function ReceiptClassicTemplate({ form }) {
   const styles = StyleSheet.create({
     page: { fontFamily: "Inter", fontSize: 10, color: "#374151", padding: "40 60", backgroundColor: "#ffffff" },
     header: { backgroundColor: T, padding: "20 30", flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 30, borderRadius: 4 },
-    logo: { height: 40, objectFit: "contain", marginBottom: 5 },
+    logo: { height: 40, objectFit: "contain", marginBottom: 5, alignSelf: "flex-start" },
     title: { fontSize: 24, fontFamily: "Space Grotesk", fontWeight: 900, color: "#ffffff", letterSpacing: 1 },
     compName: { fontSize: 14, fontWeight: 700, color: "#ffffff" },
     compInfo: { fontSize: 9, color: "rgba(255,255,255,0.85)", marginTop: 2, maxWidth: 250, lineHeight: 1.4 },
@@ -44,7 +44,7 @@ export default function ReceiptClassicTemplate({ form }) {
     tableRow: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", padding: "10 0" },
     tableLabel: { width: "35%", fontWeight: 700, color: "#6B7280", fontFamily: "Space Grotesk" },
     tableVal: { width: "65%", color: "#111827" },
-    modeTag: { backgroundColor: "#F0FDFA", color: T, padding: "2 8", borderRadius: 4, fontWeight: 700 },
+    modeTag: { backgroundColor: "#F0FDFA", color: T, paddingTop: 2, paddingBottom: 2, paddingLeft: 8, paddingRight: 8, borderRadius: 4, fontWeight: 700 },
     
     notes: { marginTop: 20, padding: 12, backgroundColor: "#F8F9FA", borderLeft: `3 solid ${T}`, borderRadius: 4 },
     notesLabel: { fontSize: 8, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 },
@@ -78,7 +78,7 @@ export default function ReceiptClassicTemplate({ form }) {
 
         <View style={styles.body}>
           <View style={styles.amountBox}>
-            <Text style={styles.amountLabel}>Total Amount Received</Text>
+            <Text style={styles.amountLabel}>Amount Received</Text>
             <Text style={styles.amountVal}>Rs. {amount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</Text>
             <Text style={styles.amountWords}>{numToWords(amount)}</Text>
           </View>

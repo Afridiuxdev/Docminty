@@ -25,7 +25,7 @@ export default function ElegantTemplate({ form }) {
         headerTop: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", paddingBottom: 12 },
         headerLeft: { maxWidth: "60%" },
         headerRight: { textAlign: "right", maxWidth: "35%" },
-        logo: { height: 40, objectFit: "contain", marginBottom: 6 },
+        logo: { height: 40, objectFit: "contain", marginBottom: 6, alignSelf: "flex-start" },
         fromName: { fontFamily: "Space Grotesk", fontWeight: 700, fontSize: 16, color: "#111827" },
         fromDetails: { fontSize: 10, color: "#6B7280", marginTop: 4, lineHeight: 1.4 },
         title: { fontFamily: "Space Grotesk", fontWeight: 800, fontSize: 22, color: T },

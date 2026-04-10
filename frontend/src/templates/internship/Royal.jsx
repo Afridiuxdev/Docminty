@@ -26,12 +26,6 @@ export default function InternshipRoyalTemplate({ form }) {
     const issueDate = formatDate(form.issueDate);
     const perfText = PERF_MAP[form.performance] || PERF_MAP.excellent;
 
-    const stateName = INDIAN_STATES.find(s => s.code === form.orgState)?.name || "";
-    const fullOrgAddr = [
-        form.orgAddress,
-        (form.orgCity || stateName) ? `${form.orgCity ? form.orgCity + ", " : ""}${stateName}` : null
-    ].filter(Boolean).join(", ");
-
     const styles = StyleSheet.create({
         page: { padding: 8, fontFamily: "Inter", backgroundColor: "#fff" },
         outerWrapper: { flex: 1, padding: 8, border: `8pt solid ${T}` },
@@ -48,11 +42,11 @@ export default function InternshipRoyalTemplate({ form }) {
         orgName: { fontSize: 15, fontFamily: "Space Grotesk", fontWeight: 700, color: "#111827", textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 2, textAlign: "center" },
         orgInfo: { fontSize: 10, color: "#9CA3AF", textAlign: "center", marginBottom: 2 },
         
-        badge: { backgroundColor: T, padding: "3 18", borderRadius: 2, marginTop: 12, marginBottom: 12, textAlign: "center" },
+        badge: { backgroundColor: T, padding: "3 18", borderRadius: 2, marginTop: 12, marginBottom: 12, textAlign: "center", alignSelf: "center" },
         badgeText: { color: "#ffffff", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 2, textAlign: "center" },
         
         intro: { fontSize: 10, color: "#6B7280", marginBottom: 5, textAlign: "center" },
-        internName: { fontSize: 20, fontFamily: "Space Grotesk", fontWeight: 800, color: "#111827", marginBottom: 8, borderBottomWidth: 2, borderBottomColor: T, paddingBottom: 6, textAlign: "center" },
+        internName: { fontSize: 20, fontFamily: "Space Grotesk", fontWeight: 800, color: "#111827", marginBottom: 8, borderBottomWidth: 2, borderBottomColor: T, paddingBottom: 6, textAlign: "center", width: "100%" },
         
         content: { fontSize: 10, color: "#374151", textAlign: "center", lineHeight: 1.6, marginTop: 6 },
         bold: { fontWeight: 700, color: "#111827" },
@@ -85,8 +79,6 @@ export default function InternshipRoyalTemplate({ form }) {
                         
                         {form.logo && <Image src={form.logo} style={styles.logo} />}
                         <Text style={styles.orgName}>{form.orgName || "Organisation Name"}</Text>
-                        {fullOrgAddr ? <Text style={styles.orgInfo}>{fullOrgAddr}</Text> : null}
-                        {form.orgWebsite ? <Text style={styles.orgInfo}>{form.orgWebsite}</Text> : null}
 
                         <View style={styles.badge}>
                             <Text style={styles.badgeText}>Internship Certificate</Text>

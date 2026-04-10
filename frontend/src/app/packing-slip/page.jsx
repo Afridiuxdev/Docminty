@@ -56,11 +56,34 @@ export function PackingPreview({ form, template = "Classic", accent = "#0D9488" 
 
   const sharedBody = (
     <div className="pdf-body">
-      {/* Ship To + Shipment Info */}
+      {/* From + Ship To + Shipment Info */}
       <div style={{
-        display: "grid", gridTemplateColumns: "1fr 1fr",
-        gap: "24px", marginBottom: "20px"
+        display: "grid", gridTemplateColumns: "1fr 1fr 1fr",
+        gap: "20px", marginBottom: "20px"
       }}>
+        <div>
+          <p style={{
+            fontSize: "10px", fontWeight: 700,
+            color: "#9CA3AF", textTransform: "uppercase",
+            letterSpacing: "0.08em", margin: "0 0 6px",
+            fontFamily: "Space Grotesk, sans-serif"
+          }}>From / Sender</p>
+          <p style={{
+            fontFamily: "Space Grotesk, sans-serif", fontWeight: 700,
+            fontSize: "13px", color: "#111827", margin: 0
+          }}>{form.fromName || "Your Business"}</p>
+          {form.fromGSTIN && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>GSTIN: {form.fromGSTIN}</p>}
+          {form.fromAddress && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>
+            {form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}
+          </p>}
+          {fromState && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{fromState.name}</p>}
+          {(form.fromPhone || form.fromEmail) && (
+            <p style={{ fontSize: "11px", color: "#6B7280", margin: "4px 0 0", fontFamily: "Inter, sans-serif", lineHeight: 1.4 }}>
+              {form.fromPhone && <span style={{ display: "block" }}>Ph: {form.fromPhone}</span>}
+              {form.fromEmail && <span style={{ display: "block", wordBreak: "break-all" }}>Em: {form.fromEmail}</span>}
+            </p>
+          )}
+        </div>
         <div>
           <p style={{
             fontSize: "10px", fontWeight: 700,
@@ -98,6 +121,8 @@ export function PackingPreview({ form, template = "Classic", accent = "#0D9488" 
           }}>Shipment Info</p>
           {[
             ["Order #", form.orderNumber],
+            ["Date", form.slipDate],
+            ["Expected Delivery", form.deliveryDate],
             ["Shipping Method", form.shippingMethod],
             ["Courier", form.courierName === "Other" ? form.customCourier : form.courierName],
             ["Tracking #", form.trackingNumber],
@@ -299,69 +324,14 @@ export function PackingPreview({ form, template = "Classic", accent = "#0D9488" 
     );
   }
 
-  // Classic — Colored Banner
-  if (template === "Classic") {
-    return (
-      <div className="pdf-preview">
-        <div style={{ background: accent, padding: "18px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", color: "#fff" }}>
-          <div>
-            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", margin: 0 }}>{form.fromName || "Business Name"}</p>
-            <p style={{ fontSize: "10px", opacity: 0.8, margin: "2px 0 0" }}>{form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}</p>
-            {form.fromGSTIN && <p style={{ fontSize: "10px", opacity: 0.8, margin: "2px 0 0" }}>GSTIN: {form.fromGSTIN}</p>}
-            {(form.fromPhone || form.fromEmail) && (
-              <p style={{ fontSize: "10px", opacity: 0.8, margin: "2px 0 0" }}>
-                {form.fromPhone && `Ph: ${form.fromPhone}`}{form.fromPhone && form.fromEmail ? "  |  " : ""}{form.fromEmail && `Em: ${form.fromEmail}`}
-              </p>
-            )}
-          </div>
-          <div style={{ textAlign: "right" }}>
-            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "20px", margin: 0 }}>PACKING SLIP</p>
-            <p style={{ fontSize: "11px", opacity: 0.8 }}>#{form.slipNumber}</p>
-          </div>
-        </div>
-        {sharedBody}
-      </div>
-    );
-  }
-
-  // Minimal (Default)
+  // Classic/Minimal (Default)
   return (
     <div className="pdf-preview">
       <div className="pdf-header" style={{ borderBottom: `2px solid ${accent}` }}>
         <div>
           {form.logo && (
             <img src={form.logo} alt="Logo"
-              style={{
-                height: "48px", objectFit: "contain",
-                marginBottom: "8px", display: "block"
-              }} />
-          )}
-          <p style={{
-            fontFamily: "Space Grotesk, sans-serif", fontWeight: 700,
-            fontSize: "16px", color: "#111827", margin: 0
-          }}>
-            {form.fromName || "Your Business Name"}
-          </p>
-          {form.fromGSTIN && (
-            <p style={{
-              fontSize: "11px", color: "#6B7280",
-              margin: "2px 0 0", fontFamily: "Inter, sans-serif"
-            }}>
-              GSTIN: {form.fromGSTIN}
-            </p>
-          )}
-          {form.fromAddress && (
-            <p style={{
-              fontSize: "11px", color: "#6B7280",
-              margin: "2px 0 0", fontFamily: "Inter, sans-serif"
-            }}>
-              {form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}
-            </p>
-          )}
-          {fromState && (
-            <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>
-              {fromState.name}
-            </p>
+              style={{ height: "48px", objectFit: "contain", display: "block" }} />
           )}
         </div>
         <div style={{ textAlign: "right" }}>
@@ -381,6 +351,14 @@ export function PackingPreview({ form, template = "Classic", accent = "#0D9488" 
           }}>
             Date: {form.slipDate}
           </p>
+          {form.deliveryDate && (
+            <p style={{
+              fontSize: "11px", color: "#9CA3AF",
+              margin: "2px 0 0", fontFamily: "Inter, sans-serif"
+            }}>
+              Exp. Delivery: {form.deliveryDate}
+            </p>
+          )}
         </div>
       </div>
       {sharedBody}

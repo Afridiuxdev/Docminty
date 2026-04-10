@@ -73,7 +73,7 @@ export default function ProformaModernTemplate({ form }) {
     <Document title={`Proforma-Modern-${form.proformaNumber}`}>
       <Page size="A4" style={styles.page}>
         <View style={styles.badge}>
-            <Text style={styles.badgeText}>⚠ PROFORMA INVOICE — NOT A TAX INVOICE</Text>
+            <Text style={styles.badgeText}>PROFORMA INVOICE — NOT A TAX INVOICE</Text>
         </View>
 
         <View style={styles.header}>
@@ -157,18 +157,18 @@ export default function ProformaModernTemplate({ form }) {
 
             <View style={styles.sumRight}>
               <View style={{ gap: 6, marginBottom: 10 }}>
-                <View style={{ flexDirection: "row", justifyContent: "space-between" }}><Text style={{ color: "#64748B" }}>Subtotal</Text><Text style={{ fontWeight: 700 }}>₹{calc.subtotal}</Text></View>
+                <View style={{ flexDirection: "row", justifyContent: "space-between" }}><Text style={{ color: "#64748B" }}>Subtotal</Text><Text style={{ fontWeight: 700 }}>Rs.{calc.subtotal}</Text></View>
                 {form.taxType === "cgst_sgst" && (
                     <>
-                    <View style={{ flexDirection: "row", justifyContent: "space-between" }}><Text style={{ color: "#64748B" }}>CGST</Text><Text style={{ fontWeight: 700 }}>₹{calc.totalCGST}</Text></View>
-                    <View style={{ flexDirection: "row", justifyContent: "space-between" }}><Text style={{ color: "#64748B" }}>SGST</Text><Text style={{ fontWeight: 700 }}>₹{calc.totalSGST}</Text></View>
+                    <View style={{ flexDirection: "row", justifyContent: "space-between" }}><Text style={{ color: "#64748B" }}>CGST</Text><Text style={{ fontWeight: 700 }}>Rs.{calc.totalCGST}</Text></View>
+                    <View style={{ flexDirection: "row", justifyContent: "space-between" }}><Text style={{ color: "#64748B" }}>SGST</Text><Text style={{ fontWeight: 700 }}>Rs.{calc.totalSGST}</Text></View>
                     </>
                 )}
-                {form.taxType === "igst" && <View style={{ flexDirection: "row", justifyContent: "space-between" }}><Text style={{ color: "#64748B" }}>IGST</Text><Text style={{ fontWeight: 700 }}>₹{calc.totalIGST}</Text></View>}
+                {form.taxType === "igst" && <View style={{ flexDirection: "row", justifyContent: "space-between" }}><Text style={{ color: "#64748B" }}>IGST</Text><Text style={{ fontWeight: 700 }}>Rs.{calc.totalIGST}</Text></View>}
               </View>
               <View style={styles.totalFinal}>
                 <Text style={styles.totalFT}>Grand Total</Text>
-                <Text style={styles.totalFT}>₹{calc.grandTotal}</Text>
+                <Text style={styles.totalFT}>Rs.{calc.grandTotal}</Text>
               </View>
             </View>
           </View>
@@ -177,7 +177,7 @@ export default function ProformaModernTemplate({ form }) {
             <View style={styles.advSection}>
               <View style={[styles.advCard, styles.advYellow]}>
                 <Text style={styles.advL}>Advance Required ({form.advancePercent}%)</Text>
-                <Text style={styles.advV}>₹{parseFloat(advanceAmt).toLocaleString("en-IN", { minimumFractionDigits: 2 })}</Text>
+                <Text style={styles.advV}>Rs.{parseFloat(advanceAmt).toLocaleString("en-IN", { minimumFractionDigits: 2 })}</Text>
               </View>
               {form.bankName && (
                 <View style={[styles.advCard, styles.advAqua]}>

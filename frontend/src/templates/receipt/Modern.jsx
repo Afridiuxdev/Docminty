@@ -25,15 +25,16 @@ export default function ReceiptModernTemplate({ form }) {
 
   const styles = StyleSheet.create({
     page: { fontFamily: "Inter", fontSize: 10, color: "#111827", padding: 0, flexDirection: "row", backgroundColor: "#ffffff" },
-    sidebar: { width: 140, backgroundColor: T, height: "100%", padding: "40 16", color: "#ffffff" },
-    logo: { width: 45, objectFit: "contain", marginBottom: 24, filter: "brightness(0) invert(1)" },
-    sideTitle: { fontSize: 18, fontFamily: "Space Grotesk", fontWeight: 800, textTransform: "uppercase", letterSpacing: 2, marginBottom: 40 },
+    sidebar: { width: 140, backgroundColor: T, height: "100%", padding: "28 16", color: "#ffffff", flexDirection: "column" },
+    logo: { height: 36, objectFit: "contain", marginBottom: 12, alignSelf: "flex-start" },
+    sideTitle: { fontSize: 15, fontFamily: "Space Grotesk", fontWeight: 800, textTransform: "uppercase", letterSpacing: 2, marginBottom: 4 },
+    sideNum: { fontSize: 10, color: "rgba(255,255,255,0.75)", marginBottom: 20 },
     sideItem: { marginBottom: 24 },
     sideLabel: { fontSize: 8, color: "rgba(255,255,255,0.6)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4, fontFamily: "Space Grotesk", fontWeight: 700 },
     sideValue: { fontSize: 11, fontWeight: 700, color: "#ffffff", lineHeight: 1.4 },
     
     main: { flex: 1, padding: "40 40 40 40" },
-    amountBox: { backgroundColor: "#F0FDFA", borderAround: `2 solid ${T}`, padding: "24 30", borderRadius: 12, textAlign: "center", marginBottom: 30 },
+    amountBox: { backgroundColor: "#F0FDFA", borderWidth: 2, borderColor: T, padding: "24 30", borderRadius: 12, textAlign: "center", marginBottom: 30 },
     amountLabel: { fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 1, marginBottom: 8, fontFamily: "Space Grotesk", fontWeight: 700 },
     amountVal: { fontSize: 36, fontFamily: "Space Grotesk", fontWeight: 800, color: T },
     amountWords: { fontSize: 12, color: "#374151", marginTop: 8, fontStyle: "italic" },
@@ -42,9 +43,9 @@ export default function ReceiptModernTemplate({ form }) {
     tableRow: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#F3F4F6", padding: "12 0" },
     tableLabel: { width: "35%", fontWeight: 700, color: "#6B7280", fontFamily: "Space Grotesk" },
     tableVal: { width: "65%", color: "#111827" },
-    modeTag: { backgroundColor: "#F0FDFA", color: T, padding: "2 8", borderRadius: 4, fontWeight: 700 },
+    modeTag: { backgroundColor: "#F0FDFA", color: T, paddingTop: 2, paddingBottom: 2, paddingLeft: 8, paddingRight: 8, borderRadius: 4, fontWeight: 700 },
     
-    notes: { marginTop: 20, padding: 12, backgroundColor: "#F8F9FA", borderAround: `1 solid #E5E7EB`, borderRadius: 6 },
+    notes: { marginTop: 20, padding: 12, backgroundColor: "#F8F9FA", borderWidth: 1, borderColor: "#E5E7EB", borderRadius: 6 },
     notesLabel: { fontSize: 8, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 },
     
     footer: { position: "absolute", bottom: 40, left: 40, right: 40, borderTopWidth: 1, borderTopColor: "#F3F4F6", paddingTop: 12, flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
@@ -61,31 +62,27 @@ export default function ReceiptModernTemplate({ form }) {
         <View style={styles.sidebar}>
           {form.logo && <Image src={form.logo} style={styles.logo} />}
           <Text style={styles.sideTitle}>RECEIPT</Text>
-          
+          <Text style={styles.sideNum}>#{form.receiptNumber}</Text>
+
           <View style={styles.sideItem}>
             <Text style={styles.sideLabel}>From</Text>
             <Text style={styles.sideValue}>{form.fromName || "Company"}</Text>
-            <Text style={{ fontSize: 9, opacity: 0.8, marginTop: 4 }}>
+            <Text style={{ fontSize: 9, color: "rgba(255,255,255,0.85)", marginTop: 4, lineHeight: 1.4 }}>
               {form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}{fromState ? `, ${fromState}` : ""}
               {form.fromPhone && `\nPh: ${form.fromPhone}`}
               {form.fromEmail && `\n${form.fromEmail}`}
             </Text>
           </View>
-          
-          <View style={styles.sideItem}>
-              <Text style={styles.sideLabel}>Receipt No</Text>
-              <Text style={styles.sideValue}>#{form.receiptNumber}</Text>
-          </View>
-          
-          <View style={styles.sideItem}>
-              <Text style={styles.sideLabel}>Date</Text>
-              <Text style={styles.sideValue}>{form.receiptDate}</Text>
+
+          <View style={{ marginTop: "auto" }}>
+            <Text style={styles.sideLabel}>Date</Text>
+            <Text style={styles.sideValue}>{form.receiptDate}</Text>
           </View>
         </View>
 
         <View style={styles.main}>
           <View style={styles.amountBox}>
-            <Text style={styles.amountLabel}>Total Amount Paid</Text>
+            <Text style={styles.amountLabel}>Amount Received</Text>
             <Text style={styles.amountVal}>Rs. {amount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</Text>
             <Text style={styles.amountWords}>{numToWords(amount)}</Text>
           </View>

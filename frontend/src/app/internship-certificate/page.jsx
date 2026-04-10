@@ -25,7 +25,7 @@ import { INDIAN_STATES } from "@/constants/indianStates";
 const T = "#0D9488";
 
 const DEFAULT_FORM = {
-  orgName: "", orgAddress: "", orgCity: "", orgState: "27", orgWebsite: "",
+  orgName: "",
   logo: null,
   internName: "", role: "", department: "",
   startDate: "", endDate: "",
@@ -49,21 +49,11 @@ export function InternshipPreview({ form, template = "Classic", accent = "#0D948
     <>
       {form.logo && <img src={form.logo} alt="Logo" style={{ height: "44px", objectFit: "contain", display: "block", margin: "0 auto 10px" }} />}
       <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "15px", color: "#111827", margin: "0 0 2px", textTransform: "uppercase", letterSpacing: "0.1em" }}>{form.orgName || "Organisation Name"}</p>
-      {(form.orgAddress || form.orgCity || form.orgState) && (
-        <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "0 0 2px" }}>
-          {[
-            form.orgAddress || null,
-            (form.orgCity || form.orgState) ? `${form.orgCity ? form.orgCity + ", " : ""}${INDIAN_STATES.find(s => s.code === form.orgState)?.name || ""}` : null
-          ].filter(Boolean).join(", ")}
-        </p>
-      )}
-      {form.orgWebsite && <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "0 0 14px" }}>{form.orgWebsite}</p>}
-      {!form.orgWebsite && (form.orgAddress || form.orgCity || form.orgState) && <div style={{ marginBottom: "14px" }} />}
-      <div style={{ display: "inline-block", background: accent, color: "#fff", padding: "3px 18px", borderRadius: "2px", marginBottom: "12px" }}>
+      <div style={{ display: "inline-block", background: accent, color: "#fff", padding: "3px 18px", borderRadius: "2px", margin: "10px 0 12px", alignSelf: "center" }}>
         <p style={{ fontSize: "10px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", margin: 0 }}>Internship Certificate</p>
       </div>
       <p style={{ fontSize: "10px", color: "#6B7280", margin: "0 0 5px" }}>This is to certify that</p>
-      <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "20px", color: "#111827", margin: "0 0 8px", borderBottom: `2px solid ${accent}`, paddingBottom: "6px" }}>{form.internName || "Intern Name"}</p>
+      <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "20px", color: "#111827", margin: "0 0 8px", borderBottom: `2px solid ${accent}`, paddingBottom: "6px", width: "100%" }}>{form.internName || "Intern Name"}</p>
       <p style={{ fontSize: "10px", color: "#374151", lineHeight: 1.6, margin: "6px 0" }}>
         {perfText} as <strong>{form.role || "Intern"}</strong>
         {form.department ? " in the " + form.department + " department" : ""}
@@ -71,7 +61,7 @@ export function InternshipPreview({ form, template = "Classic", accent = "#0D948
       </p>
       {form.projectName && <p style={{ fontSize: "10px", color: "#374151", margin: "5px 0" }}>Project: <strong>{form.projectName}</strong></p>}
       {form.issueDate && <p style={{ fontSize: "9px", color: "#9CA3AF", margin: "6px 0 0" }}>Date of Issue: {new Date(form.issueDate).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}</p>}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginTop: "18px" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginTop: "18px", width: "100%" }}>
         <div style={{ minWidth: "110px", textAlign: "left" }}>
           {form.signature ? <div style={{ marginBottom: "2px" }}><img src={form.signature} alt="Signature" style={{ maxHeight: "35px", maxWidth: "100px", display: "block" }} /></div> : <div style={{ height: "30px" }} />}
           <div style={{ borderTop: "1px solid #374151", paddingTop: "4px" }}>
@@ -102,12 +92,12 @@ export function InternshipPreview({ form, template = "Classic", accent = "#0D948
 
   if (template === "Modern") {
     return (
-      <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: "8px", overflow: "hidden", width: "100%", aspectRatio: "3508 / 2480", display: "flex", flexDirection: "column" }}>
-        <div style={{ background: accent, padding: "12px 20px", display: "flex", alignItems: "center", gap: "12px" }}>
-          {form.logo && <img src={form.logo} alt="Logo" style={{ height: "32px", objectFit: "contain", filter: "brightness(0) invert(1)" }} />}
-          <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "13px", color: "#fff", margin: 0, textTransform: "uppercase", letterSpacing: "0.1em" }}>Internship Certificate</p>
+      <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: "8px", overflow: "hidden", width: "100%", aspectRatio: "3508 / 2480", display: "flex", padding: "12px" }}>
+        <div style={{ flex: 1, border: "1px solid #E5E7EB", position: "relative", padding: "28px 36px", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ position: "absolute", top: "-1px", left: "-1px", width: "30px", height: "30px", borderTop: `4px solid ${accent}`, borderLeft: `4px solid ${accent}` }} />
+          <div style={{ position: "absolute", bottom: "-1px", right: "-1px", width: "30px", height: "30px", borderBottom: `4px solid ${accent}`, borderRight: `4px solid ${accent}` }} />
+          {certContent}
         </div>
-        <div style={{ flex: 1, padding: "28px 36px", textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "center" }}>{certContent}</div>
       </div>
     );
   }
@@ -135,15 +125,31 @@ export function InternshipPreview({ form, template = "Classic", accent = "#0D948
   }
   if (template === "Minimal") {
     return (
-      <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: "8px", overflow: "hidden", width: "100%", aspectRatio: "3508 / 2480", display: "flex" }}>
-        <div style={{ flex: 1, borderTop: `3px solid ${accent}`, padding: "28px 36px", textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "center" }}>{certContent}</div>
+      <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: "8px", overflow: "hidden", width: "100%", aspectRatio: "3508 / 2480", display: "flex", padding: "16px" }}>
+        <div style={{ flex: 1, padding: "24px", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", border: "1px solid #F3F4F6", borderRadius: "4px" }}>
+          <div style={{ width: "30px", height: "3px", background: accent, marginBottom: "16px", borderRadius: "2px" }} />
+          {certContent}
+          <div style={{ width: "30px", height: "3px", background: accent, marginTop: "16px", borderRadius: "2px" }} />
+        </div>
       </div>
     );
   }
+  if (template === "Corporate") {
+    return (
+      <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: "8px", overflow: "hidden", width: "100%", aspectRatio: "3508 / 2480", display: "flex", padding: "12px" }}>
+        <div style={{ flex: 1, border: `3px solid ${accent}`, padding: "4px", display: "flex" }}>
+          <div style={{ flex: 1, border: "1px solid #D1D5DB", padding: "16px 20px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", position: "relative" }}>
+            {certContent}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // Classic (default)
   return (
     <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: "8px", overflow: "hidden", width: "100%", aspectRatio: "3508 / 2480", display: "flex" }}>
-      <div style={{ flex: 1, border: "6px solid #F0F4F3", outline: `2px solid ${accent}`, outlineOffset: "-10px", margin: "8px", borderRadius: "6px", padding: "28px 36px", background: "linear-gradient(135deg,#F0FDFA 0%,#fff 60%,#F0FDFA 100%)", textAlign: "center", position: "relative", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+      <div style={{ flex: 1, border: "6px solid #F0F4F3", outline: `2px solid ${accent}`, outlineOffset: "-10px", margin: "8px", borderRadius: "6px", padding: "28px 36px", background: "#fff", textAlign: "center", position: "relative", display: "flex", flexDirection: "column", justifyContent: "center" }}>
         {certContent}
       </div>
     </div>
@@ -159,7 +165,7 @@ export default function InternshipCertificatePage() {
   const [template, setTemplate] = useState("Classic");
   const router = useRouter();
   const plan = user?.plan?.toUpperCase() || "FREE";
-  useProfileSync(form, setForm, plan, { fromName: "orgName", fromAddress: "orgAddress", fromCity: "orgCity", fromState: "orgState", fromWebsite: "orgWebsite" });
+  useProfileSync(form, setForm, plan, { fromName: "orgName" });
   const isUserPro = plan === "PRO" || plan === "ENTERPRISE" || plan === "BUSINESS PRO";
   const templateMeta = TEMPLATE_REGISTRY.internship[template] || TEMPLATE_REGISTRY.internship.Classic;
   const isProTemplate = templateMeta.pro;
@@ -256,16 +262,6 @@ export default function InternshipCertificatePage() {
                   )}
                 </div>
                 <div className="form-field"><label className="field-label">Organisation Name</label><input className="doc-input" placeholder="Acme Pvt Ltd" value={form.orgName} onChange={e => updateField("orgName", e.target.value)} /></div>
-                <div className="form-field"><label className="field-label">Address</label><input className="doc-input" placeholder="123 Tech Park" value={form.orgAddress || ""} onChange={e => updateField("orgAddress", e.target.value)} /></div>
-                <div className="form-row">
-                  <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">City</label><input className="doc-input" placeholder="Bengaluru" value={form.orgCity || ""} onChange={e => updateField("orgCity", e.target.value)} /></div>
-                  <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">State</label>
-                    <select className="doc-select" value={form.orgState || "27"} onChange={e => updateField("orgState", e.target.value)}>
-                      {INDIAN_STATES.map(s => <option key={s.code} value={s.code}>{s.name}</option>)}
-                    </select>
-                  </div>
-                </div>
-                <div className="form-field" style={{ marginTop: "10px" }}><label className="field-label">Website</label><input className="doc-input" placeholder="www.acme.com" value={form.orgWebsite || ""} onChange={e => updateField("orgWebsite", e.target.value)} /></div>
               </div>
             )}
 

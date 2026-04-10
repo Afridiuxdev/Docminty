@@ -79,7 +79,7 @@ export default function ProformaCorporateTemplate({ form }) {
     <Document title={`Corporate-Proforma-${form.proformaNumber}`}>
       <Page size="A4" style={styles.page}>
         <View style={styles.badge}>
-            <Text style={styles.badgeText}>⚠ PROFORMA INVOICE — NOT A TAX INVOICE</Text>
+            <Text style={styles.badgeText}>PROFORMA INVOICE — NOT A TAX INVOICE</Text>
         </View>
         <View style={styles.header}>
           {form.logo && <Image src={form.logo} style={styles.logo} />}
@@ -141,28 +141,28 @@ export default function ProformaCorporateTemplate({ form }) {
           <View style={styles.totBox}>
             <View style={styles.totRow}>
               <Text style={styles.totLabel}>Subtotal</Text>
-              <Text style={styles.totVal}>₹{calc.subtotal}</Text>
+              <Text style={styles.totVal}>Rs.{calc.subtotal}</Text>
             </View>
             {form.taxType === "igst" ? (
               <View style={styles.totRow}>
                 <Text style={styles.totLabel}>Tax (IGST)</Text>
-                <Text style={styles.totVal}>₹{calc.totalIGST}</Text>
+                <Text style={styles.totVal}>Rs.{calc.totalIGST}</Text>
               </View>
             ) : (
               <>
                 <View style={styles.totRow}>
                   <Text style={styles.totLabel}>Tax (CGST)</Text>
-                  <Text style={styles.totVal}>₹{calc.totalCGST}</Text>
+                  <Text style={styles.totVal}>Rs.{calc.totalCGST}</Text>
                 </View>
                 <View style={styles.totRow}>
                   <Text style={styles.totLabel}>Tax (SGST)</Text>
-                  <Text style={styles.totVal}>₹{calc.totalSGST}</Text>
+                  <Text style={styles.totVal}>Rs.{calc.totalSGST}</Text>
                 </View>
               </>
             )}
             <View style={styles.grandRow}>
               <Text style={styles.grandLabel}>Quotational Total</Text>
-              <Text style={styles.grandVal}>₹{calc.grandTotal}</Text>
+              <Text style={styles.grandVal}>Rs.{calc.grandTotal}</Text>
             </View>
             <Text style={{ fontSize: 7, color: "#9CA3AF", marginTop: 8, textAlign: "right" }}>{numberToWords(parseFloat(calc.grandTotal))}</Text>
           </View>
@@ -173,7 +173,7 @@ export default function ProformaCorporateTemplate({ form }) {
             <Text style={styles.infoTitle}>Commercial Compliance</Text>
             {parseFloat(form.advancePercent) > 0 && (
               <View style={{ marginBottom: 12 }}>
-                <Text style={[styles.infoText, { fontWeight: 700, color: T }]}>Commitment Advance: ₹{advFmt} ({form.advancePercent}%)</Text>
+                <Text style={[styles.infoText, { fontWeight: 700, color: T }]}>Commitment Advance: Rs.{advFmt} ({form.advancePercent}%)</Text>
                 <Text style={styles.infoText}>This proforma validates the commercial intent. Order initiation requires advance settlement.</Text>
               </View>
             )}

@@ -92,6 +92,11 @@ export default function PurchaseMinimalTemplate({ form }) {
                {form.toGSTIN && <Text>GSTIN: {form.toGSTIN}</Text>}
                <Text>{form.toAddress}{form.toCity ? `, ${form.toCity}` : ""}</Text>
                {toStateName && <Text>{toStateName}</Text>}
+               {(form.toPhone || form.toEmail) && (
+                 <Text style={{ marginTop: 2 }}>
+                   {form.toPhone && `Ph: ${form.toPhone}`}{form.toPhone && form.toEmail ? "  |  " : ""}{form.toEmail && `Em: ${form.toEmail}`}
+                 </Text>
+               )}
              </View>
            </View>
            {form.deliveryAddress && (
@@ -107,7 +112,10 @@ export default function PurchaseMinimalTemplate({ form }) {
             <View style={{ flex: 0.5 }}><Text style={styles.th}>#</Text></View>
             <View style={{ flex: 3 }}><Text style={styles.th}>Description</Text></View>
             {form.showHSN && <View style={{ flex: 1 }}><Text style={styles.th}>HSN</Text></View>}
-            <View style={{ flex: 1 }}><Text style={styles.th}>Qty</Text></View>
+            <View style={{ flex: 0.8 }}><Text style={[styles.th, { textAlign: "center" }]}>Qty</Text></View>
+            <View style={{ flex: 0.8 }}><Text style={[styles.th, { textAlign: "center" }]}>Unit</Text></View>
+            <View style={{ flex: 1.2 }}><Text style={[styles.th, { textAlign: "right" }]}>Rate</Text></View>
+            <View style={{ flex: 0.8 }}><Text style={[styles.th, { textAlign: "center" }]}>GST%</Text></View>
             <View style={{ flex: 1.2 }}><Text style={[styles.th, { textAlign: "right" }]}>Amount</Text></View>
           </View>
           {calc.items.map((item, i) => (
@@ -115,8 +123,11 @@ export default function PurchaseMinimalTemplate({ form }) {
               <View style={{ flex: 0.5 }}><Text style={styles.td}>{i + 1}</Text></View>
               <View style={{ flex: 3 }}><Text style={styles.td}>{item.description || "—"}</Text></View>
               {form.showHSN && <View style={{ flex: 1 }}><Text style={styles.td}>{item.hsn || "—"}</Text></View>}
-              <View style={{ flex: 1 }}><Text style={styles.td}>{item.qty} {item.unit}</Text></View>
-              <View style={{ flex: 1.2 }}><Text style={[styles.td, { textAlign: "right", fontWeight: 700 }]}>₹{item.amount}</Text></View>
+              <View style={{ flex: 0.8 }}><Text style={[styles.td, { textAlign: "center" }]}>{item.qty}</Text></View>
+              <View style={{ flex: 0.8 }}><Text style={[styles.td, { textAlign: "center" }]}>{item.unit || "Nos"}</Text></View>
+              <View style={{ flex: 1.2 }}><Text style={[styles.td, { textAlign: "right" }]}>Rs.{item.rate}</Text></View>
+              <View style={{ flex: 0.8 }}><Text style={[styles.td, { textAlign: "center" }]}>{item.gstRate}%</Text></View>
+              <View style={{ flex: 1.2 }}><Text style={[styles.td, { textAlign: "right", fontWeight: 700 }]}>Rs.{item.amount}</Text></View>
             </View>
           ))}
         </View>
@@ -125,29 +136,29 @@ export default function PurchaseMinimalTemplate({ form }) {
           <View style={styles.totBox}>
             <View style={styles.totRow}>
               <Text style={styles.totLabel}>Subtotal</Text>
-              <Text style={styles.totVal}>₹{calc.subtotal}</Text>
+              <Text style={styles.totVal}>Rs.{calc.subtotal}</Text>
             </View>
             {form.taxType === "cgst_sgst" && (
               <>
                 <View style={styles.totRow}>
                   <Text style={styles.totLabel}>CGST</Text>
-                  <Text style={styles.totVal}>₹{calc.totalCGST}</Text>
+                  <Text style={styles.totVal}>Rs.{calc.totalCGST}</Text>
                 </View>
                 <View style={styles.totRow}>
                   <Text style={styles.totLabel}>SGST</Text>
-                  <Text style={styles.totVal}>₹{calc.totalSGST}</Text>
+                  <Text style={styles.totVal}>Rs.{calc.totalSGST}</Text>
                 </View>
               </>
             )}
             {form.taxType === "igst" && (
               <View style={styles.totRow}>
                 <Text style={styles.totLabel}>IGST</Text>
-                <Text style={styles.totVal}>₹{calc.totalIGST}</Text>
+                <Text style={styles.totVal}>Rs.{calc.totalIGST}</Text>
               </View>
             )}
             <View style={styles.grandBox}>
               <Text style={styles.grandLabel}>Total</Text>
-              <Text style={styles.grandVal}>₹{calc.grandTotal}</Text>
+              <Text style={styles.grandVal}>Rs.{calc.grandTotal}</Text>
             </View>
           </View>
         </View>
