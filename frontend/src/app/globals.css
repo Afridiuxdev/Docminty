@@ -751,6 +751,13 @@ ins.adsbygoogle[data-ad-status="unfilled"] {
   min-height: 600px;
 }
 
+@media (max-width: 640px) {
+  .preview-panel {
+    min-height: unset !important;
+    padding: 16px;
+  }
+}
+
 .form-label {
   font-size: 11px;
   font-weight: 700;

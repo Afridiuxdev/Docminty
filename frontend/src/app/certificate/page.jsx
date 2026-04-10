@@ -91,14 +91,14 @@ export function CertificatePreview({ form, template = "Classic", accent = "#0D94
   const certContent = (
     <>
       {form.logo && <img src={form.logo} alt="Logo" style={{ height: "44px", objectFit: "contain", marginBottom: "8px" }} />}
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center" }}>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center" }}>
         <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: "#111827", margin: "0 0 4px", textTransform: "uppercase", letterSpacing: "0.1em" }}>{form.orgName || "Organisation Name"}</p>
       </div>
       <div style={{ background: accent, color: "#fff", padding: "6px 28px", borderRadius: "2px", fontFamily: "Space Grotesk, sans-serif", fontSize: "13px", fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "12px" }}>
         {form.certType}
       </div>
       <p style={{ fontSize: "13px", color: "#6B7280", margin: "0 0 8px" }}>This is to certify that</p>
-      <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "28px", color: "#111827", margin: "0 0 12px", borderBottom: `2px solid ${accent}`, paddingBottom: "8px", minWidth: "200px" }}>
+      <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "28px", color: "#111827", margin: "0 0 12px", borderBottom: `2px solid ${accent}`, paddingBottom: "8px", width: "80%" }}>
         {form.recipientName || "Recipient Name"}
       </p>
       <p style={{ fontSize: "13px", color: "#374151", margin: "0 0 4px", lineHeight: 1.6, maxWidth: "400px" }}>
@@ -110,7 +110,7 @@ export function CertificatePreview({ form, template = "Classic", accent = "#0D94
         {form.grade && <div style={{ textAlign: "center" }}><p style={{ fontSize: "10px", color: "#9CA3AF", margin: "0 0 2px", textTransform: "uppercase", letterSpacing: "0.08em" }}>Grade</p><p style={{ fontSize: "13px", fontWeight: 600, color: accent, margin: 0 }}>{form.grade}</p></div>}
         <div style={{ textAlign: "center" }}><p style={{ fontSize: "10px", color: "#9CA3AF", margin: "0 0 2px", textTransform: "uppercase", letterSpacing: "0.08em" }}>Date</p><p style={{ fontSize: "13px", fontWeight: 600, color: "#111827", margin: 0 }}>{form.issueDate}</p></div>
       </div>
-      <div style={{ display: "flex", gap: "48px", justifyContent: "center", alignItems: "flex-end" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", width: "100%", marginTop: "24px" }}>
         <div style={{ textAlign: "center" }}>
           <div style={{ minWidth: "120px" }}>
             {form.signature ? (
@@ -226,7 +226,7 @@ export function CertificatePreview({ form, template = "Classic", accent = "#0D94
     return (
       <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: "8px", overflow: "hidden", fontFamily: "Inter, sans-serif", width: "100%", aspectRatio: "3508 / 2480", display: "flex", padding: "12px" }}>
         <div style={{ flex: 1, border: `3px solid ${accent}`, padding: "4px", display: "flex" }}>
-          <div style={{ flex: 1, border: "1px solid #D1D5DB", padding: "16px 20px", display: "flex", flexDirection: "column", alignItems: "center", position: "relative" }}>
+          <div style={{ flex: 1, border: "1px solid #D1D5DB", padding: "16px 20px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", position: "relative" }}>
             
             <div style={{ textAlign: "center", marginBottom: "12px" }}>
               {form.logo ? <img src={form.logo} alt="Logo" style={{ height: "36px", objectFit: "contain", marginBottom: "4px" }} /> : <div style={{ height: "36px" }} />}
@@ -245,7 +245,7 @@ export function CertificatePreview({ form, template = "Classic", accent = "#0D94
             <p style={{ fontSize: "12px", color: "#374151", textAlign: "center", lineHeight: 1.5, maxWidth: "450px", margin: "0 0 4px" }}>{form.description || "for the successful completion of all required components and demonstrating superior excellence in"}</p>
             {form.course && <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "14px", color: accent, margin: "0 0 16px" }}>{form.course}</p>}
 
-            <div style={{ marginTop: "auto", width: "100%" }}>
+            <div style={{ width: "100%" }}>
               {/* Metadata Bar moved ABOVE signatures */}
               <div style={{ display: "flex", borderTop: "1px solid #E5E7EB", borderBottom: "1px solid #E5E7EB", padding: "8px 0", justifyContent: "center", gap: "40px", marginBottom: "16px" }}>
                 <div style={{ textAlign: "center" }}><p style={{ fontSize: "8px", color: "#9CA3AF", textTransform: "uppercase", margin: 0 }}>Issue Date</p><p style={{ fontSize: "10px", fontWeight: 700, color: "#111827", margin: 0 }}>{form.issueDate}</p></div>
