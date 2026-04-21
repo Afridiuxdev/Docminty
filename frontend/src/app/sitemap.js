@@ -1,3 +1,5 @@
+export const dynamic = "force-static";
+
 import { BLOGS } from "@/data/blogs";
 
 export default function sitemap() {

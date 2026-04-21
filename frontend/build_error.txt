@@ -1,0 +1,272 @@
+
+> docminty@0.1.0 build
+> next build
+
+▲ Next.js 16.2.0 (Turbopack)
+
+  Creating an optimized production build ...
+
+> Build error occurred
+Error: Turbopack build failed with 8 errors:
+./src/app/admin/documents/preview/[id]/page.jsx:25:8
+Next.js can't recognize the exported `generateStaticParams` field in route. App pages cannot use both "use client" and export function "generateStaticParams()".
+  [90m23 |[0m [36mimport[0m { [33mVoucherPreview[0m } [36mfrom[0m [32m"@/app/payment-voucher/page"[0m;
+  [90m24 |[0m
+[31m[1m>[0m [90m25 |[0m [36mexport[0m [36mfunction[0m generateStaticParams() {
+  [90m   |[0m        [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m26 |[0m     [36mreturn[0m [{ id: [32m"preview"[0m }];
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m27 |[0m }
+  [90m   |[0m [31m[1m^[0m
+  [90m28 |[0m
+  [90m29 |[0m [36mexport[0m [36mdefault[0m [36mfunction[0m [33mAdminDocPreviewPage[0m() {
+  [90m30 |[0m     [36mconst[0m { id } = useParams();
+
+The exported configuration object in a source file needs to have a very specific format from which some properties can be statically parsed at compiled-time.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/documents/preview/[id]/page.jsx [Client Component Browser]
+    ./src/app/admin/documents/preview/[id]/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/documents/preview/[id]/page.jsx [Client Component SSR]
+    ./src/app/admin/documents/preview/[id]/page.jsx [Server Component]
+
+https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config
+
+
+./src/app/admin/users/[id]/page.jsx:32:8
+Next.js can't recognize the exported `generateStaticParams` field in route. App pages cannot use both "use client" and export function "generateStaticParams()".
+  [90m30 |[0m }
+  [90m31 |[0m
+[31m[1m>[0m [90m32 |[0m [36mexport[0m [36mfunction[0m generateStaticParams() {
+  [90m   |[0m        [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m33 |[0m   [36mreturn[0m [{ id: [32m"profile"[0m }];
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m34 |[0m }
+  [90m   |[0m [31m[1m^[0m
+  [90m35 |[0m
+  [90m36 |[0m [36mexport[0m [36mdefault[0m [36mfunction[0m [33mUserProfilePage[0m({ params }) {
+  [90m37 |[0m   [36mconst[0m router = useRouter();
+
+The exported configuration object in a source file needs to have a very specific format from which some properties can be statically parsed at compiled-time.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/users/[id]/page.jsx [Client Component Browser]
+    ./src/app/admin/users/[id]/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/users/[id]/page.jsx [Client Component SSR]
+    ./src/app/admin/users/[id]/page.jsx [Server Component]
+
+https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config
+
+
+./src/app/blogs/[slug]/page.jsx:15:8
+Next.js can't recognize the exported `generateStaticParams` field in route. App pages cannot use both "use client" and export function "generateStaticParams()".
+  [90m13 |[0m [36mimport[0m { [33mBLOGS[0m } [36mfrom[0m [32m"@/data/blogs"[0m;
+  [90m14 |[0m
+[31m[1m>[0m [90m15 |[0m [36mexport[0m [36mfunction[0m generateStaticParams() {
+  [90m   |[0m        [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m16 |[0m     [36mreturn[0m [33mBLOGS[0m.map((blog) => ({
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m17 |[0m         slug: blog.slug,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m18 |[0m     }));
+  [90m   |[0m [31m[1m^^^^^^^^[0m
+[31m[1m>[0m [90m19 |[0m }
+  [90m   |[0m [31m[1m^[0m
+  [90m20 |[0m
+  [90m21 |[0m [36mconst[0m [33mT[0m = [32m"#0D9488"[0m;
+  [90m22 |[0m
+
+The exported configuration object in a source file needs to have a very specific format from which some properties can be statically parsed at compiled-time.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/blogs/[slug]/page.jsx [Client Component Browser]
+    ./src/app/blogs/[slug]/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/blogs/[slug]/page.jsx [Client Component SSR]
+    ./src/app/blogs/[slug]/page.jsx [Server Component]
+
+https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config
+
+
+./src/app/dashboard/billing/invoice/[id]/page.jsx:12:8
+Next.js can't recognize the exported `generateStaticParams` field in route. App pages cannot use both "use client" and export function "generateStaticParams()".
+  [90m10 |[0m [36mconst[0m [33mT[0m = [32m"#0D9488"[0m;
+  [90m11 |[0m
+[31m[1m>[0m [90m12 |[0m [36mexport[0m [36mfunction[0m generateStaticParams() {
+  [90m   |[0m        [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m13 |[0m     [36mreturn[0m [{ id: [32m"receipt"[0m }];
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m14 |[0m }
+  [90m   |[0m [31m[1m^[0m
+  [90m15 |[0m
+  [90m16 |[0m [36mexport[0m [36mdefault[0m [36mfunction[0m [33mInvoicePrintPage[0m() {
+  [90m17 |[0m     [36mconst[0m { id } = useParams();
+
+The exported configuration object in a source file needs to have a very specific format from which some properties can be statically parsed at compiled-time.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/dashboard/billing/invoice/[id]/page.jsx [Client Component Browser]
+    ./src/app/dashboard/billing/invoice/[id]/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/dashboard/billing/invoice/[id]/page.jsx [Client Component SSR]
+    ./src/app/dashboard/billing/invoice/[id]/page.jsx [Server Component]
+
+https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config
+
+
+./src/app/share/[token]/page.jsx:6:8
+Next.js can't recognize the exported `generateStaticParams` field in route. App pages cannot use both "use client" and export function "generateStaticParams()".
+  [90m 4 |[0m [36mimport[0m { documentsApi } [36mfrom[0m [32m"@/api/documents"[0m;
+  [90m 5 |[0m
+[31m[1m>[0m [90m 6 |[0m [36mexport[0m [36mfunction[0m generateStaticParams() {
+  [90m   |[0m        [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m 7 |[0m   [36mreturn[0m [{ token: [32m"view"[0m }];
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m 8 |[0m }
+  [90m   |[0m [31m[1m^[0m
+  [90m 9 |[0m
+  [90m10 |[0m [36mexport[0m [36mdefault[0m [36mfunction[0m [33mSharedDocumentPage[0m() {
+  [90m11 |[0m   [36mconst[0m { token } = useParams();
+
+The exported configuration object in a source file needs to have a very specific format from which some properties can be statically parsed at compiled-time.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/share/[token]/page.jsx [Client Component Browser]
+    ./src/app/share/[token]/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/share/[token]/page.jsx [Client Component SSR]
+    ./src/app/share/[token]/page.jsx [Server Component]
+
+https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config
+
+
+./src/app/verify/[id]/page.jsx:12:8
+Next.js can't recognize the exported `generateStaticParams` field in route. App pages cannot use both "use client" and export function "generateStaticParams()".
+  [90m10 |[0m [36mimport[0m { documentsApi } [36mfrom[0m [32m"@/api/documents"[0m;
+  [90m11 |[0m
+[31m[1m>[0m [90m12 |[0m [36mexport[0m [36mfunction[0m generateStaticParams() {
+  [90m   |[0m        [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m13 |[0m     [36mreturn[0m [{ id: [32m"doc"[0m }];
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m14 |[0m }
+  [90m   |[0m [31m[1m^[0m
+  [90m15 |[0m
+  [90m16 |[0m [36mexport[0m [36mdefault[0m [36mfunction[0m [33mVerifyPage[0m() {
+  [90m17 |[0m     [36mconst[0m params = useParams();
+
+The exported configuration object in a source file needs to have a very specific format from which some properties can be statically parsed at compiled-time.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/verify/[id]/page.jsx [Client Component Browser]
+    ./src/app/verify/[id]/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/verify/[id]/page.jsx [Client Component SSR]
+    ./src/app/verify/[id]/page.jsx [Server Component]
+
+https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config
+
+
+./src/app/blogs/[slug]/page.jsx
+Error evaluating Node.js code
+SyntaxError: E:\personal\projects\Docminty\frontend\src\app\blogs\[slug]\page.jsx: Identifier 'BLOGS' has already been declared. (13:9)
+
+[0m [90m 11 |[39m [36mimport[39m { useEffect[33m,[39m useState } [36mfrom[39m [32m"react"[39m[33m;[39m
+ [90m 12 |[39m
+[31m[1m>[22m[39m[90m 13 |[39m [36mimport[39m { [33mBLOGS[39m } [36mfrom[39m [32m"@/data/blogs"[39m[33m;[39m
+ [90m    |[39m          [31m[1m^[22m[39m
+ [90m 14 |[39m
+ [90m 15 |[39m [36mexport[39m [36mfunction[39m generateStaticParams() {
+ [90m 16 |[39m     [36mreturn[39m [33mBLOGS[39m[33m.[39mmap((blog) [33m=>[39m ({[0m
+    [at constructor (E:\personal\projects\Docminty\frontend\node_modules\next\dist\compiled\babel\bundle.js:191:137105)]
+    [at JSXParserMixin.raise (E:\personal\projects\Docminty\frontend\node_modules\next\dist\compiled\babel\bundle.js:191:194164)]
+    [at ScopeHandler.checkRedeclarationInScope (E:\personal\projects\Docminty\frontend\node_modules\next\dist\compiled\babel\bundle.js:191:163166)]
+    [at ScopeHandler.declareName (E:\personal\projects\Docminty\frontend\node_modules\next\dist\compiled\babel\bundle.js:191:162529)]
+    [at JSXParserMixin.declareNameFromIdentifier (E:\personal\projects\Docminty\frontend\node_modules\next\dist\compiled\babel\bundle.js:191:279226)]
+    [at JSXParserMixin.checkIdentifier (E:\personal\projects\Docminty\frontend\node_modules\next\dist\compiled\babel\bundle.js:191:279152)]
+    [at JSXParserMixin.checkLVal (E:\personal\projects\Docminty\frontend\node_modules\next\dist\compiled\babel\bundle.js:191:278197)]
+    [at JSXParserMixin.finishImportSpecifier (E:\personal\projects\Docminty\frontend\node_modules\next\dist\compiled\babel\bundle.js:191:422705)]
+    [at JSXParserMixin.parseImportSpecifier (E:\personal\projects\Docminty\frontend\node_modules\next\dist\compiled\babel\bundle.js:191:425882)]
+    [at JSXParserMixin.parseNamedImportSpecifiers (E:\personal\projects\Docminty\frontend\node_modules\next\dist\compiled\babel\bundle.js:191:425483)]
+    [at JSXParserMixin.parseImportSpecifiersAndAfter (E:\personal\projects\Docminty\frontend\node_modules\next\dist\compiled\babel\bundle.js:191:422062)]
+    [at JSXParserMixin.parseImport (E:\personal\projects\Docminty\frontend\node_modules\next\dist\compiled\babel\bundle.js:191:421803)]
+    [at JSXParserMixin.parseStatementContent (E:\personal\projects\Docminty\frontend\node_modules\next\dist\compiled\babel\bundle.js:191:391781)]
+    [at JSXParserMixin.parseStatementLike (E:\personal\projects\Docminty\frontend\node_modules\next\dist\compiled\babel\bundle.js:191:389494)]
+    [at JSXParserMixin.parseModuleItem (E:\personal\projects\Docminty\frontend\node_modules\next\dist\compiled\babel\bundle.js:191:389055)]
+    [at JSXParserMixin.parseBlockOrModuleBlockBody (E:\personal\projects\Docminty\frontend\node_modules\next\dist\compiled\babel\bundle.js:191:401400)]
+    [at JSXParserMixin.parseBlockBody (E:\personal\projects\Docminty\frontend\node_modules\next\dist\compiled\babel\bundle.js:191:401223)]
+    [at JSXParserMixin.parseProgram (E:\personal\projects\Docminty\frontend\node_modules\next\dist\compiled\babel\bundle.js:191:386857)]
+    [at JSXParserMixin.parseTopLevel (E:\personal\projects\Docminty\frontend\node_modules\next\dist\compiled\babel\bundle.js:191:386575)]
+    [at JSXParserMixin.parse (E:\personal\projects\Docminty\frontend\node_modules\next\dist\compiled\babel\bundle.js:191:426834)]
+    [at parse (E:\personal\projects\Docminty\frontend\node_modules\next\dist\compiled\babel\bundle.js:191:427092)]
+    [at parser (E:\personal\projects\Docminty\frontend\node_modules\next\dist\compiled\babel\bundle.js:1:142456)]
+    [at <anonymous>]
+    [at normalizeFile (E:\personal\projects\Docminty\frontend\node_modules\next\dist\compiled\babel\bundle.js:13:13275)]
+    [at <anonymous>]
+    [at consumeIterator (E:\personal\projects\Docminty\frontend\node_modules\next\dist\build\babel\loader\util.js:13:38)]
+    [at transform (E:\personal\projects\Docminty\frontend\node_modules\next\dist\build\babel\loader\transform.js:89:44)]
+    [at async (E:\personal\projects\Docminty\frontend\node_modules\next\dist\build\babel\loader\index.js:36:108)]
+    at async DummySpan.traceAsyncFn (turbopack:///[turbopack-node]/transforms/webpack-loaders.ts:115:12) [E:\personal\projects\Docminty\frontend\.next\build\chunks\[root-of-the-server]__0iz~thn._.js:126:16]
+    [at async nextBabelLoader (E:\personal\projects\Docminty\frontend\node_modules\next\dist\build\babel\loader\index.js:36:63)]
+    at async DummySpan.traceAsyncFn (turbopack:///[turbopack-node]/transforms/webpack-loaders.ts:115:12) [E:\personal\projects\Docminty\frontend\.next\build\chunks\[root-of-the-server]__0iz~thn._.js:126:16]
+
+Import traces:
+  Client Component Browser:
+    ./src/app/blogs/[slug]/page.jsx [Client Component Browser]
+    ./src/app/blogs/[slug]/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/blogs/[slug]/page.jsx [Client Component SSR]
+    ./src/app/blogs/[slug]/page.jsx [Server Component]
+
+
+./src/app/blogs/[slug]/page.jsx:13:10
+the name `BLOGS` is defined multiple times
+  [90m11 |[0m [36mimport[0m { useEffect, useState } [36mfrom[0m [32m"react"[0m;
+  [90m12 |[0m
+[31m[1m>[0m [90m13 |[0m [36mimport[0m { [33mBLOGS[0m } [36mfrom[0m [32m"@/data/blogs"[0m;
+  [90m   |[0m          [31m[1m^^^^^[0m
+  [90m14 |[0m
+  [90m15 |[0m [36mexport[0m [36mfunction[0m generateStaticParams() {
+  [90m16 |[0m     [36mreturn[0m [33mBLOGS[0m.map((blog) => ({
+
+Ecmascript file had an error
+
+Import traces:
+  Client Component Browser:
+    ./src/app/blogs/[slug]/page.jsx [Client Component Browser]
+    ./src/app/blogs/[slug]/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/blogs/[slug]/page.jsx [Client Component SSR]
+    ./src/app/blogs/[slug]/page.jsx [Server Component]
+
+
+    at <unknown> (./src/app/admin/documents/preview/[id]/page.jsx:25:8)
+    at <unknown> (https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config)
+    at <unknown> (./src/app/admin/users/[id]/page.jsx:32:8)
+    at <unknown> (https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config)
+    at <unknown> (./src/app/blogs/[slug]/page.jsx:15:8)
+    at <unknown> (https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config)
+    at <unknown> (./src/app/dashboard/billing/invoice/[id]/page.jsx:12:8)
+    at <unknown> (https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config)
+    at <unknown> (./src/app/share/[token]/page.jsx:6:8)
+    at <unknown> (https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config)
+    at <unknown> (./src/app/verify/[id]/page.jsx:12:8)
+    at <unknown> (https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config)
+    at async DummySpan.traceAsyncFn (turbopack:///[turbopack-node]/transforms/webpack-loaders.ts:115:12) [E:\personal\projects\Docminty\frontend\.next\build\chunks\[root-of-the-server]__0iz~thn._.js:126:16])
+    at async DummySpan.traceAsyncFn (turbopack:///[turbopack-node]/transforms/webpack-loaders.ts:115:12) [E:\personal\projects\Docminty\frontend\.next\build\chunks\[root-of-the-server]__0iz~thn._.js:126:16])
+    at <unknown> (./src/app/blogs/[slug]/page.jsx:13:10)
