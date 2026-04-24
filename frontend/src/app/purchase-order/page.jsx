@@ -190,7 +190,6 @@ export function POPreview({ form, template = "Classic", accent = "#0D9488" }) {
             <th style={{ width: "35%" }}>Description</th>
             {form.showHSN && <th>HSN</th>}
             <th>Qty</th>
-            <th>Unit</th>
             <th>Rate</th>
             <th>GST%</th>
             <th style={{ textAlign: "right" }}>Amount</th>
@@ -203,7 +202,6 @@ export function POPreview({ form, template = "Classic", accent = "#0D9488" }) {
               <td>{item.description || "—"}</td>
               {form.showHSN && <td>{item.hsn || "—"}</td>}
               <td>{item.qty}</td>
-              <td>{item.unit}</td>
               <td>₹{item.rate}</td>
               <td>{item.gstRate}%</td>
               <td style={{ textAlign: "right", fontWeight: 600 }}>₹{item.amount}</td>
@@ -458,13 +456,31 @@ export function POPreview({ form, template = "Classic", accent = "#0D9488" }) {
 
 export default function PurchaseOrderPage() {
   const { user } = useAuth();
-  const [form, setForm] = useState(DEFAULT_FORM);
+  const [form, setForm] = useState(() => {
+    if (typeof window === "undefined") return DEFAULT_FORM;
+    try {
+      const raw = localStorage.getItem("docminty_draft");
+      if (!raw) return DEFAULT_FORM;
+      const saved = JSON.parse(raw);
+      const { _docTemplate, docId, editMode, viewMode, autoDownload, ...formData } = saved;
+      return { ...DEFAULT_FORM, ...formData };
+    } catch { return DEFAULT_FORM; }
+  });
   const { download, generateBlob, downloading } = useDownloadPDF();
   const router = useRouter();
   const plan = user?.plan?.toUpperCase() || "FREE";
   useProfileSync(form, setForm, plan);
   const isUserPro = plan === "PRO" || plan === "ENTERPRISE" || plan === "BUSINESS PRO";
-  const [template, setTemplate] = useState("Classic");
+  const [template, setTemplate] = useState(() => {
+    if (typeof window === "undefined") return "Classic";
+    try {
+      const raw = localStorage.getItem("docminty_draft");
+      if (!raw) return "Classic";
+      const saved = JSON.parse(raw);
+      localStorage.removeItem("docminty_draft");
+      return saved._docTemplate || "Classic";
+    } catch { return "Classic"; }
+  });
   const templateMeta = TEMPLATE_REGISTRY.purchase[template] || TEMPLATE_REGISTRY.purchase.Classic;
   const showWatermark = templateMeta.pro && !isUserPro;
 

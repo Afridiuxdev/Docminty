@@ -7,7 +7,12 @@ export const maxDuration = 60;
 const HR_DOC_TYPES = new Set([
   "salary", "experience", "resignation", "job-offer",
   "proforma", "purchase", "packing", "voucher", "rent",
+  "invoice", "quotation", "receipt",
+  "certificate", "internship",
 ]);
+
+// Certificate types render in landscape A4
+const LANDSCAPE_DOC_TYPES = new Set(["certificate", "internship"]);
 
 export async function POST(request) {
   try {
@@ -18,6 +23,7 @@ export async function POST(request) {
       return Response.json({ error: "Unsupported document type" }, { status: 400 });
     }
 
+    const isLandscape = LANDSCAPE_DOC_TYPES.has(docType);
     const token = crypto.randomUUID();
     setCacheItem(token, { docType, template, form });
 
@@ -40,8 +46,12 @@ export async function POST(request) {
     try {
       const page = await browser.newPage();
 
-      // A4 at 96 dpi = 794 x 1123 px
-      await page.setViewport({ width: 794, height: 1123, deviceScaleFactor: 1 });
+      // A4 portrait: 794×1123px | A4 landscape: 1123×794px at 96dpi
+      await page.setViewport({
+        width: isLandscape ? 1123 : 794,
+        height: isLandscape ? 794 : 1123,
+        deviceScaleFactor: 1,
+      });
 
       await page.goto(`${baseUrl}/pdf-render/${token}`, {
         waitUntil: "networkidle0",
@@ -56,6 +66,7 @@ export async function POST(request) {
 
       const pdfBuffer = await page.pdf({
         format: "A4",
+        landscape: isLandscape,
         printBackground: true,
         preferCSSPageSize: true,
         margin: { top: "0", right: "0", bottom: "0", left: "0" },

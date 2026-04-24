@@ -9,6 +9,8 @@ import { TEMPLATE_REGISTRY, loadTemplate } from "@/templates/registry";
 const PUPPETEER_DOC_TYPES = new Set([
   "salary", "experience", "resignation", "job-offer",
   "proforma", "purchase", "packing", "voucher", "rent",
+  "invoice", "quotation", "receipt",
+  "certificate", "internship",
 ]);
 
 async function downloadViaLink(blob, filename) {

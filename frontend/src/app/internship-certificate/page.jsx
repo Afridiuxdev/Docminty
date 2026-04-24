@@ -193,11 +193,29 @@ export function InternshipPreview({ form, template = "Classic", accent = "#0D948
 
 export default function InternshipCertificatePage() {
   const { user } = useAuth();
-  const [form, setForm] = useState(DEFAULT_FORM);
-  const { download, downloading } = useDownloadPDF();
+  const [form, setForm] = useState(() => {
+    if (typeof window === "undefined") return DEFAULT_FORM;
+    try {
+      const raw = localStorage.getItem("docminty_draft");
+      if (!raw) return DEFAULT_FORM;
+      const saved = JSON.parse(raw);
+      const { _docTemplate, docId, editMode, viewMode, autoDownload, ...formData } = saved;
+      return { ...DEFAULT_FORM, ...formData };
+    } catch { return DEFAULT_FORM; }
+  });
+  const { download, generateBlob, downloading } = useDownloadPDF();
   const [activeTab, setActiveTab] = useState("org");
   const [isSigModalOpen, setIsSigModalOpen] = useState(false);
-  const [template, setTemplate] = useState("Classic");
+  const [template, setTemplate] = useState(() => {
+    if (typeof window === "undefined") return "Classic";
+    try {
+      const raw = localStorage.getItem("docminty_draft");
+      if (!raw) return "Classic";
+      const saved = JSON.parse(raw);
+      localStorage.removeItem("docminty_draft");
+      return saved._docTemplate || "Classic";
+    } catch { return "Classic"; }
+  });
   const router = useRouter();
   const plan = user?.plan?.toUpperCase() || "FREE";
   useProfileSync(form, setForm, plan, { fromName: "orgName" });
@@ -211,16 +229,12 @@ export default function InternshipCertificatePage() {
 
   const handleSave = async () => {
     if (!getAccessToken()) { toast.error("Please sign in to save"); router.push("/login"); return; }
+    const payload = { docType: "internship-certificate", title: `Internship Certificate - ${form.internName || "Intern"}`, referenceNumber: form.verificationId, templateName: template, partyName: form.internName, amount: "", formData: JSON.stringify(form) };
     try {
-      await documentsApi.save({ 
-        docType: "internship-certificate", 
-        title: `Internship Certificate - ${form.internName || "Intern"}`, 
-        referenceNumber: form.verificationId, 
-        templateName: template,
-        partyName: form.internName, 
-        amount: "", 
-        formData: JSON.stringify(form) 
-      });
+      const pendingToast = toast.loading("Saving document...");
+      payload.file = await generateBlob("internship", template, form, `InternshipCert-${form.internName || "Intern"}.pdf`);
+      await documentsApi.save(payload);
+      toast.dismiss(pendingToast);
       toast.success("Saved to your dashboard!");
     } catch (err) { if (err.message !== "PLAN_LIMIT_REACHED") toast.error("Save failed"); }
   };

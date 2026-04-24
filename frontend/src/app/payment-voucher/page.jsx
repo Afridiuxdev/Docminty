@@ -358,13 +358,31 @@ export function VoucherPreview({ form, template = "Classic", accent = "#0D9488" 
 
 export default function PaymentVoucherPage() {
   const { user } = useAuth();
-  const [form, setForm] = useState(DEFAULT_FORM);
-  const { download, downloading } = useDownloadPDF();
+  const [form, setForm] = useState(() => {
+    if (typeof window === "undefined") return DEFAULT_FORM;
+    try {
+      const raw = localStorage.getItem("docminty_draft");
+      if (!raw) return DEFAULT_FORM;
+      const saved = JSON.parse(raw);
+      const { _docTemplate, docId, editMode, viewMode, autoDownload, ...formData } = saved;
+      return { ...DEFAULT_FORM, ...formData };
+    } catch { return DEFAULT_FORM; }
+  });
+  const { download, generateBlob, downloading } = useDownloadPDF();
   const router = useRouter();
   const plan = user?.plan?.toUpperCase() || "FREE";
   useProfileSync(form, setForm, plan, { fromName: "companyName", fromAddress: "companyAddress", fromCity: "companyCity", fromState: "companyState", fromPhone: "companyPhone", fromEmail: "companyEmail" });
   const isUserPro = plan === "PRO" || plan === "ENTERPRISE" || plan === "BUSINESS PRO";
-  const [template, setTemplate] = useState("Classic");
+  const [template, setTemplate] = useState(() => {
+    if (typeof window === "undefined") return "Classic";
+    try {
+      const raw = localStorage.getItem("docminty_draft");
+      if (!raw) return "Classic";
+      const saved = JSON.parse(raw);
+      localStorage.removeItem("docminty_draft");
+      return saved._docTemplate || "Classic";
+    } catch { return "Classic"; }
+  });
   const templateMeta = TEMPLATE_REGISTRY.voucher[template] || TEMPLATE_REGISTRY.voucher.Classic;
   const showWatermark = templateMeta.pro && !isUserPro;
 
@@ -374,16 +392,12 @@ export default function PaymentVoucherPage() {
 
   const handleSave = async () => {
     if (!getAccessToken()) { toast.error("Please sign in to save"); router.push("/login"); return; }
+    const payload = { docType: "payment-voucher", title: "Voucher #" + form.voucherNumber, referenceNumber: form.voucherNumber, templateName: template, partyName: form.paidTo, amount: form.amount, formData: JSON.stringify(form) };
     try {
-      await documentsApi.save({ 
-        docType: "payment-voucher", 
-        title: "Voucher #" + form.voucherNumber, 
-        referenceNumber: form.voucherNumber, 
-        templateName: template,
-        partyName: form.paidTo, 
-        amount: form.amount, 
-        formData: JSON.stringify(form) 
-      });
+      const pendingToast = toast.loading("Saving document...");
+      payload.file = await generateBlob("voucher", template, form, `Voucher-${form.voucherNumber}.pdf`);
+      await documentsApi.save(payload);
+      toast.dismiss(pendingToast);
       toast.success("Saved to your dashboard!");
     } catch (err) { if (err.message !== "PLAN_LIMIT_REACHED") toast.error("Save failed"); }
   };

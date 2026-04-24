@@ -13,9 +13,9 @@ export function calculateSalary(data) {
 
     // Deductions
     const pfRate = 0.12; // 12% of basic
-    const employeePF = Math.min(basic * pfRate, 1800); // capped at ₹1800
+    const employeePF = data.includePF !== false ? Math.min(basic * pfRate, 1800) : 0;
     const employerPF = Math.min(basic * pfRate, 1800);
-    const professionalTax = getProfessionalTax(grossSalary);
+    const professionalTax = data.includePT !== false ? getProfessionalTax(grossSalary) : 0;
     const incomeTax = parseFloat(data.incomeTax) || 0;
     const otherDeductions = parseFloat(data.otherDeductions) || 0;
     const esi = grossSalary <= 21000 ? grossSalary * 0.0075 : 0; // ESI if salary <= 21000

@@ -475,13 +475,31 @@ export function ProformaPreview({ form, template = "Classic", accent = "#0D9488"
 
 export default function ProformaInvoicePage() {
   const { user } = useAuth();
-  const [form, setForm] = useState(DEFAULT_FORM);
-  const { download, downloading } = useDownloadPDF();
+  const [form, setForm] = useState(() => {
+    if (typeof window === "undefined") return DEFAULT_FORM;
+    try {
+      const raw = localStorage.getItem("docminty_draft");
+      if (!raw) return DEFAULT_FORM;
+      const saved = JSON.parse(raw);
+      const { _docTemplate, docId, editMode, viewMode, autoDownload, ...formData } = saved;
+      return { ...DEFAULT_FORM, ...formData };
+    } catch { return DEFAULT_FORM; }
+  });
+  const { download, generateBlob, downloading } = useDownloadPDF();
   const router = useRouter();
   const plan = user?.plan?.toUpperCase() || "FREE";
   useProfileSync(form, setForm, plan);
   const isUserPro = plan === "PRO" || plan === "ENTERPRISE" || plan === "BUSINESS PRO";
-  const [template, setTemplate] = useState("Classic");
+  const [template, setTemplate] = useState(() => {
+    if (typeof window === "undefined") return "Classic";
+    try {
+      const raw = localStorage.getItem("docminty_draft");
+      if (!raw) return "Classic";
+      const saved = JSON.parse(raw);
+      localStorage.removeItem("docminty_draft");
+      return saved._docTemplate || "Classic";
+    } catch { return "Classic"; }
+  });
   const templateMeta = TEMPLATE_REGISTRY.proforma[template] || TEMPLATE_REGISTRY.proforma.Classic;
   const showWatermark = templateMeta.pro && !isUserPro;
 
@@ -491,16 +509,12 @@ export default function ProformaInvoicePage() {
 
   const handleSave = async () => {
     if (!getAccessToken()) { toast.error("Please sign in to save"); router.push("/login"); return; }
+    const payload = { docType: "proforma-invoice", title: "Proforma #" + form.proformaNumber, referenceNumber: form.proformaNumber, templateName: template, partyName: form.toName, amount: form.items.reduce((s, i) => s + parseFloat(i.amount || 0), 0).toFixed(2), formData: JSON.stringify(form) };
     try {
-      await documentsApi.save({ 
-        docType: "proforma-invoice", 
-        title: "Proforma #" + form.proformaNumber, 
-        referenceNumber: form.proformaNumber, 
-        templateName: template,
-        partyName: form.toName, 
-        amount: form.items.reduce((s, i) => s + parseFloat(i.amount || 0), 0).toFixed(2), 
-        formData: JSON.stringify(form) 
-      });
+      const pendingToast = toast.loading("Saving document...");
+      payload.file = await generateBlob("proforma", template, form, `Proforma-${form.proformaNumber}.pdf`);
+      await documentsApi.save(payload);
+      toast.dismiss(pendingToast);
       toast.success("Saved to your dashboard!");
     } catch (err) { if (err.message !== "PLAN_LIMIT_REACHED") toast.error("Save failed"); }
   };

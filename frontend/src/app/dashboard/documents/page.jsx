@@ -69,11 +69,13 @@ export default function DashDocumentsPage() {
     try {
       const data = JSON.parse(doc.formData || "{}");
       if (action === "edit") {
-        data.docId = doc.id; 
+        data._docTemplate = doc.templateName;
+        data.docId = doc.id;
         data.editMode = true;
         localStorage.setItem("docminty_draft", JSON.stringify(data));
         router.push(`/${doc.docType}`);
       } else if (action === "duplicate") {
+        data._docTemplate = doc.templateName;
         delete data.docId;
         data.editMode = false;
         localStorage.setItem("docminty_draft", JSON.stringify(data));
@@ -86,9 +88,10 @@ export default function DashDocumentsPage() {
           setSelectedDoc(doc);
           setModalOpen(true);
         } else {
+          data._docTemplate = doc.templateName;
           data.autoDownload = action === "download";
           data.viewMode = action === "view";
-          data.docId = doc.id; 
+          data.docId = doc.id;
           localStorage.setItem("docminty_draft", JSON.stringify(data));
           router.push(`/${doc.docType}`);
         }
