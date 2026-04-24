@@ -23,7 +23,8 @@ export async function POST(request) {
     const baseUrl = `${proto}://${host}`;
 
     const browser = await puppeteer.launch({
-      headless: true,
+      headless: "shell",
+      pipe: true,
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox",
