@@ -286,6 +286,17 @@ export default function RentReceiptPage() {
             {activeTab === "landlord" && (
               <div>
                 <p className="form-label">Landlord Details</p>
+                <div style={{ marginBottom: "16px" }}>
+                  <p style={{ fontSize: "11px", fontWeight: 600, color: "#6B7280", margin: "0 0 6px", fontFamily: "Inter, sans-serif" }}>Logo</p>
+                  {isUserPro ? (
+                    <LogoUpload value={form.logo} onChange={v => updateField("logo", v)} />
+                  ) : (
+                    <div onClick={() => router.push("/#pricing")} style={{ padding: "14px 16px", border: "1px dashed #D1D5DB", borderRadius: "8px", background: "#F9FAFB", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer" }}>
+                      <span style={{ fontSize: "12px", color: "#9CA3AF", fontFamily: "Inter, sans-serif" }}>Logo upload — <strong style={{ color: "#6366F1" }}>Pro feature</strong></span>
+                      <span style={{ fontSize: "11px", background: "#EDE9FE", color: "#6366F1", padding: "3px 10px", borderRadius: "20px", fontWeight: 600 }}>Upgrade</span>
+                    </div>
+                  )}
+                </div>
                 <div className="form-field"><label className="field-label">Landlord Name</label><input className="doc-input" placeholder="Ramesh Verma" value={form.landlordName} onChange={e => updateField("landlordName", e.target.value)} /></div>
                 <div className="form-field"><label className="field-label">Landlord PAN <span style={{ color: T, fontSize: "11px" }}>Required for HRA &gt; 1L/year</span></label><input className="doc-input" placeholder="ABCDE1234F" value={form.landlordPan} onChange={e => updateField("landlordPan", e.target.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase())} maxLength={10} /></div>
                 <div className="form-field"><label className="field-label">Landlord Address</label><input className="doc-input" placeholder="123 MG Road, Mumbai" value={form.landlordAddress} onChange={e => updateField("landlordAddress", e.target.value)} /></div>

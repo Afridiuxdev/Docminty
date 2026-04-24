@@ -5,6 +5,11 @@ import { SalaryPreview } from "@/app/salary-slip/page";
 import { ExperiencePreview } from "@/app/experience-letter/page";
 import { ResignationPreview } from "@/app/resignation-letter/page";
 import { JobOfferPreview } from "@/app/job-offer-letter/page";
+import { ProformaPreview } from "@/app/proforma-invoice/page";
+import { POPreview } from "@/app/purchase-order/page";
+import { PackingPreview } from "@/app/packing-slip/page";
+import { VoucherPreview } from "@/app/payment-voucher/page";
+import { RentPreview } from "@/app/rent-receipt/page";
 
 const PRINT_CSS = `
   *, *::before, *::after { box-sizing: border-box; }
@@ -87,6 +92,16 @@ export default function PDFRenderPage() {
         return <ResignationPreview form={form} template={template} accent={accent} />;
       case "job-offer":
         return <JobOfferPreview form={form} template={template} accent={accent} />;
+      case "proforma":
+        return <ProformaPreview form={form} template={template} accent={accent} />;
+      case "purchase":
+        return <POPreview form={form} template={template} accent={accent} />;
+      case "packing":
+        return <PackingPreview form={form} template={template} accent={accent} />;
+      case "voucher":
+        return <VoucherPreview form={form} template={template} accent={accent} />;
+      case "rent":
+        return <RentPreview form={form} template={template} accent={accent} />;
       default:
         return <div>Unsupported document type: {docType}</div>;
     }

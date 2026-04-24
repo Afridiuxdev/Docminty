@@ -105,7 +105,7 @@ export function SalaryPreview({ form, template = "Classic", accent = "#0D9488" }
           </table>
         </div>
         <div>
-          <p style={{ fontSize: "11px", fontWeight: 700, color: "#fff", background: "#EF4444", padding: "6px 12px", borderRadius: "4px 4px 0 0", margin: 0, fontFamily: "Space Grotesk, sans-serif", textTransform: "uppercase", letterSpacing: "0.05em" }}>Deductions</p>
+          <p style={{ fontSize: "11px", fontWeight: 700, color: "#fff", background: accent, padding: "6px 12px", borderRadius: "4px 4px 0 0", margin: 0, fontFamily: "Space Grotesk, sans-serif", textTransform: "uppercase", letterSpacing: "0.05em" }}>Deductions</p>
           <table className="pdf-table" style={{ margin: 0 }}>
             <tbody>
               {[
@@ -120,9 +120,9 @@ export function SalaryPreview({ form, template = "Classic", accent = "#0D9488" }
                   <td style={{ textAlign: "right", fontWeight: 600, color: "#111827" }}>{v}</td>
                 </tr>
               ))}
-              <tr style={{ background: "#FEF2F2" }}>
-                <td style={{ fontWeight: 700, color: "#EF4444", fontFamily: "Space Grotesk, sans-serif" }}>Total Deductions</td>
-                <td style={{ textAlign: "right", fontWeight: 700, color: "#EF4444", fontFamily: "Space Grotesk, sans-serif" }}>Rs.{parseFloat(calc.totalDeductions).toLocaleString("en-IN")}</td>
+              <tr style={{ background: "#F8F9FA" }}>
+                <td style={{ fontWeight: 700, color: accent, fontFamily: "Space Grotesk, sans-serif" }}>Total Deductions</td>
+                <td style={{ textAlign: "right", fontWeight: 700, color: accent, fontFamily: "Space Grotesk, sans-serif" }}>Rs.{parseFloat(calc.totalDeductions).toLocaleString("en-IN")}</td>
               </tr>
             </tbody>
           </table>
@@ -302,23 +302,8 @@ export default function SalarySlipPage() {
   const plan = user?.plan?.toUpperCase() || "FREE";
   const isUserPro = plan === "PRO" || plan === "ENTERPRISE";
 
-  // Auto-sync profile for Pro/Enterprise
-  useProfileSync(form, (updater) => {
-    setForm(prev => {
-        const u = typeof updater === 'function' ? updater(prev) : updater;
-        return {
-            ...prev,
-            companyName: u.fromName || prev.companyName,
-            companyAddress: u.fromAddress || prev.companyAddress,
-            companyCity: u.fromCity || prev.companyCity,
-            companyState: u.fromState || prev.companyState,
-            companyPhone: u.fromPhone || prev.companyPhone,
-            companyEmail: u.fromEmail || prev.companyEmail,
-            logo: u.logo || prev.logo,
-            signature: u.signature || prev.signature,
-        };
-    });
-  }, plan);
+  // Auto-sync profile for all registered users
+  useProfileSync(form, setForm, plan);
   const templateMeta = TEMPLATE_REGISTRY.salary[template] || TEMPLATE_REGISTRY.salary.Classic;
   const isProTemplate = templateMeta.pro;
   const showWatermark = isProTemplate && !isUserPro;

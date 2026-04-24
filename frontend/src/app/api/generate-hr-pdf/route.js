@@ -4,7 +4,10 @@ import { setCacheItem } from "@/lib/pdfCache";
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
-const HR_DOC_TYPES = new Set(["salary", "experience", "resignation", "job-offer"]);
+const HR_DOC_TYPES = new Set([
+  "salary", "experience", "resignation", "job-offer",
+  "proforma", "purchase", "packing", "voucher", "rent",
+]);
 
 export async function POST(request) {
   try {

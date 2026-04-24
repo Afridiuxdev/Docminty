@@ -6,7 +6,10 @@ import { registerFonts } from "@/utils/pdfFonts";
 import { TEMPLATE_REGISTRY, loadTemplate } from "@/templates/registry";
 
 // These document types are rendered via Puppeteer (live preview = PDF)
-const PUPPETEER_DOC_TYPES = new Set(["salary", "experience", "resignation", "job-offer"]);
+const PUPPETEER_DOC_TYPES = new Set([
+  "salary", "experience", "resignation", "job-offer",
+  "proforma", "purchase", "packing", "voucher", "rent",
+]);
 
 async function downloadViaLink(blob, filename) {
   const url = URL.createObjectURL(blob);
