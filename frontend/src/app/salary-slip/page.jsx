@@ -26,7 +26,7 @@ const T = "#0D9488";
 export const DEFAULT_FORM = {
   // Company
   companyName: "", companyAddress: "", companyCity: "",
-  companyState: "27", companyPhone: "", companyEmail: "",
+  companyState: "27", companyPhone: "", companyEmail: "", companyGst: "",
   logo: null,
   // Employee
   employeeName: "", employeeId: "", designation: "",
@@ -159,7 +159,7 @@ export function SalaryPreview({ form, template = "Classic", accent = "#0D9488" }
     return (
       <div className="pdf-preview" style={{ display: "flex", gap: 0, padding: 0, overflow: "hidden" }}>
         <div style={{ width: "140px", minWidth: "140px", background: accent, padding: "24px 16px", display: "flex", flexDirection: "column", gap: "20px" }}>
-          {form.logo && <img src={form.logo} alt="Logo" style={{ height: "36px", objectFit: "contain", filter: "brightness(0) invert(1)" }} />}
+          {form.logo && <img src={form.logo} alt="Logo" style={{ maxHeight: "36px", width: "auto", objectFit: "contain", filter: "brightness(0) invert(1)" }} />}
           <div>
             <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "14px", color: "#fff", margin: 0 }}>SALARY SLIP</p>
             <p style={{ fontSize: "10px", color: "rgba(255,255,255,0.7)", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>{form.month} {form.year}</p>
@@ -167,8 +167,11 @@ export function SalaryPreview({ form, template = "Classic", accent = "#0D9488" }
           <div>
             <p style={{ fontSize: "9px", color: "rgba(255,255,255,0.6)", margin: "0 0 2px", textTransform: "uppercase", fontFamily: "Inter, sans-serif" }}>Company</p>
             <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "12px", color: "#fff", margin: 0 }}>{form.companyName || "Company"}</p>
+            {form.companyAddress && <p style={{ fontSize: "9px", color: "rgba(255,255,255,0.7)", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.companyAddress}{form.companyCity ? `, ${form.companyCity}` : ""}</p>}
+            {companyState && <p style={{ fontSize: "9px", color: "rgba(255,255,255,0.7)", margin: "1px 0 0", fontFamily: "Inter, sans-serif" }}>{companyState.name}</p>}
             {form.companyPhone && <p style={{ fontSize: "9px", color: "rgba(255,255,255,0.7)", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>Ph: {form.companyPhone}</p>}
-            {form.companyEmail && <p style={{ fontSize: "9px", color: "rgba(255,255,255,0.7)", margin: "1px 0 0", fontFamily: "Inter, sans-serif" }}>{form.companyEmail}</p>}
+            {form.companyEmail && <p style={{ fontSize: "9px", color: "rgba(255,255,255,0.7)", margin: "1px 0 0", fontFamily: "Inter, sans-serif" }}>Em: {form.companyEmail}</p>}
+            {form.companyGst && <p style={{ fontSize: "9px", color: "rgba(255,255,255,0.7)", margin: "1px 0 0", fontFamily: "Inter, sans-serif" }}>GST: {form.companyGst}</p>}
           </div>
           <div>
             <p style={{ fontSize: "9px", color: "rgba(255,255,255,0.6)", margin: "0 0 2px", textTransform: "uppercase", fontFamily: "Inter, sans-serif" }}>Employee</p>
@@ -183,14 +186,30 @@ export function SalaryPreview({ form, template = "Classic", accent = "#0D9488" }
 
   if (template === "Corporate") {
     return (
-      <div className="pdf-preview">
-        <div style={{ background: accent, padding: "20px 24px", textAlign: "center" }}>
-          {form.logo && <img src={form.logo} alt="Logo" style={{ height: "36px", objectFit: "contain", display: "block", margin: "0 auto 8px", filter: "brightness(0) invert(1)" }} />}
-          <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "15px", color: "#fff", margin: "0 0 2px" }}>{form.companyName || "Company Name"}</p>
-          {form.companyAddress && <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.75)", margin: "0 0 10px", fontFamily: "Inter, sans-serif" }}>{form.companyAddress}{form.companyCity ? `, ${form.companyCity}` : ""}</p>}
-          <div style={{ display: "inline-block", background: "rgba(255,255,255,0.15)", borderRadius: "4px", padding: "4px 16px" }}>
-            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "16px", color: "#fff", margin: 0 }}>SALARY SLIP</p>
-            <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.8)", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.month} {form.year}</p>
+      <div className="pdf-preview" style={{ padding: 0 }}>
+        {/* Band 1: accent title strip */}
+        <div style={{ background: accent, padding: "12px 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <div style={{ width: "3px", height: "28px", background: "#fff", borderRadius: "2px", flexShrink: 0 }} />
+            <div>
+              <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "17px", color: "#fff", margin: 0, letterSpacing: "0.04em" }}>SALARY SLIP</p>
+              <p style={{ fontSize: "10px", color: "rgba(255,255,255,0.65)", margin: "2px 0 0", fontFamily: "Inter, sans-serif", textTransform: "uppercase", letterSpacing: "0.06em" }}>For the period of {form.month} {form.year}</p>
+            </div>
+          </div>
+          {form.logo && (
+            <img src={form.logo} alt="Logo" style={{ maxHeight: "36px", width: "auto", objectFit: "contain", filter: "brightness(0) invert(1)", flexShrink: 0 }} />
+          )}
+        </div>
+        {/* Band 2: light company info strip */}
+        <div style={{ background: "#F8F9FA", borderBottom: `2px solid ${accent}`, padding: "10px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "16px", flexWrap: "wrap" }}>
+          <div style={{ minWidth: 0 }}>
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "13px", color: "#111827", margin: 0 }}>{form.companyName || "Company Name"}</p>
+            {(form.companyAddress || companyState) && <p style={{ fontSize: "10px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.companyAddress}{form.companyCity ? `, ${form.companyCity}` : ""}{companyState ? `, ${companyState.name}` : ""}</p>}
+          </div>
+          <div style={{ textAlign: "right", flexShrink: 0 }}>
+            {form.companyPhone && <p style={{ fontSize: "10px", color: "#6B7280", margin: "0 0 2px", fontFamily: "Inter, sans-serif" }}>Ph: {form.companyPhone}</p>}
+            {form.companyEmail && <p style={{ fontSize: "10px", color: "#6B7280", margin: "0 0 2px", fontFamily: "Inter, sans-serif" }}>Em: {form.companyEmail}</p>}
+            {form.companyGst && <p style={{ fontSize: "10px", color: "#6B7280", margin: 0, fontFamily: "Inter, sans-serif" }}>GST: {form.companyGst}</p>}
           </div>
         </div>
         {salaryBody}
@@ -200,18 +219,23 @@ export function SalaryPreview({ form, template = "Classic", accent = "#0D9488" }
 
   if (template === "Elegant") {
     return (
-      <div className="pdf-preview">
-        <div style={{ borderBottom: `4px solid ${accent}`, padding: "20px 24px 16px", display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
-          <div>
-            {form.logo && <img src={form.logo} alt="Logo" style={{ height: "40px", objectFit: "contain", marginBottom: "8px", display: "block" }} />}
-            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: "#111827", margin: 0 }}>{form.companyName || "Company Name"}</p>
-            {form.companyAddress && <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.companyAddress}{form.companyCity ? `, ${form.companyCity}` : ""}</p>}
+      <div className="pdf-preview" style={{ padding: 0 }}>
+        <div style={{ display: "flex", minHeight: "90px" }}>
+          <div style={{ flex: 1, padding: "20px 24px", display: "flex", flexDirection: "column", justifyContent: "center", minWidth: 0 }}>
+            {form.logo && <img src={form.logo} alt="Logo" style={{ maxHeight: "36px", width: "auto", objectFit: "contain", marginBottom: "8px", display: "block" }} />}
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "15px", color: "#111827", margin: 0 }}>{form.companyName || "Company Name"}</p>
+            {(form.companyAddress || companyState) && <p style={{ fontSize: "10px", color: "#6B7280", margin: "3px 0 0", fontFamily: "Inter, sans-serif" }}>{form.companyAddress}{form.companyCity ? `, ${form.companyCity}` : ""}{companyState ? `, ${companyState.name}` : ""}</p>}
+            {form.companyPhone && <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>Ph: {form.companyPhone}</p>}
+            {form.companyEmail && <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "1px 0 0", fontFamily: "Inter, sans-serif" }}>Em: {form.companyEmail}</p>}
+            {form.companyGst && <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "1px 0 0", fontFamily: "Inter, sans-serif" }}>GST: {form.companyGst}</p>}
           </div>
-          <div style={{ textAlign: "right" }}>
-            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "20px", color: accent, margin: 0 }}>SALARY SLIP</p>
-            <p style={{ fontSize: "12px", color: "#6B7280", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>{form.month} {form.year}</p>
+          <div style={{ width: "150px", flexShrink: 0, background: accent, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", textAlign: "center", padding: "20px 16px" }}>
+            <p style={{ fontSize: "9px", color: "rgba(255,255,255,0.65)", margin: "0 0 6px", fontFamily: "Inter, sans-serif", textTransform: "uppercase", letterSpacing: "0.1em" }}>Salary Slip</p>
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "22px", color: "#fff", margin: 0, lineHeight: 1 }}>{form.month.slice(0, 3).toUpperCase()}</p>
+            <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "14px", color: "rgba(255,255,255,0.85)", margin: "4px 0 0" }}>{form.year}</p>
           </div>
         </div>
+        <div style={{ height: "3px", background: `linear-gradient(90deg, ${accent} 60%, transparent 100%)` }} />
         {salaryBody}
       </div>
     );
@@ -220,15 +244,17 @@ export function SalaryPreview({ form, template = "Classic", accent = "#0D9488" }
   if (template === "Classic") {
     return (
       <div className="pdf-preview">
-        <div style={{ background: accent, padding: "20px 24px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-            <div>
-              {form.logo && <img src={form.logo} alt="Logo" style={{ height: "40px", objectFit: "contain", marginBottom: "8px", display: "block", filter: "brightness(0) invert(1)" }} />}
+        <div style={{ background: accent, padding: "20px 24px", minHeight: "72px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "16px" }}>
+            <div style={{ minWidth: 0 }}>
+              {form.logo && <img src={form.logo} alt="Logo" style={{ maxHeight: "40px", width: "auto", objectFit: "contain", marginBottom: "8px", display: "block", filter: "brightness(0) invert(1)" }} />}
               <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: "#fff", margin: 0 }}>{form.companyName || "Company Name"}</p>
-              {form.companyAddress && <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.8)", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.companyAddress}{form.companyCity ? `, ${form.companyCity}` : ""}</p>}
-              {companyState && <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.8)", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{companyState.name}</p>}
+              {form.companyAddress && <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.8)", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.companyAddress}{form.companyCity ? `, ${form.companyCity}` : ""}{companyState ? `, ${companyState.name}` : ""}</p>}
+              {form.companyPhone && <p style={{ fontSize: "10px", color: "rgba(255,255,255,0.75)", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>Ph: {form.companyPhone}</p>}
+              {form.companyEmail && <p style={{ fontSize: "10px", color: "rgba(255,255,255,0.75)", margin: "1px 0 0", fontFamily: "Inter, sans-serif" }}>Em: {form.companyEmail}</p>}
+              {form.companyGst && <p style={{ fontSize: "10px", color: "rgba(255,255,255,0.75)", margin: "1px 0 0", fontFamily: "Inter, sans-serif" }}>GST: {form.companyGst}</p>}
             </div>
-            <div style={{ textAlign: "right" }}>
+            <div style={{ textAlign: "right", flexShrink: 0 }}>
               <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "18px", color: "#fff", margin: 0 }}>SALARY SLIP</p>
               <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.8)", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>{form.month} {form.year}</p>
             </div>
@@ -242,15 +268,17 @@ export function SalaryPreview({ form, template = "Classic", accent = "#0D9488" }
   // Minimal (default)
   return (
     <div className="pdf-preview">
-      <div style={{ padding: "20px 24px 16px", borderBottom: "1px solid #E5E7EB" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-          <div>
-            {form.logo && <img src={form.logo} alt="Logo" style={{ height: "40px", objectFit: "contain", marginBottom: "6px", display: "block" }} />}
+      <div style={{ padding: "20px 24px 16px", borderBottom: "1px solid #E5E7EB", minHeight: "72px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "16px" }}>
+          <div style={{ minWidth: 0 }}>
+            {form.logo && <img src={form.logo} alt="Logo" style={{ maxHeight: "40px", width: "auto", objectFit: "contain", marginBottom: "6px", display: "block" }} />}
             <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "15px", color: "#111827", margin: 0 }}>{form.companyName || "Company Name"}</p>
-            {form.companyAddress && <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.companyAddress}{form.companyCity ? `, ${form.companyCity}` : ""}</p>}
-            {form.companyPhone && <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "1px 0 0", fontFamily: "Inter, sans-serif" }}>Ph: {form.companyPhone}{form.companyEmail ? ` | ${form.companyEmail}` : ""}</p>}
+            {form.companyAddress && <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>{form.companyAddress}{form.companyCity ? `, ${form.companyCity}` : ""}{companyState ? `, ${companyState.name}` : ""}</p>}
+            {form.companyPhone && <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "1px 0 0", fontFamily: "Inter, sans-serif" }}>Ph: {form.companyPhone}</p>}
+            {form.companyEmail && <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "1px 0 0", fontFamily: "Inter, sans-serif" }}>Em: {form.companyEmail}</p>}
+            {form.companyGst && <p style={{ fontSize: "10px", color: "#9CA3AF", margin: "1px 0 0", fontFamily: "Inter, sans-serif" }}>GST: {form.companyGst}</p>}
           </div>
-          <div style={{ textAlign: "right" }}>
+          <div style={{ textAlign: "right", flexShrink: 0 }}>
             <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "18px", color: "#111827", margin: 0 }}>SALARY SLIP</p>
             <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>{form.month} {form.year}</p>
           </div>
@@ -405,6 +433,11 @@ export default function SalarySlipPage() {
                   <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">City</label><input className="doc-input" placeholder="Mumbai" value={form.companyCity} onChange={e => updateField("companyCity", e.target.value)} /></div>
                   <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">State</label><select className="doc-select" value={form.companyState} onChange={e => updateField("companyState", e.target.value)}>{INDIAN_STATES.map(s => <option key={s.code} value={s.code}>{s.name}</option>)}</select></div>
                 </div>
+                <div className="form-row" style={{ marginTop: "10px" }}>
+                  <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">Phone</label><input className="doc-input" placeholder="+91 98765 43210" value={form.companyPhone} onChange={e => updateField("companyPhone", e.target.value)} /></div>
+                  <div className="form-field" style={{ marginBottom: 0 }}><label className="field-label">Email</label><input className="doc-input" type="email" placeholder="hr@company.com" value={form.companyEmail} onChange={e => updateField("companyEmail", e.target.value)} /></div>
+                </div>
+                <div className="form-field" style={{ marginTop: "10px" }}><label className="field-label">GST Number</label><input className="doc-input" placeholder="22AAAAA0000A1Z5" value={form.companyGst || ""} onChange={e => updateField("companyGst", e.target.value.toUpperCase())} style={{ fontFamily: "monospace" }} /></div>
                 <div style={{ borderTop: "1px solid #F3F4F6", margin: "16px 0" }} />
                 <p className="form-label">Pay Period</p>
                 <div className="form-row">
