@@ -749,6 +749,8 @@ ins.adsbygoogle[data-ad-status="unfilled"] {
   border-radius: 12px;
   padding: 24px;
   min-height: 600px;
+  min-width: 0;
+  overflow: hidden;
 }
 
 @media (max-width: 640px) {

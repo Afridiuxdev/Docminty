@@ -325,7 +325,7 @@ export function ProformaPreview({ form, template = "Classic", accent = "#0D9488"
   // Modern — Sidebar
   if (template === "Modern") {
     return (
-      <div className="pdf-preview" style={{ display: "flex", padding: 0, overflow: "hidden" }}>
+      <div className="pdf-preview" style={{ display: "flex", flexDirection: "row", padding: 0, overflow: "hidden" }}>
         <div style={{ width: "140px", background: accent, padding: "24px 14px", flexShrink: 0, color: "#fff", display: "flex", flexDirection: "column" }}>
           <p style={{ fontSize: "15px", fontWeight: 800, margin: "0 0 4px", fontFamily: "Space Grotesk, sans-serif" }}>PROFORMA</p>
           <p style={{ fontSize: "10px", opacity: 0.75, margin: "0 0 24px" }}>#{form.proformaNumber}</p>

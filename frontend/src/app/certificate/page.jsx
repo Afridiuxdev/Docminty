@@ -351,22 +351,7 @@ export default function CertificatePage() {
   const plan = user?.plan?.toUpperCase() || "FREE";
   const isUserPro = plan === "PRO" || plan === "ENTERPRISE";
 
-  // Auto-sync profile for Pro/Enterprise
-  useProfileSync(form, (updater) => {
-    setForm(prev => {
-        const u = typeof updater === 'function' ? updater(prev) : updater;
-        return {
-            ...prev,
-            orgName: u.fromName || prev.orgName,
-            orgAddress: u.fromAddress || prev.orgAddress,
-            orgCity: u.fromCity || prev.orgCity,
-            orgState: u.fromState || prev.orgState,
-            orgWebsite: u.website || prev.orgWebsite,
-            logo: u.logo || prev.logo,
-            signature: u.signature || prev.signature,
-        };
-    });
-  }, plan);
+  useProfileSync(form, setForm, plan);
   const templateMeta = TEMPLATE_REGISTRY.certificate[template] || TEMPLATE_REGISTRY.certificate.Classic;
   const isProTemplate = templateMeta.pro;
   const showWatermark = isProTemplate && !isUserPro;

@@ -160,7 +160,7 @@ export function SalaryPreview({ form, template = "Classic", accent = "#0D9488" }
 
   if (template === "Modern") {
     return (
-      <div className="pdf-preview" style={{ display: "flex", gap: 0, padding: 0, overflow: "hidden" }}>
+      <div className="pdf-preview" style={{ display: "flex", flexDirection: "row", gap: 0, padding: 0, overflow: "hidden" }}>
         <div style={{ width: "140px", minWidth: "140px", background: accent, padding: "24px 16px", display: "flex", flexDirection: "column", gap: "20px" }}>
           {form.logo && <img src={form.logo} alt="Logo" style={{ maxHeight: "36px", width: "auto", objectFit: "contain" }} />}
           <div>

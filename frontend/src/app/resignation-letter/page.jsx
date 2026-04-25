@@ -61,7 +61,7 @@ export function ResignationPreview({ form, template = "Classic", accent = "#0D94
         I will ensure a smooth transition and complete all pending tasks before my last working day.
       </p>
       <p style={{ fontSize: "12px", color: "#374151", fontFamily: "Inter, sans-serif", margin: "0 0 4px" }}>Yours sincerely,</p>
-      <div style={{ display: "inline-block", minWidth: "160px" }}>
+      <div style={{ alignSelf: "flex-start", minWidth: "160px" }}>
         {form.signature ? (
           <div style={{ marginBottom: "4px" }}><img src={form.signature} alt="Signature" style={{ maxHeight: "45px", maxWidth: "140px", display: "block" }} /></div>
         ) : (

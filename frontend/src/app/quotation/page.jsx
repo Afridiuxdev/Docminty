@@ -206,7 +206,7 @@ export function QuotationPreview({ form, template = "Classic", accent = "#0D9488
 
   if (template === "Modern") {
     return (
-      <div className="pdf-preview" style={{ display: "flex", padding: 0, overflow: "hidden" }}>
+      <div className="pdf-preview" style={{ display: "flex", flexDirection: "row", padding: 0, overflow: "hidden" }}>
         <div style={{ width: "135px", background: accent, padding: "24px 14px", flexShrink: 0, color: "#fff", display: "flex", flexDirection: "column", wordBreak: "break-word" }}>
           <p style={{ fontSize: "15px", fontWeight: 800, margin: "0 0 4px", fontFamily: "Space Grotesk, sans-serif" }}>QUOTATION</p>
           <p style={{ fontSize: "10px", opacity: 0.75, margin: "0 0 24px" }}>#{form.quoteNumber}</p>
@@ -246,23 +246,26 @@ export function QuotationPreview({ form, template = "Classic", accent = "#0D9488
   if (template === "Corporate") {
     return (
       <div className="pdf-preview">
-        <div style={{ textAlign: "center", padding: "20px 24px 16px", borderBottom: `2px solid ${accent}`, wordBreak: "break-word" }}>
-          {form.logo && <img src={form.logo} alt="Logo" style={{ height: "40px", objectFit: "contain", display: "block", margin: "0 auto 8px" }} />}
-          <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "20px", color: accent, margin: "0 0 2px", letterSpacing: "0.05em" }}>{form.fromName || "Your Business Name"}</p>
-          <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 6px", lineHeight: 1.5, maxWidth: "500px", marginLeft: "auto", marginRight: "auto" }}>
-            {form.fromAddress} {form.fromCity && `${form.fromCity}, `} {fromState && fromState.name}
-            {(form.fromPhone || form.fromEmail) && <><br />{form.fromPhone && `Ph: ${form.fromPhone}`} {form.fromEmail && `| Em: ${form.fromEmail}`}</>}
-          </p>
-          <div style={{ display: "flex", justifyContent: "center", gap: "16px", fontSize: "10px", color: "#9CA3AF", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.04em" }}>
-            {form.fromGSTIN && <span>GSTIN: {form.fromGSTIN}</span>}
-            <span>QT: #{form.quoteNumber}</span>
-            <span>Date: {form.quoteDate}</span>
-          </div>
-          {form.validUntil && (
-            <div style={{ display: "flex", justifyContent: "center", gap: "16px", fontSize: "9px", color: "#9CA3AF", marginTop: "4px" }}>
-              <span>VALID UNTIL: {form.validUntil}</span>
+        <div style={{ background: accent, wordBreak: "break-word" }}>
+          <div style={{ padding: "22px 28px 20px", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+            <div style={{ maxWidth: "55%" }}>
+              {form.logo && <img src={form.logo} alt="Logo" style={{ height: "36px", objectFit: "contain", marginBottom: "8px", display: "block" }} />}
+              <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "17px", color: "#FFFFFF", margin: 0, letterSpacing: "0.01em" }}>{form.fromName || "Your Business Name"}</p>
+              <p style={{ fontSize: "10px", color: "rgba(255,255,255,0.7)", margin: "5px 0 0", lineHeight: 1.6, wordBreak: "break-word" }}>
+                {form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}{fromState ? `, ${fromState.name}` : ""}
+                {(form.fromPhone || form.fromEmail) && <><br />{form.fromPhone && `Ph: ${form.fromPhone}`}{form.fromPhone && form.fromEmail ? "  |  " : ""}{form.fromEmail && `Em: ${form.fromEmail}`}</>}
+              </p>
             </div>
-          )}
+            <div style={{ textAlign: "right", flexShrink: 0 }}>
+              <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "26px", color: "#fff", margin: 0, letterSpacing: "0.1em" }}>QUOTATION</p>
+              <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.75)", margin: "6px 0 0", fontFamily: "Inter, sans-serif" }}>#{form.quoteNumber}</p>
+            </div>
+          </div>
+          <div style={{ background: "#1E293B", padding: "7px 28px", display: "flex", alignItems: "center", flexWrap: "wrap" }}>
+            {form.fromGSTIN && <><span style={{ fontSize: "9px", color: "#fff", fontWeight: 700, fontFamily: "Inter, sans-serif", letterSpacing: "0.05em" }}>GSTIN: {form.fromGSTIN}</span><span style={{ color: "rgba(255,255,255,0.3)", margin: "0 12px" }}>|</span></>}
+            <span style={{ fontSize: "9px", color: "#fff", fontFamily: "Inter, sans-serif", letterSpacing: "0.05em" }}>DATE: {form.quoteDate}</span>
+            {form.validUntil && <><span style={{ color: "rgba(255,255,255,0.3)", margin: "0 12px" }}>|</span><span style={{ fontSize: "9px", color: "#fff", fontFamily: "Inter, sans-serif", letterSpacing: "0.05em" }}>VALID UNTIL: {form.validUntil}</span></>}
+          </div>
         </div>
         {sharedBody}
       </div>
@@ -272,26 +275,34 @@ export function QuotationPreview({ form, template = "Classic", accent = "#0D9488
   if (template === "Elegant") {
     return (
       <div className="pdf-preview">
-        <div style={{ padding: "20px 24px 0" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", paddingBottom: "12px", wordBreak: "break-word" }}>
-            <div style={{ maxWidth: "60%" }}>
-              {form.logo && <img src={form.logo} alt="Logo" style={{ height: "40px", objectFit: "contain", marginBottom: "6px", display: "block" }} />}
-              <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "16px", color: "#111827", margin: 0 }}>{form.fromName || "Your Business Name"}</p>
-              <p style={{ fontSize: "10px", color: "#6B7280", margin: "4px 0 0", lineHeight: 1.4, whiteSpace: "pre-wrap" }}>
-                {form.fromAddress} {form.fromCity && `${form.fromCity}, `} {fromState && fromState.name}
-                {(form.fromPhone || form.fromEmail || form.fromGSTIN) && (
-                  <><br />{form.fromGSTIN && `GSTIN: ${form.fromGSTIN}`} {form.fromPhone && `| Ph: ${form.fromPhone}`} {form.fromEmail && `| Em: ${form.fromEmail}`}</>
-                )}
+        <div style={{ height: "4px", background: `linear-gradient(90deg, ${accent}, ${accent}80)` }} />
+        <div style={{ padding: "22px 28px 0", wordBreak: "break-word" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", paddingBottom: "18px" }}>
+            <div style={{ maxWidth: "54%" }}>
+              {form.logo && <img src={form.logo} alt="Logo" style={{ height: "38px", objectFit: "contain", marginBottom: "10px", display: "block" }} />}
+              <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "17px", color: "#0F172A", margin: 0, letterSpacing: "-0.01em" }}>{form.fromName || "Your Business Name"}</p>
+              {form.fromGSTIN && <p style={{ fontSize: "9px", color: accent, margin: "4px 0 0", fontFamily: "Inter, sans-serif", fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase" }}>GSTIN: {form.fromGSTIN}</p>}
+              <p style={{ fontSize: "10px", color: "#64748B", margin: "4px 0 0", lineHeight: 1.6 }}>
+                {form.fromAddress}{form.fromCity ? `, ${form.fromCity}` : ""}{fromState ? `, ${fromState.name}` : ""}
+                {(form.fromPhone || form.fromEmail) && <><br />{form.fromPhone && `Ph: ${form.fromPhone}`}{form.fromPhone && form.fromEmail ? "  " : ""}{form.fromEmail && `Em: ${form.fromEmail}`}</>}
               </p>
             </div>
-            <div style={{ textAlign: "right", maxWidth: "35%" }}>
-              <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "22px", color: accent, margin: 0 }}>QUOTATION</p>
-              <p style={{ fontSize: "12px", color: "#6B7280", margin: "4px 0 0", fontFamily: "Inter, sans-serif" }}>#{form.quoteNumber}</p>
-              <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "2px 0 0", fontFamily: "Inter, sans-serif" }}>Date: {form.quoteDate}</p>
-              {form.validUntil && <p style={{ fontSize: "11px", color: "#9CA3AF", margin: "2px 0 0" }}>Valid: {form.validUntil}</p>}
+            <div style={{ textAlign: "right", flexShrink: 0 }}>
+              <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "28px", color: accent, margin: 0, letterSpacing: "0.08em", lineHeight: 1 }}>QUOTATION</p>
+              <div style={{ marginTop: "4px", height: "2px", background: `linear-gradient(90deg, transparent, ${accent})` }} />
+              <div style={{ marginTop: "10px", display: "inline-block", background: "#F8FAFC", border: `1px solid ${accent}30`, borderRadius: "6px", padding: "7px 14px", textAlign: "right" }}>
+                <p style={{ fontSize: "9px", fontWeight: 700, color: "#94A3B8", letterSpacing: "0.08em", textTransform: "uppercase", margin: "0 0 2px" }}>QUOTE NUMBER</p>
+                <p style={{ fontSize: "13px", fontWeight: 800, color: "#0F172A", fontFamily: "Space Grotesk, sans-serif", margin: 0 }}>#{form.quoteNumber}</p>
+                <p style={{ fontSize: "9px", color: "#94A3B8", margin: "3px 0 0", fontFamily: "Inter, sans-serif" }}>Date: {form.quoteDate}</p>
+                {form.validUntil && <p style={{ fontSize: "9px", color: accent, margin: "2px 0 0", fontFamily: "Inter, sans-serif", fontWeight: 600 }}>Valid: {form.validUntil}</p>}
+              </div>
             </div>
           </div>
-          <div style={{ height: "4px", background: accent, borderRadius: "2px" }} />
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <div style={{ flex: 1, height: "1px", background: "#E2E8F0" }} />
+            <div style={{ width: "6px", height: "6px", background: accent, borderRadius: "1px", transform: "rotate(45deg)", flexShrink: 0 }} />
+            <div style={{ flex: 1, height: "1px", background: "#E2E8F0" }} />
+          </div>
         </div>
         {sharedBody}
       </div>

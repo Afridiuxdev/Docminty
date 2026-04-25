@@ -40,11 +40,20 @@ function buildPrintCSS(isLandscape) {
   #pdf-ready .pdf-preview {
     width: ${pageW} !important;
     min-height: ${pageH} !important;
+    display: flex !important;
+    flex-direction: column !important;
     border: none !important;
     border-radius: 0 !important;
     overflow: visible !important;
     box-shadow: none !important;
     zoom: 1 !important;
+  }
+
+  /* pdf-body fills available space; spacer pushes signature to bottom on single-page docs */
+  .pdf-body {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
   }
 
   /* Certificate/internship: full-width landscape, remove preview chrome */
